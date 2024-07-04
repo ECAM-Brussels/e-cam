@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "e-cam"
+version = "0.1.0"
+description = ""
+authors = ["Khoi Nguyen <khoi@nguyen.me.uk>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+sympy = "^1.12.1"
+antlr4-python3-runtime = "4.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
