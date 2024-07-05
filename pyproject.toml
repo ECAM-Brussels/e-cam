@@ -10,8 +10,10 @@ package-mode = false
 python = "^3.11"
 sympy = "^1.12.1"
 antlr4-python3-runtime = "4.11"
-pytest = "^8.2.2"
 strawberry-graphql = {extras = ["fastapi"], version = "^0.235.1"}
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.2"
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
