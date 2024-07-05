@@ -2,7 +2,9 @@
   "name": "example-bare",
   "type": "module",
   "scripts": {
+    "api": "poetry run fastapi dev symapi",
     "dev": "vinxi dev",
+    "postinstall": "poetry install",
     "build": "vinxi build",
     "start": "vinxi start"
   },
