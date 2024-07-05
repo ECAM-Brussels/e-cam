@@ -10,6 +10,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@solidjs/router": "^0.13.6",
     "@solidjs/start": "^1.0.2",
     "katex": "^0.16.11",
     "solid-js": "^1.8.17",
