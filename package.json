@@ -10,10 +10,14 @@
   },
   "dependencies": {
     "@solidjs/start": "^1.0.2",
+    "katex": "^0.16.11",
     "solid-js": "^1.8.17",
     "vinxi": "^0.3.12"
   },
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "@types/katex": "^0.16.7"
   }
 }
