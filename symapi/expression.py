@@ -8,6 +8,10 @@ from symapi.core import Math
 class Expression:
     expr: Math = strawberry.field(description="Current mathematical expression")
 
+    @strawberry.field(description="Expand")
+    def expand(self) -> "Expression":
+        return Expression(expr=sympy.expand(self.expr))
+
     @strawberry.field(description="Perform equality check")
     def is_equal(self, expr: Math) -> bool:
         result = sympy.Add(expr, sympy.Mul(-1, self.expr))

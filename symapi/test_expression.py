@@ -4,6 +4,31 @@ from symapi import schema
 
 
 @pytest.mark.parametrize(
+    "expr,expected",
+    [
+        ("(x - 2)(x - 3)", "x^{2} - 5 x + 6"),
+        ("(x - i)(x + i)", "x^{2} + 1"),
+    ],
+)
+def test_expand(expr: str, expected: str):
+    result = schema.execute_sync(
+        """
+            query ($expr: Math!) {
+                expression(expr: $expr) {
+                    expand {
+                        expr
+                    }
+                }
+            }
+        """,
+        variable_values={"expr": expr},
+    )
+
+    assert result.data is not None
+    assert result.data["expression"]["expand"]["expr"] == expected
+
+
+@pytest.mark.parametrize(
     "expr,attempt,expected",
     [
         ("x^2 - 5x + 6", "(x - 2)(x - 3)", True),
