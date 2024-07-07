@@ -36,7 +36,7 @@ export default function Factor(props: Exercise<FactorState>) {
   return (
     <>
       <p>
-        Factor <Math value={props.expr} oninput={() => false} />
+        Factor <Math value={props.expr} />
       </p>
       <Math
         editable
