@@ -1,6 +1,7 @@
 import { cache } from '@solidjs/router'
 import { For, createSignal, lazy } from 'solid-js'
 import { SetStoreFunction } from 'solid-js/store'
+import { z } from 'zod'
 
 const exercises = {
   Factor: () => import('~/exercises/Factor'),
@@ -11,7 +12,7 @@ type ExerciseName = keyof typeof exercises
 type Module<T extends ExerciseName> = Awaited<ReturnType<(typeof exercises)[T]>>
 type ExerciseFromName<T extends ExerciseName> = {
   type: T
-  state: Parameters<Module<T>['mark']>[0]
+  state: z.infer<Module<T>['schema']>
 }
 export type Exercise = ExerciseFromName<ExerciseName>
 
