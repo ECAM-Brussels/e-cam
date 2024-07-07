@@ -14,6 +14,7 @@
     "@solidjs/start": "^1.0.2",
     "graphql-request": "^7.1.0",
     "katex": "^0.16.11",
+    "mathlive": "^0.100.0",
     "solid-js": "^1.8.17",
     "vinxi": "^0.3.12"
   },

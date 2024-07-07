@@ -1,4 +1,5 @@
 import { cache } from '@solidjs/router'
+import { type MathfieldElement } from 'mathlive'
 import { type SetStoreFunction } from 'solid-js/store'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
@@ -35,12 +36,13 @@ export default function Factor(props: Exercise<FactorState>) {
   return (
     <>
       <p>
-        Factor <Math value={props.expr} />
+        Factor <Math value={props.expr} oninput={() => false} />
       </p>
-      <input
+      <Math
+        editable
         value={props.attempt}
-        onInput={(e) => {
-          props.setter?.('attempt', e.target.value)
+        oninput={(e: InputEvent) => {
+          props.setter?.('attempt', (e.target as MathfieldElement).value)
         }}
       />
     </>
