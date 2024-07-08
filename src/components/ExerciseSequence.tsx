@@ -10,14 +10,24 @@ const components = Object.fromEntries(Object.entries(exercises).map(([k, v]) => 
 
 type ExerciseName = keyof typeof exercises
 type Module<T extends ExerciseName> = Awaited<ReturnType<(typeof exercises)[T]>>
-type ExerciseFromName<T extends ExerciseName> = {
-  type: T
-  state: z.infer<Module<T>['schema']>
-}
+type ExerciseFromName<T extends ExerciseName> =
+  Module<T> extends { generate: unknown }
+    ? {
+        type: T
+        state?: z.infer<Module<T>['schema']>
+        params?: Parameters<Module<T>['generate']>[0]
+      }
+    : {
+        type: T
+        state: z.infer<Module<T>['schema']>
+      }
 export type Exercise = ExerciseFromName<ExerciseName>
 
 export const markSequence = cache((data: Exercise[]) => {
   const promises = data.map(async (exercise) => {
+    if (!exercise.state) {
+      return false
+    }
     const mark = (await exercises[exercise.type]()).mark
     return mark(exercise.state).catch((_) => false)
   })
@@ -38,10 +48,10 @@ export default function ExerciseSequence(props: ExerciseProps) {
           const Component = components[exercise.type]
           return (
             <Component
-              {...exercise.state}
+              {...{ state: exercise.state, params: exercise.params }}
               setter={(...args: any) => {
                 // @ts-ignore
-                props.setter(i(), 'state', ...args)
+                props.setter(i(), ...args)
               }}
             />
           )

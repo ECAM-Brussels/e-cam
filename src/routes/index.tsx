@@ -17,6 +17,14 @@ export default function Home() {
         attempt: '',
       },
     },
+    {
+      type: 'Factor',
+      params: {
+        A: [1],
+        X1: [-3, 2, 1, 1, 2, 3],
+        X2: [-3, 2, 1, 1, 2, 3],
+      },
+    },
   ])
   return <ExerciseSequence data={data} setter={setData} />
 }

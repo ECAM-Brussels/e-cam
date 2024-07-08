@@ -1,8 +1,7 @@
 import { cache } from '@solidjs/router'
 import { sample } from 'lodash-es'
-import { type MathfieldElement } from 'mathlive'
-import { type SetStoreFunction } from 'solid-js/store'
 import { z } from 'zod'
+import Exercise, { type ExerciseProps } from '~/components/Exercise'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
 import { request } from '~/lib/graphql'
@@ -13,15 +12,14 @@ export const schema = z.object({
 })
 export type State = z.infer<typeof schema>
 
-type Exercise<S extends object> = S &
-  Partial<{
-    setter: SetStoreFunction<S>
-  }>
-
-export async function generate(A: number[], X1: number[], X2: number[]): Promise<State> {
-  const a = sample(A)
-  const x1 = sample(X1)
-  const x2 = sample(X2)
+export async function generate(params: {
+  A: number[]
+  X1: number[]
+  X2: number[]
+}): Promise<State> {
+  const a = sample(params.A)
+  const x1 = sample(params.X1)
+  const x2 = sample(params.X2)
   const { expression } = await request(
     graphql(`
       query GenerateFactorisation($expr: Math!) {
@@ -54,19 +52,17 @@ export const mark = cache(async (state: State) => {
   return attempt.isEqual && attempt.isFactored
 }, 'checkFactorisation')
 
-export default function Factor(props: Exercise<State>) {
+export default function Factor(props: ExerciseProps<State, Parameters<typeof generate>[0]>) {
   return (
-    <>
+    <Exercise {...props} generate={generate}>
       <p>
-        Factor <Math value={props.expr} />
+        Factor <Math value={props.state?.expr} />
       </p>
       <Math
         editable
-        value={props.attempt}
-        onInput={(e) => {
-          props.setter?.('attempt', e.target.value)
-        }}
+        value={props.state?.attempt}
+        onInput={(e) => props.setter?.('state', 'attempt', e.target.value)}
       />
-    </>
+    </Exercise>
   )
 }
