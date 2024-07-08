@@ -26,7 +26,7 @@ export default function Math(props: MathProps) {
   const html = () => katex.renderToString(props.value || '')
   return (
     <Show when={props.editable} fallback={<span innerHTML={html()} />}>
-      <math-field {...props} />
+      <math-field className="w-full" {...props} />
     </Show>
   )
 }
