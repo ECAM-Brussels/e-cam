@@ -63,8 +63,8 @@ export default function Factor(props: Exercise<State>) {
       <Math
         editable
         value={props.attempt}
-        oninput={(e: InputEvent) => {
-          props.setter?.('attempt', (e.target as MathfieldElement).value)
+        onInput={(e) => {
+          props.setter?.('attempt', e.target.value)
         }}
       />
     </>
