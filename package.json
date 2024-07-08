@@ -14,6 +14,7 @@
     "@solidjs/start": "^1.0.2",
     "graphql-request": "^7.1.0",
     "katex": "^0.16.11",
+    "lodash-es": "^4.17.21",
     "mathlive": "^0.100.0",
     "solid-js": "^1.8.17",
     "vinxi": "^0.3.12",
@@ -29,6 +30,7 @@
     "@testing-library/user-event": "^14.5.2",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/katex": "^0.16.7",
+    "@types/lodash-es": "^4.17.12",
     "concurrently": "^8.2.2",
     "jsdom": "^24.1.0",
     "vitest": "^1.6.0"

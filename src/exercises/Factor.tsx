@@ -1,4 +1,5 @@
 import { cache } from '@solidjs/router'
+import { sample } from 'lodash-es'
 import { type MathfieldElement } from 'mathlive'
 import { type SetStoreFunction } from 'solid-js/store'
 import { z } from 'zod'
@@ -16,6 +17,25 @@ type Exercise<S extends object> = S &
   Partial<{
     setter: SetStoreFunction<S>
   }>
+
+export async function generate(A: number[], X1: number[], X2: number[]): Promise<State> {
+  const a = sample(A)
+  const x1 = sample(X1)
+  const x2 = sample(X2)
+  const { expression } = await request(
+    graphql(`
+      query GenerateFactorisation($expr: Math!) {
+        expression(expr: $expr) {
+          expand {
+            expr
+          }
+        }
+      }
+    `),
+    { expr: `${a}(x - ${x1})(x - ${x2})` },
+  )
+  return { expr: expression.expand.expr, attempt: '' }
+}
 
 export const mark = cache(async (state: State) => {
   'use server'
