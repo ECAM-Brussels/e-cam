@@ -1,6 +1,5 @@
 import { cache } from '@solidjs/router'
 import { sample } from 'lodash-es'
-import { Show } from 'solid-js'
 import { z } from 'zod'
 import Exercise, { type ExerciseProps } from '~/components/Exercise'
 import Math from '~/components/Math'
