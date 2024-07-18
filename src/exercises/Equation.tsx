@@ -1,3 +1,4 @@
+import { For } from 'solid-js'
 import { z } from 'zod'
 import Exercise, { type ExerciseProps } from '~/components/Exercise'
 import Math from '~/components/Math'
@@ -35,11 +36,24 @@ export default function Equation(props: ExerciseProps<State, undefined>) {
       <p>
         Solve <Math value={props.state?.equation} />
       </p>
-      <Math
-        editable
-        value={props.state?.attempt[0]}
-        onBlur={(e) => props.setter?.('state', 'attempt', [e.target.value])}
-      />
+      <For each={props.state?.attempt}>
+        {(attempt, i) => (
+          <Math
+            editable
+            value={attempt}
+            onBlur={(e) => props.setter?.('state', 'attempt', i(), e.target.value)}
+          />
+        )}
+      </For>
+      <button
+        onClick={() => {
+          if (props.state) {
+            props.setter?.('state', 'attempt', props.state?.attempt.length, '')
+          }
+        }}
+      >
+        +
+      </button>
       <Tick value={props.feedback?.correct} />
     </Exercise>
   )

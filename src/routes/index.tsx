@@ -6,7 +6,7 @@ export default function Home() {
     {
       type: 'Equation',
       state: {
-        equation: 'x - 3 = 2',
+        equation: 'x^2 - 5x + 6',
         attempt: [''],
       },
     },
