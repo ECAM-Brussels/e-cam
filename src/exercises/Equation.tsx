@@ -41,7 +41,6 @@ export default function Equation(props: ExerciseProps<State, undefined>) {
         onBlur={(e) => props.setter?.('state', 'attempt', [e.target.value])}
       />
       <Tick value={props.feedback?.correct} />
-      <pre>{JSON.stringify(props, null, 2)}</pre>
     </Exercise>
   )
 }
