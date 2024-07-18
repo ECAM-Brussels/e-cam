@@ -9,24 +9,28 @@ import Fa from '~/components/Fa'
 const exercises = {
   Factor: () => import('~/exercises/Factor'),
 } as const
-const components = Object.fromEntries(Object.entries(exercises).map(([k, v]) => [k, lazy(v)]))
+const components = {
+  Factor: lazy(() => import('~/exercises/Factor')),
+} as const
 
 type ExerciseName = keyof typeof exercises
 type Module<T extends ExerciseName> = Awaited<ReturnType<(typeof exercises)[T]>>
+type HasGenerator<M> = M extends { generate: (...args: any) => any } ? true : false
+type GeneratorParams<M> = M extends { generate: (params: infer P) => any } ? P : never
 type ExerciseFromName<T extends ExerciseName> = {
   type: T
   feedback?: {
     correct: boolean
   }
-} & (Module<T> extends { generate: unknown }
+} & (HasGenerator<Module<T>> extends true
   ? {
       state?: z.infer<Module<T>['schema']>
-      params?: Parameters<Module<T>['generate']>[0]
+      params?: GeneratorParams<Module<T>>
     }
   : {
       state: z.infer<Module<T>['schema']>
     })
-export type Exercise = ExerciseFromName<ExerciseName> & { feedback?: object }
+export type Exercise = { [N in ExerciseName]: ExerciseFromName<N> }[ExerciseName]
 
 export const markSequence = cache((data: Exercise[]) => {
   const promises = data.map(async (exercise) => {
@@ -34,6 +38,7 @@ export const markSequence = cache((data: Exercise[]) => {
       return false
     }
     const mark = (await exercises[exercise.type]()).mark
+    // @ts-ignore
     return mark(exercise.state).catch((_) => false)
   })
   return Promise.all(promises)
