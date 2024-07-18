@@ -4,6 +4,7 @@ import { Show } from 'solid-js'
 import { z } from 'zod'
 import Exercise, { type ExerciseProps } from '~/components/Exercise'
 import Math from '~/components/Math'
+import Tick from '~/components/Tick'
 import { graphql } from '~/gql'
 import { request } from '~/lib/graphql'
 
@@ -64,7 +65,7 @@ export default function Factor(props: ExerciseProps<State, Parameters<typeof gen
         value={props.state?.attempt}
         onBlur={(e) => props.setter?.('state', 'attempt', e.target.value)}
       />
-      <Show when={props.feedback?.correct}>Correct!</Show>
+      <Tick value={props.feedback?.correct} />
     </Exercise>
   )
 }
