@@ -1,6 +1,6 @@
 import { faLeftLong, faRightLong } from '@fortawesome/free-solid-svg-icons'
 import { cache } from '@solidjs/router'
-import { createSignal, lazy } from 'solid-js'
+import { Show, createSignal, lazy } from 'solid-js'
 import { SetStoreFunction } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web'
 import { z } from 'zod'
@@ -52,23 +52,27 @@ export default function ExerciseSequence(props: ExerciseProps) {
   return (
     <>
       <div class="text-center">
-        <button
-          onClick={() => {
-            setIndex((index() + 1) % props.data.length)
-          }}
-        >
-          <Fa icon={faLeftLong} />
-        </button>
+        <Show when={index()}>
+          <button
+            onClick={() => {
+              setIndex((index() + 1) % props.data.length)
+            }}
+          >
+            <Fa icon={faLeftLong} />
+          </button>
+        </Show>
         <span class="mx-4">
           {index() + 1} / {props.data.length}
         </span>
-        <button
-          onClick={() => {
-            setIndex((index() + 1) % props.data.length)
-          }}
-        >
-          <Fa icon={faRightLong} />
-        </button>
+        <Show when={index() < props.data.length - 1}>
+          <button
+            onClick={() => {
+              setIndex((index() + 1) % props.data.length)
+            }}
+          >
+            <Fa icon={faRightLong} />
+          </button>
+        </Show>
       </div>
       <Dynamic
         component={components[exercise().type]}
