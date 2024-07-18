@@ -55,7 +55,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
         <Show when={index()}>
           <button
             onClick={() => {
-              setIndex((index() + 1) % props.data.length)
+              setIndex((index() - 1) % props.data.length)
             }}
           >
             <Fa icon={faLeftLong} />
