@@ -5,6 +5,8 @@ from typing import NewType
 
 
 def parse_latex(expr: str):
+    if "=" in expr:
+        return sympy.Eq(*[parse_latex(s) for s in expr.split("=")])
     parsed = sympy.parsing.latex.parse_latex(expr)
     subs = {
         sympy.Symbol("e"): sympy.E,
