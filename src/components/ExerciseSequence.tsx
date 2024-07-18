@@ -1,5 +1,6 @@
 import { faLeftLong, faRightLong } from '@fortawesome/free-solid-svg-icons'
 import { cache } from '@solidjs/router'
+import { mapValues } from 'lodash-es'
 import { Show, createSignal, lazy } from 'solid-js'
 import { SetStoreFunction } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web'
@@ -10,10 +11,7 @@ const exercises = {
   Equation: () => import('~/exercises/Equation'),
   Factor: () => import('~/exercises/Factor'),
 } as const
-const components = {
-  Equation: lazy(() => import('~/exercises/Equation')),
-  Factor: lazy(() => import('~/exercises/Factor')),
-} as const
+const components = mapValues(exercises, lazy)
 
 type ExerciseName = keyof typeof exercises
 type Module<T extends ExerciseName> = Awaited<ReturnType<(typeof exercises)[T]>>
@@ -84,6 +82,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
       </div>
       {/* @ts-ignore */}
       <Dynamic
+        // @ts-ignore
         component={components[exercise().type]}
         state={exercise().state}
         params={exercise().params}
