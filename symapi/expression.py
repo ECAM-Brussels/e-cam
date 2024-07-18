@@ -17,6 +17,10 @@ class Expression:
         result = sympy.Add(expr, sympy.Mul(-1, self.expr))
         return sympy.simplify(result) == 0
 
+    @strawberry.field
+    def is_set_equal(self, items: list[Math]) -> bool:
+        return self.expr == set(items)
+
     @strawberry.field(description="Check if fully factored")
     def is_factored(self) -> bool:
         expr = self.expr
@@ -26,3 +30,7 @@ class Expression:
             if sympy.factor(term).func == sympy.Mul:
                 return False
         return True
+
+    @strawberry.field
+    def solveset(self) -> "Expression":
+        return Expression(expr=sympy.solveset(self.expr))
