@@ -31,6 +31,7 @@ type ExerciseFromName<T extends ExerciseName> = {
     }
   : {
       state: z.infer<Module<T>['schema']>
+      params?: never
     })
 export type Exercise = { [N in ExerciseName]: ExerciseFromName<N> }[ExerciseName]
 
@@ -81,6 +82,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
           </button>
         </Show>
       </div>
+      {/* @ts-ignore */}
       <Dynamic
         component={components[exercise().type]}
         state={exercise().state}
