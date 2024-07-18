@@ -7,9 +7,11 @@ import { z } from 'zod'
 import Fa from '~/components/Fa'
 
 const exercises = {
+  Equation: () => import('~/exercises/Equation'),
   Factor: () => import('~/exercises/Factor'),
 } as const
 const components = {
+  Equation: lazy(() => import('~/exercises/Equation')),
   Factor: lazy(() => import('~/exercises/Factor')),
 } as const
 
