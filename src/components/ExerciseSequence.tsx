@@ -10,18 +10,20 @@ const components = Object.fromEntries(Object.entries(exercises).map(([k, v]) => 
 
 type ExerciseName = keyof typeof exercises
 type Module<T extends ExerciseName> = Awaited<ReturnType<(typeof exercises)[T]>>
-type ExerciseFromName<T extends ExerciseName> =
-  Module<T> extends { generate: unknown }
-    ? {
-        type: T
-        state?: z.infer<Module<T>['schema']>
-        params?: Parameters<Module<T>['generate']>[0]
-      }
-    : {
-        type: T
-        state: z.infer<Module<T>['schema']>
-      }
-export type Exercise = ExerciseFromName<ExerciseName>
+type ExerciseFromName<T extends ExerciseName> = {
+  type: T
+  feedback?: {
+    correct: boolean
+  }
+} & (Module<T> extends { generate: unknown }
+  ? {
+      state?: z.infer<Module<T>['schema']>
+      params?: Parameters<Module<T>['generate']>[0]
+    }
+  : {
+      state: z.infer<Module<T>['schema']>
+    })
+export type Exercise = ExerciseFromName<ExerciseName> & { feedback?: object }
 
 export const markSequence = cache((data: Exercise[]) => {
   const promises = data.map(async (exercise) => {
@@ -40,6 +42,7 @@ type ExerciseProps = {
 }
 
 export default function ExerciseSequence(props: ExerciseProps) {
+  const [mark, setMark] = createSignal(false)
   const [feedback, setFeedback] = createSignal<boolean[]>([])
   return (
     <>
@@ -48,7 +51,10 @@ export default function ExerciseSequence(props: ExerciseProps) {
           const Component = components[exercise.type]
           return (
             <Component
-              {...{ state: exercise.state, params: exercise.params }}
+              state={exercise.state}
+              params={exercise.params}
+              feedback={exercise.feedback || {}}
+              options={{ mark: mark() }}
               setter={(...args: any) => {
                 // @ts-ignore
                 props.setter(i(), ...args)
@@ -60,6 +66,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
       <p>
         <button
           onClick={async () => {
+            setMark(true)
             setFeedback(await markSequence(props.data))
           }}
         >

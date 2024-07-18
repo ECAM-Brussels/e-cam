@@ -1,5 +1,6 @@
 import { cache } from '@solidjs/router'
 import { sample } from 'lodash-es'
+import { Show } from 'solid-js'
 import { z } from 'zod'
 import Exercise, { type ExerciseProps } from '~/components/Exercise'
 import Math from '~/components/Math'
@@ -7,8 +8,8 @@ import { graphql } from '~/gql'
 import { request } from '~/lib/graphql'
 
 export const schema = z.object({
-  expr: z.string(),
-  attempt: z.string(),
+  expr: z.string().trim().min(1, { message: 'Expression cannot be empty' }),
+  attempt: z.string().trim().min(1, { message: 'Expression cannot be empty' }),
 })
 export type State = z.infer<typeof schema>
 
@@ -54,15 +55,16 @@ export const mark = cache(async (state: State) => {
 
 export default function Factor(props: ExerciseProps<State, Parameters<typeof generate>[0]>) {
   return (
-    <Exercise {...props} generate={generate}>
+    <Exercise {...props} schema={schema} mark={mark} generate={generate}>
       <p>
         Factor <Math value={props.state?.expr} />
       </p>
       <Math
         editable
         value={props.state?.attempt}
-        onInput={(e) => props.setter?.('state', 'attempt', e.target.value)}
+        onBlur={(e) => props.setter?.('state', 'attempt', e.target.value)}
       />
+      <Show when={props.feedback?.correct}>Correct!</Show>
     </Exercise>
   )
 }
