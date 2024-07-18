@@ -1,7 +1,10 @@
+import { faLeftLong, faRightLong } from '@fortawesome/free-solid-svg-icons'
 import { cache } from '@solidjs/router'
-import { For, createSignal, lazy } from 'solid-js'
+import { createSignal, lazy } from 'solid-js'
 import { SetStoreFunction } from 'solid-js/store'
+import { Dynamic } from 'solid-js/web'
 import { z } from 'zod'
+import Fa from '~/components/Fa'
 
 const exercises = {
   Factor: () => import('~/exercises/Factor'),
@@ -42,27 +45,42 @@ type ExerciseProps = {
 }
 
 export default function ExerciseSequence(props: ExerciseProps) {
+  const [index, setIndex] = createSignal(0)
   const [mark, setMark] = createSignal(false)
   const [feedback, setFeedback] = createSignal<boolean[]>([])
+  const exercise = () => props.data[index()]
   return (
     <>
-      <For each={props.data}>
-        {(exercise, i) => {
-          const Component = components[exercise.type]
-          return (
-            <Component
-              state={exercise.state}
-              params={exercise.params}
-              feedback={exercise.feedback || {}}
-              options={{ mark: mark() }}
-              setter={(...args: any) => {
-                // @ts-ignore
-                props.setter(i(), ...args)
-              }}
-            />
-          )
+      <div class="text-center">
+        <button
+          onClick={() => {
+            setIndex((index() + 1) % props.data.length)
+          }}
+        >
+          <Fa icon={faLeftLong} />
+        </button>
+        <span class="mx-4">
+          {index() + 1} / {props.data.length}
+        </span>
+        <button
+          onClick={() => {
+            setIndex((index() + 1) % props.data.length)
+          }}
+        >
+          <Fa icon={faRightLong} />
+        </button>
+      </div>
+      <Dynamic
+        component={components[exercise().type]}
+        state={exercise().state}
+        params={exercise().params}
+        feedback={exercise().feedback}
+        options={{ mark: mark() }}
+        setter={(...args: any) => {
+          // @ts-ignore
+          props.setter(index(), ...args)
         }}
-      </For>
+      />
       <p>
         <button
           onClick={async () => {
