@@ -53,7 +53,9 @@ export const mark = cache(async (state: State) => {
   return attempt.isEqual && attempt.count == 1
 }, 'checkSquare')
 
-export default function CompleteSquare(props: ExerciseProps<State, undefined>) {
+export default function CompleteSquare(
+  props: ExerciseProps<State, Parameters<typeof generate>[0]>,
+) {
   return (
     <Exercise {...props} schema={schema} mark={mark} generate={generate}>
       <p>
