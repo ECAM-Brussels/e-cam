@@ -1,6 +1,8 @@
+import { faPlus, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { For } from 'solid-js'
 import { z } from 'zod'
 import Exercise, { type ExerciseProps } from '~/components/Exercise'
+import Fa from '~/components/Fa'
 import Math from '~/components/Math'
 import Tick from '~/components/Tick'
 import { graphql } from '~/gql'
@@ -38,11 +40,15 @@ export default function Equation(props: ExerciseProps<State, undefined>) {
       </p>
       <For each={props.state?.attempt}>
         {(attempt, i) => (
-          <Math
-            editable
-            value={attempt}
-            onBlur={(e) => props.setter?.('state', 'attempt', i(), e.target.value)}
-          />
+          <label class="flex items-center">
+            <Math value="x =" />
+            <Math
+              class="w-full"
+              editable
+              value={attempt}
+              onBlur={(e) => props.setter?.('state', 'attempt', i(), e.target.value)}
+            />
+          </label>
         )}
       </For>
       <button
@@ -52,7 +58,16 @@ export default function Equation(props: ExerciseProps<State, undefined>) {
           }
         }}
       >
-        +
+        <Fa icon={faPlus} />
+      </button>
+      <button
+        onClick={() => {
+          if (props.state) {
+            props.setter?.('state', 'attempt', props.state.attempt.toSpliced(-1, 1))
+          }
+        }}
+      >
+        <Fa icon={faTrashAlt} />
       </button>
       <Tick value={props.feedback?.correct} />
     </Exercise>
