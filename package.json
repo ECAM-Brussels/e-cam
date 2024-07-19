@@ -10,6 +10,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@fontsource/fira-sans": "^5.0.20",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@solidjs/router": "^0.13.6",
     "@solidjs/start": "^1.0.2",
