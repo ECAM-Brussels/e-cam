@@ -59,11 +59,15 @@ export default function Factor(props: ExerciseProps<State, Parameters<typeof gen
       <p>
         Factor <Math value={props.state?.expr} />
       </p>
-      <Math
-        editable
-        value={props.state?.attempt}
-        onBlur={(e) => props.setter?.('state', 'attempt', e.target.value)}
-      />
+      <div class="flex items-center">
+        <Math value={`${props.state?.expr}=`} />
+        <Math
+          class="border w-64"
+          editable
+          value={props.state?.attempt}
+          onBlur={(e) => props.setter?.('state', 'attempt', e.target.value)}
+        />
+      </div>
       <Tick value={props.feedback?.correct} />
     </Exercise>
   )
