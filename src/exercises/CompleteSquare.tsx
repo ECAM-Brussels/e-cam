@@ -35,7 +35,6 @@ export default function CompleteSquare(props: ExerciseProps<State, undefined>) {
       <p>
         Complete the square for <Math value={props.state?.expr} />
       </p>
-      {props.state?.attempt}
       <Math
         editable
         value={props.state?.attempt}
