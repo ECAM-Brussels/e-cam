@@ -1,11 +1,10 @@
-import { faLeftLong, faRightLong } from '@fortawesome/free-solid-svg-icons'
+import Pagination from './Pagination'
 import { cache } from '@solidjs/router'
 import { mapValues } from 'lodash-es'
-import { Show, createSignal, lazy } from 'solid-js'
+import { Suspense, createSignal, lazy } from 'solid-js'
 import { SetStoreFunction } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web'
 import { z } from 'zod'
-import Fa from '~/components/Fa'
 
 const exercises = {
   CompleteSquare: () => import('~/exercises/CompleteSquare'),
@@ -57,54 +56,39 @@ export default function ExerciseSequence(props: ExerciseProps) {
   const [feedback, setFeedback] = createSignal<boolean[]>([])
   const exercise = () => props.data[index()]
   return (
-    <>
-      <div class="text-center">
-        <Show when={index()}>
-          <button
-            onClick={() => {
-              setIndex((index() - 1) % props.data.length)
+    <div class="md:flex items-center">
+      <div class="md:w-3/4 border-r">
+        <Pagination current={index()} max={props.data.length} onChange={setIndex} />
+        <Suspense>
+          {/* @ts-ignore */}
+          <Dynamic
+            // @ts-ignore
+            component={components[exercise().type]}
+            state={exercise().state}
+            params={exercise().params}
+            feedback={exercise().feedback}
+            options={{ mark: mark() }}
+            setter={(...args: any) => {
+              // @ts-ignore
+              props.setter(index(), ...args)
             }}
-          >
-            <Fa icon={faLeftLong} />
-          </button>
-        </Show>
-        <span class="mx-4">
-          {index() + 1} / {props.data.length}
-        </span>
-        <Show when={index() < props.data.length - 1}>
-          <button
-            onClick={() => {
-              setIndex((index() + 1) % props.data.length)
-            }}
-          >
-            <Fa icon={faRightLong} />
-          </button>
-        </Show>
+          />
+        </Suspense>
       </div>
-      {/* @ts-ignore */}
-      <Dynamic
-        // @ts-ignore
-        component={components[exercise().type]}
-        state={exercise().state}
-        params={exercise().params}
-        feedback={exercise().feedback}
-        options={{ mark: mark() }}
-        setter={(...args: any) => {
-          // @ts-ignore
-          props.setter(index(), ...args)
-        }}
-      />
-      <p>
-        <button
-          onClick={async () => {
-            setMark(true)
-            setFeedback(await markSequence(props.data))
-          }}
-        >
-          Mark
-        </button>
-      </p>
-      <pre>{JSON.stringify(feedback())}</pre>
-    </>
+      <div class="px-2">
+        <p>
+          <button
+            class="border px-2 py-1 rounded-lg bg-green-700 text-white"
+            onClick={async () => {
+              setMark(true)
+              setFeedback(await markSequence(props.data))
+            }}
+          >
+            Submit assignment
+          </button>
+        </p>
+        <pre>{JSON.stringify(feedback())}</pre>
+      </div>
+    </div>
   )
 }

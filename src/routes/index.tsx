@@ -1,5 +1,6 @@
 import { createStore } from 'solid-js/store'
 import ExerciseSequence, { type Exercise } from '~/components/ExerciseSequence'
+import Page from '~/components/Page'
 
 export default function Home() {
   const [data, setData] = createStore<Exercise[]>([
@@ -48,5 +49,9 @@ export default function Home() {
       },
     },
   ])
-  return <ExerciseSequence data={data} setter={setData} />
+  return (
+    <Page>
+      <ExerciseSequence data={data} setter={setData} />
+    </Page>
+  )
 }
