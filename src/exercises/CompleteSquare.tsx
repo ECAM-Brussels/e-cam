@@ -1,4 +1,5 @@
 import { cache } from '@solidjs/router'
+import { sample } from 'lodash-es'
 import { z } from 'zod'
 import Exercise, { type ExerciseProps } from '~/components/Exercise'
 import Math from '~/components/Math'
@@ -11,6 +12,29 @@ export const schema = z.object({
   attempt: z.string().trim().min(1, { message: 'Expression cannot be empty' }),
 })
 export type State = z.infer<typeof schema>
+
+export async function generate(params: {
+  A: number[]
+  Alpha: number[]
+  Beta: Number[]
+}): Promise<State> {
+  const a = sample(params.A)
+  const alpha = sample(params.Alpha)
+  const beta = sample(params.Beta)
+  const { expression } = await request(
+    graphql(`
+      query GenerateSquare($expr: Math!) {
+        expression(expr: $expr) {
+          expand {
+            expr
+          }
+        }
+      }
+    `),
+    { expr: `${a}(x - ${alpha})^2 + ${beta}` },
+  )
+  return { expr: expression.expand.expr, attempt: '' }
+}
 
 export const mark = cache(async (state: State) => {
   'use server'
@@ -31,7 +55,7 @@ export const mark = cache(async (state: State) => {
 
 export default function CompleteSquare(props: ExerciseProps<State, undefined>) {
   return (
-    <Exercise {...props} schema={schema} mark={mark}>
+    <Exercise {...props} schema={schema} mark={mark} generate={generate}>
       <p>
         Complete the square for <Math value={props.state?.expr} />
       </p>

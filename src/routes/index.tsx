@@ -5,6 +5,14 @@ export default function Home() {
   const [data, setData] = createStore<Exercise[]>([
     {
       type: 'CompleteSquare',
+      params: {
+        A: [1],
+        Alpha: [-3, 2, 1, 1, 2, 3],
+        Beta: [-3, 2, 1, 1, 2, 3],
+      },
+    },
+    {
+      type: 'CompleteSquare',
       state: {
         expr: 'x^2 - 6x + 11',
         attempt: '',
