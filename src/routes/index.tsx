@@ -4,6 +4,13 @@ import ExerciseSequence, { type Exercise } from '~/components/ExerciseSequence'
 export default function Home() {
   const [data, setData] = createStore<Exercise[]>([
     {
+      type: 'CompleteSquare',
+      state: {
+        expr: 'x^2 - 6x + 11',
+        attempt: '',
+      },
+    },
+    {
       type: 'Equation',
       state: {
         equation: 'x^2 - 5x + 6',

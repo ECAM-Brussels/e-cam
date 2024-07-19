@@ -8,6 +8,7 @@ import { z } from 'zod'
 import Fa from '~/components/Fa'
 
 const exercises = {
+  CompleteSquare: () => import('~/exercises/CompleteSquare'),
   Equation: () => import('~/exercises/Equation'),
   Factor: () => import('~/exercises/Factor'),
 } as const
