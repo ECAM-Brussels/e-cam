@@ -8,6 +8,10 @@ from symapi.core import Math
 class Expression:
     expr: Math = strawberry.field(description="Current mathematical expression")
 
+    @strawberry.field
+    def count(self, expr: Math) -> int:
+        return self.expr.count(expr)
+
     @strawberry.field(description="Expand")
     def expand(self) -> "Expression":
         return Expression(expr=sympy.expand(self.expr))
