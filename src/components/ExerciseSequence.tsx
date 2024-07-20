@@ -68,7 +68,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
             state={exercise().state}
             params={exercise().params}
             feedback={exercise().feedback}
-            options={{ mark: mark() }}
+            options={{ mark: mark(), readOnly: mark() }}
             setter={(...args: any) => {
               // @ts-ignore
               props.setter(index(), ...args)

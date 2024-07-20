@@ -44,7 +44,7 @@ export default function Equation(props: ExerciseProps<State, undefined>) {
             <label class="flex items-center">
               <Math value="x =" />
               <Math
-                editable
+                editable={!props.options?.readOnly}
                 value={attempt}
                 onBlur={(e) => props.setter?.('state', 'attempt', i(), e.target.value)}
               />

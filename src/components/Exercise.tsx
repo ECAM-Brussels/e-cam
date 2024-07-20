@@ -8,6 +8,7 @@ export type ExerciseProps<S, G> = {
   }
   options?: {
     mark: boolean
+    readOnly: boolean
   }
   setter: SetStoreFunction<Omit<ExerciseProps<S, G>, 'setter'>>
   state?: S

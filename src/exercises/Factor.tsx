@@ -63,7 +63,7 @@ export default function Factor(props: ExerciseProps<State, Parameters<typeof gen
         <Math value={`${props.state?.expr}=`} />
         <Math
           class="border w-64"
-          editable
+          editable={!props.options?.readOnly}
           value={props.state?.attempt}
           onBlur={(e) => props.setter?.('state', 'attempt', e.target.value)}
         />
