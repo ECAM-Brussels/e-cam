@@ -9,7 +9,7 @@ import { request } from '~/lib/graphql'
 
 export const schema = z.object({
   expr: z.string().trim().min(1, { message: 'Expression cannot be empty' }),
-  attempt: z.string().trim().min(1, { message: 'Expression cannot be empty' }),
+  attempt: z.string().trim().min(1, { message: 'Expression cannot be empty' }).describe('answer'),
 })
 export type State = z.infer<typeof schema>
 
@@ -57,7 +57,7 @@ export default function CompleteSquare(
   props: ExerciseProps<State, Parameters<typeof generate>[0]>,
 ) {
   return (
-    <Exercise {...props} schema={schema} mark={mark} generate={generate}>
+    <Exercise type="CompleteSquare" {...props} schema={schema} mark={mark} generate={generate}>
       <p>Complete the square.</p>
       <div class="flex items-center gap-2">
         <Math value={`${props.state?.expr} =`} />

@@ -10,7 +10,7 @@ import { request } from '~/lib/graphql'
 
 export const schema = z.object({
   equation: z.string(),
-  attempt: z.string().array(),
+  attempt: z.string().array().describe('answer'),
 })
 export type State = z.infer<typeof schema>
 
@@ -34,7 +34,7 @@ export const mark = async (state: State) => {
 
 export default function Equation(props: ExerciseProps<State, undefined>) {
   return (
-    <Exercise {...props} schema={schema} mark={mark}>
+    <Exercise type="Equation" {...props} schema={schema} mark={mark}>
       <p>
         Solve <Math value={props.state?.equation} />
       </p>

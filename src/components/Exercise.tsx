@@ -1,6 +1,7 @@
+import { pickBy } from 'lodash-es'
 import { JSXElement, createEffect } from 'solid-js'
 import { SetStoreFunction } from 'solid-js/store'
-import { type ZodSchema } from 'zod'
+import { type ZodObject } from 'zod'
 
 export type ExerciseProps<S, G> = {
   feedback?: {
@@ -18,22 +19,34 @@ export type ExerciseProps<S, G> = {
 
 export default function Exercise<S, G>(
   props: ExerciseProps<S, G> & {
+    type: string
     children: JSXElement
     generate?: (params: G) => Promise<S>
-    schema: ZodSchema
+    schema: ZodObject<any>
     mark: (state: S) => Promise<boolean>
   },
 ) {
+  const question = () =>
+    pickBy(props.state || {}, (_, key) => {
+      if (key in props.schema.shape && props.schema.shape[key].description) {
+        return false
+      }
+      return true
+    })
+
   createEffect(async () => {
     if (props.generate && props.params && !props.state) {
       props.setter('state', await props.generate(props.params))
     }
   })
 
-  createEffect(async () => {
+  createEffect(() => {
     if (!props.feedback) {
       props.setter('feedback', {})
     }
+  })
+
+  createEffect(async () => {
     if (props.state) {
       try {
         props.schema.parse(props.state)
@@ -47,5 +60,10 @@ export default function Exercise<S, G>(
     }
   })
 
-  return <>{props.children}</>
+  return (
+    <>
+      {props.children}
+      <pre>{JSON.stringify(question(), null, 2)}</pre>
+    </>
+  )
 }
