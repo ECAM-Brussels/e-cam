@@ -58,14 +58,16 @@ export default function CompleteSquare(
 ) {
   return (
     <Exercise {...props} schema={schema} mark={mark} generate={generate}>
-      <p>
-        Complete the square for <Math value={props.state?.expr} />
-      </p>
-      <Math
-        editable
-        value={props.state?.attempt}
-        onBlur={(e) => props.setter?.('state', 'attempt', e.target.value)}
-      />
+      <p>Complete the square.</p>
+      <div class="flex items-center gap-2">
+        <Math value={`${props.state?.expr} =`} />
+        <Math
+          class="border w-1/2"
+          editable
+          value={props.state?.attempt}
+          onBlur={(e) => props.setter?.('state', 'attempt', e.target.value)}
+        />
+      </div>
       <Tick value={props.feedback?.correct} />
     </Exercise>
   )

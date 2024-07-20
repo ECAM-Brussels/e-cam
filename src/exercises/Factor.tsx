@@ -59,7 +59,7 @@ export default function Factor(props: ExerciseProps<State, Parameters<typeof gen
       <p>
         Factor <Math value={props.state?.expr} />
       </p>
-      <div class="flex items-center">
+      <div class="flex items-center gap-2">
         <Math value={`${props.state?.expr}=`} />
         <Math
           class="border w-64"

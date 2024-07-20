@@ -11,7 +11,7 @@ export default function Fa(props: FaProps) {
       xmlns="http://www.w3.org/2000/svg"
       viewBox={`0 0 ${i()[0]} ${i()[1]}`}
       fill="currentColor"
-      class="icon"
+      class="inline"
       height="1em"
     >
       <path d={i()[4] as string} />

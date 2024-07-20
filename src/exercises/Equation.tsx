@@ -38,37 +38,40 @@ export default function Equation(props: ExerciseProps<State, undefined>) {
       <p>
         Solve <Math value={props.state?.equation} />
       </p>
-      <For each={props.state?.attempt}>
-        {(attempt, i) => (
-          <label class="flex items-center">
-            <Math value="x =" />
-            <Math
-              class="w-full"
-              editable
-              value={attempt}
-              onBlur={(e) => props.setter?.('state', 'attempt', i(), e.target.value)}
-            />
-          </label>
-        )}
-      </For>
-      <button
-        onClick={() => {
-          if (props.state) {
-            props.setter?.('state', 'attempt', props.state?.attempt.length, '')
-          }
-        }}
-      >
-        <Fa icon={faPlus} />
-      </button>
-      <button
-        onClick={() => {
-          if (props.state) {
-            props.setter?.('state', 'attempt', props.state.attempt.toSpliced(-1, 1))
-          }
-        }}
-      >
-        <Fa icon={faTrashAlt} />
-      </button>
+      <div class="grid grid-cols-3 gap-2">
+        <For each={props.state?.attempt}>
+          {(attempt, i) => (
+            <label class="flex items-center">
+              <Math value="x =" />
+              <Math
+                editable
+                value={attempt}
+                onBlur={(e) => props.setter?.('state', 'attempt', i(), e.target.value)}
+              />
+            </label>
+          )}
+        </For>
+      </div>
+      <div class="text-gray-500 text-xs flex gap-2">
+        <button
+          onClick={() => {
+            if (props.state) {
+              props.setter?.('state', 'attempt', props.state?.attempt.length, '')
+            }
+          }}
+        >
+          <Fa icon={faPlus} /> Add a solution
+        </button>
+        <button
+          onClick={() => {
+            if (props.state) {
+              props.setter?.('state', 'attempt', props.state.attempt.toSpliced(-1, 1))
+            }
+          }}
+        >
+          <Fa icon={faTrashAlt} /> Remove last solution
+        </button>
+      </div>
       <Tick value={props.feedback?.correct} />
     </Exercise>
   )

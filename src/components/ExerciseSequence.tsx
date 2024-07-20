@@ -57,8 +57,9 @@ export default function ExerciseSequence(props: ExerciseProps) {
   const exercise = () => props.data[index()]
   return (
     <div class="md:flex items-center">
-      <div class="md:w-3/4 border-r">
+      <div class="md:w-2/3 border-r">
         <Pagination current={index()} max={props.data.length} onChange={setIndex} />
+        <h2 class="text-lg font-bold">Question {index() + 1}</h2>
         <Suspense>
           {/* @ts-ignore */}
           <Dynamic
