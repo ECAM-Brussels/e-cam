@@ -41,7 +41,7 @@ export default function Equation(props: ExerciseProps<State, undefined>) {
       <div class="grid grid-cols-3 gap-2">
         <For each={props.state?.attempt}>
           {(attempt, i) => (
-            <label class="flex items-center">
+            <label class="flex items-center gap-1">
               <Math value="x =" />
               <Math
                 editable={!props.options?.readOnly}
