@@ -60,7 +60,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
     if (exercise.feedback?.valid) {
       return 'bg-green-50'
     }
-    return 'bg-gray-100'
+    return 'bg-gray-50'
   })
   return (
     <div class="md:flex items-center">
