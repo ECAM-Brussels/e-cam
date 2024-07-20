@@ -5,6 +5,7 @@ import { type ZodSchema } from 'zod'
 export type ExerciseProps<S, G> = {
   feedback?: {
     correct: boolean
+    valid: boolean
   }
   options?: {
     mark: boolean
@@ -30,13 +31,19 @@ export default function Exercise<S, G>(
   })
 
   createEffect(async () => {
-    if (props.options?.mark && props.state) {
+    if (!props.feedback) {
+      props.setter('feedback', {})
+    }
+    if (props.state) {
       try {
         props.schema.parse(props.state)
-        props.setter('feedback', {
-          correct: await props.mark(props.state),
-        })
-      } catch {}
+        props.setter('feedback', 'valid', true)
+        if (props.options?.mark) {
+          props.setter('feedback', 'correct', await props.mark(props.state))
+        }
+      } catch {
+        props.setter('feedback', 'valid', false)
+      }
     }
   })
 

@@ -4,11 +4,18 @@ import { For, Show, type JSXElement } from 'solid-js'
 
 type PaginationProps = {
   current: number
+  classes?: string[]
   max: number
   onChange?: (newValue: number) => void
 }
 
 export default function Pagination(props: PaginationProps) {
+  const classes = (i: number) => {
+    if (props.classes && props.classes.length > i) {
+      return props.classes[i]
+    }
+    return ''
+  }
   return (
     <nav class="text-center mb-4">
       <ul class="inline-flex text-gray-500 text-sm">
@@ -31,7 +38,7 @@ export default function Pagination(props: PaginationProps) {
                 </Button>
               }
             >
-              <Button class="border-e-0" onClick={() => props.onChange?.(i)}>
+              <Button class={`border-e-0 ${classes(i)}`} onClick={() => props.onChange?.(i)}>
                 {i + 1}
               </Button>
             </Show>

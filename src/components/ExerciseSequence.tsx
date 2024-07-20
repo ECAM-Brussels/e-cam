@@ -21,6 +21,7 @@ type ExerciseFromName<T extends ExerciseName> = {
   type: T
   feedback?: {
     correct: boolean
+    valid: boolean
   }
 } & (HasGenerator<Module<T>> extends true
   ? {
@@ -55,10 +56,21 @@ export default function ExerciseSequence(props: ExerciseProps) {
   const [mark, setMark] = createSignal(false)
   const [feedback, setFeedback] = createSignal<boolean[]>([])
   const exercise = () => props.data[index()]
+  const classes = props.data.map((exercise: Exercise) => {
+    if (exercise.feedback?.valid) {
+      return 'bg-green-50'
+    }
+    return 'bg-gray-100'
+  })
   return (
     <div class="md:flex items-center">
       <div class="md:w-2/3 border-r">
-        <Pagination current={index()} max={props.data.length} onChange={setIndex} />
+        <Pagination
+          current={index()}
+          max={props.data.length}
+          onChange={setIndex}
+          classes={classes}
+        />
         <h2 class="text-lg font-bold">Question {index() + 1}</h2>
         <Suspense>
           {/* @ts-ignore */}
