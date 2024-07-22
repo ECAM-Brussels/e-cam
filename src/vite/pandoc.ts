@@ -12,11 +12,11 @@ const pandocPlugin = (): Plugin => {
     async handleHotUpdate({ file }) {
       if (file.endsWith('.md') && file.startsWith(resolve('content'))) {
         const relativePath = relative(resolve('content'), file)
-        const outputPath = resolve('src/routes/generated', relativePath.replace(/\.md$/, '.tsx'))
+        const outputPath = resolve('src/routes/(generated)', relativePath.replace(/\.md$/, '.tsx'))
         mkdirSync(dirname(outputPath), { recursive: true })
         try {
           const { stderr } = await exec(
-            `pandoc "${file}" -o "${outputPath}" --template src/vite/template.tsx`,
+            `pandoc "${file}" -o "${outputPath}" -t html --template src/vite/template.tsx`,
           )
           if (stderr) {
             console.log(`Error converting ${file} to ${outputPath}:`, stderr)
