@@ -34,18 +34,6 @@ type ExerciseFromName<T extends ExerciseName> = {
     })
 export type Exercise = { [N in ExerciseName]: ExerciseFromName<N> }[ExerciseName]
 
-export const markSequence = cache((data: Exercise[]) => {
-  const promises = data.map(async (exercise) => {
-    if (!exercise.state) {
-      return false
-    }
-    const mark = (await exercises[exercise.type]()).mark
-    // @ts-ignore
-    return mark(exercise.state).catch((_) => false)
-  })
-  return Promise.all(promises)
-}, 'markSequence')
-
 type ExerciseProps = {
   data: Exercise[]
   setter: SetStoreFunction<Exercise[]>
@@ -54,7 +42,6 @@ type ExerciseProps = {
 export default function ExerciseSequence(props: ExerciseProps) {
   const [index, setIndex] = createSignal(0)
   const [mark, setMark] = createSignal(false)
-  const [feedback, setFeedback] = createSignal<boolean[]>([])
   const exercise = () => props.data[index()]
   const classes = props.data.map((exercise: Exercise) => {
     if (exercise.feedback?.valid) {
@@ -94,15 +81,13 @@ export default function ExerciseSequence(props: ExerciseProps) {
         <p>
           <button
             class="border px-2 py-1 rounded-lg bg-green-700 text-white"
-            onClick={async () => {
+            onClick={() => {
               setMark(true)
-              setFeedback(await markSequence(props.data))
             }}
           >
             Submit assignment
           </button>
         </p>
-        <pre>{JSON.stringify(feedback())}</pre>
       </div>
     </div>
   )
