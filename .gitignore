@@ -19,3 +19,4 @@ __pycache__
 dist
 gitignore
 src/gql
+src/routes/generated
