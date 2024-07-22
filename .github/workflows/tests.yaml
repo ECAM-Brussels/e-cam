@@ -21,3 +21,11 @@ jobs:
       - name: Run tests
         run: |
           poetry run pytest
+      - name: Install node dependencies
+        run: |
+          npm install
+          npm run api &
+          npx graphql-codegen
+      - name: Run front-end unit tests
+        run: |
+          npx vitest run
