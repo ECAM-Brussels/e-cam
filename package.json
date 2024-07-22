@@ -28,6 +28,7 @@
   "devDependencies": {
     "@graphql-codegen/cli": "^5.0.2",
     "@solidjs/testing-library": "^0.8.8",
+    "@tailwindcss/typography": "^0.5.13",
     "@testing-library/jest-dom": "^6.4.6",
     "@testing-library/user-event": "^14.5.2",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",

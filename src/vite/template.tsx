@@ -1,5 +1,5 @@
 import Page from '~/components/Page'
 
 export default function () {
-  return <Page>$body$</Page>
+  return <Page><div class="prose">$body$</div></Page>
 }
