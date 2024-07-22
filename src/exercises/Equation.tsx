@@ -9,8 +9,8 @@ import { graphql } from '~/gql'
 import { request } from '~/lib/graphql'
 
 export const schema = z.object({
-  equation: z.string(),
-  attempt: z.string().array().describe('answer'),
+  equation: z.string().describe('Equation'),
+  attempt: z.string().array(),
 })
 export type State = z.infer<typeof schema>
 

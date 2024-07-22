@@ -28,7 +28,7 @@ export default function ExerciseBase<S, G>(
 ) {
   const question = () =>
     pickBy(props.state || {}, (_, key) => {
-      if (key in props.schema.shape && props.schema.shape[key].description) {
+      if (key in props.schema.shape && !props.schema.shape[key].description) {
         return false
       }
       return true

@@ -8,8 +8,8 @@ import { graphql } from '~/gql'
 import { request } from '~/lib/graphql'
 
 export const schema = z.object({
-  expr: z.string().trim().min(1, { message: 'Expression cannot be empty' }),
-  attempt: z.string().trim().min(1, { message: 'Expression cannot be empty' }).describe('answer'),
+  expr: z.string().trim().min(1).describe('Expression'),
+  attempt: z.string().trim().min(1).default(''),
 })
 export type State = z.infer<typeof schema>
 
