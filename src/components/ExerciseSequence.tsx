@@ -1,7 +1,7 @@
 import Pagination from './Pagination'
 import { cache } from '@solidjs/router'
 import { mapValues } from 'lodash-es'
-import { Suspense, createSignal, lazy } from 'solid-js'
+import { Show, Suspense, createSignal, lazy } from 'solid-js'
 import { SetStoreFunction } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web'
 import { z } from 'zod'
@@ -65,13 +65,15 @@ export default function ExerciseSequence(props: ExerciseProps) {
   return (
     <div class="md:flex items-center">
       <div class="md:w-2/3 border-r">
-        <Pagination
-          current={index()}
-          max={props.data.length}
-          onChange={setIndex}
-          classes={classes}
-        />
-        <h2 class="text-lg font-bold">Question {index() + 1}</h2>
+        <Show when={props.data.length > 1}>
+          <Pagination
+            current={index()}
+            max={props.data.length}
+            onChange={setIndex}
+            classes={classes}
+          />
+          <h2 class="text-lg font-bold">Question {index() + 1}</h2>
+        </Show>
         <Suspense>
           {/* @ts-ignore */}
           <Dynamic

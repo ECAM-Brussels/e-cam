@@ -1,9 +1,10 @@
 import { createStore } from 'solid-js/store'
-import ExerciseSequence, { type Exercise } from '~/components/ExerciseSequence'
+import Exercise from '~/components/Exercise'
+import ExerciseSequence, { type Exercise as ExerciseSchema } from '~/components/ExerciseSequence'
 import Page from '~/components/Page'
 
 export default function Home() {
-  const [data, setData] = createStore<Exercise[]>([
+  const [data, setData] = createStore<ExerciseSchema[]>([
     {
       type: 'CompleteSquare',
       params: {
@@ -52,6 +53,7 @@ export default function Home() {
   return (
     <Page>
       <ExerciseSequence data={data} setter={setData} />
+      <Exercise type="Factor" state={{ expr: 'x^2-5x+6', attempt: '' }} />
     </Page>
   )
 }
