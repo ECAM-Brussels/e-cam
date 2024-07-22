@@ -1,5 +1,4 @@
 import Pagination from './Pagination'
-import { cache } from '@solidjs/router'
 import { mapValues } from 'lodash-es'
 import { Show, Suspense, createSignal, lazy } from 'solid-js'
 import { SetStoreFunction } from 'solid-js/store'
@@ -10,8 +9,8 @@ const exercises = {
   CompleteSquare: () => import('~/exercises/CompleteSquare'),
   Equation: () => import('~/exercises/Equation'),
   Factor: () => import('~/exercises/Factor'),
-} as const
-const components = mapValues(exercises, lazy)
+}
+const components = mapValues(exercises, (m) => lazy(async () => ({ default: (await m()).default })))
 
 type ExerciseName = keyof typeof exercises
 type Module<T extends ExerciseName> = Awaited<ReturnType<(typeof exercises)[T]>>
@@ -62,13 +61,9 @@ export default function ExerciseSequence(props: ExerciseProps) {
           <h2 class="text-lg font-bold">Question {index() + 1}</h2>
         </Show>
         <Suspense>
-          {/* @ts-ignore */}
           <Dynamic
-            // @ts-ignore
             component={components[exercise().type]}
-            state={exercise().state}
-            params={exercise().params}
-            feedback={exercise().feedback}
+            {...exercise()}
             options={{ mark: mark(), readOnly: mark() }}
             setter={(...args: any) => {
               // @ts-ignore
