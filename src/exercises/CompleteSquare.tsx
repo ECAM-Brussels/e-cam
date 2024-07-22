@@ -1,7 +1,7 @@
 import { cache } from '@solidjs/router'
 import { sample } from 'lodash-es'
 import { z } from 'zod'
-import Exercise, { type ExerciseProps } from '~/components/Exercise'
+import ExerciseBase, { type ExerciseProps } from '~/components/ExerciseBase'
 import Math from '~/components/Math'
 import Tick from '~/components/Tick'
 import { graphql } from '~/gql'
@@ -57,7 +57,7 @@ export default function CompleteSquare(
   props: ExerciseProps<State, Parameters<typeof generate>[0]>,
 ) {
   return (
-    <Exercise type="CompleteSquare" {...props} schema={schema} mark={mark} generate={generate}>
+    <ExerciseBase type="CompleteSquare" {...props} schema={schema} mark={mark} generate={generate}>
       <p>Complete the square.</p>
       <div class="flex items-center gap-2">
         <Math value={`${props.state?.expr} =`} />
@@ -69,6 +69,6 @@ export default function CompleteSquare(
         />
       </div>
       <Tick value={props.feedback?.correct} />
-    </Exercise>
+    </ExerciseBase>
   )
 }

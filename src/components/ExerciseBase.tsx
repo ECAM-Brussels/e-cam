@@ -17,7 +17,7 @@ export type ExerciseProps<S, G> = {
   params?: G
 }
 
-export default function Exercise<S, G>(
+export default function ExerciseBase<S, G>(
   props: ExerciseProps<S, G> & {
     type: string
     children: JSXElement

@@ -1,7 +1,7 @@
 import { faPlus, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { For } from 'solid-js'
 import { z } from 'zod'
-import Exercise, { type ExerciseProps } from '~/components/Exercise'
+import ExerciseBase, { type ExerciseProps } from '~/components/ExerciseBase'
 import Fa from '~/components/Fa'
 import Math from '~/components/Math'
 import Tick from '~/components/Tick'
@@ -34,7 +34,7 @@ export const mark = async (state: State) => {
 
 export default function Equation(props: ExerciseProps<State, undefined>) {
   return (
-    <Exercise type="Equation" {...props} schema={schema} mark={mark}>
+    <ExerciseBase type="Equation" {...props} schema={schema} mark={mark}>
       <p>
         Solve <Math value={props.state?.equation} />
       </p>
@@ -73,6 +73,6 @@ export default function Equation(props: ExerciseProps<State, undefined>) {
         </button>
       </div>
       <Tick value={props.feedback?.correct} />
-    </Exercise>
+    </ExerciseBase>
   )
 }

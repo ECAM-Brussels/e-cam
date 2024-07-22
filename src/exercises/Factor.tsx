@@ -1,7 +1,7 @@
 import { cache } from '@solidjs/router'
 import { sample } from 'lodash-es'
 import { z } from 'zod'
-import Exercise, { type ExerciseProps } from '~/components/Exercise'
+import ExerciseBase, { type ExerciseProps } from '~/components/ExerciseBase'
 import Math from '~/components/Math'
 import Tick from '~/components/Tick'
 import { graphql } from '~/gql'
@@ -55,7 +55,7 @@ export const mark = cache(async (state: State) => {
 
 export default function Factor(props: ExerciseProps<State, Parameters<typeof generate>[0]>) {
   return (
-    <Exercise type="Factor" {...props} schema={schema} mark={mark} generate={generate}>
+    <ExerciseBase type="Factor" {...props} schema={schema} mark={mark} generate={generate}>
       <p>
         Factor <Math value={props.state?.expr} />
       </p>
@@ -69,6 +69,6 @@ export default function Factor(props: ExerciseProps<State, Parameters<typeof gen
         />
       </div>
       <Tick value={props.feedback?.correct} />
-    </Exercise>
+    </ExerciseBase>
   )
 }
