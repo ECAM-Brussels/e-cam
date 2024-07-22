@@ -16,7 +16,7 @@ const pandocPlugin = (): Plugin => {
         mkdirSync(dirname(outputPath), { recursive: true })
         try {
           const { stderr } = await exec(
-            `pandoc "${file}" -o "${outputPath}" -t html --template src/vite/template.tsx`,
+            `pandoc "${file}" -o "${outputPath}" -t html --template src/vite/template.tsx --wrap=preserve`,
           )
           if (stderr) {
             console.log(`Error converting ${file} to ${outputPath}:`, stderr)
