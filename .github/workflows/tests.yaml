@@ -18,13 +18,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install poetry
           poetry install --with dev
-          poetry run fastapi dev symapi &
-          npm install
+      - name: Run SymAPI
+        run: RUNNER_TRACKING_ID="" && (poetry run fastapi dev symapi &)
       - name: Run tests
         run: |
           poetry run pytest
       - name: GraphQL codegen
         run: |
+          npm install
           npx graphql-codegen
       - name: Run front-end unit tests
         run: |
