@@ -24,13 +24,14 @@ type MathInputEvent = InputEvent & {
 
 type MathProps = ComponentProps<'math-field'> & {
   class?: string
+  displayMode: boolean
   editable?: boolean
   onInput?: (event: MathInputEvent) => void
   onBlur?: (event: MathInputEvent) => void
 }
 
 export default function Math(props: MathProps) {
-  const html = () => katex.renderToString(props.value || '')
+  const html = () => katex.renderToString(props.value || '', { displayMode: props.displayMode })
   const [listeners, others] = splitProps(props, ['onInput', 'onBlur'])
   return (
     <Show when={props.editable} fallback={<span innerHTML={html()} class={props.class} />}>
