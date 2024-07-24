@@ -24,7 +24,7 @@ type MathInputEvent = InputEvent & {
 
 type MathProps = ComponentProps<'math-field'> & {
   class?: string
-  displayMode: boolean
+  displayMode?: boolean
   editable?: boolean
   onInput?: (event: MathInputEvent) => void
   onBlur?: (event: MathInputEvent) => void
