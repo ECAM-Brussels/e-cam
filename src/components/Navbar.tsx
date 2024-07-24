@@ -13,7 +13,7 @@ export default function Navbar() {
         <NavbarItem href="/PM1C">Pont maths</NavbarItem>
         <Show
           when={session() && session()?.name}
-          fallback={<NavbarItem href="/login">Login</NavbarItem>}
+          fallback={<NavbarItem href="/auth/login">Login</NavbarItem>}
         >
           {(name) => <li class="py-2 px-3">{name()}</li>}
         </Show>

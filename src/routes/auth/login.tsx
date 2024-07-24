@@ -4,7 +4,7 @@ import { generatePKCE } from '~/lib/auth/azure'
 export default function Login() {
   onMount(async () => {
     const { codeVerifier, codeChallenge } = await generatePKCE();
-    sessionStorage.setItem('code_verifier', codeVerifier);
+    sessionStorage.setItem('codeVerifier', codeVerifier);
     const loginUrl =
       `https://login.microsoftonline.com/${import.meta.env.VITE_AZURE_TENANT_ID}` +
       `/oauth2/v2.0/authorize?client_id=${import.meta.env.VITE_AZURE_CLIENT_ID}&response_type=code` +
