@@ -77,7 +77,8 @@ export default function ExerciseSequence(props: ExerciseProps) {
   const [index, setIndex] = createSignal(0)
   const [mark, setMark] = createSignal(false)
   const exercise = () => props.data[index()]
-  const classes = props.data.map((exercise: Exercise) => {
+  const classes = () =>
+    props.data.map((exercise: Exercise) => {
     if (exercise.feedback?.valid) {
       return 'bg-green-50'
     }
@@ -99,7 +100,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
             current={index()}
             max={props.data.length}
             onChange={setIndex}
-            classes={classes}
+            classes={classes()}
           />
           <h2 class="text-lg font-bold">Question {index() + 1}</h2>
         </Show>
