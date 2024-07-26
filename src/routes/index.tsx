@@ -1,6 +1,11 @@
+import { type RouteDefinition } from '@solidjs/router'
 import { createStore } from 'solid-js/store'
-import ExerciseSequence, { type Exercise as ExerciseSchema } from '~/components/ExerciseSequence'
+import ExerciseSequence, { loadAssignment, type Exercise as ExerciseSchema } from '~/components/ExerciseSequence'
 import Page from '~/components/Page'
+
+export const route = {
+  load: ({ location }) => loadAssignment(location.pathname)
+} satisfies RouteDefinition
 
 export default function Home() {
   const [data, setData] = createStore<ExerciseSchema[]>([

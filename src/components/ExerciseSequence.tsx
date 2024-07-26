@@ -1,6 +1,6 @@
-import { useLocation } from '@solidjs/router'
+import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
 import { mapValues } from 'lodash-es'
-import { Show, Suspense, createSignal, lazy, onMount } from 'solid-js'
+import { Show, Suspense, createEffect, createSignal, lazy, onMount } from 'solid-js'
 import { SetStoreFunction } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web'
 import { z } from 'zod'
@@ -41,7 +41,7 @@ type ExerciseProps = {
   setter: SetStoreFunction<Exercise[]>
 }
 
-async function loadAssignment(url: string): Promise<Exercise[] | null> {
+export const loadAssignment = cache(async (url: string): Promise<Exercise[] | null> => {
   'use server'
   const user = await getUser()
   if (!user || !user.email) {
@@ -55,9 +55,9 @@ async function loadAssignment(url: string): Promise<Exercise[] | null> {
     return null
   }
   return JSON.parse(String(record.body)) as Exercise[]
-}
+}, 'loadAssignment')
 
-async function upsertAssignment(url: string, data: Exercise[]) {
+async function upsertAssignment (url: string, data: Exercise[]) {
   'use server'
   const user = await getUser()
   if (!user || !user.email) {
@@ -85,10 +85,11 @@ export default function ExerciseSequence(props: ExerciseProps) {
       return 'bg-gray-50'
     })
 
-  onMount(async () => {
-    const assignment = await loadAssignment(location.pathname)
-    if (assignment) {
-      props.setter(assignment)
+  const savedData = createAsync(() => loadAssignment(location.pathname))
+  createEffect(() => {
+    const saved = savedData()
+    if (saved) {
+      props.setter(saved)
     }
   })
 
@@ -120,8 +121,9 @@ export default function ExerciseSequence(props: ExerciseProps) {
         <p>
           <button
             class="border px-2 py-1 rounded-lg bg-green-700 text-white"
-            onClick={() => {
-              upsertAssignment(location.pathname, props.data)
+            onClick={async () => {
+              await upsertAssignment(location.pathname, props.data)
+              revalidate(loadAssignment.keyFor(location.pathname))
             }}
           >
             Save
