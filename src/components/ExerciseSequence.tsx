@@ -79,11 +79,11 @@ export default function ExerciseSequence(props: ExerciseProps) {
   const exercise = () => props.data[index()]
   const classes = () =>
     props.data.map((exercise: Exercise) => {
-    if (exercise.feedback?.valid) {
-      return 'bg-green-50'
-    }
-    return 'bg-gray-50'
-  })
+      if (exercise.feedback?.valid) {
+        return 'bg-green-50'
+      }
+      return 'bg-gray-50'
+    })
 
   onMount(async () => {
     const assignment = await loadAssignment(location.pathname)
@@ -121,11 +121,18 @@ export default function ExerciseSequence(props: ExerciseProps) {
           <button
             class="border px-2 py-1 rounded-lg bg-green-700 text-white"
             onClick={() => {
-              setMark(true)
               upsertAssignment(location.pathname, props.data)
             }}
           >
-            Submit assignment
+            Save
+          </button>
+          <button
+            class="border px-2 py-1 rounded-lg bg-green-700 text-white"
+            onClick={() => {
+              setMark(true)
+            }}
+          >
+            Mark
           </button>
         </p>
       </div>
