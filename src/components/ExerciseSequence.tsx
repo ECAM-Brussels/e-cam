@@ -1,9 +1,12 @@
-import Pagination from './Pagination'
+import { useLocation } from '@solidjs/router'
 import { mapValues } from 'lodash-es'
-import { Show, Suspense, createSignal, lazy } from 'solid-js'
+import { Show, Suspense, createSignal, lazy, onMount } from 'solid-js'
 import { SetStoreFunction } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web'
 import { z } from 'zod'
+import Pagination from '~/components/Pagination'
+import { getUser } from '~/lib/auth/session'
+import { prisma } from '~/lib/db'
 
 const exercises = {
   CompleteSquare: () => import('~/exercises/CompleteSquare'),
@@ -38,7 +41,39 @@ type ExerciseProps = {
   setter: SetStoreFunction<Exercise[]>
 }
 
+async function loadAssignment(url: string): Promise<Exercise[] | null> {
+  'use server'
+  const user = await getUser()
+  if (!user || !user.email) {
+    return null
+  }
+  const email = user.email
+  const record = await prisma.assignment.findUnique({
+    where: { url_email: { url, email } },
+  })
+  if (!record) {
+    return null
+  }
+  return JSON.parse(String(record.body)) as Exercise[]
+}
+
+async function upsertAssignment(url: string, data: Exercise[]) {
+  'use server'
+  const user = await getUser()
+  if (!user || !user.email) {
+    throw new Error('Error when upserting assignment: user not logged in')
+  }
+  const email = user.email
+  let body = JSON.stringify(data)
+  const assignment = await prisma.assignment.upsert({
+    where: { url_email: { url, email } },
+    update: { body },
+    create: { url, email, body },
+  })
+}
+
 export default function ExerciseSequence(props: ExerciseProps) {
+  const location = useLocation()
   const [index, setIndex] = createSignal(0)
   const [mark, setMark] = createSignal(false)
   const exercise = () => props.data[index()]
@@ -48,6 +83,14 @@ export default function ExerciseSequence(props: ExerciseProps) {
     }
     return 'bg-gray-50'
   })
+
+  onMount(async () => {
+    const assignment = await loadAssignment(location.pathname)
+    if (assignment) {
+      props.setter(assignment)
+    }
+  })
+
   return (
     <div class="md:flex items-center">
       <div class="md:w-2/3 border-r">
@@ -64,7 +107,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
           <Dynamic
             component={components[exercise().type]}
             {...exercise()}
-            options={{ mark: mark(), readOnly: mark() }}
+            options={{ mark: mark(), readOnly: false }}
             setter={(...args: any) => {
               // @ts-ignore
               props.setter(index(), ...args)
@@ -78,6 +121,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
             class="border px-2 py-1 rounded-lg bg-green-700 text-white"
             onClick={() => {
               setMark(true)
+              upsertAssignment(location.pathname, props.data)
             }}
           >
             Submit assignment
