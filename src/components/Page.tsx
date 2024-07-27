@@ -7,9 +7,9 @@ type PageProps = {
 
 export default function Page(props: PageProps) {
   return (
-    <div class="bg-white container mx-auto p-4 rounded-b-xl shadow-lg">
+    <>
       <Navbar />
-      {props.children}
-    </div>
+      <div class="bg-white container mx-auto p-4">{props.children}</div>
+    </>
   )
 }
