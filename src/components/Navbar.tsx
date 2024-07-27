@@ -15,18 +15,17 @@ export default function Navbar() {
           </NavbarItem>
         </ul>
         <ul class="flex items-center">
-          <NavbarItem href="/courses">Cours</NavbarItem>
           <NavbarItem href="/PM1C">Pont maths</NavbarItem>
         </ul>
         <ul class="flex items-center">
           <Show
             when={session() && session()?.name}
-            fallback={<NavbarItem href="/auth/login">Login</NavbarItem>}
+            fallback={<NavbarItem href="/auth/login">Se connecter</NavbarItem>}
           >
             {(name) => (
               <>
                 <NavbarItem>{name()}</NavbarItem>
-                <NavbarItem>Log out</NavbarItem>
+                <NavbarItem>Se déconnecter</NavbarItem>
               </>
             )}
           </Show>
@@ -47,7 +46,7 @@ type NavbarItemProps = {
 
 function NavbarItem(props: NavbarItemProps) {
   const classes = () =>
-    `block py-2 px-3 text-gray-800 hover:text-blue-700 font-semibold text-sm ${props.class}`
+    `block py-2 px-3 text-gray-800 ${props.href && 'hover:text-blue-700'} font-semibold text-sm ${props.class}`
   return (
     <li>
       <Show when={props.href} fallback={<span class={classes()}>{props.children}</span>}>

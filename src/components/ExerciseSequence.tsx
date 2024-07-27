@@ -126,7 +126,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
               revalidate(loadAssignment.keyFor(location.pathname))
             }}
           >
-            Save
+            Sauvegarder
           </button>
           <button
             class="border px-2 py-1 rounded-lg bg-green-700 text-white"
@@ -134,7 +134,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
               setMark(true)
             }}
           >
-            Mark
+            Corriger
           </button>
         </p>
       </div>

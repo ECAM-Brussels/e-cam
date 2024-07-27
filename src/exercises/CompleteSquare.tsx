@@ -58,7 +58,7 @@ export default function CompleteSquare(
 ) {
   return (
     <ExerciseBase type="CompleteSquare" {...props} schema={schema} mark={mark} generate={generate}>
-      <p>Complete the square.</p>
+      <p>Complétez le carré dans l'expression suivante.</p>
       <div class="flex items-center gap-2">
         <Math value={`${props.state?.expr} =`} />
         <Math

@@ -57,7 +57,7 @@ export default function Factor(props: ExerciseProps<State, Parameters<typeof gen
   return (
     <ExerciseBase type="Factor" {...props} schema={schema} mark={mark} generate={generate}>
       <p>
-        Factor <Math value={props.state?.expr} />
+        Factorisez <Math value={props.state?.expr} />
       </p>
       <div class="flex items-center gap-2">
         <Math value={`${props.state?.expr}=`} />
