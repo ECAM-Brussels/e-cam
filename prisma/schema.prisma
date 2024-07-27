@@ -15,8 +15,16 @@ datasource db {
 
 model Assignment {
   url String
-  email String
+  user User @relation(fields: [userEmail], references: [email])
+  userEmail String
   body Json
 
-  @@id([url, email])
+  @@id([url, userEmail])
+}
+
+model User {
+  email String @id
+  firstName String
+  lastName String
+  assignments Assignment[]
 }

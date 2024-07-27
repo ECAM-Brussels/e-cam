@@ -47,9 +47,9 @@ export const loadAssignment = cache(async (url: string): Promise<Exercise[] | nu
   if (!user || !user.email) {
     return null
   }
-  const email = user.email
+  const userEmail = user.email
   const record = await prisma.assignment.findUnique({
-    where: { url_email: { url, email } },
+    where: { url_userEmail: { url, userEmail } },
   })
   if (!record) {
     return null
@@ -57,18 +57,18 @@ export const loadAssignment = cache(async (url: string): Promise<Exercise[] | nu
   return JSON.parse(String(record.body)) as Exercise[]
 }, 'loadAssignment')
 
-async function upsertAssignment (url: string, data: Exercise[]) {
+async function upsertAssignment(url: string, data: Exercise[]) {
   'use server'
   const user = await getUser()
   if (!user || !user.email) {
     throw new Error('Error when upserting assignment: user not logged in')
   }
-  const email = user.email
+  const userEmail = user.email
   let body = JSON.stringify(data)
   const assignment = await prisma.assignment.upsert({
-    where: { url_email: { url, email } },
+    where: { url_userEmail: { url, userEmail } },
     update: { body },
-    create: { url, email, body },
+    create: { url, userEmail, body },
   })
 }
 

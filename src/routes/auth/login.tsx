@@ -1,10 +1,11 @@
 import { onMount } from 'solid-js'
+import Page from '~/components/Page'
 import { generatePKCE } from '~/lib/auth/azure'
 
 export default function Login() {
   onMount(async () => {
-    const { codeVerifier, codeChallenge } = await generatePKCE();
-    sessionStorage.setItem('codeVerifier', codeVerifier);
+    const { codeVerifier, codeChallenge } = await generatePKCE()
+    sessionStorage.setItem('codeVerifier', codeVerifier)
     const loginUrl =
       `https://login.microsoftonline.com/${import.meta.env.VITE_AZURE_TENANT_ID}` +
       `/oauth2/v2.0/authorize?client_id=${import.meta.env.VITE_AZURE_CLIENT_ID}&response_type=code` +
@@ -13,5 +14,9 @@ export default function Login() {
     window.location.href = loginUrl
   })
 
-  return <div>Redirecting to Microsoft login...</div>
+  return (
+    <Page>
+      <div>Redirecting to Microsoft login...</div>
+    </Page>
+  )
 }
