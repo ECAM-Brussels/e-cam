@@ -31,7 +31,7 @@ export const loadResults = cache(async (url: string) => {
       },
     },
   })
-  const list = assignments.map((record) => {
+  return assignments.map((record) => {
     return {
       firstName: record.user.firstName,
       lastName: record.user.lastName,
@@ -46,13 +46,6 @@ export const loadResults = cache(async (url: string) => {
       }),
     }
   })
-  list.push({
-    firstName: 'tuxie',
-    lastName: 'hello',
-    email: 'tux@ecam.be',
-    questions: [true, true, true, true, false, undefined],
-  })
-  return list
 }, 'loadResults')
 
 type ResultsProps = {
