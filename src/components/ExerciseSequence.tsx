@@ -7,6 +7,7 @@ import { z } from 'zod'
 import Pagination from '~/components/Pagination'
 import { getUser } from '~/lib/auth/session'
 import { prisma } from '~/lib/db'
+import { loadResults } from './Results'
 
 const exercises = {
   CompleteSquare: () => import('~/exercises/CompleteSquare'),
@@ -99,6 +100,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
     on(index, async () => {
       await upsertAssignment(location.pathname, props.data)
       revalidate(loadAssignment.keyFor(location.pathname))
+      revalidate(loadResults.keyFor(location.pathname))
     }),
   )
 
