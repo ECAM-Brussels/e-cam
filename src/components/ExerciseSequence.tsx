@@ -26,6 +26,7 @@ type ExerciseFromName<T extends ExerciseName> = {
   feedback?: {
     correct: boolean
     valid: boolean
+    solution: z.infer<Module<T>['schema']>
   }
 } & (HasGenerator<Module<T>> extends true
   ? {
@@ -112,7 +113,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
           <Dynamic
             component={components[exercise().type]}
             {...exercise()}
-            options={{ mark: mark(), readOnly: false }}
+            options={{ mark: mark(), readOnly: false, showSolution: mark() }}
             setter={(...args: any) => {
               // @ts-ignore
               props.setter(index(), ...args)
@@ -120,11 +121,11 @@ export default function ExerciseSequence(props: ExerciseProps) {
           />
         </Suspense>
         <Show when={index() < props.data.length - 1}>
-        <p class="flex flex-row-reverse mt-4 mr-6">
-          <button class="border rounded-xl p-3" onClick={() => setIndex(index() + 1)}>
-            Suivant <Fa icon={faChevronRight} />
-          </button>
-        </p>
+          <p class="flex flex-row-reverse mt-4 mr-6">
+            <button class="border rounded-xl p-3" onClick={() => setIndex(index() + 1)}>
+              Suivant <Fa icon={faChevronRight} />
+            </button>
+          </p>
         </Show>
       </div>
       <div class="px-2">

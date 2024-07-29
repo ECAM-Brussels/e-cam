@@ -1,5 +1,6 @@
 import { cache } from '@solidjs/router'
 import { sample } from 'lodash-es'
+import { createResource, createSignal, Show } from 'solid-js'
 import { z } from 'zod'
 import ExerciseBase, { type ExerciseProps } from '~/components/ExerciseBase'
 import Math from '~/components/Math'
@@ -53,9 +54,34 @@ export const mark = cache(async (state: State) => {
   return attempt.isEqual && attempt.isFactored
 }, 'checkFactorisation')
 
+export const solve = cache(async (state: State): Promise<State> => {
+  'use server'
+
+  const { expression } = await request(
+    graphql(`
+      query SolveFactorisation($expr: Math!) {
+        expression(expr: $expr) {
+          factor {
+            expr
+          }
+        }
+      }
+    `),
+    { expr: state.expr },
+  )
+  return { ...state, attempt: expression.factor.expr }
+}, 'solveFactorisation')
+
 export default function Factor(props: ExerciseProps<State, Parameters<typeof generate>[0]>) {
   return (
-    <ExerciseBase type="Factor" {...props} schema={schema} mark={mark} generate={generate}>
+    <ExerciseBase
+      type="Factor"
+      {...props}
+      schema={schema}
+      mark={mark}
+      generate={generate}
+      solve={solve}
+    >
       <p>
         Factorisez <Math value={props.state?.expr} />
       </p>
@@ -69,6 +95,11 @@ export default function Factor(props: ExerciseProps<State, Parameters<typeof gen
         />
       </div>
       <Tick value={props.feedback?.correct} />
+      <Show when={props.options?.showSolution}>
+        <p>
+          La réponse est <Math value={props.feedback?.solution?.attempt} />
+        </p>
+      </Show>
     </ExerciseBase>
   )
 }

@@ -6,10 +6,12 @@ export type ExerciseProps<S, G> = {
   feedback?: {
     correct: boolean
     valid: boolean
+    solution: S
   }
   options?: {
     mark: boolean
     readOnly: boolean
+    showSolution?: boolean
   }
   setter: SetStoreFunction<Omit<ExerciseProps<S, G>, 'setter'>>
   state?: S
@@ -23,6 +25,7 @@ export default function ExerciseBase<S, G>(
     generate?: (params: G) => Promise<S>
     schema: ZodObject<any>
     mark: (state: S) => Promise<boolean>
+    solve?: (state: S) => Promise<S>
   },
 ) {
   createEffect(async () => {
@@ -50,6 +53,15 @@ export default function ExerciseBase<S, G>(
         if (props.options?.mark) {
           props.setter('feedback', 'correct', false)
         }
+      }
+    }
+  })
+
+  createEffect(async () => {
+    if (props.state) {
+      if (props.options?.showSolution && props.solve) {
+        const solution = await props.solve(props.state)
+        props.setter('feedback', 'solution', solution)
       }
     }
   })
