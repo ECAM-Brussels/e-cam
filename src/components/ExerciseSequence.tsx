@@ -1,9 +1,11 @@
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
 import { mapValues } from 'lodash-es'
 import { Show, Suspense, createEffect, createSignal, lazy, onMount } from 'solid-js'
 import { SetStoreFunction } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web'
 import { z } from 'zod'
+import Fa from '~/components/Fa'
 import Pagination from '~/components/Pagination'
 import { getUser } from '~/lib/auth/session'
 import { prisma } from '~/lib/db'
@@ -74,6 +76,7 @@ async function upsertAssignment(url: string, data: Exercise[]) {
 
 export default function ExerciseSequence(props: ExerciseProps) {
   const location = useLocation()
+  const session = createAsync(getUser)
   const [index, setIndex] = createSignal(0)
   const [mark, setMark] = createSignal(false)
   const exercise = () => props.data[index()]
@@ -116,8 +119,16 @@ export default function ExerciseSequence(props: ExerciseProps) {
             }}
           />
         </Suspense>
+        <Show when={index() < props.data.length - 1}>
+        <p class="flex flex-row-reverse mt-4 mr-6">
+          <button class="border rounded-xl p-3" onClick={() => setIndex(index() + 1)}>
+            Suivant <Fa icon={faChevronRight} />
+          </button>
+        </p>
+        </Show>
       </div>
       <div class="px-2">
+        <Show when={session()}>{(user) => <p>Bonjour {user().name}</p>}</Show>
         <p>
           <button
             class="border px-2 py-1 rounded-lg bg-green-700 text-white"
