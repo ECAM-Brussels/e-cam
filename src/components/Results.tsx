@@ -1,4 +1,4 @@
-import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faQuestion, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { cache, createAsync, useLocation } from '@solidjs/router'
 import Fuse from 'fuse.js'
 import { createSignal, For, Show } from 'solid-js'
@@ -31,7 +31,7 @@ export const loadResults = cache(async (url: string) => {
       },
     },
   })
-  return assignments.map((record) => {
+  const list = assignments.map((record) => {
     return {
       firstName: record.user.firstName,
       lastName: record.user.lastName,
@@ -46,6 +46,13 @@ export const loadResults = cache(async (url: string) => {
       }),
     }
   })
+  list.push({
+    firstName: 'tuxie',
+    lastName: 'hello',
+    email: 'tux@ecam.be',
+    questions: [true, true, true, true, false, undefined],
+  })
+  return list
 }, 'loadResults')
 
 type ResultsProps = {
@@ -62,22 +69,25 @@ export default function Results(props: ResultsProps) {
 
   const filtered = () => {
     if (!search()) {
-        return results()
+      return results()
     }
-    const fuse = new Fuse(results() || [], { keys: ['lastName', 'firstName']})
-    return fuse.search(search()).map(r => r.item)
+    const fuse = new Fuse(results() || [], { keys: ['lastName', 'firstName'] })
+    return fuse.search(search()).map((r) => r.item)
   }
 
   return (
     <>
-      <input
-        placeholder="Rechercher un étudiant"
-        value={search()}
-        onInput={(e) => setSearch(e.target.value)}
-      />
+      <p class="my-4">
+        <input
+          class="border rounded-xl w-full px-3 py-1"
+          placeholder="Rechercher un étudiant"
+          value={search()}
+          onInput={(e) => setSearch(e.target.value)}
+        />
+      </p>
       <table class="container">
-        <thead>
-          <tr>
+        <thead class="border-b">
+          <tr class="text-xs">
             <th>Matricule</th>
             <th>Last name</th>
             <th>First name</th>
@@ -87,21 +97,26 @@ export default function Results(props: ResultsProps) {
         <tbody>
           <For each={filtered()}>
             {(result) => (
-              <tr>
-                <td>{result.email.split('@')[0]}</td>
+              <tr class="odd:bg-white even:bg-slate-50 text-slate-500 text-sm">
+                <td class="py-2">{result.email.split('@')[0]}</td>
                 <td>{result.lastName}</td>
                 <td>{result.firstName}</td>
                 <For each={result.questions}>
                   {(q) => (
                     <>
                       <Show when={q === true}>
-                        <td class="bg-green-400 text-center">
+                        <td class="bg-green-100 text-green-700 text-center">
                           <Fa icon={faCheck} />
                         </td>
                       </Show>
                       <Show when={q === false}>
-                        <td class="bg-red-400 text-center">
+                        <td class="bg-red-100 text-red-700 text-center">
                           <Fa icon={faXmark} />
+                        </td>
+                      </Show>
+                      <Show when={q === undefined}>
+                        <td class="bg-gray-100 text-gray-700 text-center">
+                          <Fa icon={faQuestion} />
                         </td>
                       </Show>
                     </>
