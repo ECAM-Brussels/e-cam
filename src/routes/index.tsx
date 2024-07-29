@@ -56,6 +56,7 @@ export default function Home() {
   ])
   return (
     <Page>
+      <a href="/results">Results</a>
       <ExerciseSequence data={data} setter={setData} />
     </Page>
   )
