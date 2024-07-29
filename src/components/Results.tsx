@@ -1,6 +1,7 @@
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { cache, createAsync, useLocation } from '@solidjs/router'
-import { For, Show } from 'solid-js'
+import Fuse from 'fuse.js'
+import { createSignal, For, Show } from 'solid-js'
 import { type Exercise } from '~/components/ExerciseSequence'
 import Fa from '~/components/Fa'
 import { prisma } from '~/lib/db'
@@ -34,6 +35,7 @@ export const loadResults = cache(async (url: string) => {
     return {
       firstName: record.user.firstName,
       lastName: record.user.lastName,
+      email: record.userEmail,
       questions: (JSON.parse(String(record.body)) as Exercise[]).map((question) => {
         if (question.feedback?.correct) {
           return true
@@ -51,25 +53,42 @@ type ResultsProps = {
 }
 
 export default function Results(props: ResultsProps) {
+  const [search, setSearch] = createSignal('')
   const results = createAsync(() => loadResults(props.url))
   const count = () => {
     const r = results()
     return r && r.length ? r[0].questions.length : 0
   }
+
+  const filtered = () => {
+    if (!search()) {
+        return results()
+    }
+    const fuse = new Fuse(results() || [], { keys: ['lastName', 'firstName']})
+    return fuse.search(search()).map(r => r.item)
+  }
+
   return (
     <>
+      <input
+        placeholder="Rechercher un étudiant"
+        value={search()}
+        onInput={(e) => setSearch(e.target.value)}
+      />
       <table class="container">
         <thead>
           <tr>
+            <th>Matricule</th>
             <th>Last name</th>
             <th>First name</th>
             <For each={Array.from(Array(count()).keys())}>{(i) => <th>{i + 1}</th>}</For>
           </tr>
         </thead>
         <tbody>
-          <For each={results()}>
+          <For each={filtered()}>
             {(result) => (
               <tr>
+                <td>{result.email.split('@')[0]}</td>
                 <td>{result.lastName}</td>
                 <td>{result.firstName}</td>
                 <For each={result.questions}>
