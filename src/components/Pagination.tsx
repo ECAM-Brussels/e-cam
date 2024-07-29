@@ -1,6 +1,6 @@
 import Fa from './Fa'
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
-import { For, Show, type JSXElement } from 'solid-js'
+import { For, type JSXElement } from 'solid-js'
 
 type PaginationProps = {
   current: number
@@ -11,14 +11,18 @@ type PaginationProps = {
 
 export default function Pagination(props: PaginationProps) {
   const classes = (i: number) => {
+    let className: string = ''
     if (props.classes && props.classes.length > i) {
-      return props.classes[i]
+      className = props.classes[i]
     }
-    return ''
+    if (props.current === i) {
+      className += ' font-bold border-2 border-e-2 border-blue-500 border-e-blue-500'
+    }
+    return className
   }
   return (
     <nav class="text-center mb-4">
-      <ul class="inline-flex text-gray-500 text-sm">
+      <ul class="inline-flex text-gray-500">
         <Button
           class="border-e-0 rounded-l-lg"
           onClick={() => props.onChange?.((props.current - 1 + props.max) % props.max)}
@@ -27,21 +31,9 @@ export default function Pagination(props: PaginationProps) {
         </Button>
         <For each={Array.from(Array(props.max).keys())}>
           {(i) => (
-            <Show
-              when={props.current !== i}
-              fallback={
-                <Button
-                  class="border-e-0 bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700"
-                  onClick={() => props.onChange?.(i)}
-                >
-                  {i + 1}
-                </Button>
-              }
-            >
-              <Button class={`border-e-0 ${classes(i)}`} onClick={() => props.onChange?.(i)}>
-                {i + 1}
-              </Button>
-            </Show>
+            <Button class={`border-e-0 ${classes(i)}`} onClick={() => props.onChange?.(i)}>
+              {i + 1}
+            </Button>
           )}
         </For>
         <Button

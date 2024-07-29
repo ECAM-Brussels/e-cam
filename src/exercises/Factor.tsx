@@ -1,10 +1,8 @@
 import { cache } from '@solidjs/router'
 import { sample } from 'lodash-es'
-import { createResource, createSignal, Show } from 'solid-js'
 import { z } from 'zod'
 import ExerciseBase, { type ExerciseProps } from '~/components/ExerciseBase'
 import Math from '~/components/Math'
-import Tick from '~/components/Tick'
 import { graphql } from '~/gql'
 import { request } from '~/lib/graphql'
 
@@ -81,6 +79,11 @@ export default function Factor(props: ExerciseProps<State, Parameters<typeof gen
       mark={mark}
       generate={generate}
       solve={solve}
+      solution={
+        <p>
+          La solution est <Math value={props.feedback?.solution?.attempt} />.
+        </p>
+      }
     >
       <p>
         Factorisez <Math value={props.state?.expr} />
@@ -94,12 +97,6 @@ export default function Factor(props: ExerciseProps<State, Parameters<typeof gen
           onBlur={(e) => props.setter?.('state', 'attempt', e.target.value)}
         />
       </div>
-      <Tick value={props.feedback?.correct} />
-      <Show when={props.options?.showSolution}>
-        <p>
-          La réponse est <Math value={props.feedback?.solution?.attempt} />
-        </p>
-      </Show>
     </ExerciseBase>
   )
 }

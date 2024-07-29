@@ -3,7 +3,6 @@ import { sample } from 'lodash-es'
 import { z } from 'zod'
 import ExerciseBase, { type ExerciseProps } from '~/components/ExerciseBase'
 import Math from '~/components/Math'
-import Tick from '~/components/Tick'
 import { graphql } from '~/gql'
 import { request } from '~/lib/graphql'
 
@@ -68,7 +67,6 @@ export default function CompleteSquare(
           onBlur={(e) => props.setter?.('state', 'attempt', e.target.value)}
         />
       </div>
-      <Tick value={props.feedback?.correct} />
     </ExerciseBase>
   )
 }

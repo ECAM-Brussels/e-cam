@@ -4,7 +4,6 @@ import { z } from 'zod'
 import ExerciseBase, { type ExerciseProps } from '~/components/ExerciseBase'
 import Fa from '~/components/Fa'
 import Math from '~/components/Math'
-import Tick from '~/components/Tick'
 import { graphql } from '~/gql'
 import { request } from '~/lib/graphql'
 
@@ -72,7 +71,6 @@ export default function Equation(props: ExerciseProps<State, undefined>) {
           <Fa icon={faTrashAlt} /> Supprimer la dernière solution
         </button>
       </div>
-      <Tick value={props.feedback?.correct} />
     </ExerciseBase>
   )
 }

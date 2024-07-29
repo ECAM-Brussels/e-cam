@@ -1,11 +1,9 @@
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
 import { mapValues } from 'lodash-es'
-import { Show, Suspense, createEffect, createSignal, lazy, onMount } from 'solid-js'
+import { Show, Suspense, createEffect, createSignal, lazy, on, onMount } from 'solid-js'
 import { SetStoreFunction } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web'
 import { z } from 'zod'
-import Fa from '~/components/Fa'
 import Pagination from '~/components/Pagination'
 import { getUser } from '~/lib/auth/session'
 import { prisma } from '~/lib/db'
@@ -77,16 +75,16 @@ async function upsertAssignment(url: string, data: Exercise[]) {
 
 export default function ExerciseSequence(props: ExerciseProps) {
   const location = useLocation()
-  const session = createAsync(getUser)
   const [index, setIndex] = createSignal(0)
-  const [mark, setMark] = createSignal(false)
   const exercise = () => props.data[index()]
   const classes = () =>
     props.data.map((exercise: Exercise) => {
-      if (exercise.feedback?.valid) {
+      if (exercise.feedback?.correct) {
         return 'bg-green-50'
+      } else if(exercise.feedback?.correct === false) {
+        return 'bg-red-50'
       }
-      return 'bg-gray-50'
+      return 'bg-white'
     })
 
   const savedData = createAsync(() => loadAssignment(location.pathname))
@@ -97,59 +95,33 @@ export default function ExerciseSequence(props: ExerciseProps) {
     }
   })
 
+  createEffect(
+    on(index, async () => {
+      await upsertAssignment(location.pathname, props.data)
+      revalidate(loadAssignment.keyFor(location.pathname))
+    }),
+  )
+
   return (
-    <div class="md:flex items-center">
-      <div class="md:w-2/3 border-r">
-        <Show when={props.data.length > 1}>
-          <Pagination
-            current={index()}
-            max={props.data.length}
-            onChange={setIndex}
-            classes={classes()}
-          />
-          <h2 class="text-lg font-bold">Question {index() + 1}</h2>
-        </Show>
-        <Suspense>
-          <Dynamic
-            component={components[exercise().type]}
-            {...exercise()}
-            options={{ mark: mark(), readOnly: false, showSolution: mark() }}
-            setter={(...args: any) => {
-              // @ts-ignore
-              props.setter(index(), ...args)
-            }}
-          />
-        </Suspense>
-        <Show when={index() < props.data.length - 1}>
-          <p class="flex flex-row-reverse mt-4 mr-6">
-            <button class="border rounded-xl p-3" onClick={() => setIndex(index() + 1)}>
-              Suivant <Fa icon={faChevronRight} />
-            </button>
-          </p>
-        </Show>
-      </div>
-      <div class="px-2">
-        <Show when={session()}>{(user) => <p>Bonjour {user().name}</p>}</Show>
-        <p>
-          <button
-            class="border px-2 py-1 rounded-lg bg-green-700 text-white"
-            onClick={async () => {
-              await upsertAssignment(location.pathname, props.data)
-              revalidate(loadAssignment.keyFor(location.pathname))
-            }}
-          >
-            Sauvegarder
-          </button>
-          <button
-            class="border px-2 py-1 rounded-lg bg-green-700 text-white"
-            onClick={() => {
-              setMark(true)
-            }}
-          >
-            Corriger
-          </button>
-        </p>
-      </div>
-    </div>
+    <>
+      <Show when={props.data.length > 1}>
+        <Pagination
+          current={index()}
+          max={props.data.length}
+          onChange={setIndex}
+          classes={classes()}
+        />
+      </Show>
+      <Suspense>
+        <Dynamic
+          component={components[exercise().type]}
+          {...exercise()}
+          setter={(...args: any) => {
+            // @ts-ignore
+            props.setter(index(), ...args)
+          }}
+        />
+      </Suspense>
+    </>
   )
 }
