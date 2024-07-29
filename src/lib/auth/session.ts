@@ -7,6 +7,8 @@ import { prisma } from '~/lib/db'
 type SessionData = {
   email?: string
   name?: string
+  firstName: string
+  lastName: string
 }
 
 function getSession() {
@@ -24,7 +26,7 @@ export async function login(token: string) {
   const session = await getSession()
   const userInfo = await getUserInfo(token)
   if (userInfo) {
-    await prisma.user.upsert({
+    const user = await prisma.user.upsert({
       where: { email: userInfo.email },
       update: {},
       create: { email: userInfo.email, firstName: userInfo.given_name, lastName: userInfo.family_name },
@@ -32,6 +34,8 @@ export async function login(token: string) {
     await session.update(function (data: SessionData) {
       data.email = userInfo.email
       data.name = userInfo.name
+      data.firstName = user.firstName
+      data.lastName = user.lastName
       return data
     })
   }
