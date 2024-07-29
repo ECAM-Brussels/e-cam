@@ -1,4 +1,4 @@
-import { faCheckCircle, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faCheckCircle, faPaperPlane, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { JSXElement, Show, createEffect } from 'solid-js'
 import { SetStoreFunction } from 'solid-js/store'
 import { type ZodObject } from 'zod'
@@ -86,14 +86,14 @@ export default function ExerciseBase<S, G>(
         <Show when={!props.options?.mark}>
           <p class="mt-6">
             <button
-              class="py-2 px-3 border border-green-800 rounded"
+              class="py-1 px-2 border border-green-800 rounded text-green-800"
               onClick={() => {
                 props.setter('options', 'mark', true)
                 props.setter('options', 'showSolution', true)
                 props.setter('options', 'readOnly', true)
               }}
             >
-              Soumettre la réponse
+              <Fa icon={faPaperPlane} /> Soumettre
             </button>
           </p>
         </Show>
