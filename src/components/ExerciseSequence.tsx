@@ -1,3 +1,4 @@
+import { loadResults } from './Results'
 import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
 import { mapValues } from 'lodash-es'
 import { Show, Suspense, createEffect, createSignal, lazy, on, onMount } from 'solid-js'
@@ -7,7 +8,6 @@ import { z } from 'zod'
 import Pagination from '~/components/Pagination'
 import { getUser } from '~/lib/auth/session'
 import { prisma } from '~/lib/db'
-import { loadResults } from './Results'
 
 const exercises = {
   CompleteSquare: () => import('~/exercises/CompleteSquare'),
@@ -82,7 +82,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
     props.data.map((exercise: Exercise) => {
       if (exercise.feedback?.correct) {
         return 'bg-green-100'
-      } else if(exercise.feedback?.correct === false) {
+      } else if (exercise.feedback?.correct === false) {
         return 'bg-red-100'
       }
       return 'bg-white'
@@ -97,11 +97,15 @@ export default function ExerciseSequence(props: ExerciseProps) {
   })
 
   createEffect(
-    on(index, async () => {
-      await upsertAssignment(location.pathname, props.data)
-      revalidate(loadAssignment.keyFor(location.pathname))
-      revalidate(loadResults.keyFor(location.pathname))
-    }),
+    on(
+      index,
+      async () => {
+        await upsertAssignment(location.pathname, props.data)
+        revalidate(loadAssignment.keyFor(location.pathname))
+        revalidate(loadResults.keyFor(location.pathname))
+      },
+      { defer: true },
+    ),
   )
 
   return (
