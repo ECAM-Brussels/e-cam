@@ -1,6 +1,7 @@
 import { faCheck, faQuestion, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { cache, createAsync, useLocation } from '@solidjs/router'
 import Fuse from 'fuse.js'
+import { countBy } from 'lodash-es'
 import { createSignal, For, Show } from 'solid-js'
 import { type Exercise } from '~/components/ExerciseSequence'
 import Fa from '~/components/Fa'
@@ -84,6 +85,7 @@ export default function Results(props: ResultsProps) {
             <th>Matricule</th>
             <th>Last name</th>
             <th>First name</th>
+            <th class="text-right pr-4">%</th>
             <For each={Array.from(Array(count()).keys())}>{(i) => <th>{i + 1}</th>}</For>
           </tr>
         </thead>
@@ -94,6 +96,9 @@ export default function Results(props: ResultsProps) {
                 <td class="py-2">{result.email.split('@')[0]}</td>
                 <td>{result.lastName}</td>
                 <td>{result.firstName}</td>
+                <td class="text-right pr-4">
+                  {Math.round((countBy(result.questions)['true'] / result.questions.length) * 100)}%
+                </td>
                 <For each={result.questions}>
                   {(q) => (
                     <>
@@ -119,6 +124,12 @@ export default function Results(props: ResultsProps) {
             )}
           </For>
         </tbody>
+        <tfoot>
+          <tr class="border-t">
+            <td colspan={4}></td>
+            <td class="text-center">0</td>
+          </tr>
+        </tfoot>
       </table>
     </>
   )
