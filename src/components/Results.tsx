@@ -73,7 +73,7 @@ export default function Results(props: ResultsProps) {
     <>
       <p class="my-4">
         <input
-          class="border rounded-xl w-full px-3 py-1"
+          class="border rounded-full w-full px-4 py-3 my-2 shadow-md"
           placeholder="Rechercher un étudiant"
           value={search()}
           onInput={(e) => setSearch(e.target.value)}
