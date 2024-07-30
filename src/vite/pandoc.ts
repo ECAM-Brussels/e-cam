@@ -22,14 +22,12 @@ const pandocPlugin = (): Plugin => {
         )
         const meta = JSON.parse(readFileSync(metaFile, 'utf-8'))
         const template = meta.slideshow ? 'template.slideshow.tsx' : 'template.tsx'
-        const target = meta.slideshow ? 'revealjs': 'html5'
 
         let cmd = [
           `pandoc "${file}"`,
           `-o "${outputPath}"`,
-          `-t ${target}`,
+          '-t html5',
           `--template src/vite/${template}`,
-          '--section-divs',
           '--wrap=preserve',
         ]
 
