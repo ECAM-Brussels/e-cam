@@ -81,9 +81,9 @@ export default function ExerciseSequence(props: ExerciseProps) {
   const classes = () =>
     props.data.map((exercise: Exercise) => {
       if (exercise.feedback?.correct) {
-        return 'bg-green-50'
+        return 'bg-green-100'
       } else if(exercise.feedback?.correct === false) {
-        return 'bg-red-50'
+        return 'bg-red-100'
       }
       return 'bg-white'
     })
