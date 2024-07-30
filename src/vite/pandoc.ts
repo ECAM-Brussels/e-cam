@@ -1,6 +1,6 @@
 import { exec as execWithCallback } from 'child_process'
 import glob from 'fast-glob'
-import { mkdirSync } from 'fs'
+import { mkdirSync, readFileSync } from 'fs'
 import { dirname, relative, resolve } from 'path'
 import { promisify } from 'util'
 import { type Plugin } from 'vite'
@@ -16,11 +16,20 @@ const pandocPlugin = (): Plugin => {
         const outputPath = resolve('src/routes/(generated)', relativePath.replace(/\.md$/, '.tsx'))
         mkdirSync(dirname(outputPath), { recursive: true })
 
+        const metaFile = `${outputPath}.json`
+        await exec(
+          `pandoc "${file}" -t html5 -o "${metaFile}" --template src/vite/template.json.txt`,
+        )
+        const meta = JSON.parse(readFileSync(metaFile, 'utf-8'))
+        const template = meta.slideshow ? 'template.slideshow.tsx' : 'template.tsx'
+        const target = meta.slideshow ? 'revealjs': 'html5'
+
         let cmd = [
           `pandoc "${file}"`,
           `-o "${outputPath}"`,
-          '-t html',
-          '--template src/vite/template.tsx',
+          `-t ${target}`,
+          `--template src/vite/${template}`,
+          '--section-divs',
           '--wrap=preserve',
         ]
 
