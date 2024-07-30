@@ -10,6 +10,7 @@ def tailwind_classes(el: pf.Element, doc: pf.Doc):
 
 
 def math(el: pf.Element, doc: pf.Doc):
+    del doc
     if type(el) == pf.Math:
         display = str(el.format == "DisplayMath").lower()
         return pf.RawInline(
@@ -18,6 +19,7 @@ def math(el: pf.Element, doc: pf.Doc):
 
 
 def environments(el: pf.Element, doc: pf.Doc):
+    del doc
     classes = ["definition"]
     if type(el) == pf.Div and el.classes and el.classes[0] in classes:
         return [
@@ -27,4 +29,12 @@ def environments(el: pf.Element, doc: pf.Doc):
         ]
 
 
-pf.run_filters([tailwind_classes, math, environments])
+def code(el: pf.Element, doc: pf.Doc):
+    del doc
+    if type(el) == pf.CodeBlock and el.classes:
+        return pf.RawBlock(
+            "<Code value={String.raw`" + el.text + '`} lang="' + el.classes[0] + '" />'
+        )
+
+
+pf.run_filters([tailwind_classes, math, environments, code])
