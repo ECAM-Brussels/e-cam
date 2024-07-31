@@ -39,27 +39,31 @@ type ExerciseFromName<T extends ExerciseName> = {
 export type Exercise = { [N in ExerciseName]: ExerciseFromName<N> }[ExerciseName]
 
 type ExerciseProps = {
+  id?: string
   data: Exercise[]
   setter: SetStoreFunction<Exercise[]>
 }
 
-export const loadAssignment = cache(async (url: string): Promise<Exercise[] | null> => {
-  'use server'
-  const user = await getUser()
-  if (!user || !user.email) {
-    return null
-  }
-  const userEmail = user.email
-  const record = await prisma.assignment.findUnique({
-    where: { url_userEmail: { url, userEmail } },
-  })
-  if (!record) {
-    return null
-  }
-  return JSON.parse(String(record.body)) as Exercise[]
-}, 'loadAssignment')
+export const loadAssignment = cache(
+  async (url: string, id: string = ''): Promise<Exercise[] | null> => {
+    'use server'
+    const user = await getUser()
+    if (!user || !user.email) {
+      return null
+    }
+    const userEmail = user.email
+    const record = await prisma.assignment.findUnique({
+      where: { url_userEmail_id: { url, userEmail, id } },
+    })
+    if (!record) {
+      return null
+    }
+    return JSON.parse(String(record.body)) as Exercise[]
+  },
+  'loadAssignment',
+)
 
-async function upsertAssignment(url: string, data: Exercise[]) {
+async function upsertAssignment(url: string, id: string, data: Exercise[]) {
   'use server'
   const user = await getUser()
   if (!user || !user.email) {
@@ -68,9 +72,9 @@ async function upsertAssignment(url: string, data: Exercise[]) {
   const userEmail = user.email
   let body = JSON.stringify(data)
   const assignment = await prisma.assignment.upsert({
-    where: { url_userEmail: { url, userEmail } },
+    where: { url_userEmail_id: { url, userEmail, id } },
     update: { body },
-    create: { url, userEmail, body },
+    create: { url, userEmail, id, body },
   })
 }
 
@@ -88,7 +92,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
       return 'bg-white'
     })
 
-  const savedData = createAsync(() => loadAssignment(location.pathname))
+  const savedData = createAsync(() => loadAssignment(location.pathname, props.id))
   createEffect(() => {
     const saved = savedData()
     if (saved) {
@@ -110,7 +114,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
     on(
       submitted,
       async () => {
-        await upsertAssignment(location.pathname, props.data)
+        await upsertAssignment(location.pathname, props.id || '', props.data)
         revalidate(loadAssignment.keyFor(location.pathname))
         revalidate(loadResults.keyFor(location.pathname))
       },

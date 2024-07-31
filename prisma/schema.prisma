@@ -17,9 +17,10 @@ model Assignment {
   url String
   user User @relation(fields: [userEmail], references: [email])
   userEmail String
+  id String
   body Json
 
-  @@id([url, userEmail])
+  @@id([url, userEmail, id])
 }
 
 model User {
