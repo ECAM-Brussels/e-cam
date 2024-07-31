@@ -11,6 +11,7 @@ export default function Slideshow(props: SlideshowProps) {
     const Reveal = (await import('reveal.js')).default
     deck = new Reveal({
       center: false,
+      hash: true,
       height: 1080,
       transition: 'none',
       width: 1920,
