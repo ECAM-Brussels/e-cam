@@ -1,7 +1,7 @@
 import { loadResults } from './Results'
 import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
-import { mapValues } from 'lodash-es'
-import { Show, Suspense, createEffect, createSignal, lazy, on, onMount } from 'solid-js'
+import { countBy, mapValues } from 'lodash-es'
+import { Show, Suspense, createEffect, createMemo, createSignal, lazy, on, onMount } from 'solid-js'
 import { SetStoreFunction } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web'
 import { z } from 'zod'
@@ -96,9 +96,19 @@ export default function ExerciseSequence(props: ExerciseProps) {
     }
   })
 
+  const submitted = createMemo(
+    () =>
+      countBy(
+        props.data.map((exercise: Exercise) => {
+          const correct = exercise.feedback?.correct
+          return correct === true || correct === false
+        }),
+      ).true,
+  )
+
   createEffect(
     on(
-      index,
+      submitted,
       async () => {
         await upsertAssignment(location.pathname, props.data)
         revalidate(loadAssignment.keyFor(location.pathname))
