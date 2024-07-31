@@ -29,7 +29,6 @@ def run(
         result = eval(last_line, namespace)
     except:
         pf.debug(f"Error when running: {code}")
-        el.classes = 'border-red-800'
         return el
     if isinstance(result, sympy.Basic):
         format = "DisplayMath" if display else "InlineMath"
