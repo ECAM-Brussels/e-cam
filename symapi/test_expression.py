@@ -35,6 +35,7 @@ def test_expand(expr: str, expected: str):
         ("i^2", "-1", True),
         ("e", "\\exp(1)", True),
         ("\\pi", "2*\\arcsin(1)", True),
+        ("x^2 - 4x", "x(x - 4)", True),
     ],
 )
 def test_is_equal(expr: str, attempt: str, expected: bool):
