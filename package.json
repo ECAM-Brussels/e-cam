@@ -14,7 +14,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@prisma/client": "^5.17.0",
-    "@solidjs/router": "^0.13.6",
+    "@solidjs/router": "^0.14.1",
     "@solidjs/start": "^1.0.2",
     "fuse.js": "^7.0.0",
     "graphql-request": "^7.1.0",
