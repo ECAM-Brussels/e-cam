@@ -1,47 +1,55 @@
-'use server'
-
+import { action, cache, reload } from '@solidjs/router'
 import { useSession } from 'vinxi/http'
 import { getUserInfo } from '~/lib/auth/azure'
 import { prisma } from '~/lib/db'
 
 type SessionData = {
-  email?: string
-  name?: string
-  firstName: string
-  lastName: string
+  email: string
 }
 
 function getSession() {
+  'use server'
   return useSession<SessionData>({
     password: import.meta.env.VITE_SESSION_SECRET,
   })
 }
 
-export async function getUser(): Promise<SessionData | null> {
+export const getUser = cache(async () => {
+  'use server'
   const session = await getSession()
-  return session.data
-}
+  if (session.data.email) {
+    return await prisma.user.findUniqueOrThrow({
+      where: { email: session.data.email },
+    })
+  }
+  return null
+}, 'getUser')
 
-export async function login(token: string) {
+export const login = action(async (token: string) => {
+  'use server'
   const session = await getSession()
   const userInfo = await getUserInfo(token)
   if (userInfo) {
-    const user = await prisma.user.upsert({
+    await prisma.user.upsert({
       where: { email: userInfo.email },
-      update: {},
-      create: { email: userInfo.email, firstName: userInfo.given_name, lastName: userInfo.family_name },
+      update: { },
+      create: {
+        email: userInfo.email,
+        firstName: userInfo.given_name,
+        lastName: userInfo.family_name,
+      },
     })
-    await session.update(function (data: SessionData) {
+    await session.update((data: SessionData) => {
       data.email = userInfo.email
-      data.name = userInfo.name
-      data.firstName = user.firstName
-      data.lastName = user.lastName
       return data
     })
+    reload({ revalidate: getUser.key })
   }
-}
+})
 
-export async function logout() {
+export const logout = action(async () => {
+  'use server'
   const session = await getSession()
   await session.clear()
-}
+  reload({ revalidate: getUser.key })
+})

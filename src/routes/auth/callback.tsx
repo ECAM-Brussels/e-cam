@@ -1,11 +1,12 @@
-import { useNavigate } from '@solidjs/router'
+import { useAction, useNavigate } from '@solidjs/router'
 import { onMount } from 'solid-js'
 import Page from '~/components/Page'
 import { getMicrosoftToken } from '~/lib/auth/azure'
-import { login } from '~/lib/auth/session'
+import { login as loginAction } from '~/lib/auth/session'
 
 export default function Callback() {
   const navigate = useNavigate()
+  const login = useAction(loginAction)
 
   onMount(async () => {
     const params = new URLSearchParams(window.location.search)

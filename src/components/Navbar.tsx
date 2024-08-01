@@ -1,11 +1,11 @@
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
-import { createAsync } from '@solidjs/router'
+import { createAsync, useAction } from '@solidjs/router'
 import { Show, type JSXElement } from 'solid-js'
 import Fa from '~/components/Fa'
-import { getUser } from '~/lib/auth/session'
+import { getUser, logout } from '~/lib/auth/session'
 
 export default function Navbar() {
-  const session = createAsync(getUser)
+  const user = createAsync(() => getUser())
   return (
     <div class="border-b border-b-gray-200 mb-6 py-1">
       <nav class="container mx-auto flex items-center justify-between">
@@ -19,13 +19,17 @@ export default function Navbar() {
         </ul>
         <ul class="flex items-center">
           <Show
-            when={session() && session()?.name}
+            when={user() && user()?.firstName}
             fallback={<NavbarItem href="/auth/login">Se connecter</NavbarItem>}
           >
             {(name) => (
               <>
                 <NavbarItem>{name()}</NavbarItem>
-                <NavbarItem>Se déconnecter</NavbarItem>
+                <NavbarItem>
+                  <form action={logout} method="post">
+                    <button type="submit">Se déconnecter</button>
+                  </form>
+                </NavbarItem>
               </>
             )}
           </Show>
