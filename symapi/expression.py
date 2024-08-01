@@ -34,7 +34,16 @@ class Expression:
         expr = self.expr
         if expr.func != sympy.Mul:
             expr = sympy.Mul(1, expr, evaluate=False)
+
+        # Flatten the tree to avoid inner multiplications
+        factors = []
         for term in expr.args:
+            if term.func == sympy.Mul:
+                factors += term.args
+            else:
+                factors.append(term)
+
+        for term in factors:
             if sympy.factor(term).func == sympy.Mul:
                 return False
         return True
