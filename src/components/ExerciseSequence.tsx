@@ -114,9 +114,11 @@ export default function ExerciseSequence(props: ExerciseProps) {
     on(
       submitted,
       async () => {
-        await upsertAssignment(location.pathname, props.id || '', props.data)
-        revalidate(loadAssignment.keyFor(location.pathname))
-        revalidate(loadResults.keyFor(location.pathname))
+        if (submitted()) {
+          await upsertAssignment(location.pathname, props.id || '', props.data)
+          revalidate(loadAssignment.keyFor(location.pathname))
+          revalidate(loadResults.keyFor(location.pathname))
+        }
       },
       { defer: true },
     ),
