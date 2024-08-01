@@ -1,6 +1,6 @@
 import { exec as execWithCallback } from 'child_process'
 import glob from 'fast-glob'
-import { mkdirSync, readFileSync } from 'fs'
+import { mkdirSync, readFileSync, writeFileSync } from 'fs'
 import { dirname, relative, resolve } from 'path'
 import { promisify } from 'util'
 import { type Plugin } from 'vite'
@@ -11,6 +11,16 @@ const pandocPlugin = (): Plugin => {
   return {
     name: 'pandoc-plugin',
     async handleHotUpdate({ file }) {
+      if (file.endsWith('.ts') && file.startsWith(resolve('content'))) {
+        const relativePath = relative(resolve('content'), file)
+        const outputPath = resolve('src/routes/(generated)', relativePath.replace(/\.ts$/, '.tsx'))
+        mkdirSync(dirname(outputPath), { recursive: true })
+        const data = String(readFileSync(file, 'utf-8'))
+        const template = String(readFileSync(resolve('src/vite/assignment.tsx'), 'utf-8'))
+        const content = template.replace('$body$', data)
+        writeFileSync(outputPath, content, 'utf-8')
+        console.log(content)
+      }
       if (file.endsWith('.md') && file.startsWith(resolve('content'))) {
         const relativePath = relative(resolve('content'), file)
         const outputPath = resolve('src/routes/(generated)', relativePath.replace(/\.md$/, '.tsx'))
