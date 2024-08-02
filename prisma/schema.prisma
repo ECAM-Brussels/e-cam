@@ -26,6 +26,7 @@ model Assignment {
 
 model User {
   email String @id
+  admin Boolean @default(false)
   firstName String
   lastName String
   assignments Assignment[]
