@@ -7,10 +7,10 @@ import { type Exercise } from '~/components/ExerciseSequence'
 import Fa from '~/components/Fa'
 import { prisma } from '~/lib/db'
 
-export const loadResults = cache(async (url: string) => {
+export const loadResults = cache(async (url: string, id: string) => {
   'use server'
   const assignments = await prisma.assignment.findMany({
-    where: { url },
+    where: { url, id },
     orderBy: [
       {
         user: {
@@ -50,12 +50,13 @@ export const loadResults = cache(async (url: string) => {
 }, 'loadResults')
 
 type ResultsProps = {
+  id?: string
   url: string
 }
 
 export default function Results(props: ResultsProps) {
   const [search, setSearch] = createSignal('')
-  const results = createAsync(() => loadResults(props.url))
+  const results = createAsync(() => loadResults(props.url, props.id || ''))
   const count = () => {
     const r = results()
     return r && r.length ? r[0].questions.length : 0
