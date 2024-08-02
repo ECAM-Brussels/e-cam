@@ -21,6 +21,8 @@
     "katex": "^0.16.11",
     "lodash-es": "^4.17.21",
     "mathlive": "^0.100.0",
+    "micromark": "^4.0.0",
+    "micromark-extension-math": "^3.1.0",
     "reveal.js": "^5.1.0",
     "solid-js": "^1.8.17",
     "solid-prism-editor": "^1.1.0",
