@@ -18,7 +18,7 @@ export default function () {
   const [data, setData] = createStore<Exercise[]>($body$)
   const location = useLocation()
   const user = createAsync(() => getUser())
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams] = useSearchParams()
   return (
     <Page>
       <Show

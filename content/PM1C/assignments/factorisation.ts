@@ -15,4 +15,4 @@
       X2: [0],
     },
   },
-] as import('~/components/ExerciseSequence').Exercise[]
+] satisfies import('~/components/ExerciseSequence').Exercise[]

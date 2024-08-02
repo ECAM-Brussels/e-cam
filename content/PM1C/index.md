@@ -20,6 +20,8 @@ title: 'Pont vers le supérieur: mathématiques'
 
 ## Séances d'exercices et préparations
 
+#. [Factorisation](/PM1C/assignments/factorisation)
+
 :::
 
 ::: info
