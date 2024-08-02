@@ -44,24 +44,21 @@ type ExerciseProps = {
   setter: SetStoreFunction<Exercise[]>
 }
 
-export const loadAssignment = cache(
-  async (url: string, id: string = ''): Promise<Exercise[] | null> => {
-    'use server'
-    const user = await getUser()
-    if (!user || !user.email) {
-      return null
-    }
-    const userEmail = user.email
-    const record = await prisma.assignment.findUnique({
-      where: { url_userEmail_id: { url, userEmail, id } },
-    })
-    if (!record) {
-      return null
-    }
-    return JSON.parse(String(record.body)) as Exercise[]
-  },
-  'loadAssignment',
-)
+export const loadAssignment = cache(async (url: string, id: string = '') => {
+  'use server'
+  const user = await getUser()
+  if (!user || !user.email) {
+    return null
+  }
+  const userEmail = user.email
+  const record = await prisma.assignment.findUnique({
+    where: { url_userEmail_id: { url, userEmail, id } },
+  })
+  if (!record) {
+    return null
+  }
+  return { ...record, body: JSON.parse(String(record.body)) as Exercise[] }
+}, 'loadAssignment')
 
 async function upsertAssignment(url: string, id: string, data: Exercise[]) {
   'use server'
@@ -73,7 +70,7 @@ async function upsertAssignment(url: string, id: string, data: Exercise[]) {
   let body = JSON.stringify(data)
   const assignment = await prisma.assignment.upsert({
     where: { url_userEmail_id: { url, userEmail, id } },
-    update: { body },
+    update: { body, lastModified: new Date() },
     create: { url, userEmail, id, body },
   })
 }
@@ -92,13 +89,20 @@ export default function ExerciseSequence(props: ExerciseProps) {
       return 'bg-white'
     })
 
-  const savedData = createAsync(() => loadAssignment(location.pathname, props.id))
+  const savedData = createAsync(() => loadAssignment(location.pathname, props.id || ''))
   createEffect(() => {
     const saved = savedData()
     if (saved) {
-      props.setter(saved)
+      props.setter(saved.body)
     }
   })
+
+  const lastModified = () => {
+    const saved = savedData()
+    if (saved && saved.lastModified) {
+      return saved.lastModified.toUTCString()
+    }
+  }
 
   const submitted = createMemo(
     () =>
@@ -116,7 +120,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
       async () => {
         if (submitted()) {
           await upsertAssignment(location.pathname, props.id || '', props.data)
-          revalidate(loadAssignment.keyFor(location.pathname))
+          revalidate(loadAssignment.keyFor(location.pathname, props.id || ''))
           revalidate(loadResults.keyFor(location.pathname))
         }
       },
@@ -126,6 +130,9 @@ export default function ExerciseSequence(props: ExerciseProps) {
 
   return (
     <>
+      <Show when={lastModified()}>
+        <p>Dernière sauvegarde: {lastModified()}</p>
+      </Show>
       <Show when={props.data.length > 1}>
         <Pagination
           current={index()}

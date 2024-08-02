@@ -19,6 +19,7 @@ model Assignment {
   userEmail String
   id String
   body Json
+  lastModified DateTime @default(now())
 
   @@id([url, userEmail, id])
 }
