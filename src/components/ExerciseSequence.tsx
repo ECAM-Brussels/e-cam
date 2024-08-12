@@ -13,6 +13,7 @@ const exercises = {
   CompleteSquare: () => import('~/exercises/CompleteSquare'),
   Equation: () => import('~/exercises/Equation'),
   Factor: () => import('~/exercises/Factor'),
+  Simple: () => import('~/exercises/Simple'),
 }
 const components = mapValues(exercises, (m) => lazy(async () => ({ default: (await m()).default })))
 
@@ -121,7 +122,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
         if (submitted()) {
           await upsertAssignment(location.pathname, props.id || '', props.data)
           revalidate(loadAssignment.keyFor(location.pathname, props.id || ''))
-          revalidate(loadResults.keyFor(location.pathname))
+          revalidate(loadResults.keyFor(location.pathname, props.id || ''))
         }
       },
       { defer: true },
