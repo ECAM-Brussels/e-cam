@@ -2,7 +2,7 @@ import { micromark } from 'micromark'
 import { math, mathHtml } from 'micromark-extension-math'
 
 type MarkdownProps = {
-  class: string
+  class?: string
   value: string
 }
 

@@ -19,7 +19,6 @@ const pandocPlugin = (): Plugin => {
         const template = String(readFileSync(resolve('src/vite/assignment.tsx'), 'utf-8'))
         const content = template.replace('$body$', data)
         writeFileSync(outputPath, content, 'utf-8')
-        console.log(content)
       }
       if (file.endsWith('.md') && file.startsWith(resolve('content'))) {
         const relativePath = relative(resolve('content'), file)
