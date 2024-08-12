@@ -23,7 +23,7 @@ $$
 
 # Slide 2 $x^2$ {.w-1--2}
 
-~~~ python
+~~~ {.python .run}
 from sympy import *
 x = Symbol("x")
 ~~~

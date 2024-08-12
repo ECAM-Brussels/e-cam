@@ -32,8 +32,9 @@ def environments(el: pf.Element, doc: pf.Doc):
 def code(el: pf.Element, doc: pf.Doc):
     del doc
     if type(el) == pf.CodeBlock and el.classes:
+        run = 'true' if 'run' in el.classes else 'false'
         return pf.RawBlock(
-            "<Code value={String.raw`" + el.text + '`} lang="' + el.classes[0] + '" />'
+            "<Code value={String.raw`" + el.text + '`} lang="' + el.classes[0] + '" run={' + run + '} />'
         )
 
 
