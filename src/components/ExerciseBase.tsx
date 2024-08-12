@@ -34,6 +34,7 @@ export default function ExerciseBase<S, G>(
   createEffect(async () => {
     if (props.generate && props.params && !props.state) {
       props.setter('state', await props.generate(props.params))
+      props.setter('params', undefined)
     }
   })
 
