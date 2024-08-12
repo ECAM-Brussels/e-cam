@@ -1,7 +1,7 @@
 import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
-import { throttle } from 'lodash-es'
+import { cloneDeep, throttle } from 'lodash-es'
 import { createEffect, createSignal, on, onMount } from 'solid-js'
-import { createStore } from 'solid-js/store'
+import { createStore, unwrap } from 'solid-js/store'
 import { getUser } from '~/lib/auth/session'
 import { prisma } from '~/lib/db'
 
@@ -96,9 +96,12 @@ export default function Whiteboard(props: WhiteboardProps) {
 
   createEffect(
     on(mode, () => {
-      if (mode() === 'read' && currentStroke.points) {
-        setStrokes(strokes.length, currentStroke)
-        setCurrentStroke({ ...currentStroke, points: [] })
+      if (mode() === 'read' && currentStroke.points.length) {
+        setStrokes(strokes.length, cloneDeep(unwrap((currentStroke))))
+        setCurrentStroke('points', [])
+        ctx()?.closePath()
+      } else if (mode() === 'draw') {
+        ctx()?.beginPath()
       }
     }),
   )
@@ -106,7 +109,7 @@ export default function Whiteboard(props: WhiteboardProps) {
   // Drawing strokes from scratch
   createEffect(
     on(
-      () => strokes,
+      () => strokes.length,
       () => {
         const context = ctx()!
         context.clearRect(0, 0, props.width, props.height)
