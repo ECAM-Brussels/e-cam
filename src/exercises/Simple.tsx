@@ -30,6 +30,12 @@ export const mark = cache(async (state: State) => {
   return attempt.isEqual
 }, 'checkSimple')
 
+export const solve = cache(async (state: State): Promise<State> => {
+  'use server'
+
+  return { ...state, answer: decrypt(state.answer) }
+}, 'solveSimple')
+
 export default function Simple(props: ExerciseProps<State, null>) {
   return (
     <ExerciseBase
@@ -37,9 +43,10 @@ export default function Simple(props: ExerciseProps<State, null>) {
       {...props}
       mark={mark}
       schema={schema}
+      solve={solve}
       solution={
         <p>
-          La réponse est <Math value={props.state?.answer} />
+          La réponse est <Math value={props.feedback?.solution.answer} />
         </p>
       }
     >
