@@ -31,3 +31,11 @@ model User {
   lastName String
   assignments Assignment[]
 }
+
+model Board {
+  url String
+  id String
+  body Json
+  lastModified DateTime @default(now())
+  @@id([url, id])
+}
