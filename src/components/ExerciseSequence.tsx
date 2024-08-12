@@ -2,7 +2,7 @@ import { loadResults } from './Results'
 import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
 import { countBy, mapValues } from 'lodash-es'
 import { Show, Suspense, createEffect, createMemo, createSignal, lazy, on, onMount } from 'solid-js'
-import { SetStoreFunction } from 'solid-js/store'
+import { createStore, SetStoreFunction } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web'
 import { z } from 'zod'
 import Pagination from '~/components/Pagination'
@@ -42,7 +42,6 @@ export type Exercise = { [N in ExerciseName]: ExerciseFromName<N> }[ExerciseName
 type ExerciseProps = {
   id?: string
   data: Exercise[]
-  setter: SetStoreFunction<Exercise[]>
 }
 
 export const loadAssignment = cache(async (url: string, id: string = '') => {
@@ -90,11 +89,12 @@ export default function ExerciseSequence(props: ExerciseProps) {
       return 'bg-white'
     })
 
+  const [data, setData] = createStore<Exercise[]>(props.data)
   const savedData = createAsync(() => loadAssignment(location.pathname, props.id || ''))
   createEffect(() => {
     const saved = savedData()
     if (saved) {
-      props.setter(saved.body)
+      setData(saved.body)
     }
   })
 
@@ -148,7 +148,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
           {...exercise()}
           setter={(...args: any) => {
             // @ts-ignore
-            props.setter(index(), ...args)
+            setData(index(), ...args)
           }}
         />
       </Suspense>
