@@ -1,7 +1,9 @@
+import { faPen } from '@fortawesome/free-solid-svg-icons'
 import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
 import { cloneDeep, throttle } from 'lodash-es'
-import { createEffect, createSignal, on, onMount } from 'solid-js'
-import { createStore, unwrap } from 'solid-js/store'
+import { createEffect, createSignal, For, on, onMount } from 'solid-js'
+import { createStore, SetStoreFunction, unwrap } from 'solid-js/store'
+import Fa from '~/components/Fa'
 import { getUser } from '~/lib/auth/session'
 import { prisma } from '~/lib/db'
 
@@ -97,7 +99,7 @@ export default function Whiteboard(props: WhiteboardProps) {
   createEffect(
     on(mode, () => {
       if (mode() === 'read' && currentStroke.points.length) {
-        setStrokes(strokes.length, cloneDeep(unwrap((currentStroke))))
+        setStrokes(strokes.length, cloneDeep(unwrap(currentStroke)))
         setCurrentStroke('points', [])
         ctx()?.closePath()
       } else if (mode() === 'draw') {
@@ -154,9 +156,14 @@ export default function Whiteboard(props: WhiteboardProps) {
   })
 
   return (
-    <div ref={container!} class="relative" oncontextmenu={() => false}>
+    <div
+      ref={container!}
+      class={`relative ${props.class}`}
+      style={{ width: `${props.width}px`, height: `${props.height}px` }}
+    >
+      <Toolbar currentStroke={currentStroke} setter={setCurrentStroke} />
       <canvas
-        class={`absolute top-0 left-0 cursor-crosshair ${props.class}`}
+        classList={{ 'cursor-crosshair': !props.readOnly }}
         ref={canvasRef!}
         height={props.height}
         width={props.width}
@@ -184,7 +191,32 @@ export default function Whiteboard(props: WhiteboardProps) {
         onMouseUp={() => {
           setMode('read')
         }}
-      />
+      ></canvas>
+    </div>
+  )
+}
+
+type ToolbarProps = {
+  currentStroke: Stroke
+  setter: SetStoreFunction<Stroke>
+}
+
+function Toolbar(props: ToolbarProps) {
+  const pens = ['#255994', 'black', 'darkgreen', 'darkred']
+  return (
+    <div class="absolute bottom-0 flex gap-1 p-2">
+      <For each={pens}>
+        {(color) => (
+          <button
+            class="rounded-lg px-2 py-1 text-2xl border z-10"
+            classList={{ border: props.currentStroke.color === color }}
+            style={{ color, 'border-color': color }}
+            onClick={() => props.setter('color', color)}
+          >
+            <Fa icon={faPen} />
+          </button>
+        )}
+      </For>
     </div>
   )
 }
