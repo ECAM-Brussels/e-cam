@@ -156,42 +156,45 @@ export default function Whiteboard(props: WhiteboardProps) {
   })
 
   return (
-    <div
-      ref={container!}
-      class={`relative ${props.class}`}
-      style={{ width: `${props.width}px`, height: `${props.height}px` }}
-    >
-      <Toolbar currentStroke={currentStroke} setter={setCurrentStroke} />
-      <canvas
-        classList={{ 'cursor-crosshair': !props.readOnly }}
-        ref={canvasRef!}
-        height={props.height}
-        width={props.width}
-        onMouseDown={(event) => {
-          if (props.readOnly) {
-            return
-          }
-          const leftClick = event.button === 0 || event.button === 1
-          const rightClick = event.button === 2
-          if (rightClick) {
-            setMode('erase')
-          } else if (leftClick) {
-            setMode('draw')
-          }
-        }}
-        onMouseMove={(event) => {
-          const boundingClientRect = canvasRef.getBoundingClientRect()
-          const scaleX = canvasRef.offsetWidth / boundingClientRect.width
-          const scaleY = canvasRef.offsetHeight / boundingClientRect.height
-          const containerClient = container.getBoundingClientRect()
-          const x = Math.round((event.clientX - containerClient.left) * scaleX)
-          const y = Math.round((event.clientY - containerClient.top) * scaleY)
-          handlePointerMove(x, y)
-        }}
-        onMouseUp={() => {
-          setMode('read')
-        }}
-      ></canvas>
+    <div class={props.class}>
+      <div
+        ref={container!}
+        class="relative"
+        style={{ width: `${props.width}px`, height: `${props.height}px` }}
+      >
+        <Toolbar currentStroke={currentStroke} setter={setCurrentStroke} />
+        <canvas
+          class="z-10"
+          classList={{ 'cursor-crosshair': !props.readOnly }}
+          ref={canvasRef!}
+          height={props.height}
+          width={props.width}
+          onMouseDown={(event) => {
+            if (props.readOnly) {
+              return
+            }
+            const leftClick = event.button === 0 || event.button === 1
+            const rightClick = event.button === 2
+            if (rightClick) {
+              setMode('erase')
+            } else if (leftClick) {
+              setMode('draw')
+            }
+          }}
+          onMouseMove={(event) => {
+            const boundingClientRect = canvasRef.getBoundingClientRect()
+            const scaleX = canvasRef.offsetWidth / boundingClientRect.width
+            const scaleY = canvasRef.offsetHeight / boundingClientRect.height
+            const containerClient = container.getBoundingClientRect()
+            const x = Math.round((event.clientX - containerClient.left) * scaleX)
+            const y = Math.round((event.clientY - containerClient.top) * scaleY)
+            handlePointerMove(x, y)
+          }}
+          onMouseUp={() => {
+            setMode('read')
+          }}
+        />
+      </div>
     </div>
   )
 }
@@ -208,7 +211,7 @@ function Toolbar(props: ToolbarProps) {
       <For each={pens}>
         {(color) => (
           <button
-            class="rounded-lg px-2 py-1 text-2xl border z-10"
+            class="rounded-lg px-2 py-1 text-2xl border z-20"
             classList={{ border: props.currentStroke.color === color }}
             style={{ color, 'border-color': color }}
             onClick={() => props.setter('color', color)}
