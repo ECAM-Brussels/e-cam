@@ -1,11 +1,17 @@
+import { createAsync } from '@solidjs/router'
 import 'reveal.js/dist/reveal.css'
-import { onCleanup, onMount, type JSXElement } from 'solid-js'
+import { children, For, onCleanup, onMount, type JSXElement } from 'solid-js'
+import Whiteboard from '~/components/Whiteboard'
+import { getUser } from '~/lib/auth/session'
 
 type SlideshowProps = {
   children: JSXElement
 }
 
 export default function Slideshow(props: SlideshowProps) {
+  const user = createAsync(() => getUser())
+  const resolved = children(() => props.children)
+
   let deck: InstanceType<typeof import('reveal.js')>
   onMount(async () => {
     const Reveal = (await import('reveal.js')).default
@@ -26,7 +32,26 @@ export default function Slideshow(props: SlideshowProps) {
 
   return (
     <div class="reveal">
-      <div class="slides">{props.children}</div>
+      <div class="slides">
+        <For each={resolved() as HTMLElement[]}>
+          {(child, i) => {
+            return (
+              <section>
+                <section class="relative">
+                  {child}
+                  <Whiteboard
+                    id={`slide-${i()}`}
+                    class="absolute top-0 left-0"
+                    width={1920}
+                    height={1080}
+                    readOnly={!user()?.admin}
+                  />
+                </section>
+              </section>
+            )
+          }}
+        </For>
+      </div>
     </div>
   )
 }
