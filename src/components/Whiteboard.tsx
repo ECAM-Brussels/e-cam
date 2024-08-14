@@ -21,20 +21,24 @@ export const loadBoard = cache(async (url: string, id: string) => {
   return record ? (JSON.parse(String(record.body)) as Stroke[]) : null
 }, 'loadBoards')
 
-const upsertBoard = throttle(async (url: string, id: string, data: Stroke[]) => {
-  'use server'
-  const user = await getUser()
-  if (!user || !user.admin) {
-    throw new Error('Error when upserting board: user is not an admin')
-  }
-  const body = JSON.stringify(data)
-  await prisma.board.upsert({
-    where: { url_id: { url, id } },
-    update: { body, lastModified: new Date() },
-    create: { url, id, body },
-  })
-  revalidate(loadBoard.keyFor(url, id))
-}, 5000)
+const upsertBoard = throttle(
+  async (url: string, id: string, data: Stroke[]) => {
+    'use server'
+    const user = await getUser()
+    if (!user || !user.admin) {
+      throw new Error('Error when upserting board: user is not an admin')
+    }
+    const body = JSON.stringify(data)
+    await prisma.board.upsert({
+      where: { url_id: { url, id } },
+      update: { body, lastModified: new Date() },
+      create: { url, id, body },
+    })
+    revalidate(loadBoard.keyFor(url, id))
+  },
+  5000,
+  { trailing: true },
+)
 
 type WhiteboardProps = {
   id?: string
@@ -140,8 +144,8 @@ export default function Whiteboard(props: WhiteboardProps) {
       () => {
         upsertBoard(location.pathname, props.id || '', strokes)
       },
-      { defer: true }
-    )
+      { defer: true },
+    ),
   )
 
   // Adding points
