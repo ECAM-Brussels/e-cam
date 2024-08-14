@@ -129,9 +129,19 @@ export default function Whiteboard(props: WhiteboardProps) {
         context.fillStyle = currentStroke.color
         context.strokeStyle = currentStroke.color
         context.lineWidth = currentStroke.lineWidth
-        upsertBoard(location.pathname, props.id || '', strokes)
       },
     ),
+  )
+
+  // Saving
+  createEffect(
+    on(
+      () => strokes.length,
+      () => {
+        upsertBoard(location.pathname, props.id || '', strokes)
+      },
+      { defer: true }
+    )
   )
 
   // Adding points
