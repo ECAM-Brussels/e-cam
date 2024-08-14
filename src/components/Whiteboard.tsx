@@ -1,4 +1,4 @@
-import { faPen } from '@fortawesome/free-solid-svg-icons'
+import { faHighlighter, faPen } from '@fortawesome/free-solid-svg-icons'
 import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
 import { cloneDeep, throttle } from 'lodash-es'
 import { createEffect, createSignal, For, on, onMount } from 'solid-js'
@@ -66,7 +66,7 @@ export default function Whiteboard(props: WhiteboardProps) {
 
   const [currentStroke, setCurrentStroke] = createStore<Stroke>({
     color: '#255994',
-    lineWidth: 1,
+    lineWidth: 2,
     points: [],
   })
 
@@ -219,7 +219,13 @@ type ToolbarProps = {
 }
 
 function Toolbar(props: ToolbarProps) {
-  const pens = ['#255994', 'black', 'darkgreen', 'darkred']
+  const pens = ['#255994', 'darkred', 'green', 'darkorange', 'gray', 'black']
+  const highlighters = [
+    'rgba(241, 231, 64, 0.4)',
+    'rgba(93, 226, 60, 0.4)',
+    'rgba(243, 149, 57, 0.4)',
+    'rgba(233, 79, 88, 0.4)',
+  ]
   return (
     <div class="absolute bottom-0 flex gap-1 p-2">
       <For each={pens}>
@@ -228,9 +234,27 @@ function Toolbar(props: ToolbarProps) {
             class="rounded-lg px-2 py-1 text-2xl border z-20"
             classList={{ border: props.currentStroke.color === color }}
             style={{ color, 'border-color': color }}
-            onClick={() => props.setter('color', color)}
+            onClick={() => {
+              props.setter('color', color)
+              props.setter('lineWidth', 2)
+            }}
           >
             <Fa icon={faPen} />
+          </button>
+        )}
+      </For>
+      <For each={highlighters}>
+        {(color) => (
+          <button
+            class="rounded-lg px-2 py-1 text-2xl border z-20"
+            classList={{ border: props.currentStroke.color === color }}
+            style={{ color, 'border-color': color }}
+            onClick={() => {
+              props.setter('color', color)
+              props.setter('lineWidth', 30)
+            }}
+          >
+            <Fa icon={faHighlighter} />
           </button>
         )}
       </For>
