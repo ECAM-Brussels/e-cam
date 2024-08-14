@@ -6,6 +6,7 @@ import { getUser } from '~/lib/auth/session'
 
 type SlideshowProps = {
   children: JSXElement
+  boardName?: string
 }
 
 export default function Slideshow(props: SlideshowProps) {
@@ -40,7 +41,7 @@ export default function Slideshow(props: SlideshowProps) {
                 <section class="relative">
                   {child}
                   <Whiteboard
-                    id={`slide-${i()}`}
+                    id={`slide-${props.boardName}-${i()}`}
                     class="absolute top-0 left-0"
                     width={1920}
                     height={1080}

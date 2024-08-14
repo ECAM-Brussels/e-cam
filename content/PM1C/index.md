@@ -10,9 +10,11 @@ title: 'Pont vers le supérieur: mathématiques'
 
 ::: info
 
-## Slides du cours théorique
+## Cours théoriques
 
-#. [Trigonométrie](/PM1C/slides/01-trigonometry)
+Titre
+------                                           --------------------                                                  --------------------
+Trigonométrie                                    [A](/PM1C/slides/01-trigonometry?boardName=A)                         [B](/PM1C/slides/01-trigonometry?boardName=B)
 
 :::
 
