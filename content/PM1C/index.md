@@ -6,7 +6,7 @@ title: 'Pont vers le supérieur: mathématiques'
 
 ![Pont mathématiques](images/PM1C.webp){.w-full .h-96 .object-cover .rounded-xl .opacity-70}
 
-::::: {.grid .md:grid-cols-2 .xl:grid-cols-3}
+::::: {.grid .md:grid-cols-2 .xl:grid-cols-3 .gap-4}
 
 ::: info
 
