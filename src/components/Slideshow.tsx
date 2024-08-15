@@ -11,7 +11,10 @@ type SlideshowProps = {
 
 export default function Slideshow(props: SlideshowProps) {
   const user = createAsync(() => getUser())
-  const resolved = children(() => props.children)
+  const resolved = () => {
+    const c = children(() => props.children)()
+    return Array.isArray(c) ? c : [c]
+  }
 
   let deck: InstanceType<typeof import('reveal.js')>
   onMount(async () => {
@@ -34,7 +37,7 @@ export default function Slideshow(props: SlideshowProps) {
   return (
     <div class="reveal">
       <div class="slides">
-        <For each={resolved() as HTMLElement[]}>
+        <For each={resolved()}>
           {(child, i) => {
             return (
               <section>
