@@ -78,9 +78,10 @@ async function upsertAssignment(url: string, id: string, data: Exercise[]) {
 export default function ExerciseSequence(props: ExerciseProps) {
   const location = useLocation()
   const [index, setIndex] = createSignal(0)
-  const exercise = () => props.data[index()]
+  const [data, setData] = createStore<Exercise[]>(props.data)
+  const exercise = () => data[index()]
   const classes = () =>
-    props.data.map((exercise: Exercise) => {
+    data.map((exercise: Exercise) => {
       if (exercise.feedback?.correct) {
         return 'bg-green-100'
       } else if (exercise.feedback?.correct === false) {
@@ -89,7 +90,6 @@ export default function ExerciseSequence(props: ExerciseProps) {
       return 'bg-white'
     })
 
-  const [data, setData] = createStore<Exercise[]>(props.data)
   const savedData = createAsync(() => loadAssignment(location.pathname, props.id || ''))
   createEffect(() => {
     const saved = savedData()
@@ -108,7 +108,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
   const submitted = createMemo(
     () =>
       countBy(
-        props.data.map((exercise: Exercise) => {
+        data.map((exercise: Exercise) => {
           const correct = exercise.feedback?.correct
           return correct === true || correct === false
         }),
@@ -120,7 +120,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
       submitted,
       async () => {
         if (submitted()) {
-          await upsertAssignment(location.pathname, props.id || '', props.data)
+          await upsertAssignment(location.pathname, props.id || '', data)
           revalidate(loadAssignment.keyFor(location.pathname, props.id || ''))
           revalidate(loadResults.keyFor(location.pathname, props.id || ''))
         }
@@ -134,13 +134,8 @@ export default function ExerciseSequence(props: ExerciseProps) {
       <Show when={lastModified()}>
         <p>Dernière sauvegarde: {lastModified()}</p>
       </Show>
-      <Show when={props.data.length > 1}>
-        <Pagination
-          current={index()}
-          max={props.data.length}
-          onChange={setIndex}
-          classes={classes()}
-        />
+      <Show when={data.length > 1}>
+        <Pagination current={index()} max={data.length} onChange={setIndex} classes={classes()} />
       </Show>
       <Suspense>
         <Dynamic
