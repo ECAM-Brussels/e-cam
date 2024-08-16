@@ -1,22 +1,63 @@
-import { createAsync } from '@solidjs/router'
+import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
 import 'reveal.js/dist/reveal.css'
-import { children, For, onCleanup, onMount, type JSXElement } from 'solid-js'
+import { createEffect, For, onCleanup, onMount, type JSXElement } from 'solid-js'
 import Whiteboard from '~/components/Whiteboard'
 import { getUser } from '~/lib/auth/session'
+import { prisma } from '~/lib/db'
 
 type SlideshowProps = {
   children: JSXElement
   boardName?: string
 }
 
-export default function Slideshow(props: SlideshowProps) {
-  const user = createAsync(() => getUser())
-  const resolved = () => {
-    const c = children(() => props.children)()
-    return Array.isArray(c) ? c : [c]
+export const getBoardCount = cache(async (url: string, boardName: string) => {
+  'use server'
+  const boards = await prisma.board.findMany({
+    where: { url, id: { startsWith: `slide-${boardName}-` } },
+    select: { id: true },
+  })
+  const result: { [key: string]: number } = {}
+  for (const board of boards) {
+    const id = board.id.split('-').at(-2) as string
+    result[id] = id in result ? result[id] + 1 : 1
   }
+  return result
+}, 'getBoards')
+
+async function addBoard(url: string, boardName: string, i: number, j: number) {
+  'use server'
+  const board = await prisma.board.create({
+    data: { url, id: `slide-${boardName}-${i}-${j}`, body: '[]' },
+  })
+}
+
+function getSlides(props: SlideshowProps) {
+  const results = []
+  const { children } = props
+  if (Array.isArray(children)) {
+    for (let i = 0; i < children.length; i++) {
+      results[i] = (j: number) => (j === 0 ? children[i] : (props.children as HTMLElement[])[i])
+    }
+  } else {
+    results[0] = (j: number) => (j === 0 ? children : props.children)
+  }
+  return results
+}
+
+export default function Slideshow(props: SlideshowProps) {
+  const location = useLocation()
+  const user = createAsync(() => getUser())
+  const slides = getSlides(props)
 
   let deck: InstanceType<typeof import('reveal.js')>
+
+  const count = createAsync(() => getBoardCount(location.pathname, props.boardName || ''))
+  createEffect(() => {
+    if (count() && deck) {
+      deck.sync()
+    }
+  })
+
   onMount(async () => {
     const Reveal = (await import('reveal.js')).default
     deck = new Reveal({
@@ -27,7 +68,17 @@ export default function Slideshow(props: SlideshowProps) {
       width: 1920,
     })
     deck.initialize()
+    deck.addKeyBinding('40', async () => {
+      const { h, v } = deck.getIndices()
+      if (v === (count()?.[String(h)] || 1) - 1) {
+        await addBoard(location.pathname, props.boardName || '', h, v + 1)
+        revalidate(getBoardCount.keyFor(location.pathname, props.boardName || ''))
+      } else {
+        deck.down()
+      }
+    })
   })
+
   onCleanup(async () => {
     if (deck) {
       deck.destroy()
@@ -37,23 +88,25 @@ export default function Slideshow(props: SlideshowProps) {
   return (
     <div class="reveal">
       <div class="slides">
-        <For each={resolved()}>
-          {(child, i) => {
-            return (
-              <section>
-                <section class="relative">
-                  {child}
-                  <Whiteboard
-                    id={`slide-${props.boardName}-${i()}`}
-                    class="absolute top-0 left-0"
-                    width={1920}
-                    height={1080}
-                    readOnly={!user()?.admin}
-                  />
-                </section>
-              </section>
-            )
-          }}
+        <For each={slides}>
+          {(child, i) => (
+            <section>
+              <For each={[...Array((count() || {})[String(i())] || 1).keys()]}>
+                {(j) => (
+                  <section class="relative">
+                    {child(j)}
+                    <Whiteboard
+                      id={`slide-${props.boardName}-${i()}-${j}`}
+                      class="absolute top-0 left-0"
+                      width={1920}
+                      height={1080}
+                      readOnly={!user()?.admin}
+                    />
+                  </section>
+                )}
+              </For>
+            </section>
+          )}
         </For>
       </div>
     </div>
