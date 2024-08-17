@@ -86,7 +86,7 @@ export default function Factor(props: ExerciseProps<State, Parameters<typeof gen
       }
     >
       <p>
-        Factorisez <Math value={props.state?.expr} />
+        Factorisez l'expression.
       </p>
       <div class="flex items-center gap-2">
         <Math value={`${props.state?.expr}=`} />
