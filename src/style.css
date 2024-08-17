@@ -8,4 +8,7 @@
   html {
     font-family: "Fira Sans", sans-serif;
   }
+  math-field::part(menu-toggle) {
+    display: none;
+  }
 }
