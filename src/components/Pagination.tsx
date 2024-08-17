@@ -16,7 +16,7 @@ export default function Pagination(props: PaginationProps) {
       className = props.classes[i]
     }
     if (props.current === i) {
-      className += ' font-bold border-2 border-e-2 border-blue-500 border-e-blue-500'
+      className += ' font-bold'
     }
     return className
   }
