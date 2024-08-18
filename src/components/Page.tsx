@@ -9,7 +9,7 @@ export default function Page(props: PageProps) {
   return (
     <>
       <Navbar />
-      <div class="bg-white container mx-auto p-4">{props.children}</div>
+      <div class="container mx-auto p-4">{props.children}</div>
     </>
   )
 }

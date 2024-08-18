@@ -2,6 +2,7 @@ import { Show, type JSXElement } from 'solid-js'
 
 const environments = {
   definition: ['Définition', 'bg-green-700 text-green-100'],
+  question: ['Question', 'bg-blue-900 text-blue-100'],
 } as const
 
 type EnvironmentProps = {

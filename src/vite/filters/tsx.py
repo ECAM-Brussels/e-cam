@@ -20,7 +20,7 @@ def math(el: pf.Element, doc: pf.Doc):
 
 def environments(el: pf.Element, doc: pf.Doc):
     del doc
-    classes = ["definition"]
+    classes = ["definition", "question"]
     if type(el) == pf.Div and el.classes and el.classes[0] in classes:
         return [
             pf.RawBlock(f'<Environment type="{el.classes[0]}">'),
