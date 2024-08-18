@@ -15,4 +15,20 @@
       X2: [0],
     },
   },
+  {
+    type: 'Factor',
+    params: {
+      A: [1],
+      X1: [1],
+      X2: [1, 2, 3],
+    },
+  },
+  {
+    type: 'Factor',
+    params: {
+      A: [1],
+      X1: [1, 2, 3],
+      X2: [1, 2, 3],
+    },
+  },
 ] satisfies import('~/components/ExerciseSequence').Exercise[]
