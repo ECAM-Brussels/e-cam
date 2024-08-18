@@ -81,8 +81,8 @@ export default function ExerciseBase<S, G>(
   })
 
   return (
-    <div class="grid grid-flow-col">
-      <div class="col-span-2">
+    <div class="grid grid-flow-col gap-4">
+      <div class="col-span-2 bg-white border rounded-xl p-4">
         {props.children}
         <Show when={!props.options?.mark}>
           <p class="mt-6">
@@ -100,7 +100,7 @@ export default function ExerciseBase<S, G>(
         </Show>
       </div>
       <Show when={props.options?.mark && props.feedback}>
-        <div class="border rounded-xl p-4">
+        <div class="bg-white border rounded-xl p-4">
           <Show when={props.feedback?.correct}>
             <p class="text-green-800 font-bold text-xl">
               <Fa icon={faCheckCircle} /> Correct&nbsp;!
