@@ -1,8 +1,17 @@
 import { loadResults } from './Results'
 import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
-import { countBy, mapValues } from 'lodash-es'
-import { Show, Suspense, createEffect, createMemo, createSignal, lazy, on, onMount } from 'solid-js'
-import { createStore, SetStoreFunction } from 'solid-js/store'
+import { cloneDeep, countBy, mapValues } from 'lodash-es'
+import {
+  Show,
+  Suspense,
+  createEffect,
+  createMemo,
+  createSignal,
+  lazy,
+  mergeProps,
+  on,
+} from 'solid-js'
+import { createStore } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web'
 import { z } from 'zod'
 import Pagination from '~/components/Pagination'
@@ -39,9 +48,12 @@ type ExerciseFromName<T extends ExerciseName> = {
     })
 export type Exercise = { [N in ExerciseName]: ExerciseFromName<N> }[ExerciseName]
 
-type ExerciseProps = {
+type Mode = 'static' | 'dynamic'
+
+export type ExerciseProps = {
   id?: string
   data: Exercise[]
+  mode?: Mode
 }
 
 export const loadAssignment = cache(async (url: string, id: string = '') => {
@@ -76,9 +88,31 @@ async function upsertAssignment(url: string, id: string, data: Exercise[]) {
 }
 
 export default function ExerciseSequence(props: ExerciseProps) {
+  props = mergeProps({ mode: 'static' as const }, props)
   const location = useLocation()
   const [index, setIndex] = createSignal(0)
-  const [data, setData] = createStore<Exercise[]>(props.data)
+  const [data, setData] = createStore<Exercise[]>(
+    props.mode === 'static' ? props.data : [cloneDeep(props.data[0])],
+  )
+  const dynamicIndex = () => {
+    if (props.mode === 'static') {
+      return index()
+    }
+    let i = 0
+    let streak = 0
+    for (const exercise of data) {
+      if (exercise.feedback?.correct === true) {
+        streak++
+        if (streak === 4) {
+          i++
+          streak = 0
+        }
+      } else {
+        streak = 0
+      }
+    }
+    return i
+  }
   const exercise = () => data[index()]
   const classes = () =>
     data.map((exercise: Exercise) => {
@@ -119,6 +153,9 @@ export default function ExerciseSequence(props: ExerciseProps) {
     on(
       submitted,
       async () => {
+        if (props.mode === 'dynamic') {
+          setData(data.length, cloneDeep(props.data[dynamicIndex()]))
+        }
         if (submitted()) {
           await upsertAssignment(location.pathname, props.id || '', data)
           revalidate(loadAssignment.keyFor(location.pathname, props.id || ''))

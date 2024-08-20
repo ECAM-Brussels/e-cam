@@ -20,10 +20,14 @@ export default function () {
     <Page>
       <Show
         when={searchParams.results && user()?.admin}
-        fallback={<ExerciseSequence data={
-          // @ts-ignore
-          $body$
-        } />}
+        fallback={
+          <ExerciseSequence
+            {
+              // @ts-ignore
+              ...$body$
+            }
+          />
+        }
       >
         <Results url={location.pathname} />
       </Show>
