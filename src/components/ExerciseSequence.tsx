@@ -36,6 +36,7 @@ type ExerciseFromName<T extends ExerciseName> = {
     correct: boolean
     valid: boolean
     solution: z.infer<Module<T>['schema']>
+    time: number
   }
 } & (HasGenerator<Module<T>> extends true
   ? {

@@ -1,5 +1,5 @@
 import { faCheckCircle, faPaperPlane, faXmark } from '@fortawesome/free-solid-svg-icons'
-import { JSXElement, Show, createEffect } from 'solid-js'
+import { JSXElement, Show, createEffect, onCleanup, onMount } from 'solid-js'
 import { SetStoreFunction } from 'solid-js/store'
 import { type ZodObject } from 'zod'
 import Fa from '~/components/Fa'
@@ -9,6 +9,7 @@ export type ExerciseProps<S, G> = {
     correct: boolean
     valid: boolean
     solution: S
+    time: number
   }
   options?: {
     mark: boolean
@@ -71,6 +72,21 @@ export default function ExerciseBase<S, G>(
     }
   })
 
+  let timer: ReturnType<typeof setInterval>
+  onMount(() => {
+    timer = setInterval(() => {
+      if (!props.feedback?.time) {
+        props.setter('feedback', 'time', 0)
+      }
+      if (props.feedback && props.feedback.correct === undefined) {
+        props.setter('feedback', 'time', props.feedback.time + 1)
+      }
+    }, 1000)
+  })
+  onCleanup(() => {
+    clearInterval(timer)
+  })
+
   createEffect(async () => {
     if (props.state) {
       if (props.options?.showSolution && props.solve) {
@@ -99,6 +115,7 @@ export default function ExerciseBase<S, G>(
           </p>
         </Show>
       </div>
+      <div class="bg-white border rounded-xl text-center font-mono">{props.feedback?.time}</div>
       <Show when={props.options?.mark && props.feedback}>
         <div class="bg-white border rounded-xl p-4">
           <Show when={props.feedback?.correct}>
