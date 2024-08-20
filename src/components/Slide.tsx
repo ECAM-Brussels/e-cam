@@ -8,7 +8,7 @@ type SlideProps = {
 
 export default function Slide(props: SlideProps) {
   return (
-    <div>
+    <div class="h-full">
       <div class="bg-slate-700 mb-6 px-4 py-3 text-slate-100 text-left text-3xl">{props.title}</div>
       <div class={`prose prose-2xl px-4 max-w-none text-left ${props.class}`}>{props.children}</div>
     </div>

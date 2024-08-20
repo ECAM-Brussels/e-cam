@@ -93,7 +93,7 @@ export default function Slideshow(props: SlideshowProps) {
             <section>
               <For each={[...Array((count() || {})[String(i())] || 1).keys()]}>
                 {(j) => (
-                  <section class="relative">
+                  <section class="relative h-full">
                     {child(j)}
                     <Whiteboard
                       id={`slide-${props.boardName}-${i()}-${j}`}
