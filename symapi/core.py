@@ -14,7 +14,7 @@ def parse_latex(expr: str):
         sympy.Symbol("i"): sympy.I,
         sympy.Symbol("pi"): sympy.pi,
     }
-    return remove_funcs(parsed.subs(subs)) if parsed else None
+    return remove_funcs(parsed.subs(subs)) if parsed is not None else None
 
 def remove_funcs(expr: sympy.Basic) -> sympy.Basic:
     if isinstance(expr.func, sympy.core.function.UndefinedFunction):

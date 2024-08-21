@@ -23,6 +23,7 @@ const exercises = {
   Equation: () => import('~/exercises/Equation'),
   Factor: () => import('~/exercises/Factor'),
   Simple: () => import('~/exercises/Simple'),
+  System: () => import('~/exercises/System'),
 }
 const components = mapValues(exercises, (m) => lazy(async () => ({ default: (await m()).default })))
 
