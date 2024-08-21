@@ -2,12 +2,17 @@ import { createAsync, useLocation, useSearchParams, type RouteDefinition } from 
 import { Show } from 'solid-js'
 import ExerciseSequence, { loadAssignment } from '~/components/ExerciseSequence'
 import Page from '~/components/Page'
-import Results from '~/components/Results'
+import Results, { loadResults } from '~/components/Results'
 import { getUser } from '~/lib/auth/session'
 
 export const route = {
   load: ({ location }) => {
-    loadAssignment(location.pathname)
+    const search = new URLSearchParams(location.search)
+    if (search.get('results')) {
+      loadResults(location.pathname, '')
+    } else {
+      loadAssignment(location.pathname)
+    }
     getUser()
   },
 } satisfies RouteDefinition
