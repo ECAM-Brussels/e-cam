@@ -20,7 +20,7 @@ export const route = {
 export default function () {
   const location = useLocation()
   const user = createAsync(() => getUser())
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   return (
     <Page>
       <Show
@@ -32,6 +32,10 @@ export default function () {
                 // @ts-ignore
                 ...$body$
               }
+              page={searchParams.page}
+              onPageChange={(index) => {
+                setSearchParams({ page: index })
+              }}
             />
             <Show when={user()?.admin}>
               <p class="mt-8 text-center">
