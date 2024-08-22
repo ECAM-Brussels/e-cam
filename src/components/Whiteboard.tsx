@@ -172,7 +172,7 @@ export default function Whiteboard(props: WhiteboardProps) {
   })
 
   return (
-    <div class={props.class}>
+    <div class={props.class} style={{ width: `${props.width}px`, height: `${props.height}px` }}>
       <div
         ref={container!}
         class="relative"
@@ -180,7 +180,7 @@ export default function Whiteboard(props: WhiteboardProps) {
       >
         <Toolbar currentStroke={currentStroke} setter={setCurrentStroke} />
         <canvas
-          class="z-10 absolute top-0 left-0"
+          class="z-10"
           classList={{ 'cursor-crosshair': !props.readOnly }}
           ref={canvasRef!}
           height={props.height}

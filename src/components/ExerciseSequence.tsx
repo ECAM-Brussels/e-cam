@@ -1,4 +1,5 @@
 import { loadResults } from './Results'
+import Whiteboard from './Whiteboard'
 import { cache, createAsync, revalidate, useLocation, useSearchParams } from '@solidjs/router'
 import { formatDistance } from 'date-fns'
 import { fr } from 'date-fns/locale'
@@ -19,7 +20,6 @@ import { z } from 'zod'
 import Pagination from '~/components/Pagination'
 import { getUser } from '~/lib/auth/session'
 import { prisma } from '~/lib/db'
-import Whiteboard from './Whiteboard'
 
 const exercises = {
   CompleteSquare: () => import('~/exercises/CompleteSquare'),
@@ -59,6 +59,7 @@ export type ExerciseProps = {
   id?: string
   data: Exercise[]
   mode?: Mode
+  whiteboard?: boolean
 }
 
 export const loadAssignment = cache(
@@ -101,6 +102,7 @@ async function upsertAssignment(url: string, id: string, userEmail: string = '',
 
 export default function ExerciseSequence(props: ExerciseProps) {
   props = mergeProps({ mode: 'static' as const }, props)
+  const user = createAsync(() => getUser())
   const location = useLocation()
   const [searchParams] = useSearchParams()
   const [index, setIndex] = createSignal(0)
@@ -172,7 +174,12 @@ export default function ExerciseSequence(props: ExerciseProps) {
           setData(data.length, cloneDeep(props.data[dynamicIndex()]))
         }
         if (submitted()) {
-          await upsertAssignment(location.pathname, props.id || '', searchParams.userEmail || '', data)
+          await upsertAssignment(
+            location.pathname,
+            props.id || '',
+            searchParams.userEmail || '',
+            data,
+          )
           revalidate(loadAssignment.keyFor(location.pathname, props.id || ''))
           revalidate(loadResults.keyFor(location.pathname, props.id || ''))
         }
@@ -198,7 +205,12 @@ export default function ExerciseSequence(props: ExerciseProps) {
             setData(index(), ...args)
           }}
         />
-        <Whiteboard class="bg-white border" height={800} width={400} id={`exercises-${props.id}-${index()}`} />
+        <Whiteboard
+          class="bg-white border mx-auto mt-4"
+          height={600}
+          width={800}
+          id={`exercises-${user()?.email}-${props.id}-${index()}`}
+        />
       </Suspense>
     </>
   )
