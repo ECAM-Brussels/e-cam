@@ -1,5 +1,7 @@
 import { loadResults } from './Results'
 import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
+import { formatDistance } from 'date-fns'
+import { fr } from 'date-fns/locale'
 import { cloneDeep, countBy, mapValues } from 'lodash-es'
 import {
   Show,
@@ -137,7 +139,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
   const lastModified = () => {
     const saved = savedData()
     if (saved && saved.lastModified) {
-      return saved.lastModified.toUTCString()
+      return formatDistance(saved.lastModified, new Date(), { addSuffix: true, locale: fr })
     }
   }
 
@@ -171,7 +173,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
   return (
     <>
       <Show when={lastModified()}>
-        <p>Dernière sauvegarde: {lastModified()}</p>
+        <p>Dernière sauvegarde {lastModified()}</p>
       </Show>
       <Show when={data.length > 1}>
         <Pagination current={index()} max={data.length} onChange={setIndex} classes={classes()} />

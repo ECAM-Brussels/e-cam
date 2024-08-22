@@ -115,7 +115,6 @@ export default function ExerciseBase<S, G>(
           </p>
         </Show>
       </div>
-      <div class="bg-white border rounded-xl text-center font-mono">{props.feedback?.time}</div>
       <Show when={props.options?.mark && props.feedback}>
         <div class="bg-white border rounded-xl p-4">
           <Show when={props.feedback?.correct}>
