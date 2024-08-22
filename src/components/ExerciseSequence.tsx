@@ -19,6 +19,7 @@ import { z } from 'zod'
 import Pagination from '~/components/Pagination'
 import { getUser } from '~/lib/auth/session'
 import { prisma } from '~/lib/db'
+import Whiteboard from './Whiteboard'
 
 const exercises = {
   CompleteSquare: () => import('~/exercises/CompleteSquare'),
@@ -211,6 +212,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
             setData(index(), ...args)
           }}
         />
+        <Whiteboard class="bg-white border" height={800} width={400} id={`exercises-${props.id}-${index()}`} />
       </Suspense>
     </>
   )

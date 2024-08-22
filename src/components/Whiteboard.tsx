@@ -61,6 +61,8 @@ export default function Whiteboard(props: WhiteboardProps) {
     const saved = savedStrokes()
     if (saved) {
       setStrokes(saved)
+    } else if (saved === null) {
+      setStrokes([])
     }
   })
 
@@ -178,7 +180,7 @@ export default function Whiteboard(props: WhiteboardProps) {
       >
         <Toolbar currentStroke={currentStroke} setter={setCurrentStroke} />
         <canvas
-          class="z-10"
+          class="z-10 absolute top-0 left-0"
           classList={{ 'cursor-crosshair': !props.readOnly }}
           ref={canvasRef!}
           height={props.height}
