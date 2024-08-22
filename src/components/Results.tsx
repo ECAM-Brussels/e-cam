@@ -1,5 +1,5 @@
 import { faCheck, faQuestion, faXmark } from '@fortawesome/free-solid-svg-icons'
-import { cache, createAsync, useLocation } from '@solidjs/router'
+import { cache, createAsync } from '@solidjs/router'
 import Fuse from 'fuse.js'
 import { countBy } from 'lodash-es'
 import { createSignal, For, Show } from 'solid-js'
