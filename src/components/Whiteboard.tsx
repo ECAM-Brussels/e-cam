@@ -37,7 +37,7 @@ const upsertBoard = throttle(
     revalidate(loadBoard.keyFor(url, id))
   },
   5000,
-  { trailing: true },
+  { leading: true, trailing: true },
 )
 
 type WhiteboardProps = {
