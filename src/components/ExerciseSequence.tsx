@@ -1,5 +1,5 @@
 import { loadResults } from './Results'
-import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
+import { cache, createAsync, revalidate, useLocation, useSearchParams } from '@solidjs/router'
 import { formatDistance } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { cloneDeep, countBy, mapValues } from 'lodash-es'
@@ -60,29 +60,36 @@ export type ExerciseProps = {
   mode?: Mode
 }
 
-export const loadAssignment = cache(async (url: string, id: string = '') => {
-  'use server'
-  const user = await getUser()
-  if (!user || !user.email) {
-    return null
-  }
-  const userEmail = user.email
-  const record = await prisma.assignment.findUnique({
-    where: { url_userEmail_id: { url, userEmail, id } },
-  })
-  if (!record) {
-    return null
-  }
-  return { ...record, body: JSON.parse(String(record.body)) as Exercise[] }
-}, 'loadAssignment')
+export const loadAssignment = cache(
+  async (url: string, id: string = '', userEmail: string = '') => {
+    'use server'
+    const user = await getUser()
+    if (!user || !user.email) {
+      return null
+    }
+    if (!userEmail || !user.admin) {
+      userEmail = user.email
+    }
+    const record = await prisma.assignment.findUnique({
+      where: { url_userEmail_id: { url, userEmail, id } },
+    })
+    if (!record) {
+      return null
+    }
+    return { ...record, body: JSON.parse(String(record.body)) as Exercise[] }
+  },
+  'loadAssignment',
+)
 
-async function upsertAssignment(url: string, id: string, data: Exercise[]) {
+async function upsertAssignment(url: string, id: string, userEmail: string = '', data: Exercise[]) {
   'use server'
   const user = await getUser()
   if (!user || !user.email) {
     throw new Error('Error when upserting assignment: user not logged in')
   }
-  const userEmail = user.email
+  if (!userEmail || !user.admin) {
+    userEmail = user.email
+  }
   let body = JSON.stringify(data)
   await prisma.assignment.upsert({
     where: { url_userEmail_id: { url, userEmail, id } },
@@ -94,6 +101,7 @@ async function upsertAssignment(url: string, id: string, data: Exercise[]) {
 export default function ExerciseSequence(props: ExerciseProps) {
   props = mergeProps({ mode: 'static' as const }, props)
   const location = useLocation()
+  const [searchParams] = useSearchParams()
   const [index, setIndex] = createSignal(0)
   const [data, setData] = createStore<Exercise[]>(
     props.mode === 'static' ? props.data : [cloneDeep(props.data[0])],
@@ -128,7 +136,9 @@ export default function ExerciseSequence(props: ExerciseProps) {
       return 'bg-white'
     })
 
-  const savedData = createAsync(() => loadAssignment(location.pathname, props.id || ''))
+  const savedData = createAsync(() =>
+    loadAssignment(location.pathname, props.id || '', searchParams.userEmail || ''),
+  )
   createEffect(() => {
     const saved = savedData()
     if (saved) {
@@ -161,7 +171,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
           setData(data.length, cloneDeep(props.data[dynamicIndex()]))
         }
         if (submitted()) {
-          await upsertAssignment(location.pathname, props.id || '', data)
+          await upsertAssignment(location.pathname, props.id || '', searchParams.userEmail || '', data)
           revalidate(loadAssignment.keyFor(location.pathname, props.id || ''))
           revalidate(loadResults.keyFor(location.pathname, props.id || ''))
         }

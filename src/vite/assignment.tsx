@@ -11,7 +11,7 @@ export const route = {
     if (search.get('results')) {
       loadResults(location.pathname, '')
     } else {
-      loadAssignment(location.pathname)
+      loadAssignment(location.pathname, '', search.get('userEmail') || '')
     }
     getUser()
   },
