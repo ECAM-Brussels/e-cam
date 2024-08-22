@@ -34,7 +34,7 @@ class System:
         return [sympy.Eq(system[i], b[i], evaluate=False) for i in range(n)]
     
     @strawberry.field
-    def check(equations: list[Math], unknowns: list[Math], x: list[Math]) -> bool:
-        subs = dict(zip(unknowns, x))
+    def check(equations: list[Math], variables: list[Math], x: list[Math]) -> bool:
+        subs = dict(zip(variables, x))
         equations = [eq.subs(subs) for eq in equations]
         return all(equations)
