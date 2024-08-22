@@ -57,8 +57,6 @@ type Mode = 'static' | 'dynamic'
 
 export type ExerciseProps = {
   id?: string
-  page?: number
-  onPageChange?: (newIndex: number) => void
   data: Exercise[]
   mode?: Mode
 }
@@ -105,19 +103,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
   props = mergeProps({ mode: 'static' as const }, props)
   const location = useLocation()
   const [searchParams] = useSearchParams()
-
-  const [index, setIndex] = createSignal(props.page || 0)
-  createEffect(() => {
-    if (props.page) {
-      setIndex(props.page)
-    }
-  })
-  createEffect(() => {
-    if (props.onPageChange) {
-      props.onPageChange(index())
-    }
-  })
-
+  const [index, setIndex] = createSignal(0)
   const [data, setData] = createStore<Exercise[]>(
     props.mode === 'static' ? props.data : [cloneDeep(props.data[0])],
   )
