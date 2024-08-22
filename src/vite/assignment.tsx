@@ -26,15 +26,31 @@ export default function () {
       <Show
         when={searchParams.results && user()?.admin}
         fallback={
-          <ExerciseSequence
-            {
-              // @ts-ignore
-              ...$body$
-            }
-          />
+          <>
+            <ExerciseSequence
+              {
+                // @ts-ignore
+                ...$body$
+              }
+            />
+            <Show when={user()?.admin}>
+              <p class="mt-8 text-center">
+                <a class="rounded-xl bg-green-900 px-3 py-2 text-green-100" href="?results=true">
+                  Résultats
+                </a>
+              </p>
+            </Show>
+          </>
         }
       >
         <Results url={location.pathname} />
+        <Show when={user()?.admin}>
+          <p class="mt-8 text-center">
+            <a class="rounded-xl bg-green-900 px-3 py-2 text-green-100" href="?">
+              Voir le travail
+            </a>
+          </p>
+        </Show>
       </Show>
     </Page>
   )
