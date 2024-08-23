@@ -13,12 +13,14 @@ type EnvironmentProps = {
 
 export default function Environment(props: EnvironmentProps) {
   return (
-    <div class="border rounded-xl shadow">
+    <div class="border rounded-xl shadow m-4">
       <div class={`rounded-t-xl px-3 py-1 ${environments[props.type][1]}`}>
         {environments[props.type][0]}
         <Show when={props.title}>({props.title})</Show>
       </div>
-      {props.children}
+      <div class="p-2">
+        {props.children}
+      </div>
     </div>
   )
 }
