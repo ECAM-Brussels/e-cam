@@ -17,7 +17,9 @@ export default function Navbar() {
           </NavbarItem>
         </ul>
         <ul class="flex items-center text-sm">
-          <NavbarItem href="/PM1C" underline><Fa icon={faBridgeWater} class="text-2xl" /> Pont maths</NavbarItem>
+          <NavbarItem href="/PM1C" underline>
+            <Fa icon={faBridgeWater} class="text-2xl" /> Pont maths
+          </NavbarItem>
         </ul>
         <ul class="flex items-center text-sm">
           <Show
@@ -29,7 +31,9 @@ export default function Navbar() {
                 <NavbarItem>{name()}</NavbarItem>
                 <NavbarItem>
                   <form action={logout} method="post">
-                    <button type="submit"><Fa icon={faRightFromBracket} /> Se déconnecter</button>
+                    <button type="submit">
+                      <Fa icon={faRightFromBracket} /> Se déconnecter
+                    </button>
                   </form>
                 </NavbarItem>
               </>
@@ -53,8 +57,7 @@ type NavbarItemProps = {
 
 function NavbarItem(props: NavbarItemProps) {
   const location = useLocation()
-  const classes = () =>
-    `block p-3 text-gray-800 font-semibold ${props.class}`
+  const classes = () => `block p-3 text-gray-800 font-semibold ${props.class}`
   return (
     <li>
       <Show when={props.href} fallback={<span class={classes()}>{props.children}</span>}>

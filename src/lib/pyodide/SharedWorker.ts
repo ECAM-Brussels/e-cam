@@ -1,6 +1,5 @@
 //// <reference path="../../../node_modules/@types/sharedworker/index.d.ts" />
-
-import { handleMessage } from "./common"
+import { handleMessage } from './common'
 
 onconnect = (e: MessageEvent) => {
   const port = e.ports[0]

@@ -13,7 +13,7 @@ export const route = {
   load: ({ location }) => {
     const search = new URLSearchParams(location.search)
     getBoardCount(location.pathname, search.get('boardName') || '')
-  }
+  },
 } satisfies RouteDefinition
 
 export default function () {

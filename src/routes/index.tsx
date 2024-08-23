@@ -27,10 +27,12 @@ function Card(props: CardProps) {
   return (
     <a href={props.href}>
       <div class="bg-white rounded-xl shadow">
-        <img src={props.src} alt={props.alt} class="rounded-t opacity-60 max-h-64 object-cover w-full" />
-        <div class="px-2 py-4 prose">
-          {props.children}
-        </div>
+        <img
+          src={props.src}
+          alt={props.alt}
+          class="rounded-t opacity-60 max-h-64 object-cover w-full"
+        />
+        <div class="px-2 py-4 prose">{props.children}</div>
       </div>
     </a>
   )

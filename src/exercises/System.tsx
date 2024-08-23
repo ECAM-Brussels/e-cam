@@ -16,7 +16,7 @@ export type State = z.infer<typeof schema>
 
 export const mark = cache(async (state: State) => {
   'use server'
-  const {system } = await request(
+  const { system } = await request(
     graphql(`
       query CheckSystem($equations: [Math!]!, $variables: [Math!]!, $attempt: [Math!]!) {
         system {
