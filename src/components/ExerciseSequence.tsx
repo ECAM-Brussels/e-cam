@@ -172,6 +172,9 @@ export default function ExerciseSequence(props: ExerciseProps) {
       async () => {
         if (props.mode === 'dynamic') {
           setData(data.length, cloneDeep(props.data[dynamicIndex()]))
+          setTimeout(() => {
+            setIndex(index() + 1)
+          }, 2000)
         }
         if (submitted()) {
           await upsertAssignment(
