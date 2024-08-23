@@ -23,6 +23,7 @@ async function generatePage(file: string) {
     '-t html5',
     `--template src/vite/${template}`,
     '--wrap=preserve',
+    `-V imports="${await generateImports()}"`
   ]
 
   const filters = await glob.glob('src/vite/filters/*.py')
@@ -48,6 +49,20 @@ async function createAssignment(file: string) {
   const template = String(readFileSync(resolve('src/vite/assignment.tsx'), 'utf-8'))
   const content = template.replace('$body$', data)
   writeFileSync(outputPath, content, 'utf-8')
+}
+
+async function generateImports() {
+  const components = await glob.glob('src/components/*.tsx')
+  let imports = ''
+  for(const component of components) {
+    const name = component.split('/').at(-1)!.replace('.tsx', '')
+    if (name === 'Slideshow' || name === 'Page' || name.endsWith('.test')) {
+      continue
+    }
+    const type = name === 'Math' ? 'clientOnly' : 'lazy'
+    imports += `const ${name} = ${type}(() => import('~/components/${name}'))\n`
+  }
+  return imports
 }
 
 const pandocPlugin = (): Plugin => {
