@@ -15,11 +15,11 @@ export type State = z.infer<typeof schema>
 export async function generate(params: {
   A: number[]
   X1: number[]
-  X2: number[]
+  X2: number[] | ((x1: number) => number)
 }): Promise<State> {
   const a = sample(params.A)
-  const x1 = sample(params.X1)
-  const x2 = sample(params.X2)
+  const x1 = sample(params.X1) as number
+  const x2 = Array.isArray(params.X2) ? sample(params.X2) : params.X2(x1)
   const { expression } = await request(
     graphql(`
       query GenerateFactorisation($expr: Math!) {
