@@ -10,7 +10,9 @@ type SlideProps = {
 export default function Slide(props: SlideProps) {
   return (
     <div class="h-full">
-      <div class="bg-slate-700 mb-6 px-4 py-3 text-slate-100 text-left text-3xl">{props.title}</div>
+      <div class="bg-slate-700 font-semibold mb-6 px-4 py-3 shadow-md text-slate-100 text-left text-4xl">
+        {props.title}
+      </div>
       <div
         class={props.class}
         classList={{
