@@ -18,6 +18,8 @@ def slideshow(el: pf.Element, doc: pf.Doc = None):
             pf.RawBlock("</>}>")
         ]
         return elements
+    if type(el) == pf.Link:
+        el.classes += ['relative', 'z-20']
 
 
 def prepare(doc: pf.Doc):

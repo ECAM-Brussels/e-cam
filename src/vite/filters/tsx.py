@@ -20,10 +20,12 @@ def math(el: pf.Element, doc: pf.Doc):
 
 def environments(el: pf.Element, doc: pf.Doc):
     del doc
-    classes = ["definition", "question", "proposition"]
+    classes = ["definition", "proposition", "question", "remark"]
     if type(el) == pf.Div and el.classes and el.classes[0] in classes:
         return [
-            pf.RawBlock(f'<Environment type="{el.classes[0]}">'),
+            pf.RawBlock(
+                f'<Environment type="{el.classes[0]}" title="{el.attributes.get("title", "")}">'
+            ),
             el,
             pf.RawBlock("</Environment>"),
         ]
@@ -32,9 +34,15 @@ def environments(el: pf.Element, doc: pf.Doc):
 def code(el: pf.Element, doc: pf.Doc):
     del doc
     if type(el) == pf.CodeBlock and el.classes:
-        run = 'true' if 'run' in el.classes else 'false'
+        run = "true" if "run" in el.classes else "false"
         return pf.RawBlock(
-            "<Code value={String.raw`" + el.text + '`} lang="' + el.classes[0] + '" run={' + run + '} />'
+            "<Code value={String.raw`"
+            + el.text
+            + '`} lang="'
+            + el.classes[0]
+            + '" run={'
+            + run
+            + "} />"
         )
 
 

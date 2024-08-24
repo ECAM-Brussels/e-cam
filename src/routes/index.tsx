@@ -6,7 +6,7 @@ export default function Home() {
     <Page>
       <section>
         <h2 class="text-3xl text-slate-800 mb-4">Cours</h2>
-        <div class="grid grid-cols-2">
+        <div class="grid lg:grid-cols-2">
           <Card src="images/PM1C.webp" alt="Pont mathématiques" href="/PM1C/">
             <h3>Pont mathématiques vers le supérieur (ba1)</h3>
           </Card>
