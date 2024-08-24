@@ -1,13 +1,15 @@
-import { faHighlighter, faPen } from '@fortawesome/free-solid-svg-icons'
+import { faFloppyDisk, faHighlighter, faPen } from '@fortawesome/free-solid-svg-icons'
 import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
 import { cloneDeep, throttle } from 'lodash-es'
-import { createEffect, createSignal, For, on, onMount } from 'solid-js'
+import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
 import { createStore, SetStoreFunction, unwrap } from 'solid-js/store'
 import Fa from '~/components/Fa'
+import Spinner from '~/components/Spinner'
 import { getUser } from '~/lib/auth/session'
 import { prisma } from '~/lib/db'
 
 type Mode = 'draw' | 'erase' | 'read'
+type Status = 'unsaved' | 'saving' | 'saved'
 
 type Stroke = {
   color: string
@@ -21,24 +23,19 @@ export const loadBoard = cache(async (url: string, id: string) => {
   return record ? (JSON.parse(String(record.body)) as Stroke[]) : null
 }, 'loadBoards')
 
-const upsertBoard = throttle(
-  async (url: string, id: string, data: Stroke[]) => {
-    'use server'
-    const user = await getUser()
-    if (!user || !user.admin) {
-      throw new Error('Error when upserting board: user is not an admin')
-    }
-    const body = JSON.stringify(data)
-    await prisma.board.upsert({
-      where: { url_id: { url, id } },
-      update: { body, lastModified: new Date() },
-      create: { url, id, body },
-    })
-    revalidate(loadBoard.keyFor(url, id))
-  },
-  5000,
-  { leading: true, trailing: true },
-)
+const upsertBoard = async (url: string, id: string, data: Stroke[]) => {
+  'use server'
+  const user = await getUser()
+  if (!user || !user.admin) {
+    throw new Error('Error when upserting board: user is not an admin')
+  }
+  const body = JSON.stringify(data)
+  await prisma.board.upsert({
+    where: { url_id: { url, id } },
+    update: { body, lastModified: new Date() },
+    create: { url, id, body },
+  })
+}
 
 type WhiteboardProps = {
   id?: string
@@ -57,10 +54,21 @@ export default function Whiteboard(props: WhiteboardProps) {
 
   const [strokes, setStrokes] = createStore<Stroke[]>([])
   const savedStrokes = createAsync(() => loadBoard(location.pathname, props.id || ''))
+  const [status, setStatus] = createSignal<Status>('saved')
+  const save = throttle(
+    async () => {
+      setStatus('saving')
+      await upsertBoard(location.pathname, props.id || '', strokes)
+      revalidate(loadBoard.keyFor(location.pathname, props.id || ''))
+    },
+    5000,
+    { leading: true, trailing: true },
+  )
   createEffect(() => {
     const saved = savedStrokes()
     if (saved) {
       setStrokes(saved)
+      setStatus('saved')
     } else if (saved === null) {
       setStrokes([])
     }
@@ -119,6 +127,7 @@ export default function Whiteboard(props: WhiteboardProps) {
     on(
       () => strokes.length,
       () => {
+        setStatus('unsaved')
         const context = ctx()!
         context.clearRect(0, 0, props.width, props.height)
         for (const stroke of strokes) {
@@ -140,15 +149,7 @@ export default function Whiteboard(props: WhiteboardProps) {
   )
 
   // Saving
-  createEffect(
-    on(
-      () => strokes.length,
-      () => {
-        upsertBoard(location.pathname, props.id || '', strokes)
-      },
-      { defer: true },
-    ),
-  )
+  createEffect(on(() => strokes.length, save, { defer: true }))
 
   // Adding points
   createEffect(
@@ -178,7 +179,7 @@ export default function Whiteboard(props: WhiteboardProps) {
         class="relative"
         style={{ width: `${props.width}px`, height: `${props.height}px` }}
       >
-        <Toolbar currentStroke={currentStroke} setter={setCurrentStroke} />
+        <Toolbar currentStroke={currentStroke} setter={setCurrentStroke} status={status()} />
         <canvas
           class="z-10"
           classList={{ 'cursor-crosshair': !props.readOnly }}
@@ -218,6 +219,7 @@ export default function Whiteboard(props: WhiteboardProps) {
 type ToolbarProps = {
   currentStroke: Stroke
   setter: SetStoreFunction<Stroke>
+  status: Status
 }
 
 function Toolbar(props: ToolbarProps) {
@@ -260,6 +262,14 @@ function Toolbar(props: ToolbarProps) {
           </button>
         )}
       </For>
+      <span class="px-2 py-1 text-2xl z-20">
+        <Show when={props.status === 'unsaved'}>
+          <Fa icon={faFloppyDisk} />
+        </Show>
+        <Show when={props.status === 'saving'}>
+          <Spinner /> Saving...
+        </Show>
+      </span>
     </div>
   )
 }
