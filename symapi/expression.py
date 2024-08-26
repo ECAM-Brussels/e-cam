@@ -49,5 +49,9 @@ class Expression:
         return True
 
     @strawberry.field
+    def simplify(self) -> "Expression":
+        return Expression(expr=sympy.simplify(self.expr))
+
+    @strawberry.field
     def solveset(self) -> "Expression":
         return Expression(expr=sympy.solveset(self.expr))
