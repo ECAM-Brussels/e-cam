@@ -9,5 +9,8 @@ export default defineConfig({
         paths: ['content/**'],
       },
     },
+    worker: {
+      format: 'es',
+    }
   },
 })
