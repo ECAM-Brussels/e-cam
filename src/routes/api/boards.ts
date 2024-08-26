@@ -11,6 +11,7 @@ const websocket = crossws({
 
     message(peer, message) {
       peer.publish('boards', message.text())
+      peer.send(message.text())
     },
 
     close(peer, event) {

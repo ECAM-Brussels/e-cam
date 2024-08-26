@@ -61,7 +61,9 @@ export default function Whiteboard(props: WhiteboardProps) {
     async () => {
       setStatus('saving')
       await upsertBoard(location.pathname, props.id || '', strokes)
-      props.socket?.send(JSON.stringify({ url: location.pathname, id: props.id || '' } satisfies Message))
+      props.socket?.send(
+        JSON.stringify({ url: location.pathname, id: props.id || '' } satisfies Message),
+      )
     },
     5000,
     { leading: true, trailing: true },
@@ -174,7 +176,7 @@ export default function Whiteboard(props: WhiteboardProps) {
     canvasRef!.oncontextmenu = () => false
     props.socket?.addEventListener('message', (event) => {
       const data = JSON.parse(event.data) as Message
-      if ((data.url === location.pathname && data.id === props.id) || '') {
+      if (data.url === location.pathname && data.id === (props.id || '')) {
         revalidate(loadBoard.keyFor(location.pathname, props.id || ''))
       }
     })

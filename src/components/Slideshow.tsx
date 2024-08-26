@@ -61,6 +61,16 @@ export default function Slideshow(props: SlideshowProps) {
 
   onMount(async () => {
     const Reveal = (await import('reveal.js')).default
+    socket.addEventListener('message', (event) => {
+      const data = JSON.parse(event.data)
+      if (
+        data.url === location.pathname &&
+        data.boardName === props.boardName &&
+        data.action === 'addBoard'
+      ) {
+        revalidate(getBoardCount.keyFor(location.pathname, props.boardName || ''))
+      }
+    })
     deck = new Reveal({
       center: false,
       hash: true,
@@ -73,7 +83,13 @@ export default function Slideshow(props: SlideshowProps) {
       const { h, v } = deck.getIndices()
       if (v === (count()?.[String(h)] || 1) - 1) {
         await addBoard(location.pathname, props.boardName || '', h, v + 1)
-        revalidate(getBoardCount.keyFor(location.pathname, props.boardName || ''))
+        socket.send(
+          JSON.stringify({
+            url: location.pathname,
+            boardName: props.boardName,
+            action: 'addBoard',
+          }),
+        )
       } else {
         deck.down()
       }
@@ -97,7 +113,7 @@ export default function Slideshow(props: SlideshowProps) {
                   <section class="relative h-full">
                     {child(j)}
                     <Whiteboard
-                      id={`slide-${props.boardName}-${i()}-${j}`}
+                      id={`slide-${props.boardName || ''}-${i()}-${j}`}
                       class="absolute top-0 left-0"
                       width={1920}
                       height={1080}
