@@ -50,6 +50,7 @@ export default function Slideshow(props: SlideshowProps) {
   const slides = getSlides(props)
 
   let deck: InstanceType<typeof import('reveal.js')>
+  const socket = new WebSocket('/api/boards')
 
   const count = createAsync(() => getBoardCount(location.pathname, props.boardName || ''))
   createEffect(() => {
@@ -101,6 +102,7 @@ export default function Slideshow(props: SlideshowProps) {
                       width={1920}
                       height={1080}
                       readOnly={!user()?.admin}
+                      socket={socket}
                     />
                   </section>
                 )}

@@ -16,6 +16,7 @@
     "@prisma/client": "^5.18.0",
     "@solidjs/router": "^0.14.1",
     "@solidjs/start": "^1.0.2",
+    "crossws": "^0.2.4",
     "crypto-js": "^4.2.0",
     "date-fns": "^3.6.0",
     "dedent-js": "^1.0.1",
