@@ -4,6 +4,7 @@ import { Show, type JSXElement } from 'solid-js'
 
 const environments = {
   definition: ['Définition', 'bg-green-700 text-green-100', faBook],
+  example: ['Exemple', 'bg-emerald-700 text-emerald-100', faPen],
   proposition: ['Proposition', 'bg-slate-700 text-slate-100', faBook],
   question: ['Question', 'bg-blue-950 text-blue-50', faQuestionCircle],
   remark: ['Remarque', 'bg-amber-600 text-amber-50', faCircleExclamation],
