@@ -19,11 +19,11 @@ const Python = clientOnly(() => import('./Python'))
 
 export default function Code(props: CodeProps) {
   return (
-    <>
+    <div class="relative z-20">
       <Editor language={props.lang} value={props.value} />
       <Show when={props.lang === 'python' && props.run}>
         <Python value={props.value} />
       </Show>
-    </>
+    </div>
   )
 }
