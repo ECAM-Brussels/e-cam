@@ -13,7 +13,7 @@ export default function Navbar() {
         <ul class="flex items-center">
           <NavbarItem class="font-bold text-2xl text-slate-600 border-b-0" href="/">
             <span>e</span>
-            <span class="text-gray-400">·</span>cam
+            <span class="mx-px text-gray-400">·</span>cam
           </NavbarItem>
         </ul>
         <ul class="flex items-center text-sm">
