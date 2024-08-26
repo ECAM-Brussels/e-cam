@@ -7,6 +7,7 @@ import { request } from '~/lib/graphql'
 
 type CalculatorProps = {
   class?: string
+  value?: string
 }
 
 const calculate = cache(async (expr: string): Promise<string> => {
@@ -34,12 +35,12 @@ const calculate = cache(async (expr: string): Promise<string> => {
 }, 'calculate')
 
 export default function Calculator(props: CalculatorProps) {
-  const [prompt, setPrompt] = createSignal('')
+  const [prompt, setPrompt] = createSignal(props.value || '')
   const [answer] = createResource(prompt, calculate)
   return (
     <div class={props.class} classList={{ 'my-8': true }}>
       <Math
-        class="border rounded-xl w-full"
+        class="border rounded-xl w-full relative z-20"
         value={prompt()}
         onBlur={(e) => setPrompt(e.target.value)}
         onkeydown={(e: KeyboardEvent) => {
