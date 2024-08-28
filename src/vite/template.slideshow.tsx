@@ -1,3 +1,4 @@
+import { Title } from '@solidjs/meta'
 import { RouteDefinition, useSearchParams } from '@solidjs/router'
 import { clientOnly } from '@solidjs/start'
 import { lazy } from 'solid-js'
@@ -17,5 +18,10 @@ export const route = {
 
 export default function () {
   const [searchParams] = useSearchParams()
-  return <Slideshow boardName={searchParams.boardName}>$body$</Slideshow>
+  return (
+    <>
+      <Title>$title$</Title>
+      <Slideshow boardName={searchParams.boardName}>$body$</Slideshow>
+    </>
+  )
 }

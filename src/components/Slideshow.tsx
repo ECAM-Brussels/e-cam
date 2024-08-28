@@ -1,3 +1,4 @@
+import { MetaProvider } from '@solidjs/meta'
 import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
 import 'reveal.js/dist/reveal.css'
 import { createEffect, For, onCleanup, onMount, type JSXElement } from 'solid-js'
@@ -103,30 +104,32 @@ export default function Slideshow(props: SlideshowProps) {
   })
 
   return (
-    <div class="reveal">
-      <div class="slides">
-        <For each={slides}>
-          {(child, i) => (
-            <section>
-              <For each={[...Array((count() || {})[String(i())] || 1).keys()]}>
-                {(j) => (
-                  <section class="relative h-full">
-                    {child(j)}
-                    <Whiteboard
-                      id={`slide-${props.boardName || ''}-${i()}-${j}`}
-                      class="absolute top-0 left-0"
-                      width={1920}
-                      height={1080}
-                      readOnly={!user()?.admin}
-                      socket={socket}
-                    />
-                  </section>
-                )}
-              </For>
-            </section>
-          )}
-        </For>
+    <MetaProvider>
+      <div class="reveal">
+        <div class="slides">
+          <For each={slides}>
+            {(child, i) => (
+              <section>
+                <For each={[...Array((count() || {})[String(i())] || 1).keys()]}>
+                  {(j) => (
+                    <section class="relative h-full">
+                      {child(j)}
+                      <Whiteboard
+                        id={`slide-${props.boardName || ''}-${i()}-${j}`}
+                        class="absolute top-0 left-0"
+                        width={1920}
+                        height={1080}
+                        readOnly={!user()?.admin}
+                        socket={socket}
+                      />
+                    </section>
+                  )}
+                </For>
+              </section>
+            )}
+          </For>
+        </div>
       </div>
-    </div>
+    </MetaProvider>
   )
 }
