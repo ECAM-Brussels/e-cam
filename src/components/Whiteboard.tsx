@@ -61,9 +61,13 @@ export default function Whiteboard(props: WhiteboardProps) {
     async () => {
       setStatus('saving')
       await upsertBoard(location.pathname, props.id || '', strokes)
-      props.socket?.send(
-        JSON.stringify({ url: location.pathname, id: props.id || '' } satisfies Message),
-      )
+      if (props.socket) {
+        props.socket.send(
+          JSON.stringify({ url: location.pathname, id: props.id || '' } satisfies Message),
+        )
+      } else {
+        revalidate(loadBoard.keyFor(location.pathname, props.id || ''))
+      }
     },
     5000,
     { leading: true, trailing: true },
