@@ -25,7 +25,11 @@ export default function Breadcrumbs() {
   return (
     <nav class="container mx-auto my-4 text-slate-500">
       <ol class="inline-flex">
-        <li>Home</li>
+        <li>
+          <a href="/" class="hover:text-blue-600">
+            e·cam
+          </a>
+        </li>
         <For each={links()}>
           {(link) => (
             <Show when={link !== null && link}>
