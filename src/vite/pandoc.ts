@@ -23,7 +23,7 @@ async function generatePage(file: string) {
     '-t html5',
     `--template src/vite/${template}`,
     '--wrap=preserve',
-    `-V imports="${await generateImports()}"`
+    `-V imports="${await generateImports()}"`,
   ]
 
   const filters = await glob.glob('src/vite/filters/*.py')
@@ -54,7 +54,7 @@ async function createAssignment(file: string) {
 async function generateImports() {
   const components = await glob.glob('src/components/*.tsx')
   let imports = ''
-  for(const component of components) {
+  for (const component of components) {
     const name = component.split('/').at(-1)!.replace('.tsx', '')
     if (name === 'Slideshow' || name === 'Page' || name.endsWith('.test')) {
       continue
@@ -65,19 +65,26 @@ async function generateImports() {
   return imports
 }
 
+async function buildAll() {
+  const pages = await glob.glob('content/**/*.md')
+  for (const file of pages) {
+    generatePage(file)
+  }
+  const assignments = await glob.glob('content/**/*.ts')
+  for (const file of assignments) {
+    createAssignment(file)
+  }
+}
+
 const pandocPlugin = (): Plugin => {
   return {
     name: 'pandoc-plugin',
+    buildStart() {
+      buildAll()
+    },
     async handleHotUpdate({ file }) {
       if (file.startsWith(resolve('src/vite'))) {
-        const pages = await glob.glob('content/**/*.md')
-        for (const file of pages) {
-          generatePage(file)
-        }
-        const assignments = await glob.glob('content/**/*.ts')
-        for (const file of assignments) {
-          createAssignment(file)
-        }
+        buildAll()
       }
       if (file.endsWith('.ts') && file.startsWith(resolve('content'))) {
         createAssignment(file)
