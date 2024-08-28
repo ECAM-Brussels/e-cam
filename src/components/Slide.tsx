@@ -1,4 +1,5 @@
-import { type JSXElement } from 'solid-js'
+import { format } from 'date-fns'
+import { createSignal, type JSXElement } from 'solid-js'
 
 type SlideProps = {
   children?: JSXElement
@@ -8,10 +9,16 @@ type SlideProps = {
 }
 
 export default function Slide(props: SlideProps) {
+  const [time, setTime] = createSignal(format(new Date(), 'HH:mm'))
+  setInterval(() => {
+    setTime(format(new Date(), 'HH:mm'))
+  }, 1000)
+
   return (
     <div class="h-full">
-      <div class="bg-slate-700 font-semibold mb-6 px-4 py-3 shadow-md text-slate-100 text-left text-4xl">
-        {props.title}
+      <div class="bg-slate-700 font-semibold mb-6 px-4 py-3 shadow-md text-slate-100 text-left text-4xl flex justify-between">
+        <div>{props.title}</div>
+        <div>{time()}</div>
       </div>
       <div
         class={props.class}
