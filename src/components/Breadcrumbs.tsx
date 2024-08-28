@@ -27,7 +27,7 @@ export default function Breadcrumbs(props: BreadcrumbsProps) {
     )
   })
   return (
-    <Show when={parts.length > 0}>
+    <Show when={parts().length > 0}>
       <div class={props.class}>
         <nav class="container mx-auto my-4 text-slate-500">
           <ol class="inline-flex">
