@@ -1,6 +1,7 @@
 import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
 import 'reveal.js/dist/reveal.css'
 import { createEffect, For, onCleanup, onMount, type JSXElement } from 'solid-js'
+import Breadcrumbs from '~/components/Breadcrumbs'
 import Whiteboard from '~/components/Whiteboard'
 import { getUser } from '~/lib/auth/session'
 import { prisma } from '~/lib/db'
@@ -120,6 +121,7 @@ export default function Slideshow(props: SlideshowProps) {
                       readOnly={!user()?.admin}
                       socket={socket}
                     />
+                    <Breadcrumbs class="absolute bottom-0 w-full" />
                   </section>
                 )}
               </For>
