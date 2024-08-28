@@ -27,46 +27,54 @@ export default function Breadcrumbs(props: BreadcrumbsProps) {
     )
   })
   return (
-    <div class={props.class}>
-      <nav class="container mx-auto my-4 text-slate-500">
-        <ol class="inline-flex">
-          <li>
-            <a href="/" class="hover:text-blue-600">
-              e·cam
-            </a>
-          </li>
-          <For each={links()}>
-            {(link) => (
-              <Show when={link !== null && link}>
-                {(link) => (
-                  <li class="flex items-center">
-                    <svg
-                      class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 6 10"
-                    >
-                      <path
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="m1 9 4-4-4-4"
-                      />
-                    </svg>
-                    <Show when={link().path !== location.pathname && link().path + '/' !== location.pathname} fallback={link().title}>
-                      <a href={link().path} class="hover:text-blue-600">
-                        {link().title}
-                      </a>
-                    </Show>
-                  </li>
-                )}
-              </Show>
-            )}
-          </For>
-        </ol>
-      </nav>
-    </div>
+    <Show when={parts.length > 0}>
+      <div class={props.class}>
+        <nav class="container mx-auto my-4 text-slate-500">
+          <ol class="inline-flex">
+            <li>
+              <a href="/" class="hover:text-blue-600">
+                e·cam
+              </a>
+            </li>
+            <For each={links()}>
+              {(link) => (
+                <Show when={link !== null && link}>
+                  {(link) => (
+                    <li class="flex items-center">
+                      <svg
+                        class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 6 10"
+                      >
+                        <path
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="m1 9 4-4-4-4"
+                        />
+                      </svg>
+                      <Show
+                        when={
+                          link().path !== location.pathname &&
+                          link().path + '/' !== location.pathname
+                        }
+                        fallback={link().title}
+                      >
+                        <a href={link().path} class="hover:text-blue-600">
+                          {link().title}
+                        </a>
+                      </Show>
+                    </li>
+                  )}
+                </Show>
+              )}
+            </For>
+          </ol>
+        </nav>
+      </div>
+    </Show>
   )
 }
