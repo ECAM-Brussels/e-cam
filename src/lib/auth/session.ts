@@ -17,13 +17,17 @@ function getSession() {
 
 export const getUser = cache(async () => {
   'use server'
-  const session = await getSession()
-  if (session.data.email) {
+  try {
+    const session = await getSession()
+    if (!session.data.email) {
+      return null
+    }
     return await prisma.user.findUniqueOrThrow({
       where: { email: session.data.email },
     })
+  } catch {
+    return null
   }
-  return null
 }, 'getUser')
 
 export const login = action(async (token: string) => {
