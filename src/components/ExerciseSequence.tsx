@@ -37,6 +37,10 @@ type Module<T extends ExerciseName> = Awaited<ReturnType<(typeof exercises)[T]>>
 type HasGenerator<M> = M extends { generate: (...args: any) => any } ? true : false
 type GeneratorParams<M> = M extends { generate: (params: infer P) => any } ? P : never
 type ExerciseFromName<T extends ExerciseName> = {
+  /**
+   * Exercise type.
+   * Often associated with a component in ~/exercises
+   */
   type: T
   feedback?: {
     correct: boolean
@@ -58,9 +62,37 @@ export type Exercise = { [N in ExerciseName]: ExerciseFromName<N> }[ExerciseName
 type Mode = 'static' | 'dynamic'
 
 export type ExerciseProps = {
+  /**
+   * In case a page contains more than one assignment,
+   * it needs to have a unique 'id'
+   */
   id?: string
+
+  /**
+   * List of exercises assigned to the students.
+   */
   data: Exercise[]
+
+  /**
+   * Assignment mode: 'static' (default) or 'dynamic'
+   * 
+   * A static assignment will exactly contain the exercises supplied in 'data'.
+   * In a 'dynamic' sequence, the user is only allowed to progress
+   * if they have had a streak of correct answers.
+   */
   mode?: Mode
+
+  /**
+   * How many consecutive answers are required to progress
+   * in 'dynamic' mode.
+   * The default value is 4.
+   */
+  streak?: number
+
+  /** 
+   * Specify if we supply a board to the student for their working out.
+   * Useful for maths exercises
+   */
   whiteboard?: boolean
 }
 
@@ -103,7 +135,7 @@ async function upsertAssignment(url: string, id: string, userEmail: string = '',
 }
 
 export default function ExerciseSequence(props: ExerciseProps) {
-  props = mergeProps({ mode: 'static' as const }, props)
+  props = mergeProps({ mode: 'static' as const, streak: 4 }, props)
   const user = createAsync(() => getUser())
   const location = useLocation()
   const [searchParams] = useSearchParams()
@@ -120,7 +152,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
     for (const exercise of data) {
       if (exercise.feedback?.correct === true) {
         streak++
-        if (streak === 4) {
+        if (streak === props.streak) {
           i++
           streak = 0
         }
