@@ -20,11 +20,22 @@ def math(el: pf.Element, doc: pf.Doc):
 
 def environments(el: pf.Element, doc: pf.Doc):
     del doc
-    classes = ["definition", "example", "proposition", "question", "remark", "warning"]
+    classes = [
+        "definition",
+        "example",
+        "proposition",
+        "question",
+        "remark",
+        "solution",
+        "warning",
+    ]
     if type(el) == pf.Div and el.classes and el.classes[0] in classes:
+        classes = " ".join(el.classes[1:]) or ""
+        name = el.classes[0]
+        el.classes = []
         return [
             pf.RawBlock(
-                f'<Environment type="{el.classes[0]}" title="{el.attributes.get("title", "")}">'
+                f'<Environment type="{name}" class="{classes}" title="{el.attributes.get("title", "")}">'
             ),
             el,
             pf.RawBlock("</Environment>"),

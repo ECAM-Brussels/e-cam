@@ -1,5 +1,5 @@
 import Fa from './Fa'
-import { faBook, faCircleExclamation, faPen, faQuestionCircle, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
+import { faBook, faCircleExclamation, faCogs, faPen, faQuestionCircle, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
 import { Show, type JSXElement } from 'solid-js'
 
 const environments = {
@@ -8,11 +8,13 @@ const environments = {
   proposition: ['Proposition', 'bg-slate-700 text-slate-100', faBook],
   question: ['Question', 'bg-blue-950 text-blue-50', faQuestionCircle],
   remark: ['Remarque', 'bg-amber-600 text-amber-50', faCircleExclamation],
+  solution: ['Solution', 'bg-neutral-100 text-neutral-500', faCogs],
   warning: ['Attention', 'bg-red-800 text-red-50', faTriangleExclamation],
 } as const
 
 type EnvironmentProps = {
   children: JSXElement
+  class?: string
   title?: JSXElement
   type: keyof typeof environments
 }
@@ -27,7 +29,7 @@ export default function Environment(props: EnvironmentProps) {
           <span class="font-thin">({props.title})</span>
         </Show>
       </div>
-      <div class="px-2">{props.children}</div>
+      <div class={`px-2 ${props.class}`}>{props.children}</div>
     </div>
   )
 }
