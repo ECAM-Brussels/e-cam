@@ -1,5 +1,4 @@
-import { loadResults } from './Results'
-import Whiteboard from './Whiteboard'
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { cache, createAsync, revalidate, useLocation, useSearchParams } from '@solidjs/router'
 import { formatDistance } from 'date-fns'
 import { fr } from 'date-fns/locale'
@@ -17,7 +16,10 @@ import {
 import { createStore } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web'
 import { z } from 'zod'
+import Fa from '~/components/Fa'
 import Pagination from '~/components/Pagination'
+import { loadResults } from '~/components/Results'
+import Whiteboard from '~/components/Whiteboard'
 import { getUser } from '~/lib/auth/session'
 import { prisma } from '~/lib/db'
 
@@ -191,6 +193,8 @@ export default function ExerciseSequence(props: ExerciseProps) {
     ),
   )
 
+  const [showWhiteboard, setShowWhiteBoard] = createSignal(true)
+
   return (
     <>
       <Show when={lastModified()}>
@@ -200,20 +204,38 @@ export default function ExerciseSequence(props: ExerciseProps) {
         <Pagination current={index()} max={data.length} onChange={setIndex} classes={classes()} />
       </Show>
       <Suspense>
-        <Dynamic
-          component={components[exercise().type]}
-          {...exercise()}
-          setter={(...args: any) => {
-            // @ts-ignore
-            setData(index(), ...args)
-          }}
-        />
-        <Whiteboard
-          class="bg-white border mx-auto mt-4"
-          height={600}
-          width={800}
-          id={`exercises-${user()?.email}-${props.id}-${index()}`}
-        />
+        <div class="lg:flex items-start justify-between gap-4">
+          <Dynamic
+            component={components[exercise().type]}
+            {...exercise()}
+            setter={(...args: any) => {
+              // @ts-ignore
+              setData(index(), ...args)
+            }}
+          />
+          <Show when={props.whiteboard}>
+            <div class="flex">
+              <button
+                classList={{
+                  'bg-slate-100 text-slate-400 border border-e-0 px-px': showWhiteboard(),
+                }}
+                onClick={() => setShowWhiteBoard((prev) => !prev)}
+              >
+                <Show when={showWhiteboard()} fallback={<Fa icon={faChevronLeft} />}>
+                  <Fa icon={faChevronRight} />
+                </Show>
+              </button>
+              <Show when={showWhiteboard()}>
+                <Whiteboard
+                  class="bg-white border"
+                  height={800}
+                  width={700}
+                  id={`exercises-${user()?.email}-${props.id}-${index()}`}
+                />
+              </Show>
+            </div>
+          </Show>
+        </div>
       </Suspense>
     </>
   )

@@ -1,5 +1,6 @@
 ({
   mode: 'dynamic',
+  whiteboard: true,
   data: [
     {
       type: 'Factor',
