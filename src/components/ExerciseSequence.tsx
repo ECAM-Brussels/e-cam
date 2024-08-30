@@ -75,7 +75,7 @@ export type ExerciseProps = {
 
   /**
    * Assignment mode: 'static' (default) or 'dynamic'
-   * 
+   *
    * A static assignment will exactly contain the exercises supplied in 'data'.
    * In a 'dynamic' sequence, the user is only allowed to progress
    * if they have had a streak of correct answers.
@@ -89,7 +89,7 @@ export type ExerciseProps = {
    */
   streak?: number
 
-  /** 
+  /**
    * Specify if we supply a board to the student for their working out.
    * Useful for maths exercises
    */
@@ -206,9 +206,6 @@ export default function ExerciseSequence(props: ExerciseProps) {
       async () => {
         if (props.mode === 'dynamic') {
           setData(data.length, cloneDeep(props.data[dynamicIndex()]))
-          setTimeout(() => {
-            setIndex(index() + 1)
-          }, 2000)
         }
         if (submitted()) {
           await upsertAssignment(
@@ -237,14 +234,26 @@ export default function ExerciseSequence(props: ExerciseProps) {
       </Show>
       <Suspense>
         <div class="lg:flex items-start justify-between gap-4">
-          <Dynamic
-            component={components[exercise().type]}
-            {...exercise()}
-            setter={(...args: any) => {
-              // @ts-ignore
-              setData(index(), ...args)
-            }}
-          />
+          <div class="w-full">
+            <Dynamic
+              component={components[exercise().type]}
+              {...exercise()}
+              setter={(...args: any) => {
+                // @ts-ignore
+                setData(index(), ...args)
+              }}
+            />
+            <Show when={exercise().feedback?.correct !== undefined && index() < data.length - 1}>
+              <div class="text-right">
+                <button
+                  class="bg-green-900 text-white rounded-xl py-2 px-4"
+                  onClick={() => setIndex((prev) => prev + 1)}
+                >
+                  Question suivante <Fa icon={faChevronRight} />
+                </button>
+              </div>
+            </Show>
+          </div>
           <Show when={props.whiteboard}>
             <div class="flex">
               <button
