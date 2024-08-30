@@ -1,5 +1,5 @@
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
-import { faBridgeWater, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
+import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import { createAsync, useLocation } from '@solidjs/router'
 import { Show, type JSXElement } from 'solid-js'
 import Fa from '~/components/Fa'
@@ -18,7 +18,7 @@ export default function Navbar() {
         </ul>
         <ul class="flex items-center text-sm">
           <NavbarItem href="/PM1C" underline>
-            <Fa icon={faBridgeWater} class="text-2xl" /> Pont maths
+            Pont maths
           </NavbarItem>
         </ul>
         <ul class="flex items-center text-sm">
