@@ -20,7 +20,7 @@ export const route = {
 export default function () {
   const location = useLocation()
   const user = createAsync(() => getUser())
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   return (
     <Page>
       <Show
@@ -28,6 +28,10 @@ export default function () {
         fallback={
           <>
             <ExerciseSequence
+              index={parseInt(searchParams.exercise || '1') - 1}
+              onIndexChange={(index) => {
+                setSearchParams({ exercise: index + 1 })
+              }}
               {
                 // @ts-ignore
                 ...$body$

@@ -69,6 +69,13 @@ export type ExerciseProps = {
   id?: string
 
   /**
+   * Specify which exercise to show first.
+   * The numbering starts at 0 (first exercise),
+   * which is the default value.
+   */
+  index?: number
+
+  /**
    * List of exercises assigned to the students.
    */
   data: Exercise[]
@@ -81,6 +88,8 @@ export type ExerciseProps = {
    * if they have had a streak of correct answers.
    */
   mode?: Mode
+
+  onIndexChange?: (newIndex: number) => void
 
   /**
    * How many consecutive answers are required to progress
@@ -139,7 +148,10 @@ export default function ExerciseSequence(props: ExerciseProps) {
   const user = createAsync(() => getUser())
   const location = useLocation()
   const [searchParams] = useSearchParams()
-  const [index, setIndex] = createSignal(0)
+
+  const [index, setIndex] = createSignal(props.index || 0)
+  createEffect(() => props.onIndexChange?.(index()))
+
   const [data, setData] = createStore<Exercise[]>(
     props.mode === 'static' ? props.data : [cloneDeep(props.data[0])],
   )
@@ -162,7 +174,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
     }
     return i
   }
-  const exercise = () => data[index()]
+  const exercise = () => data[Math.min(index(), data.length - 1)]
   const classes = () =>
     data.map((exercise: Exercise) => {
       if (exercise.feedback?.correct) {
