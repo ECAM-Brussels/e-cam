@@ -4,6 +4,7 @@ import 'solid-prism-editor/layout.css'
 import 'solid-prism-editor/prism/languages/common'
 import 'solid-prism-editor/search.css'
 import 'solid-prism-editor/themes/github-light.css'
+import Html from '~/components/Html'
 
 type CodeProps = {
   lang: string
@@ -23,6 +24,9 @@ export default function Code(props: CodeProps) {
       <Editor language={props.lang} value={props.value} />
       <Show when={props.lang === 'python' && props.run}>
         <Python value={props.value} />
+      </Show>
+      <Show when={props.lang === 'html' && props.run}>
+        <Html value={props.value} />
       </Show>
     </div>
   )
