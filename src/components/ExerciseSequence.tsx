@@ -1,5 +1,6 @@
+import { loadAssignment, upsertAssignment } from './ExerciseSequence.server'
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
-import { cache, createAsync, revalidate, useLocation, useSearchParams } from '@solidjs/router'
+import { createAsync, revalidate, useLocation, useSearchParams } from '@solidjs/router'
 import { formatDistance } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { cloneDeep, countBy, mapValues } from 'lodash-es'
@@ -21,7 +22,6 @@ import Pagination from '~/components/Pagination'
 import { loadResults } from '~/components/Results'
 import Whiteboard from '~/components/Whiteboard'
 import { getUser } from '~/lib/auth/session'
-import { prisma } from '~/lib/db'
 
 const exercises = {
   CompleteSquare: () => import('~/exercises/CompleteSquare'),
@@ -103,44 +103,6 @@ export type ExerciseProps = {
    * Useful for maths exercises
    */
   whiteboard?: boolean
-}
-
-export const loadAssignment = cache(
-  async (url: string, id: string = '', userEmail: string = '') => {
-    'use server'
-    const user = await getUser()
-    if (!user || !user.email) {
-      return null
-    }
-    if (!userEmail || !user.admin) {
-      userEmail = user.email
-    }
-    const record = await prisma.assignment.findUnique({
-      where: { url_userEmail_id: { url, userEmail, id } },
-    })
-    if (!record) {
-      return null
-    }
-    return { ...record, body: JSON.parse(String(record.body)) as Exercise[] }
-  },
-  'loadAssignment',
-)
-
-async function upsertAssignment(url: string, id: string, userEmail: string = '', data: Exercise[]) {
-  'use server'
-  const user = await getUser()
-  if (!user || !user.email) {
-    throw new Error('Error when upserting assignment: user not logged in')
-  }
-  if (!userEmail || !user.admin) {
-    userEmail = user.email
-  }
-  let body = JSON.stringify(data)
-  await prisma.assignment.upsert({
-    where: { url_userEmail_id: { url, userEmail, id } },
-    update: { body, lastModified: new Date() },
-    create: { url, userEmail, id, body },
-  })
 }
 
 export default function ExerciseSequence(props: ExerciseProps) {
