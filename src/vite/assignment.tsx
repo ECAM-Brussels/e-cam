@@ -1,6 +1,7 @@
 import { createAsync, useLocation, useSearchParams, type RouteDefinition } from '@solidjs/router'
 import { Show } from 'solid-js'
-import ExerciseSequence, { loadAssignment } from '~/components/ExerciseSequence'
+import ExerciseSequence from '~/components/ExerciseSequence'
+import { loadAssignment } from '~/components/ExerciseSequence.server'
 import Page from '~/components/Page'
 import Results, { loadResults } from '~/components/Results'
 import { getUser } from '~/lib/auth/session'

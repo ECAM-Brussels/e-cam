@@ -56,7 +56,12 @@ async function generateImports() {
   let imports = ''
   for (const component of components) {
     const name = component.split('/').at(-1)!.replace('.tsx', '')
-    if (name === 'Slideshow' || name === 'Page' || name.endsWith('.test')) {
+    if (
+      name === 'Slideshow' ||
+      name === 'Page' ||
+      name.endsWith('.test') ||
+      name.endsWith('.server')
+    ) {
       continue
     }
     const type = name === 'Math' ? 'clientOnly' : 'lazy'
