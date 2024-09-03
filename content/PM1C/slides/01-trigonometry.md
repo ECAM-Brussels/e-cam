@@ -199,7 +199,7 @@ Utilisez le cercle trigonométrique pour trouver les autres.
 
 # Graphes
 
-~~~ {.yaml .plot}
+~~~ yaml {.plot}
 class: mx-auto
 xAxis: { domain: [-10, 10] }
 data:
@@ -253,7 +253,7 @@ $$
 $$
 :::
 
-# Équations trigonométriques: example {.w-1--2}
+# Équations trigonométriques: exemple {.w-1--2}
 
 ::: example
 Trouvez toutes les valeurs de $x \in [0, 2\pi]$ telles que $\sin x = \sin 2x$.
@@ -261,7 +261,7 @@ Trouvez toutes les valeurs de $x \in [0, 2\pi]$ telles que $\sin x = \sin 2x$.
 
 <Calculator />
 
-# Exercises corrigés issus du baccalauréat britannique {.w-1--2}
+# Exercices corrigés issus du baccalauréat britannique {.w-1--2}
 
 <Iframe src="https://pmt.physicsandmathstutor.com/download/Maths/A-level/Pure/Trigonometry-2/Edexcel-Set-B/Trigonometric%20Identities.pdf" class="w-full h-3/4" />
 
