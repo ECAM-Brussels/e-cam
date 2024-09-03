@@ -1,5 +1,5 @@
 import functionPlot, { type FunctionPlotOptions } from 'function-plot'
-import { mergeProps, onMount } from 'solid-js'
+import { createEffect, mergeProps } from 'solid-js'
 
 type PlotProps = Omit<FunctionPlotOptions, 'target'> & {
   class?: string
@@ -13,7 +13,7 @@ export default function Plot(props: PlotProps) {
     props,
   )
   let target: HTMLDivElement
-  onMount(() => {
+  createEffect(() => {
     functionPlot({
       target,
       ...props,
