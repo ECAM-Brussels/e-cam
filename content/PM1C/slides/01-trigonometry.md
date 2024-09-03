@@ -16,6 +16,7 @@ et pleine de belles rencontres!
 - **Ponctualité**: à l'heure ou *15 minutes* après
 - **Respect du temps de parole**
 - **Respect mutuel et de l'apprentissage du groupe**
+- **Allez à la bonne séance d'exercice**: les enseignants tourneront
 
 # À propos de ce cours {.w-1--2}
 
@@ -26,7 +27,7 @@ Théorie
 : Khôi Nguyễn (NGY)
 
 Exercices
-: Ruben Hillewaere, Khôi Nguyễn
+: Rolando Guerrieri, Marius Joly, Ruben Hillewaere, Khôi Nguyễn
 
 Resources
 : 
@@ -40,7 +41,7 @@ Resources
 :::::::::: {.columns-2 .h-full .p-4 .pb-12}
 ::::: {.column .h-full}
 
-<Iframe src="/PM1C" class="border rounded-xl shadow p-4 w-full h-full" />
+<Iframe src="/PM1C" class="border rounded-xl shadow p-4 w-full h-4/5" />
 
 :::::
 ::::: column
@@ -56,7 +57,7 @@ Resources
 :::::::::: {.columns-2 .h-full .p-4 .pb-12}
 ::::: {.column .h-full}
 
-<Iframe src="/" class="border rounded-xl shadow p-4 w-full h-full" />
+<Iframe src="/" class="border rounded-xl shadow p-4 w-full h-4/5" />
 
 :::::
 ::::: column
@@ -100,7 +101,41 @@ $$
   e.g. $\sin' = \cos$.
 :::
 
+# Conversion: exemple {.w-1--2}
+
+::: {.example title="D.1"}
+a. Convertir $60^\circ$ en radians
+b. Exprimer $5 \pi / 4$ en degrés
+:::
+
+::: {.solution .columns .columns-2}
+a. <Calculator value="60 \cdot \frac{\pi}{180}" />
+b. <Calculator value="\frac{5\pi}{4} \cdot {\frac{180}{\pi}}" />
+:::
+
+# Longueur d'arc {.w-1--2}
+
+::: {.proposition title="Longueur d'arc"}
+$$
+L = r \theta
+$$
+:::
+
+::: exemple
+a. Si le rayon d'un cercle est $5$ cm,
+   quel angle est sous-tendu par un arc de $6$ cm?
+b. Si un cercle a un rayon de $3$ cm,
+   quel est la longueur de l'arc sous-tendu par un angle au centre de $3 \pi / 8$?
+:::
+
+::: {.solution .columns .columns-2}
+a. <Calculator value="\frac{6}{5}" />
+b. <Calculator value="3 \cdot 3 \frac{\pi}{8}" />
+:::
+
 # Rapports trigonométriques {.w-1--2}
+
+![Noms des côtés d'un triangle rectangle](/images/sohcahtoa.svg){.mx-auto .h-64}
 
 ::: {.definition title="Rapports trigonométriques"}
 $$
@@ -110,9 +145,19 @@ $$
 $$
 :::
 
-# Cercle trigonométrique
+::: question
+Les membres de gauche mentionnent $\theta$,
+pourquoi n'apparaît-il pas à droite?
+:::
+
+# Cercle trigonométrique {.w-1--2}
 
 <Geogebra id="yyufnmy9" width={1000} heigth={850} />
+
+- **Cercle trigonométrique**: rayon $1$ centré à l'origine.
+- $\alpha$: angle de $AM$ avec l'axe $O x$,
+  longueur d'arc si en radians
+- $M (\cos \alpha, \sin \alpha)$
 
 # Périodicité, symétrie, angles associés {.w-1--2}
 
@@ -122,9 +167,48 @@ $$
 - $\tan (x + \pi) = \tan x$
 :::
 
+::: {.proposition title="Parité"}
+- $\sin (-\theta) = -\sin \theta$
+- $\cos (-\theta) = \cos \theta$
+- $\tan (-\theta) = -\tan \theta$
+:::
+
 # Angles associés
 
 <Geogebra width={1100} height={800} id="vtpzkefz" />
+
+# Équations trigonométriques {.w-1--2}
+
+::: example
+$$
+\cos x = \frac 1 2
+$$
+:::
+
+::: warning
+La calculatrice ne donne qu'**une seule** réponse.
+
+<Calculator value="\arccos(\frac 1 2)" />
+
+Utilisez le cercle trigonométrique pour trouver les autres.
+:::
+
+# Graphes trigonométriques
+
+<Geogebra id="eVGq4u6M" height={450} class="border scale-125 translate-y-1/4 mx-auto" />
+
+# Graphes
+
+~~~ {.yaml .plot}
+class: mx-auto
+xAxis: { domain: [-10, 10] }
+data:
+  - fn: sin(x)
+  - fn: cos(x)
+  - fn: tan(x)
+width: 1800
+height: 900
+~~~
 
 # Identités fondamentales {.w-1--2}
 
@@ -144,6 +228,10 @@ $$
 
 <Geogebra class="mx-auto" id="t5zqcQ4z" width={1300} height={900} />
 
+# Formules d'addition: preuve par image {.w-1--2}
+
+![](/images/addition_formulae_proofs.png){.w-3--4 .mx-auto}
+
 # Formules d'addition {.w-1--2}
 
 ::: {.proposition title="Formules d'addition"}
@@ -153,3 +241,28 @@ $$
 \tan (x \pm y) = \frac {\tan x \pm \tan y} {1 \mp \tan x \tan y}
 $$
 :::
+
+En prenant $y = x$,
+on obtient les formules de **duplication** suivantes:
+
+::: {.proposition title="Formules de duplication"}
+$$
+\sin 2x = 2 \sin x \cos x\\
+\cos 2x = \cos^2 x - \sin^2 x\\
+\tan 2x = \frac {2 \tan x} {1 - \tan^2 x}
+$$
+:::
+
+# Équations trigonométriques: example {.w-1--2}
+
+::: example
+Trouvez toutes les valeurs de $x \in [0, 2\pi]$ telles que $\sin x = \sin 2x$.
+:::
+
+<Calculator />
+
+# Exercises corrigés issus du baccalauréat britannique {.w-1--2}
+
+<Iframe src="https://pmt.physicsandmathstutor.com/download/Maths/A-level/Pure/Trigonometry-2/Edexcel-Set-B/Trigonometric%20Identities.pdf" class="w-full h-3/4" />
+
+<Calculator />
