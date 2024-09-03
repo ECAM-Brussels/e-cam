@@ -19,5 +19,5 @@ export default function Plot(props: PlotProps) {
       ...props,
     })
   })
-  return <div class={props.class} ref={target!} />
+  return <div class={props.class} classList={{ 'z-20': true, relative: true }} ref={target!} />
 }
