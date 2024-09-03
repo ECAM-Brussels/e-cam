@@ -21,6 +21,7 @@
     "crypto-js": "^4.2.0",
     "date-fns": "^3.6.0",
     "dedent-js": "^1.0.1",
+    "function-plot": "^1.25.0",
     "fuse.js": "^7.0.0",
     "graphql-request": "^7.1.0",
     "katex": "^0.16.11",

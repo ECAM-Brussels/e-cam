@@ -64,7 +64,7 @@ async function generateImports() {
     ) {
       continue
     }
-    const type = name === 'Math' ? 'clientOnly' : 'lazy'
+    const type = ['Math', 'Plot'].includes(name) ? 'clientOnly' : 'lazy'
     imports += `const ${name} = ${type}(() => import('~/components/${name}'))\n`
   }
   return imports
