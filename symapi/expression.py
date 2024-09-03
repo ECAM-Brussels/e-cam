@@ -16,6 +16,10 @@ class Expression:
     def expand(self) -> "Expression":
         return Expression(expr=sympy.expand(self.expr))
 
+    @strawberry.field(description="Numerical evaluation")
+    def evalf(self, precision: int = 15) -> "Expression":
+        return Expression(expr=sympy.N(self.expr, precision))
+
     @strawberry.field(description="Factor")
     def factor(self) -> "Expression":
         return Expression(expr=sympy.factor(self.expr))
@@ -47,6 +51,10 @@ class Expression:
             if sympy.factor(term).func == sympy.Mul:
                 return False
         return True
+
+    @strawberry.field(description="Check if numeric")
+    def is_numeric(self) -> bool:
+        return isinstance(self.expr, (sympy.Float, sympy.Integer))
 
     @strawberry.field
     def simplify(self) -> "Expression":

@@ -1,21 +1,23 @@
 import Fa from './Fa'
 import { faCalculator } from '@fortawesome/free-solid-svg-icons'
 import { cache } from '@solidjs/router'
-import { createResource, createSignal, Suspense } from 'solid-js'
+import { createResource, createSignal, Show, Suspense } from 'solid-js'
 import Math from '~/components/Math'
 import Spinner from '~/components/Spinner'
 import { graphql } from '~/gql'
 import { request } from '~/lib/graphql'
 
-type CalculatorProps = {
-  class?: string
-  value?: string
+type CalculatorResponse = {
+  symbolic: string
+  numeric: string
+  isNumeric: boolean
 }
 
-const calculate = cache(async (expr: string): Promise<string> => {
+const calculate = cache(async (expr: string): Promise<CalculatorResponse> => {
   'use server'
+  let response = { symbolic: '', numeric: '', isNumeric: false }
   if (!expr) {
-    return ''
+    return response
   }
   try {
     const { expression } = await request(
@@ -25,16 +27,29 @@ const calculate = cache(async (expr: string): Promise<string> => {
             simplify {
               expr
             }
+            isNumeric
+            evalf {
+              expr
+            }
           }
         }
       `),
       { expr },
     )
-    return expression.simplify.expr
+    return {
+      symbolic: expression.simplify.expr,
+      numeric: expression.evalf.expr,
+      isNumeric: expression.isNumeric,
+    }
   } catch {
-    return ''
+    return response
   }
 }, 'calculate')
+
+type CalculatorProps = {
+  class?: string
+  value?: string
+}
 
 export default function Calculator(props: CalculatorProps) {
   const [prompt, setPrompt] = createSignal(props.value || '')
@@ -58,7 +73,12 @@ export default function Calculator(props: CalculatorProps) {
         />
       </div>
       <Suspense fallback={<Spinner />}>
-        <Math value={answer()} displayMode />
+        <div class="text-center my-4">
+          <Math value={answer()?.symbolic} />
+          <Show when={!answer()?.isNumeric && answer()?.numeric}>
+            <Math class="text-xs text-slate-500" value={'\\approx' + answer()?.numeric} />
+          </Show>
+        </div>
       </Suspense>
     </div>
   )
