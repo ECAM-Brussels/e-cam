@@ -1,9 +1,12 @@
+import { type ExerciseProps } from '../components/ExerciseSequence'
+import { encrypt } from '../lib/cryptography'
 import { exec as execWithCallback } from 'child_process'
 import glob from 'fast-glob'
 import { mkdirSync, readFileSync, writeFileSync } from 'fs'
 import { dirname, relative, resolve } from 'path'
+import { transpile } from 'typescript'
 import { promisify } from 'util'
-import { type Plugin } from 'vite'
+import { type Plugin, loadEnv } from 'vite'
 
 const exec = promisify(execWithCallback)
 
@@ -41,13 +44,20 @@ async function generatePage(file: string) {
   }
 }
 
-async function createAssignment(file: string) {
+async function createAssignment(file: string, passphrase: string) {
   const relativePath = relative(resolve('content'), file)
   const outputPath = resolve('src/routes/(generated)', relativePath.replace(/\.ts$/, '.tsx'))
   mkdirSync(dirname(outputPath), { recursive: true })
-  const data = String(readFileSync(file, 'utf-8'))
+  const contents = String(readFileSync(file, 'utf-8'))
+  const assignment = eval(transpile(contents)) as ExerciseProps
+  for (const exercise of assignment.data) {
+    if (exercise.type === 'Simple' && exercise.state) {
+      console.log('Encrypting with', passphrase)
+      exercise.state.answer = encrypt(exercise.state.answer, passphrase)
+    }
+  }
   const template = String(readFileSync(resolve('src/vite/assignment.tsx'), 'utf-8'))
-  const content = template.replace('$body$', data)
+  const content = template.replace('$body$', JSON.stringify(assignment, null, 2))
   writeFileSync(outputPath, content, 'utf-8')
 }
 
@@ -70,29 +80,34 @@ async function generateImports() {
   return imports
 }
 
-async function buildAll() {
+async function buildAll(passphrase: string) {
   const pages = await glob.glob('content/**/*.md')
   for (const file of pages) {
     generatePage(file)
   }
   const assignments = await glob.glob('content/**/*.ts')
   for (const file of assignments) {
-    createAssignment(file)
+    createAssignment(file, passphrase)
   }
 }
 
 const pandocPlugin = (): Plugin => {
+  let passphrase = ''
   return {
     name: 'pandoc-plugin',
     buildStart() {
-      buildAll()
+      buildAll(passphrase)
+    },
+    config(config, { mode }) {
+      const env = loadEnv(mode, process.cwd(), 'VITE')
+      passphrase = env.VITE_PASSPHRASE
     },
     async handleHotUpdate({ file }) {
       if (file.startsWith(resolve('src/vite'))) {
-        buildAll()
+        buildAll(passphrase)
       }
       if (file.endsWith('.ts') && file.startsWith(resolve('content'))) {
-        createAssignment(file)
+        createAssignment(file, passphrase)
       }
       if (file.endsWith('.md') && file.startsWith(resolve('content'))) {
         generatePage(file)

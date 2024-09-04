@@ -25,7 +25,7 @@ export const mark = cache(async (state: State) => {
         }
       }
     `),
-    { ...state, answer: decrypt(state.answer) },
+    { ...state, answer: decrypt(state.answer, import.meta.env.VITE_PASSPHRASE) },
   )
   return attempt.isEqual
 }, 'checkSimple')
@@ -33,7 +33,7 @@ export const mark = cache(async (state: State) => {
 export const solve = cache(async (state: State): Promise<State> => {
   'use server'
 
-  return { ...state, answer: decrypt(state.answer) }
+  return { ...state, answer: decrypt(state.answer, import.meta.env.VITE_PASSPHRASE) }
 }, 'solveSimple')
 
 export default function Simple(props: ExerciseProps<State, null>) {
@@ -46,7 +46,7 @@ export default function Simple(props: ExerciseProps<State, null>) {
       solve={solve}
       solution={
         <p>
-          La réponse est <Math value={props.feedback?.solution.answer} />
+          La réponse est <Math value={props.feedback?.solution?.answer} />
         </p>
       }
     >
