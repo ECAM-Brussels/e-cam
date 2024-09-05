@@ -1,3 +1,4 @@
+import dedent from 'dedent-js'
 import { type ExerciseProps } from '../components/ExerciseSequence'
 import { encrypt } from '../lib/cryptography'
 import { exec as execWithCallback } from 'child_process'
@@ -52,8 +53,8 @@ async function createAssignment(file: string, passphrase: string) {
   const assignment = eval(transpile(contents)) as ExerciseProps
   for (const exercise of assignment.data) {
     if (exercise.type === 'Simple' && exercise.state) {
-      console.log('Encrypting with', passphrase)
       exercise.state.answer = encrypt(exercise.state.answer, passphrase)
+      exercise.state.question = dedent(exercise.state.question)
     }
   }
   const template = String(readFileSync(resolve('src/vite/assignment.tsx'), 'utf-8'))
