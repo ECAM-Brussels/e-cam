@@ -6,10 +6,10 @@ import Fa from '~/components/Fa'
 
 export type ExerciseProps<S, G> = {
   feedback?: {
-    correct: boolean
-    valid: boolean
-    solution: S
-    time: number
+    correct?: boolean
+    valid?: boolean
+    solution?: S
+    time?: number
   }
   options?: {
     mark: boolean
@@ -79,7 +79,7 @@ export default function ExerciseBase<S, G>(
         props.setter('feedback', 'time', 0)
       }
       if (props.feedback && props.feedback.correct === undefined) {
-        props.setter('feedback', 'time', props.feedback.time + 1)
+        props.setter('feedback', 'time', props.feedback.time! + 1)
       }
     }, 1000)
   })

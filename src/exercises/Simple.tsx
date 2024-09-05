@@ -10,7 +10,7 @@ import { request } from '~/lib/graphql'
 export const schema = z.object({
   question: z.string(),
   answer: z.string().trim().min(1),
-  attempt: z.string().trim().min(1),
+  attempt: z.string().trim().min(1).optional(),
 })
 export type State = z.infer<typeof schema>
 
@@ -25,7 +25,7 @@ export const mark = cache(async (state: State) => {
         }
       }
     `),
-    { ...state, answer: decrypt(state.answer, import.meta.env.VITE_PASSPHRASE) },
+    { attempt: '', ...state, answer: decrypt(state.answer, import.meta.env.VITE_PASSPHRASE) },
   )
   return attempt.isEqual
 }, 'checkSimple')
