@@ -12,6 +12,10 @@ class Expression:
     def count(self, expr: Math) -> int:
         return self.expr.count(expr)
 
+    @strawberry.field
+    def diff(self, x: Math = sympy.Symbol("x"), n: int = 1) -> "Expression":
+        return Expression(expr=sympy.diff(self.expr, x, n))
+
     @strawberry.field(description="Expand")
     def expand(self) -> "Expression":
         return Expression(expr=sympy.expand(self.expr))
