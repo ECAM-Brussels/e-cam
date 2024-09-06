@@ -9,7 +9,9 @@ import Fa from '~/components/Fa'
 import Html from '~/components/Html'
 
 type CodeProps = {
+  class?: string
   lang: string
+  readOnly?: boolean
   run?: boolean
   onCodeUpdate?: (newValue: string) => void
   value: string
@@ -34,8 +36,8 @@ export default function Code(props: CodeProps) {
   let textarea: HTMLTextAreaElement
 
   return (
-    <div class="border rounded-xl m-8 shadow relative z-20">
-      <div class="flex items-end">
+    <div class={`m-8 ${props.class}`}>
+      <div class="flex items-end relative z-20">
         <button
           class="block text-cyan-950 px-2 text-xl"
           onClick={() => {
@@ -44,10 +46,11 @@ export default function Code(props: CodeProps) {
         >
           <Fa icon={faPlayCircle} />
         </button>
-        <div class="w-full">
+        <div class="border rounded-xl shadow w-full">
           <Editor
             language={props.lang}
             value={value()}
+            readOnly={props.readOnly}
             onMount={(editor) => {
               textarea = editor.textarea
               textarea.addEventListener('keydown', (event) => {

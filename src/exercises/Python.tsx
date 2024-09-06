@@ -33,8 +33,10 @@ export default function PythonExercise(props: ExerciseProps<State, null>) {
     <ExerciseBase type="Python" {...props} mark={mark} schema={schema}>
       <Markdown value={dedent(props.state?.question || '')} />
       <Code
+        class="columns columns-2"
         value={props.state?.code || ''}
         lang="python"
+        readOnly={props.options?.readOnly}
         run={true}
         onCodeUpdate={(newValue) => props.setter('state', 'code', newValue)}
       />
