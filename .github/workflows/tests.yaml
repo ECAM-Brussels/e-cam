@@ -20,6 +20,8 @@ jobs:
           poetry install --with dev
           npm install
       - name: Run unit tests
+        env:
+            VITE_PASSPHRASE: ${{ secrets.VITE_PASSPHRASE }}
         run: |
           nohup bash -c "poetry run fastapi run symapi &"
           until curl -s http://localhost:8000/graphql; do sleep 1; done
