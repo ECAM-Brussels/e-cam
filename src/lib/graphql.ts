@@ -3,7 +3,7 @@
 import type { ResultOf, VariablesOf } from '@graphql-typed-document-node/core'
 import { request as gRequest } from 'graphql-request'
 
-const url = 'http://localhost:8000/graphql'
+const url = 'http://127.0.0.1:8000/graphql'
 
 type Args = Parameters<typeof gRequest>
 export function request<T extends Args[1]>(
