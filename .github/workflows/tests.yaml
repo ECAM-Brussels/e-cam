@@ -25,4 +25,4 @@ jobs:
       - name: Run unit tests
         run: |
           poetry run pytest
-          npx vitest run
+          nohup bash -c "poetry run fastapi run symapi &" && until curl -s http://localhost:8000/graphql; do sleep 1; done && npx vitest run
