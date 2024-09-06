@@ -266,3 +266,21 @@ Trouvez toutes les valeurs de $x \in [0, 2\pi]$ telles que $\sin x = \sin 2x$.
 <Iframe src="https://pmt.physicsandmathstutor.com/download/Maths/A-level/Pure/Trigonometry-2/Edexcel-Set-B/Trigonometric%20Identities.pdf" class="w-full h-3/4" />
 
 <Calculator />
+
+# Question de niveau examen: Q1 {.w-1--2}
+
+::: example
+a. Démontre que
+   $$
+   1 - \cos 2x = \tan x \sin 2 x,
+   \quad x \neq \frac {(2n + 1) \pi} 2
+   $$
+
+b. Dès lors, résolvez l'équation
+   $$
+   (\tan^2 x - 4) (1 - \cos 2x) = 3 \tan^2 x \sin 2x.
+   $$
+   dans l'intervalle $[-\frac {\pi} 2, \frac \pi 2]$
+:::
+
+<Calculator />
