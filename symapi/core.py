@@ -9,12 +9,18 @@ def parse_latex(expr: str):
     if "=" in expr:
         return sympy.Eq(*[parse_latex(s) for s in expr.split("=")])
     parsed = sympy.parsing.latex.parse_latex(expr)
+
+    # Perform substitutions without touching the expression
     subs = {
         sympy.Symbol("e"): sympy.E,
         sympy.Symbol("i"): sympy.I,
         sympy.Symbol("pi"): sympy.pi,
     }
-    return remove_funcs(parsed.subs(subs)) if parsed is not None else None
+    with sympy.evaluate(False):
+        for before, after in subs.items():
+            parsed = parsed.xreplace({before: after})
+
+    return remove_funcs(parsed) if parsed is not None else None
 
 def remove_funcs(expr: sympy.Basic) -> sympy.Basic:
     if isinstance(expr.func, sympy.core.function.UndefinedFunction):

@@ -55,6 +55,32 @@ def test_is_equal(expr: str, attempt: str, expected: bool):
         "isEqual": expected,
     }
 
+@pytest.mark.parametrize(
+    "expr,expected",
+    [
+        ('\\frac {22} {7}', True),
+        ('3 e^{i \\frac{\\pi} 4}', True),
+        ('3 (\\cos \\frac{\\pi}{3} + i \\sin \\frac{\\pi}{3})', True),
+        ('3 (\\cos \\frac{\\pi}{3} + i \\cos \\frac{\\pi}{3})', False),
+        ('2 + 3i', False),
+    ],
+)
+def test_is_polar(expr: str, expected: bool):
+    result = schema.execute_sync(
+        """
+            query ($expr: Math!) {
+                expression(expr: $expr) {
+                    isPolar
+                }
+            }
+        """,
+        variable_values={"expr": expr},
+    )
+    assert result.data is not None
+    assert result.data["expression"] == {
+        "isPolar": expected,
+    }
+
 
 @pytest.mark.parametrize(
     "expr,expected",

@@ -33,6 +33,17 @@ class Expression:
         result = sympy.Add(expr, sympy.Mul(-1, self.expr))
         return sympy.simplify(result) == 0
 
+    @strawberry.field(description="Check if a complex number is in polar form")
+    def is_polar(self) -> bool:
+        if self.expr.is_real:
+            return True
+        if self.expr.func != sympy.Mul or len(self.expr.args) != 2:
+            return False
+        r, u = self.expr.args
+        if r != sympy.Abs(self.expr) or sympy.Abs(u) != 1:
+            return False
+        return True
+
     @strawberry.field
     def is_set_equal(self, items: list[Math]) -> bool:
         return self.expr == set(items)
