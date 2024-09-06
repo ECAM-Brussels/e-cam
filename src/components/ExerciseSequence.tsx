@@ -28,6 +28,7 @@ const exercises = {
   Differentiate: () => import('~/exercises/Differentiate'),
   Equation: () => import('~/exercises/Equation'),
   Factor: () => import('~/exercises/Factor'),
+  Python: () => import('~/exercises/Python'),
   Simple: () => import('~/exercises/Simple'),
   System: () => import('~/exercises/System'),
 }

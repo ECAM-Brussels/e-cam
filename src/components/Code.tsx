@@ -11,6 +11,7 @@ import Html from '~/components/Html'
 type CodeProps = {
   lang: string
   run?: boolean
+  onCodeUpdate?: (newValue: string) => void
   value: string
 }
 
@@ -24,6 +25,10 @@ export default function Code(props: CodeProps) {
   const [value, setValue] = createSignal(props.value)
   createEffect(() => {
     setValue(props.value)
+  })
+
+  createEffect(() => {
+    props.onCodeUpdate?.(value())
   })
 
   let textarea: HTMLTextAreaElement

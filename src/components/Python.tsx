@@ -1,4 +1,4 @@
-import { createResource, Show, type JSXElement } from 'solid-js'
+import { createResource, Show } from 'solid-js'
 import Math from '~/components/Math'
 import runPython from '~/lib/pyodide/api'
 

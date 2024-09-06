@@ -1,7 +1,7 @@
-import dedent from 'dedent-js'
 import { type ExerciseProps } from '../components/ExerciseSequence'
 import { encrypt } from '../lib/cryptography'
-import { exec as execWithCallback } from 'child_process'
+import { exec as execWithCallback, spawn } from 'child_process'
+import dedent from 'dedent-js'
 import glob from 'fast-glob'
 import { mkdirSync, readFileSync, writeFileSync } from 'fs'
 import { dirname, relative, resolve } from 'path'
@@ -10,6 +10,31 @@ import { promisify } from 'util'
 import { type Plugin, loadEnv } from 'vite'
 
 const exec = promisify(execWithCallback)
+
+function python(code: string) {
+  return new Promise((resolve, reject) => {
+    const process = spawn('python', ['-c', code])
+
+    let stdout = ''
+    let stderr = ''
+
+    process.stdout.on('data', (data) => {
+      stdout += data.toString()
+    })
+
+    process.stderr.on('data', (data) => {
+      stderr += data.toString()
+    })
+
+    process.on('close', (code) => {
+      if (code !== 0) {
+        reject(new Error(`Process exited with code ${code}: ${stderr}`))
+      } else {
+        resolve(stdout.trim())
+      }
+    })
+  })
+}
 
 async function generatePage(file: string) {
   const relativePath = relative(resolve('content'), file)
@@ -55,6 +80,12 @@ async function createAssignment(file: string, passphrase: string) {
     if (exercise.type === 'Simple' && exercise.state) {
       exercise.state.answer = encrypt(exercise.state.answer, passphrase)
       exercise.state.question = dedent(exercise.state.question)
+    } else if (exercise.type === 'Python' && exercise.state) {
+      const code = dedent(exercise.state.answer)
+      let results = await Promise.all(
+        exercise.state.tests.map((test) => python(`${code}\n\nprint(${test})`)),
+      )
+      exercise.state.answer = encrypt(JSON.stringify(results), passphrase)
     }
   }
   const template = String(readFileSync(resolve('src/vite/assignment.tsx'), 'utf-8'))
