@@ -19,10 +19,10 @@ jobs:
           pip install poetry
           poetry install --with dev
           npm install
-      - name: Codegen
-        run: |
-          nohup bash -c "poetry run fastapi run symapi &" && until curl -s http://localhost:8000/graphql; do sleep 1; done && npx graphql-codegen
       - name: Run unit tests
         run: |
+          nohup bash -c "poetry run fastapi run symapi &"
+          until curl -s http://localhost:8000/graphql; do sleep 1; done
+          npx graphql-codegen
           poetry run pytest
-          nohup bash -c "poetry run fastapi run symapi &" && until curl -s http://localhost:8000/graphql; do sleep 1; done && npx vitest run
+          npx vitest run
