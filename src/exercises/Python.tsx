@@ -38,7 +38,6 @@ export default function PythonExercise(props: ExerciseProps<State, null>) {
         run={true}
         onCodeUpdate={(newValue) => props.setter('state', 'code', newValue)}
       />
-      <pre>{props.state?.code}</pre>
     </ExerciseBase>
   )
 }

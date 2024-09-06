@@ -7,7 +7,9 @@ type PythonProps = {
 }
 
 export default function Python(props: PythonProps) {
-  const [result] = createResource(props.value, runPython)
+  const [result] = createResource(() => props.value, async (code) => {
+    return await runPython(code)
+  })
   return (
     <p>
       <Show when={result.state === 'ready' && result()}>
