@@ -27,9 +27,42 @@ export const mark = cache(async (state: State) => {
   return attempt.isEqual && attempt.isPolar
 }, 'checkComplexPolar')
 
+export const solve = cache(async (state: State): Promise<State> => {
+  'use server'
+  const { expression } = await request(
+    graphql(`
+      query SolveComplexPolar($expr: Math!) {
+        expression(expr: $expr) {
+          abs {
+            expr
+          }
+          arg {
+            expr
+          }
+        }
+      }
+    `),
+    state,
+  )
+  const r = expression.abs.expr
+  const theta = expression.arg.expr
+  return { ...state, attempt: `${r} e^{i \\left(${theta}\\right)}` }
+}, 'solveComplexPolar')
+
 export default function ComplexPolar(props: ExerciseProps<State, null>) {
   return (
-    <ExerciseBase type="ComplexPolar" {...props} schema={schema} mark={mark}>
+    <ExerciseBase
+      type="ComplexPolar"
+      {...props}
+      schema={schema}
+      mark={mark}
+      solve={solve}
+      solution={
+        <p>
+          La solution est <Math value={props.feedback?.solution?.attempt} />.
+        </p>
+      }
+    >
       <p>
         Écrivez <Math value={props.state?.expr} /> sous forme polaire.
       </p>
