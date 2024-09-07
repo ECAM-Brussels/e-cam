@@ -36,6 +36,7 @@ def test_expand(expr: str, expected: str):
         ("e", "\\exp(1)", True),
         ("\\pi", "2*\\arcsin(1)", True),
         ("x^2 - 4x", "x(x - 4)", True),
+        ('1 + i', '\\sqrt{2} e^{i \\frac{\\pi}{4}}', True),
     ],
 )
 def test_is_equal(expr: str, attempt: str, expected: bool):

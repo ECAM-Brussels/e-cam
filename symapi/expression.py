@@ -31,6 +31,7 @@ class Expression:
     @strawberry.field(description="Perform equality check")
     def is_equal(self, expr: Math) -> bool:
         result = sympy.Add(expr, sympy.Mul(-1, self.expr))
+        result = sympy.expand_complex(result)
         return sympy.simplify(result) == 0
 
     @strawberry.field(description="Check if a complex number is in polar form")
