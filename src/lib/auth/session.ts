@@ -1,6 +1,6 @@
 import { action, cache, reload } from '@solidjs/router'
 import { useSession } from 'vinxi/http'
-import { loadAssignment } from '~/components/ExerciseSequence'
+import { loadAssignment } from '~/components/ExerciseSequence.server'
 import { getUserInfo } from '~/lib/auth/azure'
 import { prisma } from '~/lib/db'
 
