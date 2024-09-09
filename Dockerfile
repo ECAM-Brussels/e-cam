@@ -2,7 +2,7 @@ FROM python:latest
 WORKDIR /app
 RUN pip install poetry
 RUN apt-get update && apt-get install -y --no-install-recommends npm pandoc
-COPY pyproject.toml poetry.lock package*.json ./
+COPY pyproject.toml poetry.lock package*.json .env ./
 RUN npm install
 
 COPY . .
