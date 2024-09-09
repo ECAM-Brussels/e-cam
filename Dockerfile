@@ -10,7 +10,7 @@ RUN nohup bash -c "poetry run fastapi run symapi &" \
     && until curl -s http://localhost:8000/graphql; do sleep 1; done \
     && npx graphql-codegen
 RUN npx prisma generate
-RUN npm run build
+RUN poetry run npm run build
 
 EXPOSE 3000
 
