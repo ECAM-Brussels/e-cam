@@ -4,6 +4,7 @@ RUN pip install poetry
 RUN apt-get update && apt-get install -y --no-install-recommends npm pandoc
 COPY pyproject.toml poetry.lock package*.json .env ./
 RUN npm install
+RUN npm install node-env-run
 
 COPY . .
 RUN nohup bash -c "poetry run fastapi run symapi &" \
@@ -14,4 +15,4 @@ RUN poetry run npm run build
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "npm run start & poetry run fastapi run symapi"]
+CMD ["sh", "-c", "npx node-env-run .output/server/index.mjs & poetry run fastapi run symapi"]
