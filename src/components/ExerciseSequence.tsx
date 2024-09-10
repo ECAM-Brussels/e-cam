@@ -1,5 +1,5 @@
-import { loadAssignment, upsertAssignment } from './ExerciseSequence.server'
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { deleteAssignment, loadAssignment, upsertAssignment } from './ExerciseSequence.server'
+import { faChevronLeft, faChevronRight, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { createAsync, revalidate, useLocation, useSearchParams } from '@solidjs/router'
 import { formatDistance } from 'date-fns'
 import { fr } from 'date-fns/locale'
@@ -32,7 +32,7 @@ const exercises = {
   Python: () => import('~/exercises/Python'),
   Simple: () => import('~/exercises/Simple'),
   System: () => import('~/exercises/System'),
-  TrigonometricValues: () => import('~/exercises/TrigonometricValues')
+  TrigonometricValues: () => import('~/exercises/TrigonometricValues'),
 }
 const components = mapValues(exercises, (m) => lazy(async () => ({ default: (await m()).default })))
 
@@ -204,9 +204,27 @@ export default function ExerciseSequence(props: ExerciseProps) {
 
   return (
     <>
-      <Show when={lastModified()}>
-        <p>Dernière sauvegarde {lastModified()}</p>
-      </Show>
+      <div class="flex justify-between">
+        <Show when={lastModified()}>
+          <p>Dernière sauvegarde {lastModified()}</p>
+          <Show when={user()?.admin}>
+            <button
+              class="border border-red-900 rounded px-2 py-1 text-red-900"
+              onClick={async () => {
+                await deleteAssignment(
+                  location.pathname,
+                  props.id || '',
+                  searchParams.userEmail || '',
+                )
+                revalidate(loadAssignment.keyFor(location.pathname, props.id || ''))
+                revalidate(loadResults.keyFor(location.pathname, props.id || ''))
+              }}
+            >
+              <Fa icon={faTrash} /> Supprimer le devoir
+            </button>
+          </Show>
+        </Show>
+      </div>
       <Show when={data.length > 1}>
         <Pagination current={index()} max={data.length} onChange={setIndex} classes={classes()} />
       </Show>

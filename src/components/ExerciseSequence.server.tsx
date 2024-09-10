@@ -24,6 +24,24 @@ export const loadAssignment = cache(
   'loadAssignment',
 )
 
+export async function deleteAssignment(
+  url: string,
+  id: string,
+  userEmail: string = '',
+) {
+  'use server'
+  const user = await getUser()
+  if (!user || !user.email || !user.admin) {
+    throw new Error('Only admins can delete assignments')
+  }
+  if (!userEmail) {
+    userEmail = user.email
+  }
+  await prisma.assignment.delete({
+    where: {url_userEmail_id: {url, userEmail, id}}
+  })
+}
+
 export async function upsertAssignment(
   url: string,
   id: string,
