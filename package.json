@@ -17,7 +17,6 @@
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^0.14.1",
     "@solidjs/start": "^1.0.6",
-    "crossws": "^0.2.4",
     "crypto-js": "^4.2.0",
     "date-fns": "^3.6.0",
     "dedent-js": "^1.0.1",
@@ -35,6 +34,7 @@
     "solid-prism-editor": "^1.1.0",
     "typescript": "^5.5.4",
     "vinxi": "^0.4.1",
+    "ws": "^8.18.0",
     "zod": "^3.23.8"
   },
   "engines": {
