@@ -21,7 +21,6 @@ import Fa from '~/components/Fa'
 import Pagination from '~/components/Pagination'
 import { loadResults } from '~/components/Results'
 import Whiteboard from '~/components/Whiteboard'
-import TrigonometricValues from '~/exercises/TrigonometricValues'
 import { getUser } from '~/lib/auth/session'
 
 const exercises = {
@@ -141,6 +140,13 @@ export default function ExerciseSequence(props: ExerciseProps) {
     return i
   }
   const exercise = () => data[Math.min(index(), data.length - 1)]
+  const finished = () => {
+    if (props.mode === 'static') {
+      return index() === props.data.length - 1 && exercise().feedback?.correct !== undefined
+    } else {
+      return dynamicIndex() > props.data.length - 1
+    }
+  }
   const classes = () =>
     data.map((exercise: Exercise) => {
       if (exercise.feedback?.correct) {
