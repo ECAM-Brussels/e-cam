@@ -7,7 +7,7 @@ export default function Home() {
       <section>
         <h2 class="text-3xl text-slate-800 mb-4">Cours</h2>
         <div class="grid lg:grid-cols-2">
-          <Card src="images/PM1C.webp" alt="Pont mathématiques" href="/PM1C/">
+          <Card src="images/PM1C.png" alt="Pont mathématiques" href="/PM1C/">
             <h3>Pont mathématiques vers le supérieur (ba1)</h3>
           </Card>
         </div>
@@ -30,7 +30,7 @@ function Card(props: CardProps) {
         <img
           src={props.src}
           alt={props.alt}
-          class="rounded-t opacity-60 max-h-64 object-cover w-full"
+          class="rounded-t opacity-60 max-h-96 object-cover w-full"
         />
         <div class="px-2 py-4 prose">{props.children}</div>
       </div>
