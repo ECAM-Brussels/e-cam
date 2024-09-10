@@ -69,7 +69,7 @@ export default function Whiteboard(props: WhiteboardProps) {
         revalidate(loadBoard.keyFor(location.pathname, props.id || ''))
       }
     },
-    5000,
+    3000,
     { leading: true, trailing: true },
   )
   createEffect(() => {
