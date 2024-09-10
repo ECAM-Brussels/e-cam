@@ -51,7 +51,7 @@ export default function Slideshow(props: SlideshowProps) {
   const slides = getSlides(props)
 
   let deck: InstanceType<typeof import('reveal.js')>
-  let socket: WebSocket
+  const socket = new WebSocket('/api/boards')
 
   const count = createAsync(() => getBoardCount(location.pathname, props.boardName || ''))
   createEffect(() => {
@@ -62,10 +62,6 @@ export default function Slideshow(props: SlideshowProps) {
 
   onMount(async () => {
     const Reveal = (await import('reveal.js')).default
-    const socket = new WebSocket('/api/boards')
-    socket.addEventListener('error', (event) => {
-      console.log('WebSocket error:', event);
-    })
     socket.addEventListener('message', (event) => {
       const data = JSON.parse(event.data)
       if (
