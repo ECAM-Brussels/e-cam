@@ -117,12 +117,12 @@ export default function ExerciseBase<S, G>(
       </div>
       <Show when={props.options?.mark && props.feedback}>
         <div class="bg-white border rounded-s-xl p-4">
-          <Show when={props.feedback?.correct}>
+          <Show when={props.feedback?.correct === true}>
             <p class="text-green-800 font-bold text-xl">
               <Fa icon={faCheckCircle} /> Correct&nbsp;!
             </p>
           </Show>
-          <Show when={!props.feedback?.correct}>
+          <Show when={props.feedback?.correct === false}>
             <p class="text-red-800 font-bold text-xl">
               <Fa icon={faXmark} /> Pas de chance&nbsp;!
             </p>
