@@ -197,6 +197,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
             props.id || '',
             searchParams.userEmail || '',
             data,
+            finished(),
           )
           revalidate(loadAssignment.keyFor(location.pathname, props.id || ''))
           revalidate(loadResults.keyFor(location.pathname, props.id || ''))

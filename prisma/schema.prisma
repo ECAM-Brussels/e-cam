@@ -20,6 +20,7 @@ model Assignment {
   id String
   body Json
   lastModified DateTime @default(now())
+  finished Boolean @default(false)
 
   @@id([url, userEmail, id])
 }
