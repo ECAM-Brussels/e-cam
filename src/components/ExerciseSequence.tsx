@@ -21,6 +21,7 @@ import Fa from '~/components/Fa'
 import Pagination from '~/components/Pagination'
 import { loadResults } from '~/components/Results'
 import Whiteboard from '~/components/Whiteboard'
+import TrigonometricValues from '~/exercises/TrigonometricValues'
 import { getUser } from '~/lib/auth/session'
 
 const exercises = {
@@ -31,6 +32,7 @@ const exercises = {
   Python: () => import('~/exercises/Python'),
   Simple: () => import('~/exercises/Simple'),
   System: () => import('~/exercises/System'),
+  TrigonometricValues: () => import('~/exercises/TrigonometricValues')
 }
 const components = mapValues(exercises, (m) => lazy(async () => ({ default: (await m()).default })))
 

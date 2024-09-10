@@ -51,6 +51,10 @@ class Expression:
         result = sympy.expand_complex(result)
         return sympy.simplify(result) == 0
 
+    @strawberry.field(description="Check if it's a number")
+    def is_number(self) -> bool:
+        return self.expr.is_number and not self.expr.has(sympy.Function)
+
     @strawberry.field(description="Check if a complex number is in polar form")
     def is_polar(self) -> bool:
         if self.expr.is_real:
