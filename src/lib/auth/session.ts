@@ -39,7 +39,7 @@ export const login = action(async (token: string) => {
       where: { email: userInfo.email },
       update: {},
       create: {
-        admin: /^[a-zA-Z]{3}@/.test(userInfo.email),
+        admin: /^[a-zA-Z][a-zA-Z0-9]{2}@/.test(userInfo.email),
         email: userInfo.email,
         firstName: userInfo.given_name,
         lastName: userInfo.family_name,
