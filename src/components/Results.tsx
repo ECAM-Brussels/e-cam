@@ -9,35 +9,31 @@ import { prisma } from '~/lib/db'
 
 export const loadResults = cache(async (url: string, id: string) => {
   'use server'
-  const assignments = await prisma.assignment.findMany({
-    where: { url, id },
-    orderBy: [
-      {
-        user: {
-          lastName: 'asc',
-        },
-      },
-      {
-        user: {
-          firstName: 'asc',
-        },
-      },
-    ],
+  const users = await prisma.user.findMany({
     include: {
-      user: {
-        select: {
-          firstName: true,
-          lastName: true,
-        },
+      assignments: {
+        where: { url, id },
       },
     },
+    orderBy: [
+      {
+        lastName: 'asc',
+      },
+      {
+        firstName: 'asc',
+      },
+    ],
   })
-  return assignments.map((record) => {
+  return users.map((record) => {
+    let questions: Exercise[] = []
+    if (record.assignments.length) {
+      questions = JSON.parse(String(record.assignments[0].body))
+    }
     return {
-      firstName: record.user.firstName,
-      lastName: record.user.lastName,
-      email: record.userEmail,
-      questions: (JSON.parse(String(record.body)) as Exercise[]).map((question) => {
+      firstName: record.firstName,
+      lastName: record.lastName,
+      email: record.email,
+      questions: questions.map((question) => {
         if (question.feedback?.correct) {
           return true
         } else if (question.feedback?.correct === false) {
