@@ -1,10 +1,12 @@
 import Fa from './Fa'
-import { faBook, faCircleExclamation, faCogs, faPen, faQuestionCircle, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
+import { faBook, faCircleExclamation, faCogs, faLightbulb, faPen, faQuestionCircle, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
 import { Show, type JSXElement } from 'solid-js'
 
 const environments = {
   definition: ['Définition', 'bg-green-700 text-green-100', faBook],
-  example: ['Exemple', 'bg-emerald-700 text-emerald-100', faPen],
+  example: ['Exemple', 'bg-teal-700 text-teal-100', faPen],
+  exercise: ['Exercice', 'bg-teal-700 text-teal-100', faPen],
+  hint: ['Indication', 'bg-yellow-200 text-yellow-700', faLightbulb],
   proposition: ['Proposition', 'bg-slate-700 text-slate-100', faBook],
   question: ['Question', 'bg-blue-950 text-blue-50', faQuestionCircle],
   remark: ['Remarque', 'bg-amber-600 text-amber-50', faCircleExclamation],

@@ -23,6 +23,8 @@ def environments(el: pf.Element, doc: pf.Doc):
     classes = [
         "definition",
         "example",
+        "exercise",
+        "hint",
         "proposition",
         "question",
         "remark",
