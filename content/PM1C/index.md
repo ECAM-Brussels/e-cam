@@ -12,17 +12,20 @@ title: 'Pont vers le supérieur: mathématiques'
 
 ## Cours théoriques
 
-Titre
-------                                           --------------------                                                  --------------------
-Trigonométrie                                    [A](/PM1C/slides/01-trigonometry?boardName=A)                         [B](/PM1C/slides/01-trigonometry?boardName=B)
+| Titre         |                                               |                                               |
+| ------------- | --------------------------------------------- | --------------------------------------------- |
+| Trigonométrie | [A](/PM1C/slides/01-trigonometry?boardName=A) | [B](/PM1C/slides/01-trigonometry?boardName=B) |
 
 :::
 
 ::: {.bg-white .rounded-xl .p-4 .shadow}
 
-## Séances d'exercices et préparations
+## Séances d'exercices
 
-#. [Factorisation](/PM1C/assignments/factorisation)
+| Titre            | Préparation       | Énoncés                   |
+| ---------------- | ----------------- | ------------------------- |
+| Trigonométrie I  | D: 32, 36, 46, 48 | D: 33, 51, 53, 55, 56, 57 |
+| Trigonométrie II | D: 60, 69, 71, 75 | D: 62, 72, 76, 89         |
 
 :::
 
