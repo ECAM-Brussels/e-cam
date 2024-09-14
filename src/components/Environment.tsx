@@ -24,7 +24,7 @@ type EnvironmentProps = {
 export default function Environment(props: EnvironmentProps) {
   const env = () => environments[props.type]
   return (
-    <div class="border rounded-xl shadow m-8">
+    <div class="border rounded-xl shadow m-8 break-inside-avoid-column">
       <div class={`rounded-t-xl px-4 py-1 font-bold ${env()[1]}`}>
         <Fa icon={env()[2]} /> {env()[0]}{' '}
         <Show when={props.title}>
