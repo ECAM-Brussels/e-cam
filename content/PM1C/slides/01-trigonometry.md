@@ -16,7 +16,6 @@ et pleine de belles rencontres!
 - **Ponctualité**: à l'heure ou *15 minutes* après
 - **Respect du temps de parole**
 - **Respect mutuel et de l'apprentissage du groupe**
-- **Allez à la bonne séance d'exercice**: les enseignants tourneront
 
 # À propos de ce cours {.w-1--2}
 
@@ -31,124 +30,81 @@ Exercices
 
 Resources
 : 
-  - [Calculus](https://www.stewartcalculus.com/)
-  - [Exercices du baccalauréat britannique](https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/)
+  - [Calculus](https://www.stewartcalculus.com/) (ressource principale)
+  - [Exercices du baccalauréat britannique](https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/) (exercices supplémentaires)
   - [Plateforme d'apprentissage ECAM](/) (en construction)
   - [Slides annotés](/PM1C)
 
-# Où trouver les slides?
+# À propos des séances d'exercices {.columns-2}
 
-:::::::::: {.columns-2 .h-full .p-4 .pb-12}
-::::: {.column .h-full}
+::: h-full
+- Faites la **préparation**
+- Allez dans **votre** série
+- Au *début* de la session,
+  posez vos questions sur la préparation.
+- Faites les exercices individuellement ou en groupe,
+  et posez vos questions aux enseignants.
+  On ne résoudra pas les exercices pour vous.
+:::
 
+::: h-full
 <Iframe src="/PM1C" class="border rounded-xl shadow p-4 w-full h-4/5" />
+:::
 
-:::::
-::::: column
+# Où trouver les ressources? {.columns-2 .h-full}
 
-#. Allez sur https://nguyen.me.uk
+::: h-full
+<Iframe src="/PM1C" class="border rounded-xl shadow p-4 w-full h-4/5" />
+:::
+
+::: h-full
+#. Allez sur https://learning.ecam.be
 #. Cliquez sur "Pont maths"
-
-:::::
-::::::::::
-
-# Comment s'entraîner sur la plateforme?
-
-:::::::::: {.columns-2 .h-full .p-4 .pb-12}
-::::: {.column .h-full}
-
-<Iframe src="/" class="border rounded-xl shadow p-4 w-full h-4/5" />
-
-:::::
-::::: column
-
-#. Allez sur https://nguyen.me.uk
-#. Connectez-vous avec votre compte ECAM
-#. Trouvez les préparations sur la page du cours
-
-:::::
-::::::::::
-
-# Radians et degrés {.w-1--2}
-
-Le **degré** et le **radian** sont deux *unités d'angle* proportionnelles satisfaisant
-
-$$
-  1 \, \text{tour} = 2 \pi \, \text{rad} = 360^\circ
-$$
-
------     ---        ---             ---             ---              ---
-Degrés    $0^\circ$  $30^\circ$      $45^\circ$      $60^\circ$       $90^\circ$
-Radians   $0$        $\frac \pi 6$   $\frac \pi 4$   $\frac \pi 3$    $\frac \pi 2$
------     ---        ---             ---             ---              ---
-
-::: {.question title="Conversion"}
-$$
-\text{degrés}
-\quad \overset{\times \frac \pi {180}}{\longrightarrow} \quad
-\text{radians}
-\qquad
-\qquad
-\text{radians}
-\quad \overset{\times \frac {180} \pi}{\longrightarrow} \quad
-\text{degrés}
-$$
 :::
 
-::: {.remark title="Utilisation du radian"}
-- On emploie les degrés dans la vie de tous les jours
-- Certaines formules sont plus faciles en radians,
-  e.g. $\sin' = \cos$.
+# Livres du baccalauréat britannique {.columns-2 .h-full}
+
+::: h-full
+<Iframe class="border rounded-xl shadow w-full h-full" src="https://www.physicsandmathstutor.com/maths-revision/solutionbanks/" />
 :::
 
-# Conversion: exemple {.w-1--2}
+::: h-full
+Pour des exercices similaires **corrigés**,
+nous ferons référence aux livres Edexcel (édition 2017).
 
-::: {.example title="D.1"}
-a. Convertir $60^\circ$ en radians
-b. Exprimer $5 \pi / 4$ en degrés
+- [Livres (Google drive)](https://drive.google.com/drive/folders/1qlM5jFw9kGTm45a8BtpQGopIivsvgH-4)
+- [Solutions](https://www.physicsandmathstutor.com/maths-revision/solutionbanks/)
+
+Étant un livre du secondaire,
+le rhythme y est un peu plus lent.
 :::
 
-::: {.solution .columns .columns-2}
-a. <Calculator value="60 \cdot \frac{\pi}{180}" />
-b. <Calculator value="\frac{5\pi}{4} \cdot {\frac{180}{\pi}}" />
-:::
+# Rappels {.w-1--2} 
 
-# Longueur d'arc {.w-1--2}
+#. Radians et degrés (pp. A24-A25)
+   $$
+   \text{degrés}
+   \quad \overset{\times \frac \pi {180}}{\longrightarrow} \quad
+   \text{radians}
+   \qquad
+   \qquad
+   \text{radians}
+   \quad \overset{\times \frac {180} \pi}{\longrightarrow} \quad
+   \text{degrés}
+   $$
+#. Longueur d'arc (pp. A24-A25)
+   $$
+   L = r \theta, \quad \theta \text{ en radians}
+   $$
+#. Rapports trigonométriques (pp. A26)
+   $$
+     \sin \theta = \frac {\text{opposé}} {\text{hypothénuse}} \quad
+     \cos \theta = \frac {\text{adjacent}} {\text{hypothénuse}} \quad
+     \tan \theta = \frac {\text{opposé}} {\text{adjacent}}
+   $$
 
-::: {.proposition title="Longueur d'arc"}
-$$
-L = r \theta
-$$
-:::
-
-::: exemple
-a. Si le rayon d'un cercle est $5$ cm,
-   quel angle est sous-tendu par un arc de $6$ cm?
-b. Si un cercle a un rayon de $3$ cm,
-   quel est la longueur de l'arc sous-tendu par un angle au centre de $3 \pi / 8$?
-:::
-
-::: {.solution .columns .columns-2}
-a. <Calculator value="\frac{6}{5}" />
-b. <Calculator value="3 \cdot 3 \frac{\pi}{8}" />
-:::
-
-# Rapports trigonométriques {.w-1--2}
-
-![Noms des côtés d'un triangle rectangle](/images/sohcahtoa.svg){.mx-auto .h-64}
-
-::: {.definition title="Rapports trigonométriques"}
-$$
-  \sin \theta = \frac {\text{opposé}} {\text{hypothénuse}}\\
-  \cos \theta = \frac {\text{adjacent}} {\text{hypothénuse}}\\
-  \tan \theta = \frac {\text{opposé}} {\text{adjacent}}\\
-$$
-:::
-
-::: question
-Les membres de gauche mentionnent $\theta$,
-pourquoi n'apparaît-il pas à droite?
-:::
+   ![](/images/sohcahtoa.svg){.mx-auto .h-64}
+#. Pythagore ($c^2 = a^2 + b^2$)
 
 # Cercle trigonométrique {.w-1--2}
 
@@ -159,91 +115,60 @@ pourquoi n'apparaît-il pas à droite?
   longueur d'arc si en radians
 - $M (\cos \alpha, \sin \alpha)$
 
-# Périodicité, symétrie, angles associés {.w-1--2}
+# Trouver les autres nombres trigonométriques (p. A27) {.w-1--2}
 
-::: {.proposition title="Périodicité"}
-- $\sin (x + 2 \pi) = \sin x$
-- $\cos (x + 2 \pi) = \cos x$
-- $\tan (x + \pi) = \tan x$
+::: {.example title="Exemple 4 p. A27"}
+Si $\cos \theta = \frac 2 5$ et $0 < \theta < \frac \pi 2$,
+trouvez les autres nombres trigonométriques.
 :::
 
-::: {.proposition title="Parité"}
-- $\sin (-\theta) = -\sin \theta$
-- $\cos (-\theta) = \cos \theta$
-- $\tan (-\theta) = -\tan \theta$
+::: remark
+- Vous ferez un exercice très similaire en séance.
+- Exercices 29-34 (Appendice D)
 :::
 
-# Angles associés
+# Calculer des angles ou des longueurs (p. A27) {.w-1--2}
 
-<Geogebra width={1100} height={800} id="vtpzkefz" />
-
-# Équations trigonométriques {.w-1--2}
-
-::: example
-$$
-\cos x = \frac 1 2
-$$
+::: {.example title="Exemple 5 p. A27"}
+Soit un triangle rectangle avec un angle de $40^\circ$ dont le côté opposé a comme longueur $16$.
+Que vaut $x$, la longueur du côté adjacent?
 :::
 
-::: warning
-La calculatrice ne donne qu'**une seule** réponse.
-
-<Calculator value="\arccos(\frac 1 2)" />
-
-Utilisez le cercle trigonométrique pour trouver les autres.
+::: {.remark title="Exercices similaires"}
+Appendice D: 35-38
 :::
 
-# Graphes trigonométriques
+<Calculator />
 
-<Geogebra id="eVGq4u6M" height={450} class="border scale-125 translate-y-1/4 mx-auto" />
-
-# Graphes
-
-~~~ yaml {.plot}
-class: mx-auto
-xAxis: { domain: [-10, 10] }
-data:
-  - fn: sin(x)
-  - fn: cos(x)
-  - fn: tan(x)
-width: 1800
-height: 900
-~~~
-
-# Identités fondamentales {.w-1--2}
-
-::: {.proposition title="Identités fondamentales"}
-$$
-\sin^2 x + \cos^2 x = 1\\
-\tan^2 x + 1 = \frac 1 {\cos^2 x}\\
-1 + \cot^2 x = \frac 1 {\sin^2 x}
-$$
-:::
-
-- La première identité découle de **Pythagore**.
-- On divise par $\cos^2 x$ et $\sin^2 x$ respectivement
-  pour trouver les autres.
-
-# Formules d'addition: découverte
-
-<Geogebra class="mx-auto" id="t5zqcQ4z" width={1300} height={900} />
-
-# Formules d'addition: preuve par image {.w-1--2}
+# Découverte: $\sin(a + b)$, $\cos(a + b)$ {.w-1--2}
 
 ![](/images/addition_formulae_proofs.png){.w-3--4 .mx-auto}
 
-# Formules d'addition {.w-1--2}
+# Identités trigonométriques (pp. A28-A29) {.columns-2}
+
+::: {.proposition title="Sécante, cosécante, cotangente"}
+$$
+\csc x = \frac 1 {\sin x}
+\qquad \sec x = \frac 1 {\cos x}
+\qquad \cot x = \frac 1 {\tan x}
+$$
+:::
+
+::: {.proposition title="Relations fondamentales"}
+$$
+\sin^2 x + \cos^2 x = 1\\
+1 + \cot^2 x = \frac 1 {\sin^2 x}\\
+\tan^2 x + 1 = \frac 1 {\cos^2 x}
+$$
+:::
 
 ::: {.proposition title="Formules d'addition"}
 $$
 \sin (x \pm y) = \sin x \cos y \pm \cos x \sin y\\
-\cos (x \pm y) = \cos x \cos y \mp \sin x \sin y\\
-\tan (x \pm y) = \frac {\tan x \pm \tan y} {1 \mp \tan x \tan y}
+\cos(x \pm y) = \cos x \cos y \mp \sin x \sin y\\
+\tan(x + y) = \frac {\tan x \pm \tan y} {1 \mp \tan x \tan y}
 $$
 :::
-
-En prenant $y = x$,
-on obtient les formules de **duplication** suivantes:
 
 ::: {.proposition title="Formules de duplication"}
 $$
@@ -253,34 +178,61 @@ $$
 $$
 :::
 
-# Équations trigonométriques: exemple {.w-1--2}
+::: {.proposition title="Formules de Carnot"}
+$$
+\cos^2 x = \frac {1 + \cos 2x} 2\\
+\sin^2 x = \frac {1 - \cos 2x} 2\\
+$$
+:::
 
-::: example
-Trouvez toutes les valeurs de $x \in [0, 2\pi]$ telles que $\sin x = \sin 2x$.
+::: {.proposition title="Formules de Simpson"}
+$$
+\cos x + \cos y = 2 \cos \frac {x + y} 2 \cos \frac {x - y} 2\\
+\cos x - \cos y = -2 \sin \frac {x + y} 2 \sin \frac {x - y} 2\\
+\sin x + \sin y = 2 \sin \frac {x + y} 2 \cos \frac {x - y} 2\\
+\sin x - \sin y = 2 \cos \frac {x + y} 2 \sin \frac {x - y} 2\\
+$$
+:::
+
+# Identités trigonométriques (p. A34) {.w-1--2}
+
+::: {.exercise title="Exercices 52, 54 p. A34"}
+Prouvez les identités suivantes:
+
+- $$\frac 1 {1 - \sin \theta} + \frac 1 {1 + \sin \theta} = 2 \sec^2 \theta$$
+
+
+- $$\sin^2 x - \sin^2 y = \sin(x + y) \sin(x - y)$$
+:::
+
+::: {.remark title="Exercices supplémentaires"}
+- Appendice D: 42-58
+- Pure Year 1: [10.3](https://activeteach-prod.resource.pearson-intl.com/r00/r0066/r006621/r00662110/current/alevelsb_p1_ex10c.pdf)
+:::
+
+# Équations trigonométriques (p. A30) {.w-1--2}
+
+::: {.example title="Exemple 7 p. A30"}
+Résolvez l'équation $\sin x = \sin 2x$ dans l'intervalle $[0, 2 \pi]$.
+
+Réponse: $0$, $\frac \pi 3$, $\pi$, $\frac {5 \pi} 3$ et $2 \pi$
 :::
 
 <Calculator />
 
-# Exercices corrigés issus du baccalauréat britannique {.w-1--2}
-
-<Iframe src="https://pmt.physicsandmathstutor.com/download/Maths/A-level/Pure/Trigonometry-2/Edexcel-Set-B/Trigonometric%20Identities.pdf" class="w-full h-3/4" />
-
-<Calculator />
-
-# Question de niveau examen: Q1 {.w-1--2}
-
-::: example
-a. Démontre que
-   $$
-   1 - \cos 2x = \tan x \sin 2 x,
-   \quad x \neq \frac {(2n + 1) \pi} 2
-   $$
-
-b. Dès lors, résolvez l'équation
-   $$
-   (\tan^2 x - 4) (1 - \cos 2x) = 3 \tan^2 x \sin 2x.
-   $$
-   dans l'intervalle $[-\frac {\pi} 2, \frac \pi 2]$
+::: {.remark title="Exercices supplémentaires"}
+- Appendice D: 65-72
+- Pure year 1:
+  - [10.4](https://activeteach-prod.resource.pearson-intl.com/r00/r0066/r006621/r00662110/current/alevelsb_p1_ex10c.pdf) 
+  - [10.5](https://activeteach-prod.resource.pearson-intl.com/r00/r0066/r006621/r00662112/current/alevelsb_p1_ex10e.pdf)
+  - [10.6](https://activeteach-prod.resource.pearson-intl.com/r00/r0066/r006621/r00662113/current/alevelsb_p1_ex10f.pdf)
+- Pure year 2: 7.4, 7.5, 7.6
 :::
 
-<Calculator />
+# Exercices supplémentaires: identités trigonométriques {.w-1--2}
+
+<Iframe class="h-full w-full" src="https://pmt.physicsandmathstutor.com/download/Maths/A-level/Pure/Trigonometry-2/Edexcel-Set-B/Trigonometric%20Identities.pdf" />
+
+# Exercices supplémentaires: équations trigonométriques {.w-1--2}
+
+<Iframe class="h-full w-full" src="https://pmt.physicsandmathstutor.com//download/Maths/A-level/Pure/Trigonometry-2/Edexcel-Set-B/Trigonometric%20Equations.pdf" />
