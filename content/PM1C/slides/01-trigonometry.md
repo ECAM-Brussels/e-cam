@@ -115,6 +115,14 @@ le rhythme y est un peu plus lent.
   longueur d'arc si en radians
 - $M (\cos \alpha, \sin \alpha)$
 
+# Angles associés {.w-1--2}
+
+::: {.example title="Angles associés"}
+- $\sin (-x) = \dots$
+- $\cos (\pi - x) = \dots$
+- $\tan (\pi + x) = \dots$
+:::
+
 # Trouver les autres nombres trigonométriques (p. A27) {.w-1--2}
 
 ::: {.example title="Exemple 4 p. A27"}
@@ -236,3 +244,31 @@ Réponse: $0$, $\frac \pi 3$, $\pi$, $\frac {5 \pi} 3$ et $2 \pi$
 # Exercices supplémentaires: équations trigonométriques {.w-1--2}
 
 <Iframe class="h-full w-full" src="https://pmt.physicsandmathstutor.com//download/Maths/A-level/Pure/Trigonometry-2/Edexcel-Set-B/Trigonometric%20Equations.pdf" />
+
+# Graphes trigonométriques (pp. A32-A34) {.columns-2}
+
+::: h-full
+### $\sin$ et $\cos$
+~~~ yaml {.plot}
+height: 600
+width: 900
+yAxis:
+  domain: [-2, 2]
+xAxis:
+  domain: [-10, 10]
+data:
+  - fn: sin(x)
+  - fn: cos(x)
+~~~
+:::
+
+::: h-full
+### $\tan$
+
+~~~ yaml {.plot}
+height: 600
+width: 900
+data:
+  - fn: tan(x)
+~~~
+:::
