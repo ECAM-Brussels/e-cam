@@ -40,13 +40,19 @@ $$
 Revenez en $\sin$ et $\cos$.
 :::
 
-# Exercice 53 p. A34
+# Exercice 53 p. A34 {.w-1--2}
 
 ::: exercise
 Prouvez que
+$$\sin x \sin 2x + \cos x \cos 2x = \cos x$$
 :::
 
-# Exercice 55 {.w-1--2}
+::: hint
+Deux arguments différents sont en jeu: $x$ et $2 x$.
+Que pourriez-vous faire pour éliminer cette difficulté?
+:::
+
+# Exercice 55 p. A34 {.w-1--2}
 
 ::: exercise
 Montrez que
@@ -56,10 +62,10 @@ $$
 :::
 
 ::: hint
-- Il y a trop de fonctions trigonométriques différentes
+Il y a trop de fonctions trigonométriques différentes
 :::
 
-# Exercice 56 {.w-1--2}
+# Exercice 56 p. A34 {.w-1--2}
 
 ::: exercise
 Montrez que
@@ -74,4 +80,15 @@ Il y a trois types d'arguments différents en jeu: $x$, $y$ et $x + y$.
 C'est sûrement un peu trop.
 :::
 
-# Exercice 57
+# Exercice 57 p. A34 {.w-1--2}
+
+::: exercise
+Montrez que
+$$
+\sin 3\theta + \sin \theta = 2 \sin 2 \theta \cos \theta
+$$
+:::
+
+# Exercices supplémentaires corrigés {.w-1--2}
+
+<Iframe class="h-full w-full" src="https://pmt.physicsandmathstutor.com//download/Maths/A-level/Pure/Trigonometry-2/Edexcel-Set-B/Trigonometric%20Equations.pdf" />
