@@ -123,6 +123,15 @@ le rhythme y est un peu plus lent.
 - $\tan (\pi + x) = \dots$
 :::
 
+::: remark
+Il est vraiment important d'être à l'aise avec le cercle trigonométrique.
+Quelques exercices automatiquement corrigés ont été préparés pour vous.
+Pour y accéder
+
+#. [Connectez-vous](/auth/login) à l'aide de votre compte ECAM.
+#. [Commencer l'exercice](/PM1C/practice/trigonometry/exact_values)
+:::
+
 # Trouver les autres nombres trigonométriques (p. A27) {.w-1--2}
 
 ::: {.example title="Exemple 4 p. A27"}
