@@ -45,6 +45,9 @@ Séances d'exercices
 
 ## S'entraîner à la maison
 
+1. Trigonométrie:
+   - [Valeurs exactes](/PM1C/practice/trigonometry/exact_values)
+
 :::
 
 :::::

@@ -15,8 +15,8 @@ export type State = z.infer<typeof schema>
 export async function generate(params: {
   F?: ('cos' | 'sin' | 'tan' | 'cot')[]
   Alpha: string[]
-  Q?: number[],
-  K?: number[],
+  Q?: number[]
+  K?: number[]
 }): Promise<State> {
   'use server'
   const f = sample(params.F || ['cos', 'sin', 'tan', 'cot'])
@@ -73,7 +73,9 @@ export default function TrigonometricValues(
       mark={mark}
       generate={generate}
     >
-      <p>Donnez la valeur exacte du nombre trigonométrique suivant.</p>
+      <p>
+        Sans utiliser la calculatrice, donnez la valeur exacte du nombre trigonométrique suivant.
+      </p>
       <div class="flex items-center gap-2">
         <Math value={`${props.state?.expr}=`} displayMode />
         <Math
