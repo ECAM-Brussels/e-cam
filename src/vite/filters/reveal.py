@@ -19,6 +19,8 @@ def slideshow(el: pf.Element, doc: pf.Doc = None):
         ]
         return elements
     if type(el) == pf.Link:
+        if not el.url.startswith('#'):
+            el.attributes['target'] = '_blank'
         el.classes += ['relative', 'z-20']
 
 
