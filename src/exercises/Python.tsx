@@ -27,11 +27,9 @@ export const mark = cache(async (state: State) => {
   let code = state.code || ''
   if (state.wrap) {
     code = wrapCode(code)
-    console.log(code)
   }
   await runPython(code)
   const results = await Promise.all(state.tests.map(async (test) => (await runPython(test)).output))
-  console.log(results)
   const comparison = await compareResults(state.answer, results)
   return comparison === state.tests.length
 }, 'checkPython')
