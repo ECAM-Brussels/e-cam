@@ -37,7 +37,7 @@ Cours théoriques
 : Khôi NGUYỄN (NGY)
 
 Séances d'exercices
-: Ruben HILLEWAERE (HIL), Jacek JONAS-SZATANSKI (JSZ)
+: Rolando GUERRIERI (R5G), Ruben HILLEWAERE (HIL), Marius JOLY (MJ5)
 
 :::
 
