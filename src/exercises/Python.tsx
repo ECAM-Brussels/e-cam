@@ -6,12 +6,14 @@ import ExerciseBase, { ExerciseProps } from '~/components/ExerciseBase'
 import Markdown from '~/components/Markdown'
 import { decrypt } from '~/lib/cryptography'
 import runPython from '~/lib/pyodide/api'
+import { wrapCode } from '~/lib/helpers'
 
 export const schema = z.object({
   question: z.string(),
   code: z.string().optional(),
   answer: z.string(),
   tests: z.string().array(),
+  wrap: z.boolean().optional(),
 })
 export type State = z.infer<typeof schema>
 
@@ -22,8 +24,14 @@ async function compareResults(answer: string, results: string[]) {
 }
 
 export const mark = cache(async (state: State) => {
-  await runPython(state.code || '')
+  let code = state.code || ''
+  if (state.wrap) {
+    code = wrapCode(code)
+    console.log(code)
+  }
+  await runPython(code)
   const results = await Promise.all(state.tests.map(async (test) => (await runPython(test)).output))
+  console.log(results)
   const comparison = await compareResults(state.answer, results)
   return comparison === state.tests.length
 }, 'checkPython')

@@ -8,6 +8,7 @@ import { dirname, relative, resolve } from 'path'
 import { transpile } from 'typescript'
 import { promisify } from 'util'
 import { type Plugin, loadEnv } from 'vite'
+import { wrapCode } from '../lib/helpers'
 
 const exec = promisify(execWithCallback)
 
@@ -81,7 +82,10 @@ async function createAssignment(file: string, passphrase: string) {
       exercise.state.answer = encrypt(exercise.state.answer, passphrase)
       exercise.state.question = dedent(exercise.state.question)
     } else if (exercise.type === 'Python' && exercise.state) {
-      const code = dedent(exercise.state.answer)
+      let code = dedent(exercise.state.answer)
+      if (exercise.state.wrap) {
+        code = wrapCode(code)
+      }
       let results = await Promise.all(
         exercise.state.tests.map((test) => python(`${code}\n\nprint(${test})`)),
       )
