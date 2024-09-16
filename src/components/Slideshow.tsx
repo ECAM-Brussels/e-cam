@@ -67,7 +67,8 @@ export default function Slideshow(props: SlideshowProps) {
       if (
         data.url === location.pathname &&
         data.boardName === props.boardName &&
-        data.action === 'addBoard'
+        data.action === 'addBoard' &&
+        !user()?.admin
       ) {
         revalidate(getBoardCount.keyFor(location.pathname, props.boardName || ''))
       }
@@ -82,8 +83,9 @@ export default function Slideshow(props: SlideshowProps) {
     deck.initialize()
     deck.addKeyBinding('40', async () => {
       const { h, v } = deck.getIndices()
-      if (v === (count()?.[String(h)] || 1) - 1) {
+      if (v === (count()?.[String(h)] || 1) - 1 && user()?.admin) {
         await addBoard(location.pathname, props.boardName || '', h, v + 1)
+        revalidate(getBoardCount.keyFor(location.pathname, props.boardName || ''))
         socket.send(
           JSON.stringify({
             url: location.pathname,
