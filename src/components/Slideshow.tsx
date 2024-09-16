@@ -77,6 +77,8 @@ export default function Slideshow(props: SlideshowProps) {
       center: false,
       hash: true,
       height: 1080,
+      slideNumber: true,
+      touch: false,
       transition: 'none',
       width: 1920,
     })
