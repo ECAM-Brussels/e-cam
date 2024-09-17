@@ -3,6 +3,56 @@ title: Trigonométrie I
 slideshow: true
 ---
 
+# Identités trigonométriques (pp. A28-A29) {.columns-2}
+
+::: {.proposition title="Sécante, cosécante, cotangente"}
+$$
+\csc x = \frac 1 {\sin x}
+\qquad \sec x = \frac 1 {\cos x}
+\qquad \cot x = \frac 1 {\tan x}
+$$
+:::
+
+::: {.proposition title="Relations fondamentales"}
+$$
+\sin^2 x + \cos^2 x = 1\\
+1 + \cot^2 x = \frac 1 {\sin^2 x}\\
+\tan^2 x + 1 = \frac 1 {\cos^2 x}
+$$
+:::
+
+::: {.proposition title="Formules d'addition"}
+$$
+\sin (x \pm y) = \sin x \cos y \pm \cos x \sin y\\
+\cos(x \pm y) = \cos x \cos y \mp \sin x \sin y\\
+\tan(x + y) = \frac {\tan x \pm \tan y} {1 \mp \tan x \tan y}
+$$
+:::
+
+::: {.proposition title="Formules de duplication"}
+$$
+\sin 2x = 2 \sin x \cos x\\
+\cos 2x = \cos^2 x - \sin^2 x\\
+\tan 2x = \frac {2 \tan x} {1 - \tan^2 x}
+$$
+:::
+
+::: {.proposition title="Formules de Carnot"}
+$$
+\cos^2 x = \frac {1 + \cos 2x} 2\\
+\sin^2 x = \frac {1 - \cos 2x} 2\\
+$$
+:::
+
+::: {.proposition title="Formules de Simpson"}
+$$
+\cos x + \cos y = 2 \cos \frac {x + y} 2 \cos \frac {x - y} 2\\
+\cos x - \cos y = -2 \sin \frac {x + y} 2 \sin \frac {x - y} 2\\
+\sin x + \sin y = 2 \sin \frac {x + y} 2 \cos \frac {x - y} 2\\
+\sin x - \sin y = 2 \cos \frac {x + y} 2 \sin \frac {x - y} 2\\
+$$
+:::
+
 # Exercice 33 p. A34 {.w-1--2}
 
 ::: exercise

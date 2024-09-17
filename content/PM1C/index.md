@@ -22,10 +22,10 @@ title: 'Pont vers le supérieur: mathématiques'
 
 ## Séances d'exercices
 
-|   # | Titre                                              | Préparation       | Énoncés                   |
-| --: | -------------------------------------------------- | ----------------- | ------------------------- |
-|   1 | [Trigonométrie I](/PM1C/exercises/01-trigonometry) | D: 32, 36, 46, 48 | D: 33, 51, 53, 55, 56, 57 |
-|   2 | Trigonométrie II                                   | D: 60, 69, 71, 75 | D: 62, 72, 76, 89         |
+|   # | Titre                                               | Préparation       | Énoncés                                |
+| --: | --------------------------------------------------- | ----------------- | -------------------------------------- |
+|   1 | [Trigonométrie I](/PM1C/exercises/01-trigonometry)  | D: 32, 36, 46, 48 | D: 33, 51, 53, 55, 56, 57              |
+|   2 | [Trigonométrie II](/PM1C/exercises/02-trigonometry) | D: 60, 69, 71, 75 | D: 62, 72, 76, 89, 2 exercices ajoutés |
 
 :::
 
