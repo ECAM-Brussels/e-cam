@@ -25,6 +25,7 @@ const Python = clientOnly(() => import('./Python'))
 
 export default function Code(props: CodeProps) {
   const [value, setValue] = createSignal(props.value)
+  const [codeToRun, setCodeToRun] = createSignal(props.value)
   createEffect(() => {
     setValue(props.value)
   })
@@ -41,7 +42,8 @@ export default function Code(props: CodeProps) {
         <button
           class="block text-cyan-950 px-2 text-xl"
           onClick={() => {
-            setValue(textarea.value)
+            setCodeToRun('')
+            setCodeToRun(textarea.value)
           }}
         >
           <Fa icon={faPlayCircle} />
@@ -53,10 +55,14 @@ export default function Code(props: CodeProps) {
             readOnly={props.readOnly}
             onMount={(editor) => {
               textarea = editor.textarea
+              textarea.addEventListener('blur', (event) => {
+                setValue(textarea.value)
+              })
               textarea.addEventListener('keydown', (event) => {
                 if (event.code === 'Enter' && (event.shiftKey || event.ctrlKey)) {
                   event.preventDefault()
-                  setValue(textarea.value)
+                  setCodeToRun('')
+                  setCodeToRun(textarea.value)
                 }
               })
             }}
@@ -64,10 +70,10 @@ export default function Code(props: CodeProps) {
         </div>
       </div>
       <Show when={props.lang === 'python' && props.run}>
-        <Python value={value()} />
+        <Python value={codeToRun()} />
       </Show>
       <Show when={props.lang === 'html' && props.run}>
-        <Html value={value()} />
+        <Html value={codeToRun()} />
       </Show>
     </div>
   )
