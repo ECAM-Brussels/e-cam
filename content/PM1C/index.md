@@ -45,8 +45,10 @@ Séances d'exercices
 
 ## S'entraîner à la maison
 
-1. Trigonométrie:
+#. Trigonométrie:
    - [Valeurs exactes](/PM1C/practice/trigonometry/exact_values)
+#. Vecteurs:
+   - [Produits vectoriels](/PM1C/practice/vectors/cross-product)
 
 :::
 
