@@ -54,6 +54,7 @@ type ResultsProps = {
 
 export default function Results(props: ResultsProps) {
   const [search, setSearch] = createSignal('')
+  const [started, setStarted] = createSignal(true)
   const results = createAsync(() => loadResults(props.url, props.id || ''))
   const count = () => {
     const r = results()
@@ -61,10 +62,11 @@ export default function Results(props: ResultsProps) {
   }
 
   const filtered = () => {
+    const res = (results() || []).filter((r) => !started() || r.attempted)
     if (!search()) {
-      return results()
+      return res
     }
-    const fuse = new Fuse(results() || [], { keys: ['lastName', 'firstName'] })
+    const fuse = new Fuse(res, { keys: ['lastName', 'firstName'] })
     return fuse.search(search()).map((r) => r.item)
   }
 
@@ -77,6 +79,14 @@ export default function Results(props: ResultsProps) {
           value={search()}
           onInput={(e) => setSearch(e.target.value)}
         />
+        <label class="py-2 text-sm">
+          <input
+            type="checkbox"
+            checked={started()}
+            onChange={(e) => setStarted(e.target.checked)}
+          />{' '}
+          Montrer seulement ceux qui ont commencé
+        </label>
       </p>
       <table class="container">
         <thead class="border-b">
