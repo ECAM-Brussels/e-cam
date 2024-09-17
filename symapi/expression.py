@@ -45,6 +45,10 @@ class Expression:
     def factor(self) -> "Expression":
         return Expression(expr=sympy.factor(self.expr))
 
+    @strawberry.field
+    def is_approximately_equal(self, expr: Math, error: float) -> bool:
+        return sympy.N(sympy.Abs(self.expr - expr)) <= error
+
     @strawberry.field(description="Perform equality check")
     def is_equal(self, expr: Math) -> bool:
         result = sympy.Add(expr, sympy.Mul(-1, self.expr))
