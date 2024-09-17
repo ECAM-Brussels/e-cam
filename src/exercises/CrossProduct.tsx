@@ -1,4 +1,5 @@
 import { cache } from '@solidjs/router'
+import { sample } from 'lodash-es'
 import { z } from 'zod'
 import ExerciseBase, { ExerciseProps } from '~/components/ExerciseBase'
 import Math from '~/components/Math'
@@ -11,6 +12,14 @@ export const schema = z.object({
   attempt: z.string().array().optional(),
 })
 export type State = z.infer<typeof schema>
+
+type Params = { numbers: string[] }
+export function generate(params: Params): State {
+  return {
+    a: [sample(params.numbers)!, sample(params.numbers)!, sample(params.numbers)!],
+    b: [sample(params.numbers)!, sample(params.numbers)!, sample(params.numbers)!],
+  }
+}
 
 export const mark = cache(async (state: State) => {
   'use server'
@@ -29,7 +38,7 @@ export const mark = cache(async (state: State) => {
   return vector.cross.isEqual
 }, 'checkCrossProduct')
 
-export default function CrossProduct(props: ExerciseProps<State, null>) {
+export default function CrossProduct(props: ExerciseProps<State, Params>) {
   const a = () => String.raw`
     \begin{pmatrix}
       ${props.state?.a[0]} \\
@@ -52,7 +61,7 @@ export default function CrossProduct(props: ExerciseProps<State, null>) {
     \end{pmatrix}
   `
   return (
-    <ExerciseBase type="CrossProduct" {...props} schema={schema} mark={mark}>
+    <ExerciseBase type="CrossProduct" {...props} schema={schema} mark={mark} generate={generate}>
       <p>Calculez le produit vectoriel suivant</p>
       <div class="flex items-center gap-2">
         <Math value={`${a()} \\times ${b()} =`} displayMode />
