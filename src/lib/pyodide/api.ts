@@ -1,8 +1,11 @@
-import { type Code, type Output } from '~/lib/pyodide/common'
+import { runCode, type Code, type Output } from '~/lib/pyodide/common'
 
 const stack: { [uid: string]: (msg: Output) => void } = {}
 
-export default function runPython(code: string): Promise<Output> {
+export default function runPython(code: string, useWorker: boolean = true): Promise<Output> {
+  if (code.includes("input(")) {
+    useWorker = false
+  }
   return new Promise((resolve) => {
     const uid = Date.now().toString(36) + Math.random().toString(36)
     if (!code) {
@@ -10,7 +13,7 @@ export default function runPython(code: string): Promise<Output> {
     }
     stack[uid] = resolve
 
-    if (window.SharedWorker) {
+    if (window.SharedWorker && useWorker) {
       const worker = new SharedWorker(new URL('./SharedWorker.ts', import.meta.url), {
         type: 'module',
       })
@@ -21,7 +24,7 @@ export default function runPython(code: string): Promise<Output> {
         resolve(event.data)
       }
       worker.port.postMessage({ code, uid } as Code)
-    } else if (window.Worker) {
+    } else if (window.Worker && useWorker) {
       const worker = new Worker(new URL('./Worker.ts', import.meta.url), {
         type: 'module',
       })
@@ -32,6 +35,10 @@ export default function runPython(code: string): Promise<Output> {
         resolve(event.data)
       }
       worker.postMessage({ code, uid } as Code)
+    } else {
+      runCode(code).then(({ format, output }) => {
+        resolve({ uid, format, output })
+      })
     }
   })
 }

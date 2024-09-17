@@ -17,14 +17,12 @@ async function load() {
   pyodide = await loadPyodide({
     indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/',
   })
+  pyodide.setStdin({ stdin: () => prompt() })
 }
 const loadPromise = load()
 
-export async function handleMessage(event: MessageEvent<Code>): Promise<Output> {
-  let format = 'string'
-  let code = event.data.code
-  const uid = event.data.uid
-
+export async function runCode(code: string) {
+  let format: Message['format'] = 'string'
   await loadPromise
   await pyodide.loadPackagesFromImports(code)
 
@@ -77,5 +75,12 @@ export async function handleMessage(event: MessageEvent<Code>): Promise<Output> 
     output = error
     format = 'error'
   }
+  return { output, format }
+}
+
+export async function handleMessage(event: MessageEvent<Code>): Promise<Output> {
+  let code = event.data.code
+  const uid = event.data.uid
+  let { output, format } = await runCode(code)
   return { output, uid, format } as Output
 }
