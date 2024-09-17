@@ -10,6 +10,17 @@ class Vector:
     coordinates: list[Math]
 
     @strawberry.field
+    def angle(self, coordinates: list[Math], degrees: bool = False) -> "Expression":
+        a = sympy.Matrix(self.coordinates)
+        b = sympy.Matrix(coordinates)
+        if a.dot(a) * b.dot(b) == 0:
+            raise ValueError("Input vectors should have non-zero norms")
+        theta = sympy.acos(a.dot(b) / sympy.sqrt(a.dot(a) * b.dot(b)))
+        if degrees:
+            theta = theta * 180 / sympy.pi
+        return Expression(expr=theta)
+
+    @strawberry.field
     def cross(self, coordinates: list[Math]) -> "Vector":
         a = sympy.Matrix(self.coordinates)
         b = sympy.Matrix(coordinates)
