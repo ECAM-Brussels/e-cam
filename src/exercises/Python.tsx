@@ -5,7 +5,6 @@ import Code from '~/components/Code'
 import ExerciseBase, { ExerciseProps } from '~/components/ExerciseBase'
 import Markdown from '~/components/Markdown'
 import { decrypt } from '~/lib/cryptography'
-import runPython from '~/lib/pyodide/api'
 import { wrapCode } from '~/lib/helpers'
 
 export const schema = z.object({
@@ -28,6 +27,7 @@ export const mark = cache(async (state: State) => {
   if (state.wrap) {
     code = wrapCode(code)
   }
+  const runPython = (await import('~/lib/pyodide/api')).default
   await runPython(code)
   const results = await Promise.all(state.tests.map(async (test) => (await runPython(test)).output))
   const comparison = await compareResults(state.answer, results)
