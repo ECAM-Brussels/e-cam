@@ -1,5 +1,6 @@
 import { createResource, Show } from 'solid-js'
 import Math from '~/components/Math'
+import Spinner from '~/components/Spinner'
 import runPython from '~/lib/pyodide/api'
 
 type PythonProps = {
@@ -7,12 +8,15 @@ type PythonProps = {
 }
 
 export default function Python(props: PythonProps) {
-  const [result] = createResource(() => props.value, async (code) => {
-    return await runPython(code)
-  })
+  const [result] = createResource(
+    () => props.value,
+    async (code) => {
+      return await runPython(code)
+    },
+  )
   return (
     <p>
-      <Show when={result.state === 'ready' && result()}>
+      <Show when={result.state === 'ready' && result()} fallback={<Spinner class="block m-auto" />}>
         {(output) => (
           <>
             <Show when={output().format === 'latex'}>
