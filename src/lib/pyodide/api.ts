@@ -2,8 +2,11 @@ import { runCode, type Code, type Output } from '~/lib/pyodide/common'
 
 const stack: { [uid: string]: (msg: Output) => void } = {}
 
-export default function runPython(code: string, useWorker: boolean = true): Promise<Output> {
-  if (code.includes("input(")) {
+export default function runPython(
+  code: string,
+  useWorker: boolean | undefined = undefined,
+): Promise<Output> {
+  if (code.includes('input(') && useWorker === undefined) {
     useWorker = false
   }
   return new Promise((resolve) => {

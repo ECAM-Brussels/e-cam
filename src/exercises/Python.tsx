@@ -28,8 +28,9 @@ export const mark = cache(async (state: State) => {
     code = wrapCode(code)
   }
   const runPython = (await import('~/lib/pyodide/api')).default
-  await runPython(code)
-  const results = await Promise.all(state.tests.map(async (test) => (await runPython(test)).output))
+  const results = await Promise.all(
+    state.tests.map(async (test) => (await runPython(code + "\n" + test, true)).output),
+  )
   const comparison = await compareResults(state.answer, results)
   return comparison === state.tests.length
 }, 'checkPython')
