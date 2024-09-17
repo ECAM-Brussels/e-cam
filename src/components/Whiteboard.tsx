@@ -1,6 +1,6 @@
 import { faFloppyDisk, faHighlighter, faPen } from '@fortawesome/free-solid-svg-icons'
 import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
-import { cloneDeep, throttle } from 'lodash-es'
+import { cloneDeep, find, throttle } from 'lodash-es'
 import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
 import { createStore, SetStoreFunction, unwrap } from 'solid-js/store'
 import Fa from '~/components/Fa'
@@ -75,7 +75,10 @@ export default function Whiteboard(props: WhiteboardProps) {
   createEffect(() => {
     const saved = savedStrokes()
     if (saved) {
-      setStrokes(saved)
+      const currentStrokes = unwrap(strokes)
+      if (!saved.every((s) => find(currentStrokes, s))) {
+        setStrokes(saved)
+      }
       setStatus('saved')
     } else if (saved === null) {
       setStrokes([])
