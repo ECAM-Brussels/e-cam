@@ -4,7 +4,6 @@
     {
       type: 'Python',
       state: {
-        code: '',
         question: `
           Écrire un programme qui demande un nombre
           et qui affiche
