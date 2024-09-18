@@ -13,9 +13,9 @@ export const schema = z.object({
 export type State = z.infer<typeof schema>
 
 export async function generate(params: {
-  A: number[]
-  Alpha: number[]
-  Beta: Number[]
+  A: (number | string)[]
+  Alpha: (number | string)[]
+  Beta: (number | string)[]
 }): Promise<State> {
   const a = sample(params.A)
   const alpha = sample(params.Alpha)
