@@ -35,6 +35,28 @@ export const mark = cache(async (state: State) => {
   return equation.solveset.isSetEqual
 }, 'checkEquation')
 
+export const solve = cache(async (state: State) => {
+  'use server'
+  const { equation } = await request(
+    graphql(`
+      query SolveEquation($equation: Math!, $a: Math, $b: Math) {
+        equation: expression(expr: $equation) {
+          solveset(a: $a, b: $b) {
+            list {
+              expr
+            }
+          }
+        }
+      }
+    `),
+    state,
+  )
+  return {
+    ...state,
+    attempt: equation.solveset.list.map((item) => item.expr),
+  }
+}, 'solveEquation')
+
 type Params =
   | {
       type: 'trigonometric'
@@ -108,14 +130,26 @@ export async function generate(params: Params) {
       },
     )
     return {
-      equation: `${lhs.expand.expr} = ${rhs.simplify.expr}`
+      equation: `${lhs.expand.expr} = ${rhs.simplify.expr}`,
     }
   }
 }
 
 export default function Equation(props: ExerciseProps<State, Params>) {
   return (
-    <ExerciseBase type="Equation" {...props} schema={schema} mark={mark} generate={generate}>
+    <ExerciseBase
+      type="Equation"
+      {...props}
+      schema={schema}
+      mark={mark}
+      generate={generate}
+      solve={solve}
+      solution={
+        <p>
+          Solution(s): <Math value={props.feedback?.solution?.attempt?.join(',') || ''} />.
+        </p>
+      }
+    >
       <p>
         Résolvez l'équation <Math value={props.state?.equation} />
         <Show when={props.state?.a && props.state?.b}>
