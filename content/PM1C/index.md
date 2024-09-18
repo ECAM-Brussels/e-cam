@@ -50,6 +50,7 @@ Séances d'exercices
 
 #. Trigonométrie:
    - [Valeurs exactes](/PM1C/practice/trigonometry/exact_values)
+   - [Équations trigonométriques simples](/PM1C/practice/trigonometry/simple-equations)
 #. Vecteurs:
    - [Produits vectoriels](/PM1C/practice/vectors/cross-product)
 #. Algèbre:
