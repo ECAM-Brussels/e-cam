@@ -1,5 +1,6 @@
 import strawberry
 import sympy
+from typing import Optional
 
 from symapi.core import Math
 
@@ -102,5 +103,10 @@ class Expression:
         return Expression(expr=sympy.simplify(self.expr))
 
     @strawberry.field
-    def solveset(self) -> "Expression":
-        return Expression(expr=sympy.solveset(self.expr))
+    def solveset(
+        self, a: Optional[Math] = None, b: Optional[Math] = None
+    ) -> "Expression":
+        solset = sympy.solveset(self.expr)
+        if a and b:
+            solset = solset.intersect(sympy.Interval(a, b))
+        return Expression(expr=solset)
