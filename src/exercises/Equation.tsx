@@ -1,4 +1,5 @@
 import { faPlus, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import { cache } from '@solidjs/router'
 import { sample } from 'lodash-es'
 import { For, Show } from 'solid-js'
 import { z } from 'zod'
@@ -16,7 +17,7 @@ export const schema = z.object({
 })
 export type State = z.infer<typeof schema>
 
-export const mark = async (state: State) => {
+export const mark = cache(async (state: State) => {
   'use server'
 
   const { equation } = await request(
@@ -32,7 +33,7 @@ export const mark = async (state: State) => {
     { attempt: [], ...state },
   )
   return equation.solveset.isSetEqual
-}
+}, 'checkEquation')
 
 type Params = {
   type: 'trigonometric'
