@@ -49,7 +49,8 @@ Séances d'exercices
    - [Valeurs exactes](/PM1C/practice/trigonometry/exact_values)
 #. Vecteurs:
    - [Produits vectoriels](/PM1C/practice/vectors/cross-product)
-
+#. Algèbre:
+   - [Carré parfait](/PM1C/practice/algebra/complete-square)
 :::
 
 :::::
