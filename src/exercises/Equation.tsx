@@ -1,4 +1,5 @@
 import { faPlus, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import { sample } from 'lodash-es'
 import { For, Show } from 'solid-js'
 import { z } from 'zod'
 import ExerciseBase, { type ExerciseProps } from '~/components/ExerciseBase'
@@ -33,9 +34,45 @@ export const mark = async (state: State) => {
   return equation.solveset.isSetEqual
 }
 
-export default function Equation(props: ExerciseProps<State, undefined>) {
+type Params = {
+  type: 'trigonometric'
+  F: ('cos' | 'sin' | 'tan' | 'cot')[]
+  A: (number | string)[]
+  B: (number | string)[]
+  C: (number | string)[]
+  Interval: [number | string, number | string][]
+}
+
+export async function generate(params: Params) {
+  'use server'
+  const f = sample(params.F)
+  const a = sample(params.A)
+  const b = sample(params.B)
+  const c = sample(params.C)
+  const I = sample(params.Interval)!
+  const { expression } = await request(
+    graphql(`
+      query CalculateArg($expr: Math!) {
+        expression(expr: $expr) {
+          simplify {
+            expr
+          }
+        }
+      }
+    `),
+    { expr: `(${a}) x + ${b}` },
+  )
+  const arg = expression.simplify.expr
+  return {
+    equation: `\\${f}\\left(${arg}\\right) = ${c}`,
+    a: String(I[0]),
+    b: String(I[1]),
+  }
+}
+
+export default function Equation(props: ExerciseProps<State, Params>) {
   return (
-    <ExerciseBase type="Equation" {...props} schema={schema} mark={mark}>
+    <ExerciseBase type="Equation" {...props} schema={schema} mark={mark} generate={generate}>
       <p>
         Résolvez l'équation <Math value={props.state?.equation} />
         <Show when={props.state?.a && props.state?.b}>
