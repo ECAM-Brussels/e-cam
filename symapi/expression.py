@@ -107,6 +107,6 @@ class Expression:
         self, a: Optional[Math] = None, b: Optional[Math] = None
     ) -> "Expression":
         solset = sympy.solveset(self.expr)
-        if a and b:
+        if a is not None and b is not None:
             solset = solset.intersect(sympy.Interval(a, b))
         return Expression(expr=solset)
