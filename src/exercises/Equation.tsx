@@ -35,39 +35,81 @@ export const mark = cache(async (state: State) => {
   return equation.solveset.isSetEqual
 }, 'checkEquation')
 
-type Params = {
-  type: 'trigonometric'
-  F: ('cos' | 'sin' | 'tan' | 'cot')[]
-  A: (number | string)[]
-  B: (number | string)[]
-  C: (number | string)[]
-  Interval: [number | string, number | string][]
-}
+type Params =
+  | {
+      type: 'trigonometric'
+      F: ('cos' | 'sin' | 'tan' | 'cot')[]
+      A: (number | string)[]
+      B: (number | string)[]
+      C: (number | string)[]
+      Interval: [number | string, number | string][]
+    }
+  | {
+      type: 'quadratic'
+      A: (number | string)[]
+      X1: (number | string)[]
+      X2: (number | string)[]
+      B: (number | string)[]
+      C: (number | string)[]
+      D: (number | string)[]
+    }
 
 export async function generate(params: Params) {
   'use server'
-  const f = sample(params.F)
-  const a = sample(params.A)
-  const b = sample(params.B)
-  const c = sample(params.C)
-  const I = sample(params.Interval)!
-  const { expression } = await request(
-    graphql(`
-      query CalculateArg($expr: Math!) {
-        expression(expr: $expr) {
-          simplify {
-            expr
+  if (params.type === 'trigonometric') {
+    const f = sample(params.F)
+    const a = sample(params.A)
+    const b = sample(params.B)
+    const c = sample(params.C)
+    const I = sample(params.Interval)!
+    const { expression } = await request(
+      graphql(`
+        query CalculateArg($expr: Math!) {
+          expression(expr: $expr) {
+            simplify {
+              expr
+            }
           }
         }
-      }
-    `),
-    { expr: `(${a}) x + ${b}` },
-  )
-  const arg = expression.simplify.expr
-  return {
-    equation: `\\${f}\\left(${arg}\\right) = ${c}`,
-    a: String(I[0]),
-    b: String(I[1]),
+      `),
+      { expr: `(${a}) x + ${b}` },
+    )
+    const arg = expression.simplify.expr
+    return {
+      equation: `\\${f}\\left(${arg}\\right) = ${c}`,
+      a: String(I[0]),
+      b: String(I[1]),
+    }
+  } else {
+    const a = sample(params.A)
+    const x1 = sample(params.X1)
+    const x2 = sample(params.X2)
+    const b = sample(params.B)
+    const c = sample(params.C)
+    const d = sample(params.D)
+    const { lhs, rhs } = await request(
+      graphql(`
+        query CalculateQuadraticEquation($lhs: Math!, $rhs: Math!) {
+          lhs: expression(expr: $lhs) {
+            expand {
+              expr
+            }
+          }
+          rhs: expression(expr: $rhs) {
+            simplify {
+              expr
+            }
+          }
+        }
+      `),
+      {
+        lhs: `(${a}) (x - (${x1})) (x - (${x2})) + (${b}) x^2 + (${c}) x + (${d})`,
+        rhs: `(${b}) x^2 + (${c}) x + (${d})`,
+      },
+    )
+    return {
+      equation: `${lhs.expand.expr} = ${rhs.simplify.expr}`
+    }
   }
 }
 
