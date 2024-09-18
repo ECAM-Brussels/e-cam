@@ -1,5 +1,5 @@
 import { faPlus, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
-import { For } from 'solid-js'
+import { For, Show } from 'solid-js'
 import { z } from 'zod'
 import ExerciseBase, { type ExerciseProps } from '~/components/ExerciseBase'
 import Fa from '~/components/Fa'
@@ -9,7 +9,9 @@ import { request } from '~/lib/graphql'
 
 export const schema = z.object({
   equation: z.string().describe('Equation'),
-  attempt: z.string().array(),
+  attempt: z.string().array().optional(),
+  a: z.string().optional(),
+  b: z.string().optional(),
 })
 export type State = z.infer<typeof schema>
 
@@ -18,15 +20,15 @@ export const mark = async (state: State) => {
 
   const { equation } = await request(
     graphql(`
-      query CheckEquationSolution($equation: Math!, $attempt: [Math!]!) {
+      query CheckEquationSolution($equation: Math!, $attempt: [Math!]!, $a: Math, $b: Math) {
         equation: expression(expr: $equation) {
-          solveset {
+          solveset(a: $a, b: $b) {
             isSetEqual(items: $attempt)
           }
         }
       }
     `),
-    state,
+    { attempt: [], ...state },
   )
   return equation.solveset.isSetEqual
 }
@@ -36,6 +38,10 @@ export default function Equation(props: ExerciseProps<State, undefined>) {
     <ExerciseBase type="Equation" {...props} schema={schema} mark={mark}>
       <p>
         Résolvez l'équation <Math value={props.state?.equation} />
+        <Show when={props.state?.a && props.state?.b}>
+          {' '}
+          sur l'intervalle <Math value={`\\left[${props.state?.a}, ${props.state?.b}\\right]`} />
+        </Show>
       </p>
       <div class="grid grid-cols-3 gap-2">
         <For each={props.state?.attempt}>
@@ -55,7 +61,11 @@ export default function Equation(props: ExerciseProps<State, undefined>) {
         <button
           onClick={() => {
             if (props.state) {
-              props.setter?.('state', 'attempt', props.state?.attempt.length, '')
+              if (props.state.attempt) {
+                props.setter?.('state', 'attempt', props.state?.attempt.length, '')
+              } else {
+                props.setter?.('state', 'attempt', [''])
+              }
             }
           }}
         >
@@ -63,7 +73,7 @@ export default function Equation(props: ExerciseProps<State, undefined>) {
         </button>
         <button
           onClick={() => {
-            if (props.state) {
+            if (props.state && props.state.attempt) {
               props.setter?.('state', 'attempt', props.state.attempt.toSpliced(-1, 1))
             }
           }}
