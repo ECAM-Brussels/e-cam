@@ -73,7 +73,7 @@ class Expression:
 
     @strawberry.field
     def is_set_equal(self, items: list[Math]) -> bool:
-        return self.expr == set(items)
+        return sympy.simplify(self.expr) == sympy.simplify(set(items))
 
     @strawberry.field(description="Check if fully factored")
     def is_factored(self) -> bool:
