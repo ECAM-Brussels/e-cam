@@ -99,6 +99,10 @@ class Expression:
         return isinstance(self.expr, (sympy.Float, sympy.Integer))
 
     @strawberry.field
+    def list(self) -> list["Expression"]:
+        return [Expression(expr=item) for item in list(self.expr)]
+
+    @strawberry.field
     def simplify(self) -> "Expression":
         return Expression(expr=sympy.simplify(self.expr))
 
