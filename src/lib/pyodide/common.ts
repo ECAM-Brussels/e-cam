@@ -6,6 +6,7 @@ import type { PyProxy } from 'pyodide/ffi'
 type Message = {
   format: 'string' | 'matplotlib' | 'latex' | 'error'
   uid: string
+  stdout: string
 }
 
 export type Code = Message & { code: string }
@@ -52,13 +53,19 @@ export async function runCode(code: string) {
   }
 
   let output
+  let stdout: string = ''
   try {
+    pyodide.runPython(dedent`
+      import sys
+      import io
+      sys.stdout = io.StringIO()
+    `)
     output = await pyodide.runPythonAsync(code)
     if (output && output._repr_latex_ !== undefined) {
       output = output._repr_latex_()
       output = output.substr(1, output.length - 2)
       format = 'latex'
-    } else if (output.type === 'list' && output.toJs()[0]._repr_latex_) {
+    } else if (output && output.type === 'list' && output.toJs()[0]?._repr_latex_) {
       const list = output.toJs()
       output = list
         .map((element: PyProxy) => {
@@ -69,18 +76,19 @@ export async function runCode(code: string) {
       output = `\\left[${output}\\right]`
       format = 'latex'
     } else {
-      output = String(output)
+      output = output ? String(output) : ''
     }
   } catch (error) {
     output = error
     format = 'error'
   }
-  return { output, format }
+  stdout = pyodide.runPython('sys.stdout.getvalue()')
+  return { output, format, stdout }
 }
 
 export async function handleMessage(event: MessageEvent<Code>): Promise<Output> {
   let code = event.data.code
   const uid = event.data.uid
-  let { output, format } = await runCode(code)
-  return { output, uid, format } as Output
+  let { output, format, stdout } = await runCode(code)
+  return { output, uid, format, stdout } satisfies Output
 }

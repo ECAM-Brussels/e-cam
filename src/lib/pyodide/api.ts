@@ -12,7 +12,7 @@ export default function runPython(
   return new Promise((resolve) => {
     const uid = Date.now().toString(36) + Math.random().toString(36)
     if (!code) {
-      resolve({ output: '', uid, format: 'string' })
+      resolve({ output: '', uid, format: 'string', stdout: '' })
     }
     stack[uid] = resolve
 
@@ -39,8 +39,8 @@ export default function runPython(
       }
       worker.postMessage({ code, uid } as Code)
     } else {
-      runCode(code).then(({ format, output }) => {
-        resolve({ uid, format, output })
+      runCode(code).then(({ format, output, stdout }) => {
+        resolve({ uid, format, output, stdout })
       })
     }
   })
