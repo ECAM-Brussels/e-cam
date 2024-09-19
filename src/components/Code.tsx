@@ -13,6 +13,7 @@ type CodeProps = {
   lang: string
   readOnly?: boolean
   run?: boolean
+  runImmediately?: boolean
   onCodeUpdate?: (newValue: string) => void
   value: string
 }
@@ -25,7 +26,7 @@ const Python = clientOnly(() => import('./Python'))
 
 export default function Code(props: CodeProps) {
   const [value, setValue] = createSignal(props.value)
-  const [codeToRun, setCodeToRun] = createSignal(props.value)
+  const [codeToRun, setCodeToRun] = createSignal(props.runImmediately ? props.value : '')
   createEffect(() => {
     setValue(props.value)
   })
