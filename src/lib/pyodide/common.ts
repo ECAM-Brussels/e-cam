@@ -18,7 +18,6 @@ async function load() {
   pyodide = await loadPyodide({
     indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/',
   })
-  pyodide.setStdin({ stdin: () => prompt() })
 }
 const loadPromise = load()
 
@@ -58,7 +57,10 @@ export async function runCode(code: string) {
     pyodide.runPython(dedent`
       import sys
       import io
+      import js
       sys.stdout = io.StringIO()
+      def input(p):
+          return js.prompt(p)
     `)
     output = await pyodide.runPythonAsync(code)
     if (output && output._repr_latex_ !== undefined) {
