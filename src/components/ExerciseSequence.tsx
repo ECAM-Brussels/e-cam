@@ -17,12 +17,12 @@ import {
 import { createStore } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web'
 import { z } from 'zod'
+import { type Feedback } from '~/components/ExerciseBase'
 import Fa from '~/components/Fa'
 import Pagination from '~/components/Pagination'
 import { loadResults } from '~/components/Results'
 import Whiteboard from '~/components/Whiteboard'
 import { getUser } from '~/lib/auth/session'
-import { type Feedback } from '~/components/ExerciseBase'
 
 const exercises = {
   CompleteSquare: () => import('~/exercises/CompleteSquare'),
@@ -177,39 +177,6 @@ export default function ExerciseSequence(props: ExerciseProps) {
     }
   }
 
-  const submitted = createMemo(
-    () =>
-      countBy(
-        data.map((exercise: Exercise) => {
-          const correct = exercise.feedback?.correct
-          return correct === true || correct === false
-        }),
-      ).true,
-  )
-
-  createEffect(
-    on(
-      submitted,
-      async () => {
-        if (props.mode === 'dynamic') {
-          setData(data.length, cloneDeep(props.data[dynamicIndex()]))
-        }
-        if (submitted()) {
-          await upsertAssignment(
-            location.pathname,
-            props.id || '',
-            searchParams.userEmail || '',
-            data,
-            finished(),
-          )
-          revalidate(loadAssignment.keyFor(location.pathname, props.id || ''))
-          revalidate(loadResults.keyFor(location.pathname, props.id || ''))
-        }
-      },
-      { defer: true },
-    ),
-  )
-
   const [showWhiteboard, setShowWhiteBoard] = createSignal(true)
 
   return (
@@ -250,6 +217,20 @@ export default function ExerciseSequence(props: ExerciseProps) {
                 showSolution: false,
               }}
               {...exercise()}
+              onSubmit={async () => {
+                if (props.mode === 'dynamic' && index() === data.length - 1) {
+                  setData(data.length, cloneDeep(props.data[dynamicIndex()]))
+                }
+                await upsertAssignment(
+                  location.pathname,
+                  props.id || '',
+                  searchParams.userEmail || '',
+                  data,
+                  finished(),
+                )
+                revalidate(loadAssignment.keyFor(location.pathname, props.id || ''))
+                revalidate(loadResults.keyFor(location.pathname, props.id || ''))
+              }}
               setter={(...args: any) => {
                 // @ts-ignore
                 setData(index(), ...args)

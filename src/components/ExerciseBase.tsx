@@ -22,6 +22,7 @@ export type ExerciseProps<S, G> = {
   feedback?: Feedback<S>
   options?: Options
   initialOptions: Options
+  onSubmit?: () => void
   setter: SetStoreFunction<Omit<ExerciseProps<S, G>, 'setter'>>
   state?: S
   params?: G
@@ -122,6 +123,7 @@ export default function ExerciseBase<S, G>(
                   props.setter('options', 'showSolution', true)
                   props.setter('options', 'readOnly', true)
                 }
+                props.onSubmit?.()
               }}
             >
               <Fa icon={faPaperPlane} /> Soumettre
