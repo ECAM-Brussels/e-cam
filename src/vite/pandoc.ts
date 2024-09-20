@@ -1,5 +1,6 @@
 import { type ExerciseProps } from '../components/ExerciseSequence'
 import { encrypt } from '../lib/cryptography'
+import { wrapCode } from '../lib/helpers'
 import { exec as execWithCallback, spawn } from 'child_process'
 import dedent from 'dedent-js'
 import glob from 'fast-glob'
@@ -8,7 +9,6 @@ import { dirname, relative, resolve } from 'path'
 import { transpile } from 'typescript'
 import { promisify } from 'util'
 import { type Plugin, loadEnv } from 'vite'
-import { wrapCode } from '../lib/helpers'
 
 const exec = promisify(execWithCallback)
 
@@ -110,7 +110,7 @@ async function generateImports() {
     ) {
       continue
     }
-    const type = ['Math', 'Plot'].includes(name) ? 'clientOnly' : 'lazy'
+    const type = ['Math', 'Plot', 'PrismEditor'].includes(name) ? 'clientOnly' : 'lazy'
     imports += `const ${name} = ${type}(() => import('~/components/${name}'))\n`
   }
   return imports

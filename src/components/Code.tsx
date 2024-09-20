@@ -1,10 +1,6 @@
 import { faPlayCircle } from '@fortawesome/free-solid-svg-icons'
 import { clientOnly } from '@solidjs/start'
 import { createEffect, createSignal, Show } from 'solid-js'
-import 'solid-prism-editor/layout.css'
-import 'solid-prism-editor/prism/languages/common'
-import 'solid-prism-editor/search.css'
-import 'solid-prism-editor/themes/github-light.css'
 import Fa from '~/components/Fa'
 import Html from '~/components/Html'
 
@@ -18,10 +14,7 @@ type CodeProps = {
   value: string
 }
 
-const Editor = clientOnly(async () => {
-  const module = await import('solid-prism-editor')
-  return { default: module.Editor }
-})
+const Editor = clientOnly(() => import('./PrismEditor'))
 const Python = clientOnly(() => import('./Python'))
 
 export default function Code(props: CodeProps) {
