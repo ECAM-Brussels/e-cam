@@ -215,10 +215,12 @@ export default function ExerciseSequence(props: ExerciseProps) {
                 showSolution: false,
               }}
               {...exercise()}
-              onMarked={async () => {
+              onSubmit={() => {
                 if (props.mode === 'dynamic' && index() === data.length - 1) {
                   setData(data.length, cloneDeep(props.data[dynamicIndex()]))
                 }
+              }}
+              onMarked={async () => {
                 await upsertAssignment(
                   location.pathname,
                   props.id || '',
