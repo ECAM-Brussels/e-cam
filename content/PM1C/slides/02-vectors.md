@@ -97,6 +97,7 @@ i = Matrix([1, 0, 0])
 j = Matrix([0, 1, 0])
 k = Matrix([0, 0, 1])
 a = i + 2*j - 3*k
+b = 4*i + 7*k
 2*a + 3*b
 ~~~
 
