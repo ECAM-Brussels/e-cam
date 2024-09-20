@@ -1,5 +1,6 @@
 ({
   whiteboard: false,
+  allowReattempts: true,
   data: [
     {
       type: 'Python',
