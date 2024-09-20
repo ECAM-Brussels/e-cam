@@ -215,7 +215,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
                 showSolution: false,
               }}
               {...exercise()}
-              onSubmit={async () => {
+              onMarked={async () => {
                 if (props.mode === 'dynamic' && index() === data.length - 1) {
                   setData(data.length, cloneDeep(props.data[dynamicIndex()]))
                 }

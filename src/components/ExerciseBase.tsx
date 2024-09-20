@@ -85,6 +85,7 @@ export default function ExerciseBase<S, G>(
           props.setter('feedback', 'correct', false)
         }
       }
+      props.onMarked?.()
     }
   })
 
