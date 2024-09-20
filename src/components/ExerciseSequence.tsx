@@ -22,6 +22,7 @@ import Pagination from '~/components/Pagination'
 import { loadResults } from '~/components/Results'
 import Whiteboard from '~/components/Whiteboard'
 import { getUser } from '~/lib/auth/session'
+import { type Feedback } from '~/components/ExerciseBase'
 
 const exercises = {
   CompleteSquare: () => import('~/exercises/CompleteSquare'),
@@ -46,12 +47,7 @@ type ExerciseFromName<T extends ExerciseName> = {
    * Often associated with a component in ~/exercises
    */
   type: T
-  feedback?: {
-    correct: boolean
-    valid: boolean
-    solution: z.infer<Module<T>['schema']>
-    time: number
-  }
+  feedback?: Feedback<z.infer<Module<T>['schema']>>
 } & (HasGenerator<Module<T>> extends true
   ? {
       state?: z.infer<Module<T>['schema']>
@@ -107,6 +103,12 @@ export type ExerciseProps = {
    * Useful for maths exercises
    */
   whiteboard?: boolean
+
+  /**
+   * Specify how many times a student can attempt a question
+   * Set to true to allow infinitely many attempts
+   */
+  allowReattempts?: number | boolean
 }
 
 export default function ExerciseSequence(props: ExerciseProps) {
@@ -241,6 +243,12 @@ export default function ExerciseSequence(props: ExerciseProps) {
           <div class="w-full">
             <Dynamic
               component={components[exercise().type]}
+              initialOptions={{
+                mark: false,
+                readOnly: false,
+                remainingAttempts: props.allowReattempts || 1,
+                showSolution: false,
+              }}
               {...exercise()}
               setter={(...args: any) => {
                 // @ts-ignore

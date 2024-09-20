@@ -4,18 +4,24 @@ import { SetStoreFunction } from 'solid-js/store'
 import { type ZodObject } from 'zod'
 import Fa from '~/components/Fa'
 
+export type Feedback<S> = {
+  correct?: boolean
+  valid?: boolean
+  solution?: S
+  time?: number
+}
+
+type Options = {
+  mark: boolean
+  readOnly: boolean
+  remainingAttempts: number | boolean
+  showSolution?: boolean
+}
+
 export type ExerciseProps<S, G> = {
-  feedback?: {
-    correct?: boolean
-    valid?: boolean
-    solution?: S
-    time?: number
-  }
-  options?: {
-    mark: boolean
-    readOnly: boolean
-    showSolution?: boolean
-  }
+  feedback?: Feedback<S>
+  options?: Options
+  initialOptions: Options
   setter: SetStoreFunction<Omit<ExerciseProps<S, G>, 'setter'>>
   state?: S
   params?: G
@@ -25,7 +31,7 @@ export default function ExerciseBase<S, G>(
   props: ExerciseProps<S, G> & {
     type: string
     children: JSXElement
-    generate?: (params: G) => (Promise<S> | S)
+    generate?: (params: G) => Promise<S> | S
     schema: ZodObject<any>
     mark: (state: S) => Promise<boolean>
     solve?: (state: S) => Promise<S>
@@ -47,11 +53,7 @@ export default function ExerciseBase<S, G>(
 
   createEffect(() => {
     if (!props.options) {
-      props.setter('options', {
-        mark: false,
-        readOnly: false,
-        showSolution: false,
-      })
+      props.setter('options', props.initialOptions)
     }
   })
 
@@ -61,7 +63,14 @@ export default function ExerciseBase<S, G>(
         props.schema.parse(props.state)
         props.setter('feedback', 'valid', true)
         if (props.options?.mark) {
-          props.setter('feedback', 'correct', await props.mark(props.state))
+          const result = await props.mark(props.state)
+          props.setter('feedback', 'correct', result)
+          if (result) {
+            props.setter('options', 'showSolution', true)
+            props.setter('options', 'readOnly', true)
+          } else {
+            props.setter('options', 'mark', false)
+          }
         }
       } catch {
         props.setter('feedback', 'valid', false)
@@ -100,14 +109,19 @@ export default function ExerciseBase<S, G>(
     <div class="w-full mb-4">
       <div class="bg-white border rounded-s-xl p-4 mb-4">
         {props.children}
-        <Show when={!props.options?.mark}>
+        <Show when={!props.options?.readOnly}>
           <p class="mt-6">
             <button
               class="py-1 px-2 border border-green-800 rounded text-green-800"
               onClick={() => {
                 props.setter('options', 'mark', true)
-                props.setter('options', 'showSolution', true)
-                props.setter('options', 'readOnly', true)
+                if (typeof props.options?.remainingAttempts === 'number') {
+                  props.setter('options', 'remainingAttempts', props.options?.remainingAttempts - 1)
+                }
+                if (!props.options?.remainingAttempts) {
+                  props.setter('options', 'showSolution', true)
+                  props.setter('options', 'readOnly', true)
+                }
               }}
             >
               <Fa icon={faPaperPlane} /> Soumettre
@@ -115,7 +129,7 @@ export default function ExerciseBase<S, G>(
           </p>
         </Show>
       </div>
-      <Show when={props.options?.mark && props.feedback}>
+      <Show when={props.feedback}>
         <div class="bg-white border rounded-s-xl p-4">
           <Show when={props.feedback?.correct === true}>
             <p class="text-green-800 font-bold text-xl">
