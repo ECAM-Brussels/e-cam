@@ -20,6 +20,9 @@ export default function Navbar() {
           <NavbarItem href="/PM1C" underline>
             Pont maths
           </NavbarItem>
+          <NavbarItem href="/IC1T" underline>
+            Programmation
+          </NavbarItem>
         </ul>
         <ul class="flex items-center text-sm">
           <Show
