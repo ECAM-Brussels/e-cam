@@ -1,5 +1,6 @@
+import Spinner from './Spinner'
 import { faCheckCircle, faPaperPlane, faXmark } from '@fortawesome/free-solid-svg-icons'
-import { JSXElement, Show, createEffect, onCleanup, onMount } from 'solid-js'
+import { JSXElement, Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
 import { SetStoreFunction } from 'solid-js/store'
 import { type ZodObject } from 'zod'
 import Fa from '~/components/Fa'
@@ -23,6 +24,7 @@ export type ExerciseProps<S, G> = {
   options?: Options
   initialOptions: Options
   onSubmit?: () => void
+  onMarked?: () => void
   setter: SetStoreFunction<Omit<ExerciseProps<S, G>, 'setter'>>
   state?: S
   params?: G
@@ -39,6 +41,8 @@ export default function ExerciseBase<S, G>(
     solution?: JSXElement
   },
 ) {
+  const [marking, setMarking] = createSignal(false)
+
   createEffect(async () => {
     if (props.generate && props.params && !props.state) {
       props.setter('state', await props.generate(props.params))
@@ -64,7 +68,9 @@ export default function ExerciseBase<S, G>(
         props.schema.parse(props.state)
         props.setter('feedback', 'valid', true)
         if (props.options?.mark) {
+          setMarking(true)
           const result = await props.mark(props.state)
+          setMarking(false)
           props.setter('feedback', 'correct', result)
           if (result) {
             props.setter('options', 'showSolution', true)
@@ -112,22 +118,28 @@ export default function ExerciseBase<S, G>(
         {props.children}
         <Show when={!props.options?.readOnly}>
           <p class="mt-6">
-            <button
-              class="py-1 px-2 border border-green-800 rounded text-green-800"
-              onClick={() => {
-                props.setter('options', 'mark', true)
-                if (typeof props.options?.remainingAttempts === 'number') {
-                  props.setter('options', 'remainingAttempts', props.options?.remainingAttempts - 1)
-                }
-                if (!props.options?.remainingAttempts) {
-                  props.setter('options', 'showSolution', true)
-                  props.setter('options', 'readOnly', true)
-                }
-                props.onSubmit?.()
-              }}
-            >
-              <Fa icon={faPaperPlane} /> Soumettre
-            </button>
+            <Show when={!marking()} fallback={<Spinner />}>
+              <button
+                class="py-1 px-2 border border-green-800 rounded text-green-800"
+                onClick={() => {
+                  props.setter('options', 'mark', true)
+                  if (typeof props.options?.remainingAttempts === 'number') {
+                    props.setter(
+                      'options',
+                      'remainingAttempts',
+                      props.options?.remainingAttempts - 1,
+                    )
+                  }
+                  if (!props.options?.remainingAttempts) {
+                    props.setter('options', 'showSolution', true)
+                    props.setter('options', 'readOnly', true)
+                  }
+                  props.onSubmit?.()
+                }}
+              >
+                <Fa icon={faPaperPlane} /> Soumettre
+              </button>
+            </Show>
           </p>
         </Show>
       </div>
