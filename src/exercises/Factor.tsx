@@ -14,12 +14,25 @@ export type State = z.infer<typeof schema>
 
 export async function generate(params: {
   A: number[]
+  B?: number[]
   X1: number[]
-  X2: number[] | ((x1: number) => number)
+  X2: (number | 'x1' | '-x1')[]
+  X3?: number[]
 }): Promise<State> {
   const a = sample(params.A)
+  const b = sample(params.B) || 1
   const x1 = sample(params.X1) as number
-  const x2 = Array.isArray(params.X2) ? sample(params.X2) : params.X2(x1)
+  let x2 = sample(params.X2) as number | 'x1' | '-x1'
+  if (x2 === 'x1') {
+    x2 = x1
+  } else if (x2 === '-x1') {
+    x2 = -x1
+  }
+  let expr = `${a}(${b}x - ${x1})(x - ${x2})`
+  if (params.X3 !== undefined) {
+    const x3 = sample(params.X3) as number
+    expr += `(x - ${x3})`
+  }
   const { expression } = await request(
     graphql(`
       query GenerateFactorisation($expr: Math!) {
@@ -30,7 +43,7 @@ export async function generate(params: {
         }
       }
     `),
-    { expr: `${a}(x - ${x1})(x - ${x2})` },
+    { expr },
   )
   return { expr: expression.expand.expr, attempt: '' }
 }
