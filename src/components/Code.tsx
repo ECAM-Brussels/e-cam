@@ -53,6 +53,9 @@ export default function Code(props: CodeProps) {
                 setValue(textarea.value)
               })
               textarea.addEventListener('keydown', (event) => {
+                if (event.code === 'Enter') {
+                  event.stopPropagation()
+                }
                 if (event.code === 'Enter' && (event.shiftKey || event.ctrlKey)) {
                   event.preventDefault()
                   setCodeToRun('')

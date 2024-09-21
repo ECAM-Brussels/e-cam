@@ -113,32 +113,37 @@ export default function ExerciseBase<S, G>(
     }
   })
 
+  const submit = () => {
+    setTimeout(() => {
+      props.setter('options', 'mark', true)
+      if (typeof props.options?.remainingAttempts === 'number') {
+        props.setter('options', 'remainingAttempts', props.options?.remainingAttempts - 1)
+      }
+      if (!props.options?.remainingAttempts) {
+        props.setter('options', 'showSolution', true)
+        props.setter('options', 'readOnly', true)
+      }
+      props.onSubmit?.()
+    })
+  }
+
   return (
     <div class="w-full mb-4">
-      <div class="bg-white border rounded-s-xl p-4 mb-4">
+      <div
+        class="bg-white border rounded-s-xl p-4 mb-4"
+        onKeyDown={(e) => {
+          if (e.code === 'Enter') {
+            setTimeout(submit, 300)
+          }
+        }}
+      >
         {props.children}
         <Show when={!props.options?.readOnly}>
           <p class="mt-6">
             <Show when={!marking()} fallback={<Spinner />}>
               <button
                 class="py-1 px-2 border border-green-800 rounded text-green-800"
-                onClick={() => {
-                  setTimeout(() => {
-                    props.setter('options', 'mark', true)
-                    if (typeof props.options?.remainingAttempts === 'number') {
-                      props.setter(
-                        'options',
-                        'remainingAttempts',
-                        props.options?.remainingAttempts - 1,
-                      )
-                    }
-                    if (!props.options?.remainingAttempts) {
-                      props.setter('options', 'showSolution', true)
-                      props.setter('options', 'readOnly', true)
-                    }
-                    props.onSubmit?.()
-                  })
-                }}
+                onClick={submit}
               >
                 <Fa icon={faPaperPlane} /> Soumettre
               </button>
