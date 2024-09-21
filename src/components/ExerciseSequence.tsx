@@ -3,15 +3,8 @@ import { faChevronLeft, faChevronRight, faTrash } from '@fortawesome/free-solid-
 import { createAsync, redirect, revalidate, useLocation, useSearchParams } from '@solidjs/router'
 import { formatDistance } from 'date-fns'
 import { fr } from 'date-fns/locale'
-import { cloneDeep, countBy, mapValues } from 'lodash-es'
-import {
-  Show,
-  Suspense,
-  createEffect,
-  createSignal,
-  lazy,
-  mergeProps,
-} from 'solid-js'
+import { cloneDeep, countBy, mapValues, throttle } from 'lodash-es'
+import { Show, Suspense, createEffect, createSignal, lazy, mergeProps } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web'
 import { z } from 'zod'
@@ -177,6 +170,24 @@ export default function ExerciseSequence(props: ExerciseProps) {
 
   const [showWhiteboard, setShowWhiteBoard] = createSignal(true)
 
+  const save = throttle(
+    async () => {
+      await upsertAssignment(
+        location.pathname,
+        props.id || '',
+        searchParams.userEmail || '',
+        data,
+        finished(),
+      )
+      revalidate(
+        loadAssignment.keyFor(location.pathname, props.id || '', searchParams.userEmail || ''),
+      )
+      revalidate(loadResults.keyFor(location.pathname, props.id || ''))
+    },
+    200,
+    { leading: false, trailing: true },
+  )
+
   return (
     <>
       <div class="flex justify-between">
@@ -191,7 +202,13 @@ export default function ExerciseSequence(props: ExerciseProps) {
                   props.id || '',
                   searchParams.userEmail || '',
                 )
-                revalidate(loadAssignment.keyFor(location.pathname, props.id || '', searchParams.userEmail || ''))
+                revalidate(
+                  loadAssignment.keyFor(
+                    location.pathname,
+                    props.id || '',
+                    searchParams.userEmail || '',
+                  ),
+                )
                 revalidate(loadResults.keyFor(location.pathname, props.id || ''))
               }}
             >
@@ -219,18 +236,9 @@ export default function ExerciseSequence(props: ExerciseProps) {
                 if (props.mode === 'dynamic' && index() === data.length - 1) {
                   setData(data.length, cloneDeep(props.data[dynamicIndex()]))
                 }
+                save()
               }}
-              onMarked={async () => {
-                await upsertAssignment(
-                  location.pathname,
-                  props.id || '',
-                  searchParams.userEmail || '',
-                  data,
-                  finished(),
-                )
-                // revalidate(loadAssignment.keyFor(location.pathname, props.id || '', searchParams.userEmail || ''))
-                revalidate(loadResults.keyFor(location.pathname, props.id || ''))
-              }}
+              onMarked={save}
               setter={(...args: any) => {
                 // @ts-ignore
                 setData(index(), ...args)
