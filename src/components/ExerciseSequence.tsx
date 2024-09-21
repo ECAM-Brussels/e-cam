@@ -1,6 +1,6 @@
 import { deleteAssignment, loadAssignment, upsertAssignment } from './ExerciseSequence.server'
 import { faChevronLeft, faChevronRight, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { createAsync, revalidate, useLocation, useSearchParams } from '@solidjs/router'
+import { createAsync, redirect, revalidate, useLocation, useSearchParams } from '@solidjs/router'
 import { formatDistance } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { cloneDeep, countBy, mapValues } from 'lodash-es'
@@ -191,7 +191,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
                   props.id || '',
                   searchParams.userEmail || '',
                 )
-                revalidate(loadAssignment.keyFor(location.pathname, props.id || ''))
+                revalidate(loadAssignment.keyFor(location.pathname, props.id || '', searchParams.userEmail || ''))
                 revalidate(loadResults.keyFor(location.pathname, props.id || ''))
               }}
             >
@@ -228,7 +228,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
                   data,
                   finished(),
                 )
-                revalidate(loadAssignment.keyFor(location.pathname, props.id || ''))
+                revalidate(loadAssignment.keyFor(location.pathname, props.id || '', searchParams.userEmail || ''))
                 revalidate(loadResults.keyFor(location.pathname, props.id || ''))
               }}
               setter={(...args: any) => {
