@@ -1,9 +1,9 @@
 import { deleteAssignment, loadAssignment, upsertAssignment } from './ExerciseSequence.server'
 import { faChevronLeft, faChevronRight, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { createAsync, redirect, revalidate, useLocation, useSearchParams } from '@solidjs/router'
+import { createAsync, revalidate, useLocation, useSearchParams } from '@solidjs/router'
 import { formatDistance } from 'date-fns'
 import { fr } from 'date-fns/locale'
-import { cloneDeep, countBy, mapValues, throttle } from 'lodash-es'
+import { cloneDeep, mapValues, throttle } from 'lodash-es'
 import { Show, Suspense, createEffect, createSignal, lazy, mergeProps } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web'
@@ -172,17 +172,19 @@ export default function ExerciseSequence(props: ExerciseProps) {
 
   const save = throttle(
     async () => {
-      await upsertAssignment(
-        location.pathname,
-        props.id || '',
-        searchParams.userEmail || '',
-        data,
-        finished(),
-      )
-      revalidate(
-        loadAssignment.keyFor(location.pathname, props.id || '', searchParams.userEmail || ''),
-      )
-      revalidate(loadResults.keyFor(location.pathname, props.id || ''))
+      setTimeout(async () => {
+        await upsertAssignment(
+          location.pathname,
+          props.id || '',
+          searchParams.userEmail || '',
+          data,
+          finished(),
+        )
+        revalidate(
+          loadAssignment.keyFor(location.pathname, props.id || '', searchParams.userEmail || ''),
+        )
+        revalidate(loadResults.keyFor(location.pathname, props.id || ''))
+      })
     },
     200,
     { leading: false, trailing: true },
