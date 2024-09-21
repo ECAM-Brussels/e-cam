@@ -197,6 +197,8 @@ export default function ExerciseSequence(props: ExerciseProps) {
             <button
               class="border border-red-900 rounded px-2 py-1 text-red-900"
               onClick={async () => {
+                setIndex(0)
+                setData(props.mode === 'static' ? props.data : [cloneDeep(props.data[0])])
                 await deleteAssignment(
                   location.pathname,
                   props.id || '',
