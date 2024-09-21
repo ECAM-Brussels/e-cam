@@ -123,19 +123,21 @@ export default function ExerciseBase<S, G>(
               <button
                 class="py-1 px-2 border border-green-800 rounded text-green-800"
                 onClick={() => {
-                  props.setter('options', 'mark', true)
-                  if (typeof props.options?.remainingAttempts === 'number') {
-                    props.setter(
-                      'options',
-                      'remainingAttempts',
-                      props.options?.remainingAttempts - 1,
-                    )
-                  }
-                  if (!props.options?.remainingAttempts) {
-                    props.setter('options', 'showSolution', true)
-                    props.setter('options', 'readOnly', true)
-                  }
-                  props.onSubmit?.()
+                  setTimeout(() => {
+                    props.setter('options', 'mark', true)
+                    if (typeof props.options?.remainingAttempts === 'number') {
+                      props.setter(
+                        'options',
+                        'remainingAttempts',
+                        props.options?.remainingAttempts - 1,
+                      )
+                    }
+                    if (!props.options?.remainingAttempts) {
+                      props.setter('options', 'showSolution', true)
+                      props.setter('options', 'readOnly', true)
+                    }
+                    props.onSubmit?.()
+                  })
                 }}
               >
                 <Fa icon={faPaperPlane} /> Soumettre
