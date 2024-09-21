@@ -228,7 +228,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
                   data,
                   finished(),
                 )
-                revalidate(loadAssignment.keyFor(location.pathname, props.id || '', searchParams.userEmail || ''))
+                // revalidate(loadAssignment.keyFor(location.pathname, props.id || '', searchParams.userEmail || ''))
                 revalidate(loadResults.keyFor(location.pathname, props.id || ''))
               }}
               setter={(...args: any) => {
