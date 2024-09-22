@@ -5,7 +5,7 @@ import { formatDistance } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { cloneDeep, mapValues, throttle } from 'lodash-es'
 import { Show, Suspense, createEffect, createSignal, lazy, mergeProps } from 'solid-js'
-import { createStore } from 'solid-js/store'
+import { createStore, unwrap } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web'
 import { z } from 'zod'
 import { type Feedback } from '~/components/ExerciseBase'
@@ -113,7 +113,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
   createEffect(() => props.onIndexChange?.(index()))
 
   const [data, setData] = createStore<Exercise[]>(
-    props.mode === 'static' ? props.data : [cloneDeep(props.data[0])],
+    props.mode === 'static' ? cloneDeep(props.data) : [cloneDeep(props.data[0])],
   )
   const dynamicIndex = () => {
     if (props.mode === 'static') {
@@ -173,18 +173,18 @@ export default function ExerciseSequence(props: ExerciseProps) {
 
   const save = throttle(
     async () => {
+      const url = location.pathname
+      const exercise = cloneDeep(unwrap(data))
       setTimeout(async () => {
         await upsertAssignment(
-          location.pathname,
+          url,
           props.id || '',
           searchParams.userEmail || '',
-          data,
+          exercise,
           finished(),
         )
-        revalidate(
-          loadAssignment.keyFor(location.pathname, props.id || '', searchParams.userEmail || ''),
-        )
-        revalidate(loadResults.keyFor(location.pathname, props.id || ''))
+        revalidate(loadAssignment.keyFor(url, props.id || '', searchParams.userEmail || ''))
+        revalidate(loadResults.keyFor(url, props.id || ''))
       })
     },
     200,
@@ -201,7 +201,9 @@ export default function ExerciseSequence(props: ExerciseProps) {
               class="border border-red-900 rounded px-2 py-1 text-red-900"
               onClick={async () => {
                 setIndex(0)
-                setData(props.mode === 'static' ? props.data : [cloneDeep(props.data[0])])
+                setData(
+                  props.mode === 'static' ? cloneDeep(props.data) : [cloneDeep(props.data[0])],
+                )
                 setTimeout(async () => {
                   await deleteAssignment(
                     location.pathname,

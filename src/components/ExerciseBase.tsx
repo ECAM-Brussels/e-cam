@@ -78,6 +78,7 @@ export default function ExerciseBase<S, G>(
           } else {
             props.setter('options', 'mark', false)
           }
+          props.onMarked?.()
         }
       } catch {
         props.setter('feedback', 'valid', false)
@@ -85,7 +86,6 @@ export default function ExerciseBase<S, G>(
           props.setter('feedback', 'correct', false)
         }
       }
-      props.onMarked?.()
     }
   })
 
