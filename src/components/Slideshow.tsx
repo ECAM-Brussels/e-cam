@@ -51,7 +51,6 @@ export default function Slideshow(props: SlideshowProps) {
   const slides = getSlides(props)
 
   let deck: InstanceType<typeof import('reveal.js')>
-  const socket = new WebSocket('/api/boards')
 
   const count = createAsync(() => getBoardCount(location.pathname, props.boardName || ''))
   createEffect(() => {
@@ -62,17 +61,6 @@ export default function Slideshow(props: SlideshowProps) {
 
   onMount(async () => {
     const Reveal = (await import('reveal.js')).default
-    socket.addEventListener('message', (event) => {
-      const data = JSON.parse(event.data)
-      if (
-        data.url === location.pathname &&
-        data.boardName === props.boardName &&
-        data.action === 'addBoard' &&
-        !user()?.admin
-      ) {
-        revalidate(getBoardCount.keyFor(location.pathname, props.boardName || ''))
-      }
-    })
     deck = new Reveal({
       center: false,
       hash: true,
@@ -88,13 +76,6 @@ export default function Slideshow(props: SlideshowProps) {
       if (v === (count()?.[String(h)] || 1) - 1 && user()?.admin) {
         await addBoard(location.pathname, props.boardName || '', h, v + 1)
         revalidate(getBoardCount.keyFor(location.pathname, props.boardName || ''))
-        socket.send(
-          JSON.stringify({
-            url: location.pathname,
-            boardName: props.boardName,
-            action: 'addBoard',
-          }),
-        )
       } else {
         deck.down()
       }
@@ -123,7 +104,6 @@ export default function Slideshow(props: SlideshowProps) {
                       width={1920}
                       height={1080}
                       readOnly={!user()?.admin}
-                      socket={socket}
                     />
                     <Breadcrumbs class="absolute bottom-0 w-full" />
                   </section>

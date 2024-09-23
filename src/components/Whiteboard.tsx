@@ -10,7 +10,6 @@ import { prisma } from '~/lib/db'
 
 type Mode = 'draw' | 'erase' | 'read'
 type Status = 'unsaved' | 'saving' | 'saved'
-type Message = { url: string; id: string }
 
 type Stroke = {
   color: string
@@ -43,7 +42,6 @@ type WhiteboardProps = {
   class?: string
   height: number
   readOnly?: boolean
-  socket?: WebSocket
   width: number
 }
 
@@ -61,13 +59,7 @@ export default function Whiteboard(props: WhiteboardProps) {
     async () => {
       setStatus('saving')
       await upsertBoard(location.pathname, props.id || '', strokes)
-      if (props.socket) {
-        props.socket.send(
-          JSON.stringify({ url: location.pathname, id: props.id || '' } satisfies Message),
-        )
-      } else {
-        revalidate(loadBoard.keyFor(location.pathname, props.id || ''))
-      }
+      revalidate(loadBoard.keyFor(location.pathname, props.id || ''))
     },
     3000,
     { leading: true, trailing: true },
@@ -181,12 +173,6 @@ export default function Whiteboard(props: WhiteboardProps) {
 
   onMount(() => {
     canvasRef!.oncontextmenu = () => false
-    props.socket?.addEventListener('message', (event) => {
-      const data = JSON.parse(event.data) as Message
-      if (data.url === location.pathname && data.id === (props.id || '')) {
-        revalidate(loadBoard.keyFor(location.pathname, props.id || ''))
-      }
-    })
   })
 
   return (
