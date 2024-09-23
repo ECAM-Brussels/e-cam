@@ -47,6 +47,7 @@ title: 'Pont vers le supérieur: mathématiques'
    - Factorisation 2ème degré:  [Facile](/PM1C/practice/algebra/factorisation-deg2-easy) | [Moyen](/PM1C/practice/algebra/factorisation-deg2-medium) | [Difficile](/PM1C/practice/algebra/factorisation-deg2-hard)
    - [Factorisation 3ème degré](/PM1C/practice/algebra/factorisation-deg3)
    - [Carré parfait](/PM1C/practice/algebra/complete-square)
+   - Systèmes: [2 inconnues](/PM1C/practice/algebra/systems-2-vars) [3 inconnues](/PM1C/practice/algebra/systems-3-vars)
 
 :::
 
