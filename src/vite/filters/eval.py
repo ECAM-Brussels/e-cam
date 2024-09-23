@@ -30,7 +30,7 @@ def run(
     except:
         pf.debug(f"Error when running: {code}")
         return el
-    if isinstance(result, sympy.Basic):
+    if isinstance(result, (sympy.Basic, sympy.Matrix)):
         format = "DisplayMath" if display else "InlineMath"
         result = pf.Math(latex(result), format=format)
         if display:
