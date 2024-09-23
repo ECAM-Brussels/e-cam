@@ -31,6 +31,7 @@ export function generate(params: Params): State {
   const k = random(1, params.K)
   const x = sample(params.X)!
   let a = k * (m ** 2 - n ** 2)
+  a = a < 0 ? -a : a
   let b = 2 * k * m * n
   let c = k * (m ** 2 + n ** 2)
   const width = 400
