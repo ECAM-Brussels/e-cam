@@ -29,6 +29,7 @@ title: 'Pont vers le supérieur: mathématiques'
 |   2 | [Trigonométrie II](/PM1C/exercises/02-trigonometry) | D: 60, 69, 71, 75                            | D: 62, 72, 76, 89, 2 exercices ajoutés |
 |   3 | [Vecteurs I](/PM1C/exercises/03-vectors)            | 12.1: 6, 11, 14; 12.2: 6, 21, 25, 27, 29, 32 | 12.2: 7, 8, 26, 30, 37, 47             |
 |   4 | [Vecteurs II](/PM1C/exercises/04-vectors)           | 12.3: 8, 10, 15, 25, 51                      | 12.3: 20, 37, 44, 53, 56, 57           |
+|   5 | [Vecteurs III](/PM1C/exercises/05-vectors)          | 12.4: 1, 9, 13, 14, 27, 35                   | 12.4: 8, 12, 15, 31, 38, 43, 44        |
 
 :::
 
