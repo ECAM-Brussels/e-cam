@@ -35,18 +35,6 @@ title: 'Pont vers le supérieur: mathématiques'
 
 ::: {.bg-white .rounded-xl .p-4 .shadow}
 
-## Informations pratiques
-
-Cours théoriques
-: Khôi NGUYỄN (NGY)
-
-Séances d'exercices
-: Rolando GUERRIERI (R5G), Ruben HILLEWAERE (HIL), Marius JOLY (MJ5)
-
-:::
-
-::: {.bg-white .rounded-xl .p-4 .shadow}
-
 ## S'entraîner à la maison
 
 #. Trigonométrie:
@@ -59,6 +47,18 @@ Séances d'exercices
    - Factorisation 2ème degré:  [Facile](/PM1C/practice/algebra/factorisation-deg2-easy) | [Moyen](/PM1C/practice/algebra/factorisation-deg2-medium) | [Difficile](/PM1C/practice/algebra/factorisation-deg2-hard)
    - [Factorisation 3ème degré](/PM1C/practice/algebra/factorisation-deg3)
    - [Carré parfait](/PM1C/practice/algebra/complete-square)
+
+:::
+
+::: {.bg-white .rounded-xl .p-4 .shadow}
+
+## Informations pratiques
+
+Cours théoriques
+: Khôi NGUYỄN (NGY)
+
+Séances d'exercices
+: Rolando GUERRIERI (R5G), Ruben HILLEWAERE (HIL), Marius JOLY (MJ5)
 
 :::
 
