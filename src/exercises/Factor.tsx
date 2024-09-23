@@ -23,12 +23,14 @@ export async function generate(params: {
   const b = sample(params.B) || 1
   const x1 = sample(params.X1) as number
   let x2 = sample(params.X2) as number | 'x1' | '-x1'
+  let expr = `${a}(${b}x - ${x1})`
   if (x2 === 'x1') {
-    x2 = x1
+    expr += `(${b}x - ${x1})`
   } else if (x2 === '-x1') {
-    x2 = -x1
+    expr += `(${b}x + ${x1})`
+  } else {
+    expr += `(x - ${x2})`
   }
-  let expr = `${a}(${b}x - ${x1})(x - ${x2})`
   if (params.X3 !== undefined) {
     const x3 = sample(params.X3) as number
     expr += `(x - ${x3})`
