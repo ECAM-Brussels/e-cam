@@ -13,10 +13,10 @@ class System:
     def generate(
         self,
         variables: list[Math],
-        Lentries: list[int],
-        Uentries: list[int],
-        X: list[int],
-        pivot_count: Optional[int],
+        Lentries: list[Math],
+        Uentries: list[Math],
+        X: list[Math],
+        elimination_count: Optional[int],
     ) -> list[Math]:
         n = len(variables)
         L = sympy.zeros(n, n)
@@ -25,10 +25,10 @@ class System:
             L[i, i] = 1
             for j in range(n):
                 if j < i:
-                    if pivot_count is None or pivot_count > 0:
+                    if elimination_count is None or elimination_count > 0:
                         L[i, j] = random.choice(Lentries)
-                    if pivot_count is not None:
-                        pivot_count -= 1
+                    if elimination_count is not None:
+                        elimination_count -= 1
                 else:
                     U[i, j] = random.choice(Uentries)
                     U[i, j] = 1 if i == j and U[i, j] == 0 else U[i, j]

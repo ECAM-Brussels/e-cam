@@ -1,5 +1,6 @@
 import { cache } from '@solidjs/router'
 import dedent from 'dedent-js'
+import { sample } from 'lodash-es'
 import { For } from 'solid-js'
 import { z } from 'zod'
 import ExerciseBase, { type ExerciseProps } from '~/components/ExerciseBase'
@@ -31,22 +32,44 @@ export const mark = cache(async (state: State) => {
 
 type Params = {
   variables: string[]
-  L: number[]
-  U: number[]
-  X: number[]
+  /**
+   * Contains the opposite of the elimination factors in the Gaussian elimination
+   */
+  L: string[]
+  U: string[]
+  /**
+   * Admissible values for the coordinates of the solution
+   */
+  X: string[]
+  /**
+   * Upper-bound on the number of required Gaussian eliminations
+   */
+  eliminationCount?: number
 }
 
 export async function generate(params: Params): Promise<State> {
   'use server'
   const { system } = await request(
     graphql(`
-      query GenerateSystem($variables: [Math!]!, $L: [Int!]!, $U: [Int!]!, $X: [Int!]!) {
+      query GenerateSystem(
+        $variables: [Math!]!
+        $L: [Math!]!
+        $U: [Math!]!
+        $X: [Math!]!
+        $eliminationCount: Int
+      ) {
         system {
-          generate(variables: $variables, Lentries: $L, Uentries: $U, X: $X)
+          generate(
+            variables: $variables
+            Lentries: $L
+            Uentries: $U
+            X: $X
+            eliminationCount: $eliminationCount
+          )
         }
       }
     `),
-    params,
+    { eliminationCount: null, ...params },
   )
   return {
     equations: system.generate,
