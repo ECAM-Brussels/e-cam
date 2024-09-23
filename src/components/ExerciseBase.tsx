@@ -36,8 +36,8 @@ export default function ExerciseBase<S, G>(
     children: JSXElement
     generate?: (params: G) => Promise<S> | S
     schema: ZodObject<any>
-    mark: (state: S) => Promise<boolean>
-    solve?: (state: S) => Promise<S>
+    mark: (state: S) => Promise<boolean> | boolean
+    solve?: (state: S) => Promise<S> | S
     solution?: JSXElement
   },
 ) {
