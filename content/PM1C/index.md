@@ -51,7 +51,7 @@ Séances d'exercices
    - [Produits vectoriels](/PM1C/practice/vectors/cross-product)
 #. Algèbre:
    - [Produits remarquables](/PM1C/practice/algebra/binomial-identity)
-   - [Factorisation 2ème degré](/PM1C/practice/algebra/factorisation-deg2)
+   - Factorisation 2ème degré:  [Facile](/PM1C/practice/algebra/factorisation-deg2-easy) | [Moyen](/PM1C/practice/algebra/factorisation-deg2-medium) | [Difficile](/PM1C/practice/algebra/factorisation-deg2-hard)
    - [Factorisation 3ème degré](/PM1C/practice/algebra/factorisation-deg3)
    - [Carré parfait](/PM1C/practice/algebra/complete-square)
 
