@@ -26,7 +26,7 @@ const exercises = {
   Simple: () => import('~/exercises/Simple'),
   System: () => import('~/exercises/System'),
   TrigonometricValues: () => import('~/exercises/TrigonometricValues'),
-  VectorAngle: () => import ('~/exercises/VectorAngle'),
+  VectorAngle: () => import('~/exercises/VectorAngle'),
 }
 const components = mapValues(exercises, (m) => lazy(async () => ({ default: (await m()).default })))
 
@@ -90,6 +90,11 @@ export type ExerciseProps = {
    * The default value is 4.
    */
   streak?: number
+
+  /**
+   * Title of the sequence, will be displayed to the user
+   */
+  title?: string
 
   /**
    * Specify if we supply a board to the student for their working out.
@@ -229,6 +234,9 @@ export default function ExerciseSequence(props: ExerciseProps) {
       </div>
       <Show when={data.length > 1}>
         <Pagination current={index()} max={data.length} onChange={setIndex} classes={classes()} />
+      </Show>
+      <Show when={props.title}>
+        <h1 class="text-3xl my-4">{props.title}</h1>
       </Show>
       <Suspense>
         <div class="lg:flex items-start justify-between gap-4">
