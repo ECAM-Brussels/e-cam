@@ -54,6 +54,25 @@ export const mark = cache(async (state: State) => {
   return vector.angle.isApproximatelyEqual
 }, 'CheckAngle')
 
+export const solve = cache(async (state: State): Promise<State> => {
+  'use server'
+  const { vector } = await request(
+    graphql(`
+      query SolveVectorAngle($a: [Math!]!, $b: [Math!]!, $degrees: Boolean) {
+        vector(coordinates: $a) {
+          angle(coordinates: $b, degrees: $degrees) {
+            evalf {
+              expr
+            }
+          }
+        }
+      }
+    `),
+    state,
+  )
+  return { ...state, attempt: vector.angle.evalf.expr }
+}, 'SolveVectorAngle')
+
 export default function VectorAngle(props: ExerciseProps<State, Params>) {
   const a = () => String.raw`
     \begin{pmatrix}
@@ -70,7 +89,20 @@ export default function VectorAngle(props: ExerciseProps<State, Params>) {
     \end{pmatrix}
   `
   return (
-    <ExerciseBase type="VectorAngle" {...props} schema={schema} mark={mark} generate={generate}>
+    <ExerciseBase
+      type="VectorAngle"
+      {...props}
+      schema={schema}
+      mark={mark}
+      generate={generate}
+      solve={solve}
+      solution={
+        <>
+          La réponse est approximativement <Math value={props.feedback?.solution?.attempt} />{' '}
+          {props.state?.degrees ? 'degrés' : 'radians'}
+        </>
+      }
+    >
       <p>
         Trouvez l'angle entre les vecteurs suivants en{' '}
         <strong>
