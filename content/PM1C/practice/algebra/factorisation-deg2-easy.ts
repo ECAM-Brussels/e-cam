@@ -2,6 +2,7 @@
   mode: 'dynamic',
   streak: 200,
   whiteboard: true,
+  title: 'Factorisation de trinômes du second degré (facile)',
   data: [
     {
       type: 'Factor',

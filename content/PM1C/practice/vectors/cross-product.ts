@@ -1,6 +1,7 @@
 ({
   whiteboard: true,
   mode: 'dynamic',
+  title: 'Produit vectoriel',
   data: [
     {
       type: 'CrossProduct',

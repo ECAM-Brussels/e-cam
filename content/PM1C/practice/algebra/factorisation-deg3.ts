@@ -2,6 +2,7 @@
   mode: 'dynamic',
   streak: 200,
   whiteboard: true,
+  title: 'Factorisation (degré 3)',
   data: [
     {
       type: 'Factor',

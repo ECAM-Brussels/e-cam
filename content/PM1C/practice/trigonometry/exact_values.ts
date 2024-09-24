@@ -2,6 +2,7 @@
   mode: 'dynamic',
   streak: 4,
   whiteboard: true,
+  title: 'Trigonométrie: valeurs exactes',
   data: [
     {
       type: 'TrigonometricValues',

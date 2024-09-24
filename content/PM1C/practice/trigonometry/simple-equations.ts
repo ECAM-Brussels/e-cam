@@ -2,6 +2,7 @@
   whiteboard: true,
   mode: 'dynamic',
   streak: 3,
+  title: 'Équations trigonométriques simples',
   data: [
     {
       type: 'Equation',

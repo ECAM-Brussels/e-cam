@@ -2,6 +2,7 @@
   whiteboard: true,
   mode: 'dynamic',
   streak: 200,
+  title: 'Angle entre deux vecteurs',
   data: [
     {
       type: 'VectorAngle',

@@ -2,6 +2,7 @@
   mode: 'dynamic',
   streak: 3,
   whiteboard: true,
+  title: 'Carrés parfaits',
   data: [
     {
       type: 'CompleteSquare',

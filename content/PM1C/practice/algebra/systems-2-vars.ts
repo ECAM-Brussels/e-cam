@@ -2,6 +2,7 @@
   mode: 'dynamic',
   streak: 200,
   whiteboard: true,
+  title: 'Systèmes à deux équations et deux inconnues',
   data: [
     {
       type: 'System',

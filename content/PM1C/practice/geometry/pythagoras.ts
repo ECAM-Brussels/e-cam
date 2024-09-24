@@ -1,6 +1,7 @@
 ;({
   mode: 'dynamic',
   whiteboard: true,
+  title: 'Théorème de Pythagore',
   data: [
     {
       type: 'Pythagoras',

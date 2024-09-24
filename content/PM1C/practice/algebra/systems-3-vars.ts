@@ -2,6 +2,7 @@
   mode: 'dynamic',
   streak: 200,
   whiteboard: true,
+  title: 'Systèmes à trois équations et trois inconnues',
   data: [
     {
       type: 'System',
