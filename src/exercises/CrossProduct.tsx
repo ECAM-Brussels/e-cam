@@ -38,6 +38,23 @@ export const mark = cache(async (state: State) => {
   return vector.cross.isEqual
 }, 'checkCrossProduct')
 
+export const solve = cache(async (state: State): Promise<State> => {
+  'use server'
+  const { vector } = await request(
+    graphql(`
+      query SolveCrossProduct($a: [Math!]!, $b: [Math!]!) {
+        vector(coordinates: $a) {
+          cross(coordinates: $b) {
+            coordinates
+          }
+        }
+      }
+    `),
+    state,
+  )
+  return { ...state, attempt: vector.cross.coordinates }
+}, 'solveCrossProduct')
+
 export default function CrossProduct(props: ExerciseProps<State, Params>) {
   const a = () => String.raw`
     \begin{pmatrix}
@@ -61,7 +78,20 @@ export default function CrossProduct(props: ExerciseProps<State, Params>) {
     \end{pmatrix}
   `
   return (
-    <ExerciseBase type="CrossProduct" {...props} schema={schema} mark={mark} generate={generate}>
+    <ExerciseBase
+      type="CrossProduct"
+      {...props}
+      schema={schema}
+      mark={mark}
+      generate={generate}
+      solve={solve}
+      solution={
+        <>
+          La réponse est{' '}
+          <Math value={`\\begin{pmatrix} ${props.feedback?.solution?.attempt?.join('\\\\ ') || ''} \\end{pmatrix}`} />
+        </>
+      }
+    >
       <p>Calculez le produit vectoriel suivant</p>
       <div class="flex items-center gap-2">
         <Math value={`${a()} \\times ${b()} =`} displayMode />
