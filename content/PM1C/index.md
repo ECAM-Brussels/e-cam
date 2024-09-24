@@ -41,6 +41,7 @@ title: 'Pont vers le supérieur: mathématiques'
    - [Valeurs exactes](/PM1C/practice/trigonometry/exact_values)
    - [Équations trigonométriques simples](/PM1C/practice/trigonometry/simple-equations)
 #. Vecteurs:
+   - [Angle entre deux vecteurs](/PM1C/practice/vectors/angle)
    - [Produits vectoriels](/PM1C/practice/vectors/cross-product)
 #. Algèbre:
    - [Produits remarquables](/PM1C/practice/algebra/binomial-identity)
