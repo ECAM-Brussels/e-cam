@@ -26,6 +26,7 @@ const exercises = {
   Simple: () => import('~/exercises/Simple'),
   System: () => import('~/exercises/System'),
   TrigonometricValues: () => import('~/exercises/TrigonometricValues'),
+  VectorAngle: () => import ('~/exercises/VectorAngle'),
 }
 const components = mapValues(exercises, (m) => lazy(async () => ({ default: (await m()).default })))
 
