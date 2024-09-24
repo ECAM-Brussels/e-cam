@@ -48,7 +48,7 @@ class Expression:
 
     @strawberry.field
     def is_approximately_equal(self, expr: Math, error: float) -> bool:
-        return sympy.N(sympy.Abs(self.expr - expr)) <= error
+        return bool(sympy.N(sympy.Abs(self.expr - expr)) <= error)
 
     @strawberry.field(description="Perform equality check")
     def is_equal(self, expr: Math) -> bool:
