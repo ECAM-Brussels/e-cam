@@ -1,6 +1,7 @@
 ({
   whiteboard: true,
   mode: 'dynamic',
+  streak: 200,
   data: [
     {
       type: 'VectorAngle',
