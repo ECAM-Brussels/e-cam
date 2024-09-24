@@ -1,5 +1,6 @@
 import { deleteAssignment, loadAssignment, upsertAssignment } from './ExerciseSequence.server'
 import { faChevronLeft, faChevronRight, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { Title } from '@solidjs/meta'
 import { createAsync, revalidate, useLocation, useSearchParams } from '@solidjs/router'
 import { formatDistance } from 'date-fns'
 import { fr } from 'date-fns/locale'
@@ -236,6 +237,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
         <Pagination current={index()} max={data.length} onChange={setIndex} classes={classes()} />
       </Show>
       <Show when={props.title}>
+        <Title>{props.title}</Title>
         <h1 class="text-3xl my-4">{props.title}</h1>
       </Show>
       <Suspense>
