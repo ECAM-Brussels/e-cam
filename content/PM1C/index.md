@@ -12,10 +12,11 @@ title: 'Pont vers le supérieur: mathématiques'
 
 ## Cours théoriques
 
-|   # | Titre         |                                               |                                               |
-| --: | ------------- | :-------------------------------------------: | :-------------------------------------------: |
-|   1 | Trigonométrie | [A](/PM1C/slides/01-trigonometry?boardName=A) | [B](/PM1C/slides/01-trigonometry?boardName=B) |
-|   2 | Vecteurs      |   [A](/PM1C/slides/02-vectors?boardName=A)    |   [B](/PM1C/slides/02-vectors?boardName=B)    |
+|   # | Titre               |                                               |                                               |
+| --: | ------------------- | :-------------------------------------------: | :-------------------------------------------: |
+|   1 | Trigonométrie       | [A](/PM1C/slides/01-trigonometry?boardName=A) | [B](/PM1C/slides/01-trigonometry?boardName=B) |
+|   2 | Vecteurs            |   [A](/PM1C/slides/02-vectors?boardName=A)    |   [B](/PM1C/slides/02-vectors?boardName=B)    |
+|   3 | Algèbre et systèmes |   [A](/PM1C/slides/03-algebra?boardName=A)    |   [B](/PM1C/slides/03-algebra?boardName=B)    |
 
 :::
 
