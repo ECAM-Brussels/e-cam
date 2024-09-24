@@ -16,7 +16,7 @@ Factorisez:
 - $x^3 - 4x^2 + 5x - 2$
 :::
 
-Pour vérifier vos réponses les réponses, changez le code ci-dessous.
+Pour vérifier vos réponses, changez le code ci-dessous.
 
 ~~~ python {.run}
 from sympy import *
