@@ -30,6 +30,23 @@ export const mark = cache(async (state: State) => {
   return system.check
 }, 'checkSystem')
 
+export const solve = cache(async (state: State): Promise<State> => {
+  'use server'
+  const { system } = await request(
+    graphql(`
+      query SolveSystem($equations: [Math!]!, $variables: [Math!]!) {
+        system {
+          solve(equations: $equations, variables: $variables) {
+            expr
+          }
+        }
+      }
+    `),
+    state,
+  )
+  return { ...state, attempt: system.solve.map((sol) => sol.expr) }
+}, 'solveSystem')
+
 type Params = {
   variables: string[]
   /**
@@ -86,7 +103,20 @@ export default function System(props: ExerciseProps<State, Params>) {
   `
 
   return (
-    <ExerciseBase type="System" {...props} schema={schema} mark={mark} generate={generate}>
+    <ExerciseBase
+      type="System"
+      {...props}
+      schema={schema}
+      mark={mark}
+      generate={generate}
+      solve={solve}
+      solution={
+        <>
+          La solution est{' '}
+          <Math value={`\\left(${props.feedback?.solution?.attempt.join(',')}\\right)`} />
+        </>
+      }
+    >
       <p>Résolvez le système suivant:</p>
       <Math value={system()} displayMode />
       <For each={props.state?.variables || []}>

@@ -4,6 +4,7 @@ import sympy
 from typing import Optional
 
 from symapi.core import Math
+from symapi.expression import Expression
 
 
 @strawberry.type
@@ -44,3 +45,8 @@ class System:
         subs = dict(zip(variables, x))
         equations = [eq.subs(subs) for eq in equations]
         return all(equations)
+
+    @strawberry.field
+    def solve(self, equations: list[Math], variables: list[Math]) -> list["Expression"]:
+        solution = sympy.solve(equations, variables)
+        return [Expression(expr=solution[t]) for t in variables]
