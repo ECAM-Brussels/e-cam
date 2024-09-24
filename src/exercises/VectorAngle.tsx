@@ -89,6 +89,7 @@ export default function VectorAngle(props: ExerciseProps<State, Params>) {
           onBlur={(e) => props.setter?.('state', 'attempt', e.target.value)}
         />
       </p>
+      <p class="mt-4 text-sm">(Erreur tolérée: {props.state?.error})</p>
     </ExerciseBase>
   )
 }
