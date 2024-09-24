@@ -19,9 +19,10 @@ export type State = z.infer<typeof schema>
 type Params = {
   Coordinates: string[]
   error?: number
+  Unit?: ('degree' | 'radian')[]
 }
 export function generate(params: Params): State {
-  const degrees = sample([true, false])!
+  const degrees = sample(params.Unit || ['degree'])! === 'degree'
   return {
     a: [sample(params.Coordinates)!, sample(params.Coordinates)!, sample(params.Coordinates)!],
     b: [sample(params.Coordinates)!, sample(params.Coordinates)!, sample(params.Coordinates)!],
