@@ -1,4 +1,4 @@
-import { faFloppyDisk, faHighlighter, faPen } from '@fortawesome/free-solid-svg-icons'
+import { faBroom, faFloppyDisk, faHighlighter, faPen } from '@fortawesome/free-solid-svg-icons'
 import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
 import { cloneDeep, find, throttle } from 'lodash-es'
 import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
@@ -182,7 +182,14 @@ export default function Whiteboard(props: WhiteboardProps) {
         class="relative"
         style={{ width: `${props.width}px`, height: `${props.height}px` }}
       >
-        <Toolbar currentStroke={currentStroke} setter={setCurrentStroke} status={status()} />
+        <Toolbar
+          currentStroke={currentStroke}
+          setter={setCurrentStroke}
+          status={status()}
+          onDelete={() => {
+            setStrokes([])
+          }}
+        />
         <canvas
           class="z-10"
           classList={{ 'cursor-crosshair': !props.readOnly }}
@@ -221,6 +228,7 @@ export default function Whiteboard(props: WhiteboardProps) {
 
 type ToolbarProps = {
   currentStroke: Stroke
+  onDelete?: () => void
   setter: SetStoreFunction<Stroke>
   status: Status
 }
@@ -265,6 +273,14 @@ function Toolbar(props: ToolbarProps) {
           </button>
         )}
       </For>
+      <button
+        class="rounded-lg px-2 py-1 text-2xl z-20"
+        onClick={() => {
+          props.onDelete?.()
+        }}
+      >
+        <Fa icon={faBroom} />
+      </button>
       <span class="px-2 py-1 text-2xl z-20">
         <Show when={props.status === 'unsaved'}>
           <Fa icon={faFloppyDisk} />
