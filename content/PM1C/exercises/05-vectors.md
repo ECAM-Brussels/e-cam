@@ -70,12 +70,7 @@ Trouvez $\|\vec u \times \vec v\|$ et déterminez si $\vec u \times \vec v$ poin
 ![](/images/exercises/12.4.15.png){.w-70 .block .m-auto}
 :::
 
-~~~ python {.eval}
-from sympy import *
-12 * 16 * sin(120 * pi / 180)
-~~~
-
-rentrant dans la page.
+Réponse: 6, rentrant dans la page.
 
 # Exercice 31 p. 900 {.w-1--2}
 
