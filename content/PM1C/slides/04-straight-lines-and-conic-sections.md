@@ -57,6 +57,10 @@ Elles sont
 - **perpendiculaires** si $m_1 m_2 = -1$ (ou $m_2 = -1/m_1$)
 :::
 
+::: {.example title="Exemple 7 pp. A14-A15"}
+Trouvez l'équation d'une droite passant par $(5, 2)$ qui est parallèle à la droite $4x + 6y + 5 = 0$.
+:::
+
 # Paraboles (10.5, p. 741) {.w-3--5}
 
 ::: definition
@@ -209,7 +213,7 @@ data:
 ### Cas 2: $a < b$
 
 $$
-\text{foyer:} \left(0, \pm \underbrace{\sqrt{a^2 - b^2}}_c\right)
+\text{foyer:} \left(0, \pm \underbrace{\sqrt{b^2 - a^2}}_c\right)
 \qquad
 \text{sommets:} (0, \pm b)
 $$
