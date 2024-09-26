@@ -61,6 +61,10 @@ Elles sont
 Trouvez l'équation d'une droite passant par $(5, 2)$ qui est parallèle à la droite $4x + 6y + 5 = 0$.
 :::
 
+::: {.example title="Exemple 8 p. A15"}
+Montrez que les droites $2x + 3y = 1$ et $6x - 4y - 1 = 0$ sont perpendiculaires.
+:::
+
 # Paraboles (10.5, p. 741) {.w-3--5}
 
 ::: definition
