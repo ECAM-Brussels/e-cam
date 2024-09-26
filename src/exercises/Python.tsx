@@ -13,6 +13,7 @@ export const schema = z.object({
   answer: z.string(),
   tests: z.string().array(),
   wrap: z.boolean().optional(),
+  constraints: z.tuple([z.string(), z.boolean()]).array().optional(),
 })
 export type State = z.infer<typeof schema>
 
@@ -24,12 +25,20 @@ async function compareResults(answer: string, results: string[]) {
 
 export const mark = cache(async (state: State) => {
   let code = state.code || ''
+  if (state.constraints) {
+    for (const constraint of state.constraints) {
+      const [regex, result] = [new RegExp(constraint[0]), constraint[1]]
+      if (regex.test(code) !== result) {
+        return false
+      }
+    }
+  }
   if (state.wrap) {
     code = wrapCode(code)
   }
   const runPython = (await import('~/lib/pyodide/api')).default
   const results = await Promise.all(
-    state.tests.map(async (test) => (await runPython(code + "\n" + test, true)).output),
+    state.tests.map(async (test) => (await runPython(code + '\n' + test, true)).output),
   )
   const comparison = await compareResults(state.answer, results)
   return comparison === state.tests.length
