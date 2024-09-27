@@ -6,6 +6,7 @@ test('marks correctly', async () => {
   expect(await mark({ equation: 'x^2 - 1', attempt: ['1'] })).toBe(false)
   expect(await mark({ equation: 'x^2 - 1', attempt: ['-1', '1'] })).toBe(true)
   expect(await mark({ equation: 'x^2 + 1', attempt: ['i', '-i'] })).toBe(false)
+  expect(await mark({ equation: 'x^2 + 1', attempt: [] })).toBe(true)
 
   // Complex equations
   expect(await mark({ equation: 'x^2 + 1', attempt: ['i', '-i'], complex: true })).toBe(true)
