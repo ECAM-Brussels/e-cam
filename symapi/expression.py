@@ -73,6 +73,7 @@ class Expression:
 
     @strawberry.field
     def is_set_equal(self, items: list[Math]) -> bool:
+        items = [sympy.expand_complex(sympy.simplify(i)) for i in items]
         return sympy.simplify(self.expr) == sympy.simplify(set(items))
 
     @strawberry.field(description="Check if fully factored")
@@ -108,9 +109,16 @@ class Expression:
 
     @strawberry.field
     def solveset(
-        self, a: Optional[Math] = None, b: Optional[Math] = None
+        self,
+        a: Optional[Math] = None,
+        b: Optional[Math] = None,
+        complex: Optional[bool] = None,
+        x: Optional[Math] = sympy.Symbol("x"),
     ) -> "Expression":
-        solset = sympy.solveset(self.expr)
+        if complex:
+            solset = sympy.solveset(self.expr, x, sympy.S.Complexes)
+        else:
+            solset = sympy.solveset(self.expr, x, sympy.S.Reals)
         if a is not None and b is not None:
             solset = solset.intersect(sympy.Interval(a, b))
         return Expression(expr=solset)

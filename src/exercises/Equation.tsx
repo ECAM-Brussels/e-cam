@@ -10,6 +10,7 @@ import { graphql } from '~/gql'
 import { request } from '~/lib/graphql'
 
 export const schema = z.object({
+  complex: z.boolean().optional(),
   equation: z.string().describe('Equation'),
   attempt: z.string().array().optional(),
   a: z.string().optional(),
@@ -22,9 +23,15 @@ export const mark = cache(async (state: State) => {
 
   const { equation } = await request(
     graphql(`
-      query CheckEquationSolution($equation: Math!, $attempt: [Math!]!, $a: Math, $b: Math) {
+      query CheckEquationSolution(
+        $equation: Math!
+        $attempt: [Math!]!
+        $a: Math
+        $b: Math
+        $complex: Boolean
+      ) {
         equation: expression(expr: $equation) {
-          solveset(a: $a, b: $b) {
+          solveset(a: $a, b: $b, complex: $complex) {
             isSetEqual(items: $attempt)
           }
         }
