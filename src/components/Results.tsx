@@ -94,7 +94,6 @@ export default function Results(props: ResultsProps) {
             <th>Matricule</th>
             <th>Last name</th>
             <th>First name</th>
-            <th>Finished</th>
             <th class="text-right pr-4">%</th>
             <For each={Array.from(Array(count()).keys())}>{(i) => <th>{i + 1}</th>}</For>
           </tr>
@@ -106,18 +105,6 @@ export default function Results(props: ResultsProps) {
                 <td class="py-2">{result.email.split('@')[0]}</td>
                 <td>{result.lastName}</td>
                 <td>{result.firstName}</td>
-                <Show
-                  when={result.finished}
-                  fallback={
-                    <td class="bg-red-100 text-red-700 text-center">
-                      <Fa icon={faXmark} />
-                    </td>
-                  }
-                >
-                  <td class="bg-green-100 text-green-700 text-center">
-                    <Fa icon={faCheck} />
-                  </td>
-                </Show>
                 <td class="text-right pr-4">
                   {Math.round((countBy(result.questions)['true'] / result.questions.length) * 100)}%
                 </td>
