@@ -37,6 +37,10 @@ class Expression:
     @strawberry.field(description="Expand")
     def expand(self) -> "Expression":
         return Expression(expr=sympy.expand(self.expr))
+    
+    @strawberry.field
+    def expand_complex(self) -> "Expression":
+        return Expression(expr=sympy.expand_complex(self.expr))
 
     @strawberry.field(description="Numerical evaluation")
     def evalf(self, precision: int = 15) -> "Expression":
