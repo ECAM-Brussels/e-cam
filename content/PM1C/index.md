@@ -25,14 +25,15 @@ title: 'Pont vers le supérieur: mathématiques'
 
 ## Séances d'exercices
 
-|   # | Titre                                               | Préparation                                  | Énoncés                                    |
-| --: | --------------------------------------------------- | -------------------------------------------- | ------------------------------------------ |
-|   1 | [Trigonométrie I](/PM1C/exercises/01-trigonometry)  | D: 32, 36, 46, 48                            | D: 33, 51, 53, 55, 56, 57                  |
-|   2 | [Trigonométrie II](/PM1C/exercises/02-trigonometry) | D: 60, 69, 71, 75                            | D: 62, 72, 76, 89, 2 exercices ajoutés     |
-|   3 | [Vecteurs I](/PM1C/exercises/03-vectors)            | 12.1: 6, 11, 14; 12.2: 6, 21, 25, 27, 29, 32 | 12.2: 7, 8, 26, 30, 37, 47                 |
-|   4 | [Vecteurs II](/PM1C/exercises/04-vectors)           | 12.3: 8, 10, 15, 25, 51                      | 12.3: 20, 37, 44, 53, 56, 57               |
-|   5 | [Vecteurs III](/PM1C/exercises/05-vectors)          | 12.4: 1, 9, 13, 14, 27, 35                   | 12.4: 8, 12, 15, 31, 38, 43, 44            |
-|   6 | [Algèbre](/PM1C/exercises/06-algebra)               | Review: 31, 34, 36, 42, 44, 55, 136, 151     | Review: 37, 46, 56, 60, 137, 140, 147, 153 |
+|   # | Titre                                                 | Préparation                                  | Énoncés                                    |
+| --: | ----------------------------------------------------- | -------------------------------------------- | ------------------------------------------ |
+|   1 | [Trigonométrie I](/PM1C/exercises/01-trigonometry)    | D: 32, 36, 46, 48                            | D: 33, 51, 53, 55, 56, 57                  |
+|   2 | [Trigonométrie II](/PM1C/exercises/02-trigonometry)   | D: 60, 69, 71, 75                            | D: 62, 72, 76, 89, 2 exercices ajoutés     |
+|   3 | [Vecteurs I](/PM1C/exercises/03-vectors)              | 12.1: 6, 11, 14; 12.2: 6, 21, 25, 27, 29, 32 | 12.2: 7, 8, 26, 30, 37, 47                 |
+|   4 | [Vecteurs II](/PM1C/exercises/04-vectors)             | 12.3: 8, 10, 15, 25, 51                      | 12.3: 20, 37, 44, 53, 56, 57               |
+|   5 | [Vecteurs III](/PM1C/exercises/05-vectors)            | 12.4: 1, 9, 13, 14, 27, 35                   | 12.4: 8, 12, 15, 31, 38, 43, 44            |
+|   6 | [Algèbre](/PM1C/exercises/06-algebra)                 | Review: 31, 34, 36, 42, 44, 55, 136, 151     | Review: 37, 46, 56, 60, 137, 140, 147, 153 |
+|   7 | [Systèmes](/PM1C/exercises/07-simultaneous-equations) | Voir slide 1                                 | Voir slides                                |
 
 Par "Review" pour les exercices d'algèbre,
 nous entendons ce [document-ci](https://www.stewartcalculus.com/data/ESSENTIAL%20CALCULUS%20Early%20Transcendentals/upfiles/ess-reviewofalgebra.pdf).
