@@ -18,6 +18,7 @@ import { getUser } from '~/lib/auth/session'
 
 const exercises = {
   CompleteSquare: () => import('~/exercises/CompleteSquare'),
+  ComplexPolar: () => import('~/exercises/ComplexPolar'),
   CrossProduct: () => import('~/exercises/CrossProduct'),
   Differentiate: () => import('~/exercises/Differentiate'),
   Equation: () => import('~/exercises/Equation'),

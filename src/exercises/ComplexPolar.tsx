@@ -1,4 +1,5 @@
 import { cache } from '@solidjs/router'
+import { sample } from 'lodash-es'
 import { z } from 'zod'
 import ExerciseBase, { type ExerciseProps } from '~/components/ExerciseBase'
 import Math from '~/components/Math'
@@ -27,6 +28,32 @@ export const mark = cache(async (state: State) => {
   return attempt.isEqual && attempt.isPolar
 }, 'checkComplexPolar')
 
+type Params = {
+  R: (string | number)[]
+  Theta: (string | number)[]
+}
+
+export async function generate(params: Params): Promise<State> {
+  'use server'
+  const r = sample(params.R)
+  const theta = sample(params.Theta)
+  const { expression } = await request(
+    graphql(`
+      query GeneratePolar($expr: Math!) {
+        expression(expr: $expr) {
+          expand {
+            expr
+          }
+        }
+      }
+    `),
+    { expr: `(${r}) (\\cos(${theta}) + i \\sin(${theta}))` },
+  )
+  return {
+    expr: expression.expand.expr,
+  }
+}
+
 export const solve = cache(async (state: State): Promise<State> => {
   'use server'
   const { expression } = await request(
@@ -49,13 +76,14 @@ export const solve = cache(async (state: State): Promise<State> => {
   return { ...state, attempt: `${r} e^{i \\left(${theta}\\right)}` }
 }, 'solveComplexPolar')
 
-export default function ComplexPolar(props: ExerciseProps<State, null>) {
+export default function ComplexPolar(props: ExerciseProps<State, Params>) {
   return (
     <ExerciseBase
       type="ComplexPolar"
       {...props}
       schema={schema}
       mark={mark}
+      generate={generate}
       solve={solve}
       solution={
         <p>

@@ -60,6 +60,7 @@ nous entendons ce [document-ci](https://www.stewartcalculus.com/data/ESSENTIAL%2
    - [Carré parfait](/PM1C/practice/algebra/complete-square)
    - Systèmes: [2 inconnues](/PM1C/practice/algebra/systems-2-vars) [3 inconnues](/PM1C/practice/algebra/systems-3-vars)
 #. Nombres complexes
+   - [Forme polaire](/PM1C/practice/algebra/complex-polar-form)
    - [Racines n-ièmes](/PM1C/practice/algebra/complex-roots)
 
 :::
