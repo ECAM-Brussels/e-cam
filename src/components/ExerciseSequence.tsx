@@ -254,7 +254,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
         <h1 class="text-3xl my-4">{props.title}</h1>
       </Show>
       <Suspense>
-        <div class="lg:flex items-start justify-between gap-4">
+        <div class="xl:flex items-start justify-between gap-4">
           <div class="w-full">
             <Dynamic
               component={components[exercise().type]}
