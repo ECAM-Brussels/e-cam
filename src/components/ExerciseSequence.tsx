@@ -5,7 +5,7 @@ import { createAsync, revalidate, useLocation, useSearchParams } from '@solidjs/
 import { formatDistance } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { cloneDeep, mapValues, throttle } from 'lodash-es'
-import { Show, Suspense, createEffect, createSignal, lazy, mergeProps } from 'solid-js'
+import { Show, Suspense, createEffect, createSignal, lazy, mergeProps, onMount } from 'solid-js'
 import { createStore, unwrap } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web'
 import { z } from 'zod'
@@ -177,7 +177,19 @@ export default function ExerciseSequence(props: ExerciseProps) {
     }
   }
 
-  const [showWhiteboard, setShowWhiteBoard] = createSignal(true)
+  const [showWhiteboard, setShowWhiteBoard] = createSignal<boolean | null>(null)
+  onMount(() => {
+    if (showWhiteboard() === null) {
+      if (localStorage.getItem('showWhiteboard')) {
+        setShowWhiteBoard(localStorage.getItem('showWhiteboard') === 'true')
+      } else {
+        setShowWhiteBoard(true)
+      }
+    }
+  })
+  createEffect(() => {
+    localStorage.setItem('showWhiteboard', showWhiteboard() ? 'true': 'false')
+  })
 
   const save = throttle(
     async () => {
@@ -280,7 +292,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
             <div class="flex">
               <button
                 classList={{
-                  'bg-slate-100 text-slate-400 border border-e-0 px-px': showWhiteboard(),
+                  'bg-slate-100 text-slate-400 border border-e-0 px-px': showWhiteboard() === true,
                 }}
                 onClick={() => setShowWhiteBoard((prev) => !prev)}
               >
