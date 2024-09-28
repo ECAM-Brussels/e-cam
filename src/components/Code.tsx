@@ -1,6 +1,6 @@
 import { faPlayCircle } from '@fortawesome/free-solid-svg-icons'
 import { clientOnly } from '@solidjs/start'
-import { createEffect, createSignal, Show } from 'solid-js'
+import { createEffect, createSignal, on, Show } from 'solid-js'
 import Fa from '~/components/Fa'
 import Html from '~/components/Html'
 
@@ -24,9 +24,11 @@ export default function Code(props: CodeProps) {
     setValue(props.value)
   })
 
-  createEffect(() => {
-    props.onCodeUpdate?.(value())
-  })
+  createEffect(
+    on(value, () => {
+      props.onCodeUpdate?.(value())
+    }),
+  )
 
   let textarea: HTMLTextAreaElement
 
