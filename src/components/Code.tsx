@@ -22,6 +22,7 @@ export default function Code(props: CodeProps) {
   const [codeToRun, setCodeToRun] = createSignal(props.runImmediately ? props.value : '')
   createEffect(() => {
     setValue(props.value)
+    setCodeToRun(props.runImmediately ? props.value : '')
   })
 
   createEffect(
