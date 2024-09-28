@@ -82,6 +82,13 @@ type Params =
       C: (number | string)[]
       D: (number | string)[]
     }
+  | {
+      type: 'complexRoots'
+      N: number[]
+      R: (number | string)[]
+      Theta: (number | string)[]
+      raiseToNthPower?: boolean
+    }
 
 export async function generate(params: Params) {
   'use server'
@@ -109,7 +116,7 @@ export async function generate(params: Params) {
       a: String(I[0]),
       b: String(I[1]),
     }
-  } else {
+  } else if (params.type === 'quadratic') {
     const a = sample(params.A)
     const x1 = sample(params.X1)
     const x2 = sample(params.X2)
@@ -138,6 +145,28 @@ export async function generate(params: Params) {
     )
     return {
       equation: `${lhs.expand.expr} = ${rhs.simplify.expr}`,
+    }
+  } else {
+    const n = sample(params.N)
+    const r = sample(params.R)
+    const theta = sample(params.Theta)!
+    const power = params.raiseToNthPower ? n : 1
+    const { expression } = await request(
+      graphql(`
+        query CalculateComplexExpr($expr: Math!) {
+          expression(expr: $expr) {
+            expand {
+              simplify {
+                expr
+              }
+            }
+          }
+        }
+      `),
+      { expr: `(${r})^{${power}} (\\cos((${power}) (${theta})) + i \\sin((${power}) (${theta})))` },
+    )
+    return {
+      equation: `x^{${n}} = ${expression.expand.simplify.expr}`,
     }
   }
 }

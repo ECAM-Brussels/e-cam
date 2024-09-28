@@ -59,6 +59,8 @@ nous entendons ce [document-ci](https://www.stewartcalculus.com/data/ESSENTIAL%2
    - [Factorisation 3ème degré](/PM1C/practice/algebra/factorisation-deg3)
    - [Carré parfait](/PM1C/practice/algebra/complete-square)
    - Systèmes: [2 inconnues](/PM1C/practice/algebra/systems-2-vars) [3 inconnues](/PM1C/practice/algebra/systems-3-vars)
+#. Nombres complexes
+   - [Racines n-ièmes](/PM1C/practice/algebra/complex-roots)
 
 :::
 
