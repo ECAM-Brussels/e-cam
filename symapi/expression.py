@@ -37,7 +37,7 @@ class Expression:
     @strawberry.field(description="Expand")
     def expand(self) -> "Expression":
         return Expression(expr=sympy.expand(self.expr))
-    
+
     @strawberry.field
     def expand_complex(self) -> "Expression":
         return Expression(expr=sympy.expand_complex(self.expr))
@@ -135,3 +135,16 @@ class Expression:
         if a is not None and b is not None:
             solset = solset.intersect(sympy.Interval(a, b))
         return Expression(expr=solset)
+
+    @strawberry.field
+    def tangent(
+        self,
+        x0: Math,
+        x: Optional[Math] = sympy.Symbol("x"),
+        y: Optional[Math] = sympy.Symbol("y"),
+        normal: Optional[bool] = False,
+    ) -> "Expression":
+        m = sympy.diff(self.expr, x).subs({x: x0})
+        if normal:
+            m = -1 / m
+        return Expression(expr=sympy.Eq(y, m * (x - x0) + self.expr.subs({x: x0})))
