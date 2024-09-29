@@ -109,6 +109,10 @@ class Expression:
         return isinstance(self.expr, (sympy.Float, sympy.Integer))
 
     @strawberry.field
+    def limit(self, x0: Math, x: Optional[Math] = sympy.Symbol("x")) -> "Expression":
+        return Expression(expr=sympy.limit(self.expr, x, x0))
+
+    @strawberry.field
     def list(self) -> list["Expression"]:
         return [Expression(expr=item) for item in list(self.expr)]
 
