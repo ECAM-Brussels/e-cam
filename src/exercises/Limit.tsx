@@ -30,10 +30,38 @@ export const mark = cache(async (state: State) => {
   return expression.limit.isEqual
 }, 'checkLimit')
 
+export const solve = cache(async (state: State) => {
+  'use server'
+  const { expression } = await request(
+    graphql(`
+      query CalculateLimit($expr: Math!, $x0: Math!, $x: Math) {
+        expression(expr: $expr) {
+          limit(x0: $x0, x: $x) {
+            expr
+          }
+        }
+      }
+    `),
+    state,
+  )
+  return { ...state, attempt: expression.limit.expr }
+}, 'solveLimit')
+
 export default function Limit(props: ExerciseProps<State, null>) {
   const x = () => props.state?.x || 'x'
   return (
-    <ExerciseBase type="Limit" {...props} schema={schema} mark={mark}>
+    <ExerciseBase
+      type="Limit"
+      {...props}
+      schema={schema}
+      mark={mark}
+      solve={solve}
+      solution={
+        <p>
+          La réponse est <Math value={props.feedback?.solution?.attempt} />
+        </p>
+      }
+    >
       <p>Calculez la limite suivante.</p>
       <div class="flex items-center gap-2">
         <Math value={`\\lim_{${x()} \\to ${props.state?.x0}} ${props.state?.expr} =`} displayMode />
