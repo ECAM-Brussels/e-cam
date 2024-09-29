@@ -56,8 +56,12 @@ class Expression:
 
     @strawberry.field(description="Perform equality check")
     def is_equal(self, expr: Math) -> bool:
-        result = sympy.Add(expr, sympy.Mul(-1, self.expr))
-        result = sympy.expand_complex(result)
+        if isinstance(self.expr, sympy.Eq):
+            if not isinstance(expr, sympy.Eq):
+                return False
+            quotient = sympy.simplify((self.expr.lhs - self.expr.rhs) / (expr.lhs - expr.rhs))
+            return len(quotient.free_symbols) == 0
+        result = sympy.expand_complex(expr - self.expr)
         return sympy.simplify(result) == 0
 
     @strawberry.field(description="Check if it's a number")
