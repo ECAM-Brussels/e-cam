@@ -4,6 +4,7 @@ import { Title } from '@solidjs/meta'
 import { createAsync, revalidate, useLocation, useSearchParams } from '@solidjs/router'
 import { formatDistance } from 'date-fns'
 import { fr } from 'date-fns/locale'
+import dedent from 'dedent-js'
 import { cloneDeep, mapValues, throttle } from 'lodash-es'
 import { Show, Suspense, createEffect, createSignal, lazy, mergeProps, onMount } from 'solid-js'
 import { createStore, unwrap } from 'solid-js/store'
@@ -11,6 +12,7 @@ import { Dynamic } from 'solid-js/web'
 import { z } from 'zod'
 import { type Feedback } from '~/components/ExerciseBase'
 import Fa from '~/components/Fa'
+import Markdown from '~/components/Markdown'
 import Pagination from '~/components/Pagination'
 import { loadResults } from '~/components/Results'
 import Whiteboard from '~/components/Whiteboard'
@@ -98,6 +100,11 @@ export type ExerciseProps = {
    * Title of the sequence, will be displayed to the user
    */
   title?: string
+
+  /**
+   * Description of the sequence, in markdown
+   */
+  description?: string
 
   /**
    * Specify if we supply a board to the student for their working out.
@@ -189,7 +196,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
     }
   })
   createEffect(() => {
-    localStorage.setItem('showWhiteboard', showWhiteboard() ? 'true': 'false')
+    localStorage.setItem('showWhiteboard', showWhiteboard() ? 'true' : 'false')
   })
 
   const save = throttle(
@@ -253,6 +260,11 @@ export default function ExerciseSequence(props: ExerciseProps) {
       <Show when={props.title}>
         <Title>{props.title}</Title>
         <h1 class="text-3xl my-4">{props.title}</h1>
+      </Show>
+      <Show when={props.description}>
+        <div class="my-4">
+          <Markdown value={dedent(props.description || '')} />
+        </div>
       </Show>
       <Suspense>
         <div class="xl:flex items-start justify-between gap-4">
