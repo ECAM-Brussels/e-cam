@@ -85,7 +85,6 @@ export async function runCode(code: string) {
     format = 'error'
   }
   stdout = pyodide.runPython('sys.stdout.getvalue()')
-  pyodide.runPython('sys.stdout = io.StringIO()')
   return { output, format, stdout }
 }
 
