@@ -63,6 +63,8 @@ nous entendons ce [document-ci](https://www.stewartcalculus.com/data/ESSENTIAL%2
 #. Nombres complexes
    - [Forme polaire](/PM1C/practice/algebra/complex-polar-form)
    - [Racines n-ièmes](/PM1C/practice/algebra/complex-roots)
+#. Géométrie
+   - [Classification de coniques](/PM1C/practice/geometry/conic-sections)
 
 :::
 
