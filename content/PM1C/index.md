@@ -35,7 +35,7 @@ title: 'Pont vers le supérieur: mathématiques'
 |   6 | [Algèbre](/PM1C/exercises/06-algebra)                       | Review: 31, 34, 36, 42, 44, 55, 136, 151     | Review: 37, 46, 56, 60, 137, 140, 147, 153 |
 |   7 | [Systèmes](/PM1C/exercises/07-simultaneous-equations)       | Voir slide 1                                 | Voir slides                                |
 |   8 | [Géométrie du 1er degré](/PM1C/exercises/08-straight-lines) | B: 15, 25, 33, 56, 58, 59                    | B: 16, 34, 36, 60                          |
-|   9 | Géométrie du 2nd degré                                      | 10.5: 9, 18, 19, 27, 28, 29, 47              | 10.5: 10, 30, 31, 32, 51, 52               |
+|   9 | [Géométrie du 2nd degré](/PM1C/exercises/09-conic-sections) | 10.5: 9, 18, 19, 27, 28, 29, 47              | 10.5: 10, 30, 31, 32, 51, 52               |
 |  10 | Nombres complexes                                           | H: 5, 8, 12, 16, 21, 30, 34                  | H: 23, 31, 36, 38, 40                      |
 
 Par "Review" pour les exercices d'algèbre,
