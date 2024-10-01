@@ -136,6 +136,7 @@ $$
 
 ::: warning
 L'équation $\tan \theta = \frac b a$ a **plusieurs solutions possibles**.
+Et si $a = 0$?
 :::
 
 ::: {.remark title="Interprétation de la multiplication complexe"}
@@ -173,12 +174,13 @@ from sympy import *
 z = 1 + I # Changez la valeur ici
 a, b = re(z), im(z)
 r = sqrt(a**2 + b**2)
-theta = atan(b / a)
-if a < 0:
-    theta += pi
-with evaluate(False):
-    expr = Mul(r, exp(I*theta))
-expr
+if a == 0:
+    theta = pi/2 if b > 0 else -pi/2
+else:
+    theta = atan(b / a)
+    if a < 0:
+        theta += pi if b >= 0 else -pi
+expr = Mul(r, exp(I*theta), evaluate=False)
 ~~~
 
 # Puissances {.w-1--2}
