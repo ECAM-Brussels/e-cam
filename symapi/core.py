@@ -8,6 +8,9 @@ from typing import NewType
 
 def parse_latex(expr: str):
     expr = re.sub(r"\\sqrt(\d+)", r"\\sqrt{\1}", expr)
+    coordinates = re.search(r"^(?:\\left\s*)?\(([^\(\)]*,[^\(\)]*)(?:\s*\\right)?\)$", expr)
+    if coordinates:
+        return sympy.Tuple(*[parse_latex(e) for e in coordinates.group(1).split(",")])
     if "=" in expr:
         return sympy.Eq(*[parse_latex(s) for s in expr.split("=")])
     parsed = sympy.parsing.latex.parse_latex(expr)

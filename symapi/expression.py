@@ -59,8 +59,19 @@ class Expression:
         if isinstance(self.expr, sympy.Eq):
             if not isinstance(expr, sympy.Eq):
                 return False
-            quotient = sympy.simplify((self.expr.lhs - self.expr.rhs) / (expr.lhs - expr.rhs))
+            quotient = sympy.simplify(
+                (self.expr.lhs - self.expr.rhs) / (expr.lhs - expr.rhs)
+            )
             return len(quotient.free_symbols) == 0
+        if isinstance(self.expr, sympy.Tuple):
+            if not isinstance(expr, sympy.Tuple) or len(self.expr) != len(expr):
+                return False
+            return all(
+                [
+                    sympy.simplify(sympy.expand_complex(expr[i] - self.expr[i])) == 0
+                    for i in range(len(expr.args))
+                ]
+            )
         result = sympy.expand_complex(expr - self.expr)
         return sympy.simplify(result) == 0
 
@@ -81,7 +92,11 @@ class Expression:
 
     @strawberry.field
     def is_set_equal(self, items: list[Math]) -> bool:
-        items = [sympy.expand_complex(sympy.simplify(i)) for i in items]
+        def sanitize(expr):
+            if isinstance(expr, sympy.Tuple):
+                return sympy.Tuple(*[sanitize(a) for a in expr.args])
+            return sympy.expand_complex(sympy.simplify(expr))
+        items = [sanitize(i) for i in items]
         return (
             sympy.SymmetricDifference(
                 sympy.simplify(self.expr), sympy.simplify(set(items))
