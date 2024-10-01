@@ -1,9 +1,11 @@
 import { cache } from '@solidjs/router'
+import { sample } from 'lodash-es'
+import { Show } from 'solid-js'
 import { z } from 'zod'
+import ExerciseBase, { ExerciseProps } from '~/components/ExerciseBase'
+import Math from '~/components/Math'
 import { graphql } from '~/gql'
 import { request } from '~/lib/graphql'
-
-const point = z.tuple([z.string(), z.string()])
 
 export const schema = z.object({
   equation: z.string(),
@@ -49,8 +51,126 @@ export const mark = cache(async (state: State) => {
       vertices: state.attempt?.vertices || [],
     },
   )
-  if (conicSection.type !== state.attempt?.type || !conicSection.center.isEqual || !conicSection.foci.isSetEqual) {
+  if (
+    conicSection.type !== state.attempt?.type ||
+    !conicSection.center.isEqual ||
+    !conicSection.foci.isSetEqual
+  ) {
     return false
   }
   return conicSection.type === 'parabola' || conicSection.vertices.isSetEqual
 }, 'checkConicSection')
+
+type Params = {
+  Types: ('hyperbola' | 'parabola' | 'ellipse')[]
+  X0: string[]
+  Y0: string[]
+  A: string[]
+  B: string[]
+}
+
+export async function generate(params: Params): Promise<State> {
+  const s = sample([1, -1])
+  const type = sample(params.Types)!
+  const x0 = sample(params.X0)
+  const y0 = sample(params.Y0)
+  const a = sample(params.A)
+  const b = sample(params.B)
+  const equations = {
+    ellipse: `(${b})^2 (x - ${x0})^2 + (${a})^2 (y - ${y0})^2 - (${a})^2 (${b})^2`,
+    hyperbola: `${s} ( (${b})^2 (x - ${x0})^2 - (${a})^2 (y - ${y0})^2) - (${a})^2 (${b})^2`,
+    parabola:
+      s == 1 ? `(x - ${x0})^2 - 4 (${a}) (y - ${y0})` : `(y - ${y0})^2 - 4 (${a}) (x - ${x0})`,
+  }
+  const { expression } = await request(
+    graphql(`
+      query generateConicSection($expr: Math!) {
+        expression(expr: $expr) {
+          expand {
+            expr
+          }
+        }
+      }
+    `),
+    { expr: equations[type] },
+  )
+  return { equation: expression.expand.expr }
+}
+
+export default function ConicSection(props: ExerciseProps<State, Params>) {
+  return (
+    <ExerciseBase type="ConicSection" {...props} schema={schema} mark={mark} generate={generate}>
+      <p>Caractérisez la conique suivante</p>
+      <Math value={`${props.state?.equation} = 0`} displayMode />
+      <div class="border rounded-xl my-4 p-4">
+        <label class="block my-2">
+          Type:
+          <select
+            value={props.state?.attempt?.type}
+            onChange={(e) => {
+              props.setter('state', 'attempt', {
+                type: e.target.value as 'parabola' | 'ellipse' | 'hyperbola',
+                center: '',
+                foci: [],
+                vertices: [],
+              })
+            }}
+          >
+            <option value="parabola">Parabole</option>
+            <option value="ellipse">Ellipse</option>
+            <option value="hyperbola">Hyperbole</option>
+          </select>
+        </label>
+        <Show when={props.state?.attempt?.type}>
+          <label class="block my-2">
+            Centrée en:
+            <Math
+              class="border w-64"
+              editable={!props.options?.readOnly}
+              value={props.state?.attempt?.center}
+              onBlur={(e) => props.setter?.('state', 'attempt', 'center', e.target.value)}
+            />
+          </label>
+          <label class="block my-2">
+            Foyer 1:
+            <Math
+              class="border w-64"
+              editable={!props.options?.readOnly}
+              value={props.state?.attempt?.foci[0]}
+              onBlur={(e) => props.setter?.('state', 'attempt', 'foci', 0, e.target.value)}
+            />
+          </label>
+          <Show when={props.state?.attempt?.type !== 'parabola'}>
+            <label class="block my-2">
+              Foyer 2:
+              <Math
+                class="border w-64"
+                editable={!props.options?.readOnly}
+                value={props.state?.attempt?.foci[1]}
+                onBlur={(e) => props.setter?.('state', 'attempt', 'foci', 1, e.target.value)}
+              />
+            </label>
+            <label class="block my-2">
+              Sommet 1:
+              <Math
+                class="border w-64"
+                editable={!props.options?.readOnly}
+                value={props.state?.attempt?.vertices[0]}
+                onBlur={(e) => props.setter?.('state', 'attempt', 'vertices', 0, e.target.value)}
+              />
+            </label>
+            <label class="block my-2">
+              Sommet 2:
+              <Math
+                class="border w-64"
+                editable={!props.options?.readOnly}
+                value={props.state?.attempt?.vertices[1]}
+                onBlur={(e) => props.setter?.('state', 'attempt', 'vertices', 1, e.target.value)}
+              />
+            </label>
+          </Show>
+        </Show>
+      </div>
+    </ExerciseBase>
+  )
+}
