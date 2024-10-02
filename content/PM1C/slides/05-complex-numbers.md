@@ -215,4 +215,5 @@ représentez-les sur le plan de Gauss.
 # Application: électricité {.w-1--2}
 
 - Courant alternatif: $U(t) = U_0 \cos(\omega t)$
-- Inducteur: $U(t) = L I'(t)$
+- Inductance: $U(t) = L I'(t)$
+- Loi d'Ohm: $U = R I$
