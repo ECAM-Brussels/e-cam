@@ -93,6 +93,7 @@ type Params = { X?: string[] } & (
     })
 
 export async function generate(params: Params): Promise<State> {
+  'use server'
   const x = sample(params.X || 'x')
   if (params.type === 'trigonometric') {
     const f = sample(params.F)
