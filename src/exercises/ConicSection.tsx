@@ -61,6 +61,41 @@ export const mark = cache(async (state: State) => {
   return conicSection.type === 'parabola' || conicSection.vertices.isSetEqual
 }, 'checkConicSection')
 
+export const solve = cache(async (state: State): Promise<State> => {
+  const { conicSection } = await request(
+    graphql(`
+      query SolveConicSection($equation: Math!) {
+        conicSection(equation: $equation) {
+          type
+          center {
+            expr
+          }
+          vertices {
+            list {
+              expr
+            }
+          }
+          foci {
+            list {
+              expr
+            }
+          }
+        }
+      }
+    `),
+    state,
+  )
+  return {
+    ...state,
+    attempt: {
+      type: conicSection.type as 'parabola' | 'hyperbola' | 'ellipse',
+      center: conicSection.center.expr,
+      vertices: conicSection.vertices.list.map((v) => v.expr),
+      foci: conicSection.foci.list.map((f) => f.expr),
+    },
+  }
+}, 'solveConicSection')
+
 type Params = {
   Types: ('hyperbola' | 'parabola' | 'ellipse')[]
   X0: string[]
@@ -99,7 +134,21 @@ export async function generate(params: Params): Promise<State> {
 
 export default function ConicSection(props: ExerciseProps<State, Params>) {
   return (
-    <ExerciseBase type="ConicSection" {...props} schema={schema} mark={mark} generate={generate}>
+    <ExerciseBase
+      type="ConicSection"
+      {...props}
+      schema={schema}
+      mark={mark}
+      generate={generate}
+      solve={solve}
+      solution={<>
+      <ul>
+        <li>{props.feedback?.solution?.attempt?.type}</li>
+        <li>Translatée de <Math value={props.feedback?.solution?.attempt?.center} /></li>
+        <li>Sommets: <Math value={props.feedback?.solution?.attempt?.vertices.join(',')} /></li>
+        </ul>
+      </>}
+    >
       <p>Caractérisez la conique suivante</p>
       <Math value={`${props.state?.equation} = 0`} displayMode />
       <div class="border rounded-xl my-4 p-4">
