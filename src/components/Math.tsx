@@ -32,7 +32,11 @@ type MathProps = ComponentProps<'math-field'> & {
 
 export default function Math(props: MathProps) {
   const html = () =>
-    katex.renderToString(props.value || '', { displayMode: props.displayMode, strict: false })
+    katex.renderToString(props.value || '', {
+      displayMode: props.displayMode,
+      strict: false,
+      macros: { '\\placeholder': '' },
+    })
   const [listeners, others] = splitProps(props, ['onInput', 'onBlur'])
   return (
     <Show when={props.editable} fallback={<span innerHTML={html()} class={props.class} />}>
