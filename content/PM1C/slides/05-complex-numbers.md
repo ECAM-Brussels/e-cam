@@ -211,3 +211,8 @@ simplify(((1 + I) / 2) ** 10)
 Calculez les 6 solutions de $z^6 = -8$ et
 représentez-les sur le plan de Gauss.
 :::
+
+# Application: électricité {.w-1--2}
+
+- Courant alternatif: $U(t) = U_0 \cos(\omega t)$
+- Inducteur: $U(t) = L I'(t)$
