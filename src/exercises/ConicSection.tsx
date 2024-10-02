@@ -123,7 +123,7 @@ export default function ConicSection(props: ExerciseProps<State, Params>) {
         </label>
         <Show when={props.state?.attempt?.type}>
           <label class="block my-2">
-            Centrée en:
+            {props.state?.attempt?.type === 'parabola' ? 'Sommet': 'Centre'}:
             <Math
               class="border w-64"
               editable={!props.options?.readOnly}
@@ -132,7 +132,7 @@ export default function ConicSection(props: ExerciseProps<State, Params>) {
             />
           </label>
           <label class="block my-2">
-            Foyer 1:
+            Foyer{props.state?.attempt?.type !== 'parabola' && ' 1'}:
             <Math
               class="border w-64"
               editable={!props.options?.readOnly}
