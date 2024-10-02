@@ -29,6 +29,7 @@
           '-\\frac{\\pi}{2}',
         ],
         raiseToNthPower: true,
+        X: ['z', 'w'],
       },
     },
   ],
