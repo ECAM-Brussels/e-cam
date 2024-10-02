@@ -15,6 +15,7 @@ export const schema = z.object({
   attempt: z.string().array().optional(),
   a: z.string().optional(),
   b: z.string().optional(),
+  x: z.string().optional(),
 })
 export type State = z.infer<typeof schema>
 
@@ -28,10 +29,11 @@ export const mark = cache(async (state: State) => {
         $attempt: [Math!]!
         $a: Math
         $b: Math
+        $x: Math
         $complex: Boolean
       ) {
         equation: expression(expr: $equation) {
-          solveset(a: $a, b: $b, complex: $complex) {
+          solveset(a: $a, b: $b, x: $x, complex: $complex) {
             isSetEqual(items: $attempt)
           }
         }
@@ -46,9 +48,9 @@ export const solve = cache(async (state: State) => {
   'use server'
   const { equation } = await request(
     graphql(`
-      query SolveEquation($equation: Math!, $a: Math, $b: Math) {
+      query SolveEquation($equation: Math!, $a: Math, $b: Math, $x: Math, $complex: Boolean) {
         equation: expression(expr: $equation) {
-          solveset(a: $a, b: $b) {
+          solveset(a: $a, b: $b, x: $x, complex: $complex) {
             list {
               expr
             }
@@ -64,7 +66,7 @@ export const solve = cache(async (state: State) => {
   }
 }, 'solveEquation')
 
-type Params =
+type Params = { X?: string[] } & (
   | {
       type: 'trigonometric'
       F: ('cos' | 'sin' | 'tan' | 'cot')[]
@@ -88,10 +90,10 @@ type Params =
       R: (number | string)[]
       Theta: (number | string)[]
       raiseToNthPower?: boolean
-    }
+    })
 
-export async function generate(params: Params) {
-  'use server'
+export async function generate(params: Params): Promise<State> {
+  const x = sample(params.X || 'x')
   if (params.type === 'trigonometric') {
     const f = sample(params.F)
     const a = sample(params.A)
@@ -108,13 +110,14 @@ export async function generate(params: Params) {
           }
         }
       `),
-      { expr: `(${a}) x + ${b}` },
+      { expr: `(${a}) ${x} + ${b}` },
     )
     const arg = expression.simplify.expr
     return {
       equation: `\\${f}\\left(${arg}\\right) = ${c}`,
       a: String(I[0]),
       b: String(I[1]),
+      x,
     }
   } else if (params.type === 'quadratic') {
     const a = sample(params.A)
@@ -139,12 +142,13 @@ export async function generate(params: Params) {
         }
       `),
       {
-        lhs: `(${a}) (x - (${x1})) (x - (${x2})) + (${b}) x^2 + (${c}) x + (${d})`,
-        rhs: `(${b}) x^2 + (${c}) x + (${d})`,
+        lhs: `(${a}) (${x} - (${x1})) (${x} - (${x2})) + (${b}) ${x}^2 + (${c}) ${x} + (${d})`,
+        rhs: `(${b}) ${x}^2 + (${c}) ${x} + (${d})`,
       },
     )
     return {
       equation: `${lhs.expand.expr} = ${rhs.simplify.expr}`,
+      x,
     }
   } else {
     const n = sample(params.N)
@@ -166,7 +170,9 @@ export async function generate(params: Params) {
       { expr: `(${r})^{${power}} (\\cos((${power}) (${theta})) + i \\sin((${power}) (${theta})))` },
     )
     return {
-      equation: `x^{${n}} = ${expression.expand.simplify.expr}`,
+      equation: `${x}^{${n}} = ${expression.expand.simplify.expr}`,
+      complex: true,
+      x,
     }
   }
 }
@@ -197,7 +203,7 @@ export default function Equation(props: ExerciseProps<State, Params>) {
         <For each={props.state?.attempt}>
           {(attempt, i) => (
             <label class="flex items-center gap-1">
-              <Math value="x =" />
+              <Math value={`${props.state?.x || 'x'} =`} />
               <Math
                 class="border rounded w-64"
                 editable={!props.options?.readOnly}
