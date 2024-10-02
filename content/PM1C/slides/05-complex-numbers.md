@@ -217,3 +217,5 @@ représentez-les sur le plan de Gauss.
 - Courant alternatif: $U(t) = U_0 \cos(\omega t)$
 - Inductance: $U(t) = L I'(t)$
 - Loi d'Ohm: $U = R I$
+
+![](http://hyperphysics.phy-astr.gsu.edu/hbase/electric/imgele/ind.png){.block .w-full}
