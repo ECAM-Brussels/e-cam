@@ -19,6 +19,12 @@ test('marks correctly', async () => {
     foci: ['(-\\frac{5}{2}, 0)'],
     vertices: [],
   }})).toBe(true)
+  expect(await mark({ equation: 'x^2 + 10y = 0', attempt: {
+    type: 'parabola',
+    center: '(0, 0)',
+    foci: ['(0, -\\frac{5}{2})'],
+    vertices: [],
+  }})).toBe(true)
   expect(
     await mark({
       equation: '9x^2 + 16y^2 = 144',
