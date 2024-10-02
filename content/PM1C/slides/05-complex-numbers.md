@@ -159,6 +159,17 @@ $$
 - On appelera dorénavant $r e^{i \theta}$ la *forme polaire*.
 :::
 
+# Multiplication {.w-1--2}
+
+$$
+r_1 e^{i \theta_1}
+\cdot
+r_2 e^{i \theta_2}
+= r_1 r_2 e^{i (\theta_1 + \theta_2)}
+$$
+
+<Geogebra id="qtkwq63r" />
+
 # Forme polaire: exemples {.w-1--2}
 
 ::: {.example title="Exemple 4 p. A59"}
