@@ -123,12 +123,22 @@ export default function ConicSection(props: ExerciseProps<State, Params>) {
         </label>
         <Show when={props.state?.attempt?.type}>
           <label class="block my-2">
-            {props.state?.attempt?.type === 'parabola' ? 'Sommet': 'Centre'}:
+            {props.state?.attempt?.type === 'parabola' ? 'Sommet' : 'Centre'}:
             <Math
               class="border w-64"
               editable={!props.options?.readOnly}
-              value={props.state?.attempt?.center}
-              onBlur={(e) => props.setter?.('state', 'attempt', 'center', e.target.value)}
+              value={
+                props.state?.attempt?.center ||
+                `\\left(\\placeholder[x]{}, \\placeholder[y]{}\\right)`
+              }
+              onBlur={(e) =>
+                props.setter?.(
+                  'state',
+                  'attempt',
+                  'center',
+                  e.target.getValue('latex-without-placeholders'),
+                )
+              }
             />
           </label>
           <label class="block my-2">
@@ -136,8 +146,19 @@ export default function ConicSection(props: ExerciseProps<State, Params>) {
             <Math
               class="border w-64"
               editable={!props.options?.readOnly}
-              value={props.state?.attempt?.foci[0]}
-              onBlur={(e) => props.setter?.('state', 'attempt', 'foci', 0, e.target.value)}
+              value={
+                props.state?.attempt?.foci[0] ||
+                `\\left(\\placeholder[x]{}, \\placeholder[y]{}\\right)`
+              }
+              onBlur={(e) =>
+                props.setter?.(
+                  'state',
+                  'attempt',
+                  'foci',
+                  0,
+                  e.target.getValue('latex-without-placeholders'),
+                )
+              }
             />
           </label>
           <Show when={props.state?.attempt?.type !== 'parabola'}>
@@ -146,8 +167,19 @@ export default function ConicSection(props: ExerciseProps<State, Params>) {
               <Math
                 class="border w-64"
                 editable={!props.options?.readOnly}
-                value={props.state?.attempt?.foci[1]}
-                onBlur={(e) => props.setter?.('state', 'attempt', 'foci', 1, e.target.value)}
+                value={
+                  props.state?.attempt?.foci[1] ||
+                  `\\left(\\placeholder[x]{}, \\placeholder[y]{}\\right)`
+                }
+                onBlur={(e) =>
+                  props.setter?.(
+                    'state',
+                    'attempt',
+                    'foci',
+                    1,
+                    e.target.getValue('latex-without-placeholders'),
+                  )
+                }
               />
             </label>
             <label class="block my-2">
@@ -155,8 +187,19 @@ export default function ConicSection(props: ExerciseProps<State, Params>) {
               <Math
                 class="border w-64"
                 editable={!props.options?.readOnly}
-                value={props.state?.attempt?.vertices[0]}
-                onBlur={(e) => props.setter?.('state', 'attempt', 'vertices', 0, e.target.value)}
+                value={
+                  props.state?.attempt?.vertices[0] ||
+                  `\\left(\\placeholder[x]{}, \\placeholder[y]{}\\right)`
+                }
+                onBlur={(e) =>
+                  props.setter?.(
+                    'state',
+                    'attempt',
+                    'vertices',
+                    0,
+                    e.target.getValue('latex-without-placeholders'),
+                  )
+                }
               />
             </label>
             <label class="block my-2">
@@ -164,8 +207,19 @@ export default function ConicSection(props: ExerciseProps<State, Params>) {
               <Math
                 class="border w-64"
                 editable={!props.options?.readOnly}
-                value={props.state?.attempt?.vertices[1]}
-                onBlur={(e) => props.setter?.('state', 'attempt', 'vertices', 1, e.target.value)}
+                value={
+                  props.state?.attempt?.vertices[1] ||
+                  `\\left(\\placeholder[x]{}, \\placeholder[y]{}\\right)`
+                }
+                onBlur={(e) =>
+                  props.setter?.(
+                    'state',
+                    'attempt',
+                    'vertices',
+                    1,
+                    e.target.getValue('latex-without-placeholders'),
+                  )
+                }
               />
             </label>
           </Show>
