@@ -106,6 +106,7 @@ export default function ConicSection(props: ExerciseProps<State, Params>) {
         <label class="block my-2">
           Type:
           <select
+            class="bg-white border rounded p-2 ml-4"
             value={props.state?.attempt?.type}
             onChange={(e) => {
               props.setter('state', 'attempt', {
@@ -125,7 +126,7 @@ export default function ConicSection(props: ExerciseProps<State, Params>) {
           <label class="block my-2">
             {props.state?.attempt?.type === 'parabola' ? 'Sommet' : 'Centre'}:
             <Math
-              class="border w-64"
+              class="border w-64 ml-4"
               editable={!props.options?.readOnly}
               value={
                 props.state?.attempt?.center ||
@@ -144,7 +145,7 @@ export default function ConicSection(props: ExerciseProps<State, Params>) {
           <label class="block my-2">
             Foyer{props.state?.attempt?.type !== 'parabola' && ' 1'}:
             <Math
-              class="border w-64"
+              class="border w-64 ml-4"
               editable={!props.options?.readOnly}
               value={
                 props.state?.attempt?.foci[0] ||
@@ -165,7 +166,7 @@ export default function ConicSection(props: ExerciseProps<State, Params>) {
             <label class="block my-2">
               Foyer 2:
               <Math
-                class="border w-64"
+                class="border w-64 ml-4"
                 editable={!props.options?.readOnly}
                 value={
                   props.state?.attempt?.foci[1] ||
@@ -185,7 +186,7 @@ export default function ConicSection(props: ExerciseProps<State, Params>) {
             <label class="block my-2">
               Sommet 1:
               <Math
-                class="border w-64"
+                class="border w-64 ml-4"
                 editable={!props.options?.readOnly}
                 value={
                   props.state?.attempt?.vertices[0] ||
@@ -205,7 +206,7 @@ export default function ConicSection(props: ExerciseProps<State, Params>) {
             <label class="block my-2">
               Sommet 2:
               <Math
-                class="border w-64"
+                class="border w-64 ml-4"
                 editable={!props.options?.readOnly}
                 value={
                   props.state?.attempt?.vertices[1] ||
