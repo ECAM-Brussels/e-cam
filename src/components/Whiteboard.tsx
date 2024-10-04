@@ -55,14 +55,11 @@ export default function Whiteboard(props: WhiteboardProps) {
   const [strokes, setStrokes] = createStore<Stroke[]>([])
   const savedStrokes = createAsync(() => loadBoard(location.pathname, props.id || ''))
   const [status, setStatus] = createSignal<Status>('saved')
-  const save = debounce(
-    async () => {
-      setStatus('saving')
-      await upsertBoard(location.pathname, props.id || '', strokes)
-      revalidate(loadBoard.keyFor(location.pathname, props.id || ''))
-    },
-    3000,
-  )
+  const save = debounce(async () => {
+    setStatus('saving')
+    await upsertBoard(location.pathname, props.id || '', strokes)
+    revalidate(loadBoard.keyFor(location.pathname, props.id || ''))
+  }, 3000)
   createEffect(() => {
     const saved = savedStrokes()
     if (saved) {
@@ -92,6 +89,7 @@ export default function Whiteboard(props: WhiteboardProps) {
           const dist = (p[0] - x) ** 2 + (p[1] - y) ** 2
           if (dist <= 5) {
             setStrokes(strokes.filter((s, j) => j !== i))
+            setStatus('unsaved')
             return
           }
         }
@@ -116,6 +114,7 @@ export default function Whiteboard(props: WhiteboardProps) {
         setStrokes(strokes.length, cloneDeep(unwrap(currentStroke)))
         setCurrentStroke('points', [])
         ctx()?.closePath()
+        setStatus('unsaved')
       } else if (mode() === 'draw') {
         ctx()?.beginPath()
       }
@@ -130,7 +129,6 @@ export default function Whiteboard(props: WhiteboardProps) {
     on(
       () => strokes.length,
       () => {
-        setStatus('unsaved')
         const context = ctx()!
         context.clearRect(0, 0, props.width, props.height)
         for (const stroke of strokes) {
