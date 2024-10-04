@@ -120,7 +120,7 @@ data:
   - fn: tan(x)
 ~~~
 
-- $f(x) = \cos(x)$
+- $f(x) = \tan x$
 - domaine: $\mathbb R \setminus \left\{ \frac \pi 2 + k \pi : k \in \mathbb Z \right\}$
 - image: $\mathbb R$
 - impaire
@@ -331,7 +331,7 @@ limit((sqrt(t**2 + 9) - 3) / t**2, t, 0)
 
 $$
 \lim_{x \to a^-} f(x) \qquad \text{limite à gauche}\\
-\lim_{x \to a^+} f(x) \qquad \text{limite à gauche}
+\lim_{x \to a^+} f(x) \qquad \text{limite à droite}
 $$
 
 ::: proposition
