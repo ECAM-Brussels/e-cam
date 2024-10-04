@@ -7,6 +7,7 @@ import Fa from '~/components/Fa'
 import Spinner from '~/components/Spinner'
 import { getUser } from '~/lib/auth/session'
 import { prisma } from '~/lib/db'
+import splines from 'cardinal-spline-js/src/curve_func'
 
 type Mode = 'draw' | 'erase' | 'read'
 type Status = 'unsaved' | 'saving' | 'saved'
@@ -140,13 +141,7 @@ export default function Whiteboard(props: WhiteboardProps) {
           context.lineWidth = stroke.lineWidth
           if (stroke.points.length > 3) {
             context.moveTo(...stroke.points[0])
-            let i
-            for (i = 1; i < stroke.points.length - 2; i++) {
-              const x = (stroke.points[i][0] + stroke.points[i + 1][0]) / 2
-              const y = (stroke.points[i][1] + stroke.points[i + 1][1]) / 2
-              context.quadraticCurveTo(...stroke.points[i], x, y)
-            }
-            context.quadraticCurveTo(...stroke.points[i], ...stroke.points[i + 1])
+            splines.curve(context, stroke.points.flat())
           } else {
             for (const point of stroke.points) {
               context.lineTo(...point)

@@ -17,6 +17,7 @@
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^0.14.1",
     "@solidjs/start": "^1.0.6",
+    "cardinal-spline-js": "^2.3.10",
     "crypto-js": "^4.2.0",
     "date-fns": "^3.6.0",
     "dedent-js": "^1.0.1",
