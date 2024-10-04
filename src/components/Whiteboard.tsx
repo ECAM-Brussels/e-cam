@@ -85,10 +85,7 @@ export default function Whiteboard(props: WhiteboardProps) {
 
   const handlePointerMove = (x: number, y: number) => {
     if (mode() === 'draw') {
-      const lastPoint = currentStroke.points[currentStroke.points.length - 1]
-      if (!lastPoint || lastPoint[0] !== x || lastPoint[1] !== y) {
-        setCurrentStroke('points', currentStroke.points.length, [x, y])
-      }
+      setCurrentStroke('points', currentStroke.points.length, [x, y])
     } else if (mode() === 'erase') {
       for (let i = 0; i < strokes.length; i++) {
         for (const p of strokes[i].points) {
