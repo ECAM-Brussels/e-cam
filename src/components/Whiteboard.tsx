@@ -138,7 +138,7 @@ export default function Whiteboard(props: WhiteboardProps) {
           context.fillStyle = stroke.color
           context.strokeStyle = stroke.color
           context.lineWidth = stroke.lineWidth
-          if (stroke.points.length > 2) {
+          if (stroke.points.length > 3) {
             context.moveTo(...stroke.points[0])
             let i
             for (i = 1; i < stroke.points.length - 2; i++) {
@@ -147,6 +147,10 @@ export default function Whiteboard(props: WhiteboardProps) {
               context.quadraticCurveTo(...stroke.points[i], x, y)
             }
             context.quadraticCurveTo(...stroke.points[i], ...stroke.points[i + 1])
+          } else {
+            for (const point of stroke.points) {
+              context.lineTo(...point)
+            }
           }
           context.stroke()
           context.closePath()
