@@ -43,9 +43,14 @@ async function generatePage(file: string) {
   mkdirSync(dirname(outputPath), { recursive: true })
 
   const metaFile = `${outputPath}.json`
-  await exec(`pandoc "${file}" -t html5 -o "${metaFile}" --template src/vite/template.json.txt`)
-  const meta = JSON.parse(readFileSync(metaFile, 'utf-8'))
-  const template = meta.slideshow ? 'template.slideshow.tsx' : 'template.tsx'
+  let template
+  try {
+    await exec(`pandoc "${file}" -t html5 -o "${metaFile}" --template src/vite/template.json.txt`)
+    const meta = JSON.parse(readFileSync(metaFile, 'utf-8'))
+    template = meta.slideshow ? 'template.slideshow.tsx' : 'template.tsx'
+  } catch (error) {
+    console.error(`Error when generating metadata file: ${error}`)
+  }
 
   let cmd = [
     `pandoc "${file}"`,
