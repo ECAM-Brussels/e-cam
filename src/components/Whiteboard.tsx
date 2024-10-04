@@ -138,14 +138,16 @@ export default function Whiteboard(props: WhiteboardProps) {
           context.fillStyle = stroke.color
           context.strokeStyle = stroke.color
           context.lineWidth = stroke.lineWidth
-          context.moveTo(...stroke.points[0])
-          let i
-          for (i = 1; i < stroke.points.length - 2; i++) {
-            const x = (stroke.points[i][0] + stroke.points[i + 1][0]) / 2
-            const y = (stroke.points[i][1] + stroke.points[i + 1][1]) / 2
-            context.quadraticCurveTo(...stroke.points[i], x, y)
+          if (stroke.points.length > 2) {
+            context.moveTo(...stroke.points[0])
+            let i
+            for (i = 1; i < stroke.points.length - 2; i++) {
+              const x = (stroke.points[i][0] + stroke.points[i + 1][0]) / 2
+              const y = (stroke.points[i][1] + stroke.points[i + 1][1]) / 2
+              context.quadraticCurveTo(...stroke.points[i], x, y)
+            }
+            context.quadraticCurveTo(...stroke.points[i], ...stroke.points[i + 1])
           }
-          context.quadraticCurveTo(...stroke.points[i], ...stroke.points[i + 1])
           context.stroke()
           context.closePath()
         }
