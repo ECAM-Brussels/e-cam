@@ -224,8 +224,8 @@ export default function Whiteboard(props: WhiteboardProps) {
             const scaleX = canvasRef.offsetWidth / boundingClientRect.width
             const scaleY = canvasRef.offsetHeight / boundingClientRect.height
             const containerClient = container.getBoundingClientRect()
-            const x = Math.round((event.clientX - containerClient.left) * scaleX)
-            const y = Math.round((event.clientY - containerClient.top) * scaleY)
+            const x = (event.clientX - containerClient.left) * scaleX
+            const y = (event.clientY - containerClient.top) * scaleY
             handlePointerMove(x, y)
           }}
           onMouseUp={() => {
