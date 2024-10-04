@@ -1,6 +1,6 @@
 import { faBroom, faFloppyDisk, faHighlighter, faPen } from '@fortawesome/free-solid-svg-icons'
 import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
-import { cloneDeep, find, throttle } from 'lodash-es'
+import { cloneDeep, debounce, find } from 'lodash-es'
 import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
 import { createStore, SetStoreFunction, unwrap } from 'solid-js/store'
 import Fa from '~/components/Fa'
@@ -55,14 +55,13 @@ export default function Whiteboard(props: WhiteboardProps) {
   const [strokes, setStrokes] = createStore<Stroke[]>([])
   const savedStrokes = createAsync(() => loadBoard(location.pathname, props.id || ''))
   const [status, setStatus] = createSignal<Status>('saved')
-  const save = throttle(
+  const save = debounce(
     async () => {
       setStatus('saving')
       await upsertBoard(location.pathname, props.id || '', strokes)
       revalidate(loadBoard.keyFor(location.pathname, props.id || ''))
     },
     3000,
-    { leading: true, trailing: true },
   )
   createEffect(() => {
     const saved = savedStrokes()
@@ -74,6 +73,7 @@ export default function Whiteboard(props: WhiteboardProps) {
       setStatus('saved')
     } else if (saved === null) {
       setStrokes([])
+      setStatus('saved')
     }
   })
 
@@ -118,6 +118,9 @@ export default function Whiteboard(props: WhiteboardProps) {
         ctx()?.closePath()
       } else if (mode() === 'draw') {
         ctx()?.beginPath()
+      }
+      if (mode() === 'draw' || 'erase') {
+        save.cancel()
       }
     }),
   )
