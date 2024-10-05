@@ -176,6 +176,8 @@ export default function ExerciseSequence(props: ExerciseProps) {
     const saved = savedData()
     if (saved) {
       setData(saved.body)
+    } else if(saved === null) {
+      setData(props.mode === 'static' ? cloneDeep(props.data) : [cloneDeep(props.data[0])])
     }
   })
 
@@ -230,27 +232,22 @@ export default function ExerciseSequence(props: ExerciseProps) {
               class="border border-red-900 rounded px-2 py-1 text-red-900"
               onClick={async () => {
                 setIndex(0)
-                setData(
-                  props.mode === 'static' ? cloneDeep(props.data) : [cloneDeep(props.data[0])],
+                await deleteAssignment(
+                  location.pathname,
+                  props.id || '',
+                  searchParams.userEmail || '',
                 )
-                setTimeout(async () => {
-                  await deleteAssignment(
+                revalidate(
+                  loadAssignment.keyFor(
                     location.pathname,
                     props.id || '',
                     searchParams.userEmail || '',
-                  )
-                  revalidate(
-                    loadAssignment.keyFor(
-                      location.pathname,
-                      props.id || '',
-                      searchParams.userEmail || '',
-                    ),
-                  )
-                  revalidate(loadResults.keyFor(location.pathname, props.id || ''))
-                })
+                  ),
+                )
+                revalidate(loadResults.keyFor(location.pathname, props.id || ''))
               }}
             >
-              <Fa icon={faTrash} /> Supprimer le devoir
+              <Fa icon={faTrash} /> Recommencer
             </button>
           </Show>
         </Show>
