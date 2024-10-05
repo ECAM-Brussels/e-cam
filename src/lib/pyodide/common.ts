@@ -6,7 +6,6 @@ import type { PyProxy } from 'pyodide/ffi'
 type Message = {
   format: 'string' | 'matplotlib' | 'latex' | 'error'
   uid: string
-  stdout: string
 }
 
 export type Code = Message & { code: string }
@@ -49,12 +48,16 @@ export async function runCode(code: string) {
   const match = lastLine.match(assignment)
   if (match) {
     code += `\n${match[1]}`
+  } else if (code.includes('print') && !code.includes('def main')) {
+    code += dedent`\n
+      stdout = sys.stdout.getvalue()
+      stdout
+    `
   }
 
   let output
-  let stdout: string = ''
   try {
-    pyodide.runPython(dedent`
+    await pyodide.runPythonAsync(dedent`
       import sys
       import io
       import js
@@ -62,7 +65,7 @@ export async function runCode(code: string) {
       def input(p):
           return js.prompt(p)
     `)
-    output = await pyodide.runPythonAsync(code)
+    output = await pyodide.runPython(code)
     if (output && output._repr_latex_ !== undefined) {
       output = output._repr_latex_()
       output = output.substr(1, output.length - 2)
@@ -84,14 +87,13 @@ export async function runCode(code: string) {
     output = error
     format = 'error'
   }
-  stdout = pyodide.runPython('sys.stdout.getvalue()')
-  pyodide.runPython('sys.stdout = io.StringIO()')
-  return { output, format, stdout }
+  pyodide.runPythonAsync('sys.stdout = io.StringIO()')
+  return { output, format }
 }
 
 export async function handleMessage(event: MessageEvent<Code>): Promise<Output> {
   let code = event.data.code
   const uid = event.data.uid
-  let { output, format, stdout } = await runCode(code)
-  return { output, uid, format, stdout } satisfies Output
+  let { output, format } = await runCode(code)
+  return { output, uid, format } satisfies Output
 }

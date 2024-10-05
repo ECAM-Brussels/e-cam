@@ -29,7 +29,6 @@ export default function Python(props: PythonProps) {
             <Show when={output().format === 'string' && output().output}>
               <pre>{output().output}</pre>
             </Show>
-            <Show when={output().stdout}>{(stdout) => <pre>{stdout()}</pre>}</Show>
           </>
         )}
       </Show>
