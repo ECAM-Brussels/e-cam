@@ -279,6 +279,9 @@ export default function ExerciseSequence(props: ExerciseProps) {
                 showSolution: false,
               }}
               {...exercise()}
+              onGenerate={() => {
+                save()
+              }}
               onSubmit={() => {
                 if (props.mode === 'dynamic' && index() === data.length - 1) {
                   setData(data.length, cloneDeep(props.data[dynamicIndex()]))

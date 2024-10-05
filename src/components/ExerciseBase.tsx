@@ -23,6 +23,7 @@ export type ExerciseProps<S, G> = {
   feedback?: Feedback<S>
   options?: Options
   initialOptions: Options
+  onGenerate?: () => void
   onSubmit?: () => void
   onMarked?: () => void
   setter: SetStoreFunction<Omit<ExerciseProps<S, G>, 'setter'>>
@@ -47,6 +48,7 @@ export default function ExerciseBase<S, G>(
     if (props.generate && props.params && !props.state) {
       props.setter('state', await props.generate(props.params))
       props.setter('params', undefined)
+      props.onGenerate?.()
     }
   })
 
