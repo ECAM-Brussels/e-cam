@@ -20,18 +20,10 @@ const Python = clientOnly(() => import('./Python'))
 export default function Code(props: CodeProps) {
   const [value, setValue] = createSignal(props.value)
   const [codeToRun, setCodeToRun] = createSignal(props.runImmediately ? props.value : '')
-  createEffect(
-    on(
-      () => props.value,
-      () => {
-        if (props.value !== value()) {
-          setValue(props.value)
-          setCodeToRun(props.runImmediately ? props.value : '')
-        }
-      },
-    ),
-  )
-
+  createEffect(() => {
+    setValue(props.value)
+    setCodeToRun(props.runImmediately ? props.value : '')
+  })
   createEffect(
     on(value, () => {
       props.onCodeUpdate?.(value())
