@@ -31,11 +31,11 @@ export async function deleteAssignment(
 ) {
   'use server'
   const user = await getUser()
-  if (!user || !user.email || !user.admin) {
-    throw new Error('Only admins can delete assignments')
-  }
   if (!userEmail) {
-    userEmail = user.email
+    userEmail = user?.email || ''
+  }
+  if (!user || !user.email || (!user.admin && user.email !== userEmail)) {
+    throw new Error('Not Authorized')
   }
   await prisma.assignment.delete({
     where: {url_userEmail_id: {url, userEmail, id}}
