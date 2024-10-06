@@ -1,5 +1,5 @@
 import { deleteAssignment, loadAssignment, upsertAssignment } from './ExerciseSequence.server'
-import { faChevronLeft, faChevronRight, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faChevronLeft, faChevronRight, faRotateRight } from '@fortawesome/free-solid-svg-icons'
 import { Title } from '@solidjs/meta'
 import { createAsync, revalidate, useLocation, useSearchParams } from '@solidjs/router'
 import { formatDistance } from 'date-fns'
@@ -176,7 +176,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
     const saved = savedData()
     if (saved) {
       setData(saved.body)
-    } else if(saved === null) {
+    } else if (saved === null) {
       setData(props.mode === 'static' ? cloneDeep(props.data) : [cloneDeep(props.data[0])])
     }
   })
@@ -227,29 +227,27 @@ export default function ExerciseSequence(props: ExerciseProps) {
       <div class="flex justify-between">
         <Show when={lastModified()}>
           <p>Dernière sauvegarde {lastModified()}</p>
-          <Show when={user()?.admin}>
-            <button
-              class="border border-red-900 rounded px-2 py-1 text-red-900"
-              onClick={async () => {
-                setIndex(0)
-                await deleteAssignment(
+          <button
+            class="border border-red-900 rounded px-2 py-1 text-red-900"
+            onClick={async () => {
+              setIndex(0)
+              await deleteAssignment(
+                location.pathname,
+                props.id || '',
+                searchParams.userEmail || '',
+              )
+              revalidate(
+                loadAssignment.keyFor(
                   location.pathname,
                   props.id || '',
                   searchParams.userEmail || '',
-                )
-                revalidate(
-                  loadAssignment.keyFor(
-                    location.pathname,
-                    props.id || '',
-                    searchParams.userEmail || '',
-                  ),
-                )
-                revalidate(loadResults.keyFor(location.pathname, props.id || ''))
-              }}
-            >
-              <Fa icon={faTrash} /> Recommencer
-            </button>
-          </Show>
+                ),
+              )
+              revalidate(loadResults.keyFor(location.pathname, props.id || ''))
+            }}
+          >
+            <Fa icon={faRotateRight} /> Recommencer
+          </button>
         </Show>
       </div>
       <Show when={data.length > 1}>
