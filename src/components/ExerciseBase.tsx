@@ -153,7 +153,7 @@ export default function ExerciseBase<S, G>(
           </p>
         </Show>
       </div>
-      <Show when={props.feedback}>
+      <Show when={props.feedback?.correct !== undefined || props.options?.showSolution}>
         <div class="bg-white border rounded-s-xl p-4">
           <Show when={props.feedback?.correct === true}>
             <p class="text-green-800 font-bold text-xl">
