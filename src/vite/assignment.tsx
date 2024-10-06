@@ -7,13 +7,7 @@ import Results, { loadResults } from '~/components/Results'
 import { getUser } from '~/lib/auth/session'
 
 export const route = {
-  load: ({ location }) => {
-    const search = new URLSearchParams(location.search)
-    if (search.get('results')) {
-      loadResults(location.pathname, '')
-    } else {
-      loadAssignment(location.pathname, '', search.get('userEmail') || '')
-    }
+  load: () => {
     getUser()
   },
 } satisfies RouteDefinition
