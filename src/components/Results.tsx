@@ -1,5 +1,5 @@
 import { faCheck, faQuestion, faXmark } from '@fortawesome/free-solid-svg-icons'
-import { cache, createAsync } from '@solidjs/router'
+import { cache, createAsync, revalidate } from '@solidjs/router'
 import Fuse from 'fuse.js'
 import { countBy } from 'lodash-es'
 import { createSignal, For, Show } from 'solid-js'
@@ -62,7 +62,12 @@ export default function Results(props: ResultsProps) {
   }
 
   const filtered = () => {
-    const res = (results() || []).filter((r) => !started() || r.attempted)
+    let res = (results() || [])
+    if (!Array.isArray(res)) {
+      revalidate(loadResults.keyFor(props.url, props.id || ''))
+      return []
+    }
+    res = res.filter((r) => !started() || r.attempted)
     if (!search()) {
       return res
     }

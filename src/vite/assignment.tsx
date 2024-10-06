@@ -7,7 +7,13 @@ import Results, { loadResults } from '~/components/Results'
 import { getUser } from '~/lib/auth/session'
 
 export const route = {
-  load: () => {
+  load: ({ location }) => {
+    const search = new URLSearchParams(location.search)
+    if (search.get('results')) {
+      loadResults(location.pathname, '')
+    } else {
+      loadAssignment(location.pathname, '', search.get('userEmail') || '')
+    }
     getUser()
   },
 } satisfies RouteDefinition
@@ -18,6 +24,20 @@ export default function () {
   const [searchParams, setSearchParams] = useSearchParams()
   return (
     <Page>
+      <Show when={user()?.admin}>
+        <div class="mb-8 text-sm text-gray-600">
+          <a class="px-4 py-2 ml-4" classList={{ 'border-b-4': !searchParams.results }} href="?">
+            Exercices
+          </a>
+          <a
+            class="px-4 py-2"
+            classList={{ 'border-b-4': searchParams.results !== undefined }}
+            href="?results=true"
+          >
+            Résultats
+          </a>
+        </div>
+      </Show>
       <Show
         when={searchParams.results && user()?.admin}
         fallback={
@@ -32,24 +52,10 @@ export default function () {
                 ...$body$
               }
             />
-            <Show when={user()?.admin}>
-              <p class="mt-8 text-center">
-                <a class="rounded-xl bg-green-900 px-3 py-2 text-green-100" href="?results=true">
-                  Résultats
-                </a>
-              </p>
-            </Show>
           </>
         }
       >
         <Results url={location.pathname} />
-        <Show when={user()?.admin}>
-          <p class="mt-8 text-center">
-            <a class="rounded-xl bg-green-900 px-3 py-2 text-green-100" href="?">
-              Voir le travail
-            </a>
-          </p>
-        </Show>
       </Show>
     </Page>
   )
