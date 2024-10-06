@@ -7,7 +7,18 @@ slideshow: true
 
 <Iframe class="w-full h-full" src="/documents/complex-numbers.pdf" />
 
+::::: div
 H:45, suppl*: 3a, 4a, 5, 7c, 8
+
+::: {.exercise title="Exercice H45 p. A64"}
+Écrivez le nombre $e^{2 + i \pi}$ sous la forme $a + bi$.
+:::
+
+~~~ python {.run}
+from sympy import *
+expand_complex(exp(2 + I*pi))
+~~~
+:::::
 
 # Exercice 10 {.w-1--2}
 
