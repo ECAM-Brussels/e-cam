@@ -25,12 +25,12 @@ export default function () {
   return (
     <Page>
       <Show when={user()?.admin}>
-        <div class="mb-8 text-sm text-gray-600">
-          <a class="px-4 py-2 ml-4" classList={{ 'border-b-4': !searchParams.results }} href="?">
+        <div class="mb-8 text-sm text-gray-600 border-b flex">
+          <a class="block px-4 py-2 ml-4 border-sky-800" classList={{ 'border-b-4': !searchParams.results }} href="?">
             Exercices
           </a>
           <a
-            class="px-4 py-2"
+            class="block px-4 py-2 border-sky-800"
             classList={{ 'border-b-4': searchParams.results !== undefined }}
             href="?results=true"
           >
