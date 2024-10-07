@@ -20,6 +20,7 @@ title: 'Pont vers le supérieur: mathématiques'
 |   4 | Droites et coniques | [A](/PM1C/slides/04-straight-lines-and-conic-sections?boardName=A) | [B](/PM1C/slides/04-straight-lines-and-conic-sections?boardName=B) |
 |   5 | Nombres complexes   |          [A](/PM1C/slides/05-complex-numbers?boardName=A)          |          [B](/PM1C/slides/05-complex-numbers?boardName=B)          |
 |   6 | Fonctions           |             [A](/PM1C/slides/06-functions?boardName=A)             |             [B](/PM1C/slides/06-functions?boardName=B)             |
+|   7 | Limites             |              [A](/PM1C/slides/07-limits?boardName=A)               |              [B](/PM1C/slides/07-limits?boardName=B)               |
 
 :::
 
