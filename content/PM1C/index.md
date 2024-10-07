@@ -44,6 +44,9 @@ title: 'Pont vers le supérieur: mathématiques'
 |  12 | [Fonctions](/PM1C/exercises/12-functions)                       | 1.1: 40, 42, 43, 67, 81; 1.2: 11, 12         | 1.1: 44, 72, 74, 82, 83, 84; 1.2: 13, 18   |
 |  13 | [Fonctions et limites](/PM1C/exercises/13-functions-and-limits) | 1.3: 3, 15; 1.5: 1, 2, 10, 36; 1.6.10        | 1.3: 14, 19, 23, 61; 1.5: 11, 45; 1.6.19   |
 |  14 | [Limites](/PM1C/exercises/14-limits)                            | 1.6: 23, 30; 3.4: 12, 19                     | 1.6: 27, 31, 68; 3.4: 20, 26, 31           |
+|  15 | Dérivées                                                        | 2.1: 17, 24; 2.2: 41, 47; 2.3: 13, 65        | 2.1: 28, 57; 2.2: 42, 49; 2.3: 63, 73, 119 |
+|  16 | Dérivées II                                                     | 2.4.19, 2.6.31, 2.7: 1, 2; 2.9.6, 3.1.5      | 2.4.40, 2.6.33, 2.9: 10, 44; 3.2.29        |
+|  17 | Dérivées: applications                                          | 3.5: 55; 3.7: 4, 6, 13, 26                   | 3.5.59; 3.7: 30, 40, 60, 80                |
 
 Par "Review" pour les exercices d'algèbre,
 nous entendons ce [document-ci](https://www.stewartcalculus.com/data/ESSENTIAL%20CALCULUS%20Early%20Transcendentals/upfiles/ess-reviewofalgebra.pdf).
