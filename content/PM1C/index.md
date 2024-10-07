@@ -40,7 +40,7 @@ title: 'Pont vers le supérieur: mathématiques'
 |   9 | [Géométrie du 2nd degré](/PM1C/exercises/09-conic-sections) | 10.5: 9, 18, 19, 27, 28, 29, 47              | 10.5: 10, 30, 31, 32, 51, 52               |
 |  10 | [Nombres complexes](/PM1C/exercises/10-complex-numbers)     | H: 5, 8, 12, 16, 21, 30, 34                  | H: 23, 31, 36, 38, 40                      |
 |  11 | [Nombres complexes II](/PM1C/exercises/11-complex-numbers)  | H:45, suppl*: 3a, 4a, 5, 7c, 8               | suppl*: 10, 11, 12, 13                     |
-|  12 | Fonctions                                                   | 1.1: 40, 42, 43, 67, 81; 1.2: 11, 12         | 1.1: 44, 72, 74, 82, 83, 84; 1.2: 13, 18   |
+|  12 | [Fonctions](/PM1C/exercises/12-functions)                   | 1.1: 40, 42, 43, 67, 81; 1.2: 11, 12         | 1.1: 44, 72, 74, 82, 83, 84; 1.2: 13, 18   |
 |  13 | Fonctions et limites                                        | 1.3: 3, 15; 1.5: 1, 2, 10, 36; 1.6.10        | 1.3: 14, 19, 23, 61; 1.5: 11, 45; 1.6.19   |
 |  14 | Limites                                                     | 1.6: 23, 30; 3.4: 12, 19                     | 1.6: 27, 31, 68; 3.4: 20, 26, 31           |
 
