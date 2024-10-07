@@ -43,7 +43,7 @@ title: 'Pont vers le supérieur: mathématiques'
 |  11 | [Nombres complexes II](/PM1C/exercises/11-complex-numbers)      | H:45, suppl*: 3a, 4a, 5, 7c, 8               | suppl*: 10, 11, 12, 13                     |
 |  12 | [Fonctions](/PM1C/exercises/12-functions)                       | 1.1: 40, 42, 43, 67, 81; 1.2: 11, 12         | 1.1: 44, 72, 74, 82, 83, 84; 1.2: 13, 18   |
 |  13 | [Fonctions et limites](/PM1C/exercises/13-functions-and-limits) | 1.3: 3, 15; 1.5: 1, 2, 10, 36; 1.6.10        | 1.3: 14, 19, 23, 61; 1.5: 11, 45; 1.6.19   |
-|  14 | Limites                                                         | 1.6: 23, 30; 3.4: 12, 19                     | 1.6: 27, 31, 68; 3.4: 20, 26, 31           |
+|  14 | [Limites](/PM1C/exercises/14-limits)                            | 1.6: 23, 30; 3.4: 12, 19                     | 1.6: 27, 31, 68; 3.4: 20, 26, 31           |
 
 Par "Review" pour les exercices d'algèbre,
 nous entendons ce [document-ci](https://www.stewartcalculus.com/data/ESSENTIAL%20CALCULUS%20Early%20Transcendentals/upfiles/ess-reviewofalgebra.pdf).
