@@ -118,13 +118,14 @@ export type ExerciseProps = {
    * Set to true to allow infinitely many attempts
    */
   allowReattempts?: number | boolean
+
+  userEmail?: string
 }
 
 export default function ExerciseSequence(props: ExerciseProps) {
   props = mergeProps({ mode: 'static' as const, streak: 4 }, props)
   const user = createAsync(() => getUser())
   const location = useLocation()
-  const [searchParams] = useSearchParams()
 
   const [index, setIndex] = createSignal(props.index || 0)
   createEffect(() => props.onIndexChange?.(index()))
@@ -170,7 +171,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
     })
 
   const savedData = createAsync(() =>
-    loadAssignment(location.pathname, props.id || '', searchParams.userEmail || ''),
+    loadAssignment(location.pathname, props.id || '', props.userEmail || ''),
   )
   createEffect(() => {
     const saved = savedData()
@@ -207,14 +208,8 @@ export default function ExerciseSequence(props: ExerciseProps) {
       const url = location.pathname
       const exercise = cloneDeep(unwrap(data))
       setTimeout(async () => {
-        await upsertAssignment(
-          url,
-          props.id || '',
-          searchParams.userEmail || '',
-          exercise,
-          finished(),
-        )
-        revalidate(loadAssignment.keyFor(url, props.id || '', searchParams.userEmail || ''))
+        await upsertAssignment(url, props.id || '', props.userEmail || '', exercise, finished())
+        revalidate(loadAssignment.keyFor(url, props.id || '', props.userEmail || ''))
         revalidate(loadResults.keyFor(url, props.id || ''))
       })
     },
@@ -231,17 +226,9 @@ export default function ExerciseSequence(props: ExerciseProps) {
             class="border border-red-900 rounded px-2 py-1 text-red-900"
             onClick={async () => {
               setIndex(0)
-              await deleteAssignment(
-                location.pathname,
-                props.id || '',
-                searchParams.userEmail || '',
-              )
+              await deleteAssignment(location.pathname, props.id || '', props.userEmail || '')
               revalidate(
-                loadAssignment.keyFor(
-                  location.pathname,
-                  props.id || '',
-                  searchParams.userEmail || '',
-                ),
+                loadAssignment.keyFor(location.pathname, props.id || '', props.userEmail || ''),
               )
               revalidate(loadResults.keyFor(location.pathname, props.id || ''))
             }}
@@ -262,68 +249,71 @@ export default function ExerciseSequence(props: ExerciseProps) {
           <Markdown value={dedent(props.description || '')} />
         </div>
       </Show>
-      <Suspense>
-        <div class="xl:flex items-start justify-between gap-4">
-          <div class="w-full">
-            <Dynamic
-              component={components[exercise().type]}
-              initialOptions={{
-                mark: false,
-                readOnly: false,
-                remainingAttempts: props.allowReattempts || 1,
-                showSolution: false,
-              }}
-              {...exercise()}
-              onGenerate={() => {
-                save()
-              }}
-              onSubmit={() => {
-                if (props.mode === 'dynamic' && index() === data.length - 1) {
-                  setData(data.length, cloneDeep(props.data[dynamicIndex()]))
-                }
-                save()
-              }}
-              onMarked={save}
-              setter={(...args: any) => {
-                // @ts-ignore
-                setData(index(), ...args)
-              }}
-            />
-            <Show when={exercise().feedback?.correct !== undefined && index() < data.length - 1}>
-              <div class="text-right">
+      <Show when={exercise()}>
+        <Suspense>
+          <div class="xl:flex items-start justify-between gap-4">
+            <div class="w-full">
+              <Dynamic
+                component={components[exercise().type]}
+                initialOptions={{
+                  mark: false,
+                  readOnly: false,
+                  remainingAttempts: props.allowReattempts || 1,
+                  showSolution: false,
+                }}
+                {...exercise()}
+                onGenerate={() => {
+                  save()
+                }}
+                onSubmit={() => {
+                  if (props.mode === 'dynamic' && index() === data.length - 1) {
+                    setData(data.length, cloneDeep(props.data[dynamicIndex()]))
+                  }
+                  save()
+                }}
+                onMarked={save}
+                setter={(...args: any) => {
+                  // @ts-ignore
+                  setData(index(), ...args)
+                }}
+              />
+              <Show when={exercise().feedback?.correct !== undefined && index() < data.length - 1}>
+                <div class="text-right">
+                  <button
+                    class="bg-green-900 text-white rounded-xl py-2 px-4"
+                    onClick={() => setIndex((prev) => prev + 1)}
+                  >
+                    Question suivante <Fa icon={faChevronRight} />
+                  </button>
+                </div>
+              </Show>
+            </div>
+            <Show when={props.whiteboard}>
+              <div class="flex">
                 <button
-                  class="bg-green-900 text-white rounded-xl py-2 px-4"
-                  onClick={() => setIndex((prev) => prev + 1)}
+                  classList={{
+                    'bg-slate-100 text-slate-400 border border-e-0 px-px':
+                      showWhiteboard() === true,
+                  }}
+                  onClick={() => setShowWhiteBoard((prev) => !prev)}
                 >
-                  Question suivante <Fa icon={faChevronRight} />
+                  <Show when={showWhiteboard()} fallback={<Fa icon={faChevronLeft} />}>
+                    <Fa icon={faChevronRight} />
+                  </Show>
                 </button>
+                <Show when={showWhiteboard()}>
+                  <Whiteboard
+                    class="bg-white border"
+                    height={800}
+                    width={700}
+                    id={`exercises-${user()?.email}-${props.id}-${index()}`}
+                  />
+                </Show>
               </div>
             </Show>
           </div>
-          <Show when={props.whiteboard}>
-            <div class="flex">
-              <button
-                classList={{
-                  'bg-slate-100 text-slate-400 border border-e-0 px-px': showWhiteboard() === true,
-                }}
-                onClick={() => setShowWhiteBoard((prev) => !prev)}
-              >
-                <Show when={showWhiteboard()} fallback={<Fa icon={faChevronLeft} />}>
-                  <Fa icon={faChevronRight} />
-                </Show>
-              </button>
-              <Show when={showWhiteboard()}>
-                <Whiteboard
-                  class="bg-white border"
-                  height={800}
-                  width={700}
-                  id={`exercises-${user()?.email}-${props.id}-${index()}`}
-                />
-              </Show>
-            </div>
-          </Show>
-        </div>
-      </Suspense>
+        </Suspense>
+      </Show>
     </>
   )
 }
