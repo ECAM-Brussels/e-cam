@@ -27,6 +27,15 @@ class Expression:
         return Expression(expr=theta)
 
     @strawberry.field
+    def complete_square(self, x: Optional[Math] = sympy.Symbol("x")) -> "Expression":
+        a, alpha, beta = sympy.symbols("a alpha beta")
+        answer = a * (x - alpha) ** 2 + beta
+        eq = sympy.expand(answer - self.expr)
+        system = [eq.coeff(x, 2), eq.coeff(x, 1), eq.subs({x: 0})]
+        subs = sympy.solve(system)[0]
+        return Expression(expr=answer.subs(subs))
+
+    @strawberry.field
     def count(self, expr: Math) -> int:
         return self.expr.count(expr)
 
@@ -96,6 +105,7 @@ class Expression:
             if isinstance(expr, sympy.Tuple):
                 return sympy.Tuple(*[sanitize(a) for a in expr.args])
             return sympy.expand_complex(sympy.simplify(expr))
+
         items = [sanitize(i) for i in items]
         return (
             sympy.SymmetricDifference(
