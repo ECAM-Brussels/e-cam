@@ -39,7 +39,7 @@ $$
 
 ::: exercise
 Une fenêtre a la forme d'un rectangle surmontée d'un demi cercle.
-Sachant que le périmètre est $10$ m,
+Sachant que le périmètre de la fenêtre est $10$ m,
 exprimer l'aire $A$ de la fenêtre comme une fonction de la largeur $x$ de la fenêtre.
 :::
 
