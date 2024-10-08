@@ -17,6 +17,22 @@ $$
 Reconnaissez-vous cette limite?
 :::
 
+# Une limite importante p. 151 {.w-1--2}
+
+$$
+\lim_{\theta \to 0} \frac {\sin \theta} {\theta} = 1
+$$
+
+~~~ yaml {.plot}
+width: 800
+height: 600
+xAxis:
+  domain: [-3, 3]
+data:
+  - fn: sin(x)/x
+    graphType: 'polyline'
+~~~
+
 # Deuxième limite p. 152 {.w-1--2}
 
 ::: proposition
@@ -24,6 +40,14 @@ $$
 \lim_{\theta \to 0} \frac {\cos \theta - 1} {\theta} = 1
 $$
 :::
+
+~~~ yaml {.plot}
+xAxis:
+  domain: [-3, 3]
+data:
+  - fn: (cos(x) - 1)/x
+    graphType: 'polyline'
+~~~
 
 ::: question
 Reconnaissez-vous cette limite?
@@ -252,6 +276,24 @@ annotations:
     text: y = 3/5
 ~~~
 
+# Règle de la plus haute puissance {.w-1--2}
+
+::: warning
+Réfléchissez bien avant d'empoyer la *règle de la plus haute puissance*.
+:::
+
+::: example
+$$
+\lim_{x \to +\infty} \left(\sqrt{4x^2 + 2x} - 2x\right)
+$$
+:::
+
+~~~ python {.run}
+from sympy import *
+x = Symbol("x")
+limit(sqrt(4*x**2 + 2*x) - 2*x, x, oo)
+~~~
+
 # Évaluation de limites a l'infini p. 242 {.w-1--2}
 
 ::: example
@@ -279,6 +321,12 @@ Calculez les limites suvantes si elles existent:
 - $\lim_{x \to +\infty} \sin \frac 1 x$
 - $\lim_{x \to +\infty} \sin x$
 :::
+
+~~~ python {.run}
+from sympy import *
+x = Symbol("x")
+limit(sqrt(x**2 + 1) - x, x, oo)
+~~~
 
 # Limites infinies aux infinis p. 243 {.w-1--2}
 
