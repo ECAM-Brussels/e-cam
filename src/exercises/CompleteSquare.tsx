@@ -52,11 +52,37 @@ export const mark = cache(async (state: State) => {
   return attempt.isEqual && attempt.count == 1
 }, 'checkSquare')
 
+export const solve = cache(async (state: State) => {
+  'use server'
+
+  const { expression } = await request(
+    graphql(`
+      query CompleteSquare($expr: Math!) {
+        expression(expr: $expr) {
+          completeSquare {
+            expr
+          }
+        }
+      }
+    `),
+    state,
+  )
+  return { ...state, attempt: expression.completeSquare.expr }
+}, 'completeSquare')
+
 export default function CompleteSquare(
   props: ExerciseProps<State, Parameters<typeof generate>[0]>,
 ) {
   return (
-    <ExerciseBase type="CompleteSquare" {...props} schema={schema} mark={mark} generate={generate}>
+    <ExerciseBase
+      type="CompleteSquare"
+      {...props}
+      schema={schema}
+      mark={mark}
+      generate={generate}
+      solve={solve}
+      solution={<>La réponse est <Math value={`${props.feedback?.solution?.attempt}`} /></>}
+    >
       <p>Complétez le carré dans l'expression suivante.</p>
       <div class="flex items-center gap-2">
         <Math value={`${props.state?.expr} =`} />
