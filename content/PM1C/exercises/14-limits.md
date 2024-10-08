@@ -28,7 +28,7 @@ limit((sqrt(9 + h) - 3) / h, h, 0)
 $$
 \lim_{t \to -\infty} \frac {6t^2 + t - 5} {9 - 2t^2}
 \quad
-\lim_{x \to +\infty} \frac {1 + 4x^6} {2 - x^3}
+\lim_{x \to +\infty} \frac {\sqrt{1 + 4x^6}} {2 - x^3}
 $$
 :::
 
@@ -37,7 +37,7 @@ from sympy import *
 t, x = symbols("t x")
 limit((6*t**2 + t - 5) / (9 - 2*t**2), t, oo)
 # Décommentez la ligne suivante pour l'autre réponse
-# limit((1 + 4*x**6) / (2 - x**3), x, oo)
+# limit(sqrt(1 + 4*x**6) / (2 - x**3), x, oo)
 ~~~
 :::::
 
