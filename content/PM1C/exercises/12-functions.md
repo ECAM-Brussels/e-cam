@@ -73,7 +73,7 @@ et $f(-1) = f(0) = f(2) = 0$.
 ~~~ python {.run}
 from sympy import *
 a, x = symbols("a x")
-P = expand(a * (x + 1) * x * (x - 2))
+P = a * (x + 1) * x * (x - 2)
 P = P.subs({a: solve(Eq(P.subs(x, 1), 6))[0]})
 ~~~
 
