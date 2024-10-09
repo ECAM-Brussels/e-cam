@@ -49,14 +49,14 @@ limit((6*t**2 + t - 5) / (9 - 2*t**2), t, oo)
 ::::: columns-2
 :::: column
 $$
-\lim_{x \to -2} \frac {x^2 - x - 6} {3x^2 + 5x - 2}
+\lim_{t \to 0} \frac {\sqrt{1 + t} - \sqrt{1 - t}} {t}
 $$
 
 ~~~ python {.run}
 from sympy import *
-x = Symbol("x")
-f = (x**2 - x - 6) / (3*x**2 + 5*x - 2)
-limit(f, x, -2)
+t = Symbol("t")
+f = (sqrt(1 + t) - sqrt(1 - t)) / t
+limit(f, t, 0)
 ~~~
 ::::
 :::: column
@@ -85,7 +85,8 @@ Trouvez les limites ou montrez qu'elles n'existent pas:
 
 $$
 \lim_{x \to -\infty} \frac {\sqrt{1 + 4x^6}} {2 - x^3}\\
-\lim_{x \to -\infty} \left(\sqrt{4x^2 + 3} + 2x\right)
+\lim_{x \to -\infty} \left(\sqrt{4x^2 + 3} + 2x\right)\\
+\lim_{x \to +\infty}x \sin \frac 1 x
 $$
 :::
 
@@ -94,7 +95,9 @@ from sympy import *
 x = Symbol("x")
 f1 = sqrt(1 + 4*x**6) / (2 - x**3)
 f2 = sqrt(4*x**2 + 3) + 2*x
-# Changez f1 en f2 pour la deuxième limite,
-# La troisième n'existe pas
+f3 = x * sin(1/x)
+# Changez f1 en f2
+# Pour f3, n'oubliez pas de changer -oo en oo
+# (même si ça ne change strictement rien)
 limit(f1, x, -oo)
 ~~~
