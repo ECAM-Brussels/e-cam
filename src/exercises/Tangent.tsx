@@ -1,4 +1,5 @@
 import { cache } from '@solidjs/router'
+import { sample } from 'lodash-es'
 import { z } from 'zod'
 import ExerciseBase, { type ExerciseProps } from '~/components/ExerciseBase'
 import Math from '~/components/Math'
@@ -48,7 +49,20 @@ export const solve = cache(async (state: State): Promise<State> => {
   return { ...state, attempt: expression.tangent.expr }
 }, 'solveTangent')
 
-export default function Tangent(props: ExerciseProps<State, null>) {
+type Params = {
+  Data: { Expr: string[]; X0: string[] }[]
+}
+
+export function generate(params: Params): State {
+  const data = sample(params.Data)!
+  return {
+    expr: sample(data.Expr)!,
+    x0: sample(data.X0)!,
+    normal: sample([true, false]) === true,
+  }
+}
+
+export default function Tangent(props: ExerciseProps<State, Params>) {
   const x = () => props.state?.x || 'x'
   return (
     <ExerciseBase
@@ -57,14 +71,17 @@ export default function Tangent(props: ExerciseProps<State, null>) {
       schema={schema}
       mark={mark}
       solve={solve}
+      generate={generate}
       solution={
         <p>
-          La tangente a pour équation <Math value={props.feedback?.solution?.attempt} />
+          La {props.state?.normal ? 'normale' : 'tangente'} a pour équation{' '}
+          <Math value={props.feedback?.solution?.attempt} />
         </p>
       }
     >
       <p>
-        Calculez la tangente de <Math value={`y = ${props.state?.expr}`} /> en{' '}
+        Calculez la {props.state?.normal ? 'normale' : 'tangente'} de{' '}
+        <Math value={`y = ${props.state?.expr}`} /> en{' '}
         <Math value={`${x()} = ${props.state?.x0}`} />
       </p>
       <div class="flex items-center gap-2">
@@ -76,6 +93,7 @@ export default function Tangent(props: ExerciseProps<State, null>) {
           onBlur={(e) => props.setter?.('state', 'attempt', e.target.value)}
         />
       </div>
+      <pre>{JSON.stringify(props.state)}</pre>
     </ExerciseBase>
   )
 }

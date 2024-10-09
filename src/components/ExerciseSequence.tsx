@@ -31,6 +31,7 @@ const exercises = {
   Python: () => import('~/exercises/Python'),
   Simple: () => import('~/exercises/Simple'),
   System: () => import('~/exercises/System'),
+  Tangent: () => import('~/exercises/Tangent'),
   TrigonometricValues: () => import('~/exercises/TrigonometricValues'),
   VectorAngle: () => import('~/exercises/VectorAngle'),
 }
