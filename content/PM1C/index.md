@@ -78,6 +78,7 @@ Les exercices supplémentaires sur les nombres complexes sont accessibles [ici](
    - [Théorème de Pythagore](/PM1C/practice/geometry/pythagoras)
    - [Classification de coniques](/PM1C/practice/geometry/conic-sections)
 #. Dérivées
+   - [Dérivation](/PM1C/practice/differentiation/differentiation)
    - [Normales et tangentes](/PM1C/practice/differentiation/tangents)
 
 :::

@@ -1,5 +1,5 @@
 import { cache } from '@solidjs/router'
-import { mergeProps } from 'solid-js'
+import { sample } from 'lodash-es'
 import { z } from 'zod'
 import ExerciseBase, { ExerciseProps } from '~/components/ExerciseBase'
 import Math from '~/components/Math'
@@ -48,7 +48,14 @@ export const solve = cache(async (state: State): Promise<State> => {
   return { ...state, attempt: expression.diff.expr }
 }, 'solveDerivative')
 
-export default function Differentiate(props: ExerciseProps<State, null>) {
+type Params = { Expr: string[] }
+export function generate(params: Params): State {
+  return {
+    expr: sample(params.Expr)!,
+  }
+}
+
+export default function Differentiate(props: ExerciseProps<State, Params>) {
   return (
     <ExerciseBase
       type="Differentiate"
@@ -56,6 +63,7 @@ export default function Differentiate(props: ExerciseProps<State, null>) {
       schema={schema}
       mark={mark}
       solve={solve}
+      generate={generate}
       solution={
         <p>
           La solution est <Math value={props.feedback?.solution?.attempt} />.
@@ -66,9 +74,12 @@ export default function Differentiate(props: ExerciseProps<State, null>) {
         Dérivez l'expression <Math value={props.state?.expr} />
       </p>
       <div class="flex items-center gap-2">
-        <Math value={String.raw`\frac{\mathrm{d}}{\mathrm{d} x} \left( ${props.state?.expr} \right) =`} displayMode />
         <Math
-          class="border"
+          value={String.raw`\frac{\mathrm{d}}{\mathrm{d} x} \left( ${props.state?.expr} \right) =`}
+          displayMode
+        />
+        <Math
+          class="border w-64"
           editable={!props.options?.readOnly}
           value={props.state?.attempt}
           onBlur={(e) => props.setter('state', 'attempt', e.target.value)}
