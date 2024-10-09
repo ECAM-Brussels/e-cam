@@ -29,7 +29,7 @@ type CardProps = {
 function Card(props: CardProps) {
   return (
     <a href={props.href}>
-      <div class="bg-white rounded-xl shadow transition ease-in-out delay-150 hover:scale-105">
+      <div class="bg-white rounded-xl shadow transition ease-in-out hover:scale-105">
         <img
           src={props.src}
           alt={props.alt}
