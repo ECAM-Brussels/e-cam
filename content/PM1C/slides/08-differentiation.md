@@ -82,7 +82,7 @@ La réponse est affirmative, c'est la **dérivée**.
 
 Albert Einstein
 
-# Idée: limite de sécantes {.w-1--2}
+# Idée: limite de sécantes p. 108 {.w-1--2}
 
 ::: question
 Comment définir la pente en un point d'une courbe?
@@ -199,7 +199,7 @@ m = y.diff(x).subs({x: 3})
 Eq(Symbol("y"), m * (x - 3) - 6)
 ~~~
 
-# Fonction dérivée {.w-1--2}
+# Fonction dérivée p. 120 {.w-1--2}
 
 ~~~ yaml {.plot}
 width: 800
@@ -229,6 +229,7 @@ $$
   height: 450
 - data:
   - fn: 0.1 (2x - 4) + 2 * 0.8 cos(0.8x)
+    color: green
   width: 800
   height: 450
 ~~~
@@ -247,6 +248,7 @@ Calculez $\sin'$
       updateOnMouseMove: true
 - data:
   - fn: cos(x)
+    color: green
 ~~~
 ::::
 
@@ -274,10 +276,87 @@ f'(a), \quad
 \left.\frac {\mathrm{d}} {\mathrm{d} x} f(x)\right|_{x = a} \quad
 $$
 
-# Règles de calcul {.w-1--2}
+# Non dérivabilité p. 125
+
+Il se peut que la dérivée n'existe pas en un point.
+
+::::: columns-3
+~~~ yaml {.plot}
+- data:
+  - fn: abs(x)
+- data:
+  - fn: '-1'
+    range: [-1000, 0]
+    color: green
+  - fn: '1'
+    range: [0, 1000]
+    color: green
+~~~
+
+~~~ yaml {.plot}
+- data:
+  - fn: sqrt(abs(x))
+- data:
+  - fn: -1 /( 2*sqrt(abs(x)) )
+    range: [-1000, 0]
+    color: green
+  - fn: 1 /( 2*sqrt(abs(x)) )
+    range: [0, 1000]
+    color: green
+~~~
+
+~~~ yaml {.plot}
+- data:
+  - fn: nthRoot(x, 3)
+- data:
+  - fn: 1/(3 * nthRoot(x, 3)^2)
+    color: green
+~~~
+:::::
+
+# Dérivées d'ordre supérieur p. 126 {.w-1--2}
+
+Puisque $f'$ est une fonction,
+on peut la dériver à son tour.
+On parle alors de **dérivée seconde**.
+Elle se note
 
 $$
-\left(x^p\right)' = p x^{p - 1}\\
+f''(x), \quad
+y'', \quad
+\frac {\mathrm{d}^2 y} {\mathrm{d} x^2}, \quad
+\frac {\mathrm{d}^2 f} {\mathrm{d} x^2}, \quad
+\frac {\mathrm{d}^2} {\mathrm{d} x^2} f(x), \quad
+\mathrm{D}^2 f(x), \quad
+\mathrm{D}^2_x f(x), \quad
+$$
+
+Pour le nombre dérivé en $a$,
+les notations usuelles sont
+$$
+f''(a), \quad
+\left.\frac {\mathrm{d}^2 y} {\mathrm{d} x^2}\right|_{x = a} \quad
+\left.\frac {\mathrm{d}^2 f} {\mathrm{d} x^2}\right|_{x = a} \quad
+\left.\frac {\mathrm{d}^2} {\mathrm{d} x^2} f(x)\right|_{x = a} \quad
+$$
+
+::: remark
+Nous verrons plus tard que la dérivéé seconde mesure la **concavité**,
+l'**accélération**.
+:::
+
+On peut généraliser à l'ordre $n$:
+
+$$
+y^{(n)} = f^{(n)}(x) = \frac {\dd^n y} {\dd x^n}.
+$$
+
+# Règles de calcul (section 2.3) {.w-1--2}
+
+$$
+\left(x^p\right)' = p x^{p - 1}
+\quad \implies (\sqrt x)' = \dots,
+\quad \left(\frac 1 x\right)' = \dots\\
 \left(\sin x\right)' = \cos x\\
 \left(\cos x\right)' = -\sin x\\
 \left(\tan x\right)' = \frac 1 {\cos^2 x}\\
@@ -295,7 +374,7 @@ $$
 En degrés, que vaut la dérivée de $\sin$?
 :::
 
-# Dérivée et opérations de fonctions {.w-1--2}
+# Dérivée et opérations de fonctions (2.3) {.w-1--2}
 
 ::: proposition
 $$
@@ -319,14 +398,24 @@ $$
 Entraînez-vous sur [learning.ecam.be](/PM1C/practice/differentiation/differentiation)
 :::
 
-# Exemples
+# Exemples {.w-1--2}
 
 Calculez les dérivées suivantes:
 
+- $y = x^2 \sin x$
+- $y = \frac {x^2 + x - 2} {x^3 + 6}$
+- $y = \sqrt{x^2 + 1}$
+- $y = \sin^2 x$
 - $y = \sin(x^2)$
 - $y = \sin(\cos(\tan x))$
+- $y = \left(\frac {t - 2} {2t + 1}\right)^9$
+- $y = (2x + 1)^5 (x^3 - x + 1)^4$
 
-# Dérivation implicite {.w-1--2}
+::: remark
+Entraînez-vous sur [learning.ecam.be](/PM1C/practice/differentiation/differentiation)
+:::
+
+# Dérivation implicite p. 166 {.w-1--2}
 
 Si on a une expression $y = f(x)$, la dérivée peut se calculer explicitement.
 Que faire si on avait $x^2 + y^2 = 1$?
@@ -350,7 +439,7 @@ data:
     fnType: implicit
 ~~~
 
-# Exemple de dérivée implicite {.w-1--2}
+# Exemple de dérivée implicite p. 167 {.w-1--2}
 
 ::: {.example title="Exemple 2 p. 167"}
 a. Calculez $y'$ si $x^3 + y^3 = 6xy$.
@@ -366,7 +455,7 @@ data:
   - fn: 6 - x
 ~~~
 
-# Approximation et linéarisation {.w-1--2}
+# Approximation et linéarisation p. 192 {.w-1--2}
 
 ~~~ yaml {.plot}
 height: 550
@@ -394,7 +483,7 @@ $$
 \underbrace{f(x) - f(a)}_{\Delta y} \approx f'(a) \underbrace{(x - a)}_{\Delta x}
 $$
 
-# Différentielle {.w-1--2}
+# Différentielle p. 194 {.w-1--2}
 
 $$
 \underbrace{f(x) - f(a)}_{\Delta y} \approx f'(a) \underbrace{(x - a)}_{\Delta x}
@@ -419,7 +508,7 @@ dy = y.diff(x).subs({x: 2}) * 0.01
 [dy, Delta_y]
 ~~~
 
-# Application: Calcul d'erreur {.w-1--2}
+# Application: Calcul d'erreur p. 196 {.w-1--2}
 
 ::: {.example title="Exemple 4 p. 196"}
 Le rayon d'une sphère a été mesuré comme étant $21 \pm 0.05$ cm.
