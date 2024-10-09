@@ -93,7 +93,6 @@ export default function Tangent(props: ExerciseProps<State, Params>) {
           onBlur={(e) => props.setter?.('state', 'attempt', e.target.value)}
         />
       </div>
-      <pre>{JSON.stringify(props.state)}</pre>
     </ExerciseBase>
   )
 }
