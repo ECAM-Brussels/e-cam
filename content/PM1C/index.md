@@ -75,6 +75,7 @@ Les exercices supplémentaires sur les nombres complexes sont accessibles [ici](
    - [Forme polaire](/PM1C/practice/algebra/complex-polar-form)
    - [Racines n-ièmes](/PM1C/practice/algebra/complex-roots)
 #. Géométrie
+   - [Théorème de Pythagore](/PM1C/practice/geometry/pythagoras)
    - [Classification de coniques](/PM1C/practice/geometry/conic-sections)
 
 :::

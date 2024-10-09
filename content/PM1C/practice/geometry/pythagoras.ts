@@ -6,10 +6,9 @@
     {
       type: 'Pythagoras',
       params: {
-        type: 'integers',
-        N: 5,
-        K: 3,
-        X: ['x'],
+        type: 'general',
+        S: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+        X: ['a', 'b', 'c', 'x', 'y', 'z']
       },
     },
   ],
