@@ -20,6 +20,8 @@ export default function LinkedPlot(props: LinkedPlotProps) {
               } else {
                 // @ts-ignore
                 original.addLink(renderedPlot)
+                // @ts-ignore
+                renderedPlot.addLink(original)
               }
             }}
           />
