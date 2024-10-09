@@ -35,7 +35,7 @@ export default function Math(props: MathProps) {
     katex.renderToString(props.value || '', {
       displayMode: props.displayMode,
       strict: false,
-      macros: { '\\placeholder': '' },
+      macros: { '\\placeholder': '', '\\dd': '\\mathrm{d}' },
     })
   const [listeners, others] = splitProps(props, ['onInput', 'onBlur'])
   return (
