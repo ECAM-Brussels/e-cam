@@ -1,9 +1,9 @@
-import Spinner from './Spinner'
 import { faCheckCircle, faPaperPlane, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { JSXElement, Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
 import { SetStoreFunction } from 'solid-js/store'
 import { type ZodObject } from 'zod'
 import Fa from '~/components/Fa'
+import Spinner from '~/components/Spinner'
 
 export type Feedback<S> = {
   correct?: boolean
@@ -139,7 +139,9 @@ export default function ExerciseBase<S, G>(
           }
         }}
       >
-        {props.children}
+        <Show when={props.state} fallback={<Spinner />}>
+          {props.children}
+        </Show>
         <Show when={!props.options?.readOnly}>
           <p class="mt-6">
             <Show when={!marking()} fallback={<Spinner />}>
