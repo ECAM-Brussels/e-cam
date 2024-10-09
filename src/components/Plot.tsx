@@ -3,6 +3,7 @@ import { createEffect, mergeProps } from 'solid-js'
 
 type PlotProps = Omit<FunctionPlotOptions, 'target'> & {
   class?: string
+  onRender?: (plot: ReturnType<typeof functionPlot>) => void
 }
 
 export default function Plot(props: PlotProps) {
@@ -14,10 +15,11 @@ export default function Plot(props: PlotProps) {
   )
   let target: HTMLDivElement
   createEffect(() => {
-    functionPlot({
+    const plot = functionPlot({
       target,
       ...props,
     })
+    props.onRender?.(plot)
   })
   return (
     <div
