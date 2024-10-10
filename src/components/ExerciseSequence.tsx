@@ -1,11 +1,11 @@
 import { deleteAssignment, loadAssignment, upsertAssignment } from './ExerciseSequence.server'
 import { faChevronLeft, faChevronRight, faRotateRight } from '@fortawesome/free-solid-svg-icons'
 import { Title } from '@solidjs/meta'
-import { createAsync, revalidate, useLocation, useSearchParams } from '@solidjs/router'
+import { createAsync, revalidate, useLocation } from '@solidjs/router'
 import { formatDistance } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import dedent from 'dedent-js'
-import { cloneDeep, mapValues, throttle } from 'lodash-es'
+import { cloneDeep, debounce, mapValues } from 'lodash-es'
 import { Show, Suspense, createEffect, createSignal, lazy, mergeProps, onMount } from 'solid-js'
 import { createStore, unwrap } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web'
@@ -171,15 +171,16 @@ export default function ExerciseSequence(props: ExerciseProps) {
       return 'bg-white'
     })
 
+  const [lastSaved, setLastSaved] = createSignal<Date | null>(null)
   const savedData = createAsync(() =>
     loadAssignment(location.pathname, props.id || '', props.userEmail || ''),
   )
   createEffect(() => {
     const saved = savedData()
-    if (saved) {
-      setData(saved.body)
-    } else if (saved === null) {
+    if (saved === null) {
       setData(props.mode === 'static' ? cloneDeep(props.data) : [cloneDeep(props.data[0])])
+    } else if (saved && (lastSaved() === null || lastSaved()! <= saved.lastModified)) {
+      setData(saved.body)
     }
   })
 
@@ -204,19 +205,23 @@ export default function ExerciseSequence(props: ExerciseProps) {
     localStorage.setItem('showWhiteboard', showWhiteboard() ? 'true' : 'false')
   })
 
-  const save = throttle(
-    async () => {
-      const url = location.pathname
-      const exercise = cloneDeep(unwrap(data))
-      setTimeout(async () => {
-        await upsertAssignment(url, props.id || '', props.userEmail || '', exercise, finished())
-        revalidate(loadAssignment.keyFor(url, props.id || '', props.userEmail || ''))
-        revalidate(loadResults.keyFor(url, props.id || ''))
-      })
-    },
-    500,
-    { leading: false, trailing: true },
-  )
+  const save = debounce(async () => {
+    const url = location.pathname
+    const exercise = cloneDeep(unwrap(data))
+    setLastSaved(new Date())
+    setTimeout(async () => {
+      await upsertAssignment(
+        url,
+        props.id || '',
+        props.userEmail || '',
+        exercise,
+        lastSaved()!,
+        finished(),
+      )
+      revalidate(loadAssignment.keyFor(url, props.id || '', props.userEmail || ''))
+      revalidate(loadResults.keyFor(url, props.id || ''))
+    })
+  }, 500)
 
   return (
     <>

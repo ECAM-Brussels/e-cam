@@ -47,6 +47,7 @@ export async function upsertAssignment(
   id: string,
   userEmail: string = '',
   data: Exercise[],
+  date: Date,
   finished: boolean = false
 ) {
   'use server'
@@ -60,7 +61,7 @@ export async function upsertAssignment(
   let body = JSON.stringify(data)
   await prisma.assignment.upsert({
     where: { url_userEmail_id: { url, userEmail, id } },
-    update: { body, lastModified: new Date() },
+    update: { body, lastModified: date },
     create: { url, userEmail, id, body, finished },
   })
 }
