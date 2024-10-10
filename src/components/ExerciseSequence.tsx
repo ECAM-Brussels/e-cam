@@ -214,7 +214,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
         revalidate(loadResults.keyFor(url, props.id || ''))
       })
     },
-    200,
+    500,
     { leading: false, trailing: true },
   )
 
@@ -257,7 +257,6 @@ export default function ExerciseSequence(props: ExerciseProps) {
               <Dynamic
                 component={components[exercise().type]}
                 initialOptions={{
-                  mark: false,
                   readOnly: false,
                   remainingAttempts: props.allowReattempts || 1,
                   showSolution: false,
@@ -269,8 +268,8 @@ export default function ExerciseSequence(props: ExerciseProps) {
                 onSubmit={() => {
                   if (props.mode === 'dynamic' && index() === data.length - 1) {
                     setData(data.length, cloneDeep(props.data[dynamicIndex()]))
+                    save()
                   }
-                  save()
                 }}
                 onMarked={save}
                 setter={(...args: any) => {

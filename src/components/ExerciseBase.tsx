@@ -13,7 +13,6 @@ export type Feedback<S> = {
 }
 
 type Options = {
-  mark: boolean
   readOnly: boolean
   remainingAttempts: number | boolean
   showSolution?: boolean
@@ -64,32 +63,26 @@ export default function ExerciseBase<S, G>(
     }
   })
 
-  createEffect(async () => {
+  const mark = async () => {
     if (props.state) {
       try {
         props.schema.parse(props.state)
         props.setter('feedback', 'valid', true)
-        if (props.options?.mark) {
-          setMarking(true)
-          const result = await props.mark(props.state)
-          setMarking(false)
-          props.setter('feedback', 'correct', result)
-          if (result) {
-            props.setter('options', 'showSolution', true)
-            props.setter('options', 'readOnly', true)
-          } else {
-            props.setter('options', 'mark', false)
-          }
-          props.onMarked?.()
+        setMarking(true)
+        const result = await props.mark(props.state)
+        setMarking(false)
+        props.setter('feedback', 'correct', result)
+        if (result) {
+          props.setter('options', 'showSolution', true)
+          props.setter('options', 'readOnly', true)
         }
+        props.onMarked?.()
       } catch {
         props.setter('feedback', 'valid', false)
-        if (props.options?.mark) {
-          props.setter('feedback', 'correct', false)
-        }
+        props.setter('feedback', 'correct', false)
       }
     }
-  })
+  }
 
   let timer: ReturnType<typeof setInterval>
   onMount(() => {
@@ -117,7 +110,7 @@ export default function ExerciseBase<S, G>(
 
   const submit = () => {
     setTimeout(() => {
-      props.setter('options', 'mark', true)
+      mark()
       if (typeof props.options?.remainingAttempts === 'number') {
         props.setter('options', 'remainingAttempts', props.options?.remainingAttempts - 1)
       }
