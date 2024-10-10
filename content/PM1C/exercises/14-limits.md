@@ -85,7 +85,7 @@ Trouvez les limites ou montrez qu'elles n'existent pas:
 
 $$
 \lim_{x \to -\infty} \frac {\sqrt{1 + 4x^6}} {2 - x^3}\\
-\lim_{x \to -\infty} \left(\sqrt{4x^2 + 3} + 2x\right)\\
+\lim_{x \to -\infty} \left(\sqrt{4x^2 + 3x} + 2x\right)\\
 \lim_{x \to +\infty}x \sin \frac 1 x
 $$
 :::
@@ -94,7 +94,7 @@ $$
 from sympy import *
 x = Symbol("x")
 f1 = sqrt(1 + 4*x**6) / (2 - x**3)
-f2 = sqrt(4*x**2 + 3) + 2*x
+f2 = sqrt(4*x**2 + 3*x) + 2*x
 f3 = x * sin(1/x)
 # Changez f1 en f2
 # Pour f3, n'oubliez pas de changer -oo en oo
