@@ -132,6 +132,22 @@ f'(a)
 $$
 :::
 
+# Interprétation: Vitesse instantanée {.w-1--2}
+
+::: example
+Calculez la vitesse instantanée à l'instant $t$ lorsque
+$$
+x(t) = v_0 t + \frac {a t^2} 2
+$$
+:::
+
+~~~ python {.run}
+from sympy import *
+v0, t, a, h = symbols("v0 t a h")
+x = lambda t: v0 * t + a * t ** 2 / 2
+v = limit((x(t + h) - x(t)) / h, h, 0)
+~~~
+
 # Exemples {.w-1--2}
 
 $$
@@ -144,9 +160,22 @@ $$
 Calculez la dérivée de $f(x) = x^2 - 8x + 9$ en $2$ et en $a$.
 :::
 
+~~~ python {.run}
+from sympy import *
+x, a = symbols("x a")
+f = lambda x: x**2 - 8*x + 9
+limit((f(x) - f(a)) / (x - a), x, a)
+~~~
+
 ::: {.example title="Exemple 5 p. 112"}
 Calculez la dérivée de $f(x) = \sqrt{x}$ en $a$.
 :::
+
+~~~ python {.run}
+from sympy import *
+x, a = symbols("x a")
+limit((sqrt(x) - sqrt(a)) / (x - a), x, a)
+~~~
 
 # Tangente p. 113 {.w-1--2}
 
@@ -174,30 +203,62 @@ $$
 Vous pouvez vous entraîner sur la plateforme [learning.ecam.be](/PM1C/practice/differentiation/tangents)
 :::
 
-# Tangente: exemple p. 113 {.w-1--2}
+# Normale p. 113 {.w-1--2}
 
 ~~~ yaml {.plot}
+width: 600
+height: 450
 xAxis:
   domain: [-2, 10]
 yAxis:
-  domain: [-10, 8]
+  domain: [-8.5, 0.5]
 data:
   - fn: x^2 - 8x + 9
     graphType: polyline
   - fn: -2x
+  - fn: 1/2 * (x - 3) - 6
+~~~
+
+::: definition
+La **tangente** à $y = f(x)$ en $(a, f(a))$ est la droite
+$$
+y = f'(a) (x - a) + f(a)
+$$
+:::
+
+::: remark
+Vous pouvez vous entraîner sur la plateforme [learning.ecam.be](/PM1C/practice/differentiation/tangents)
+:::
+
+# Tangente: exemple p. 113 {.w-1--2}
+
+~~~ yaml {.plot}
+width: 600
+height: 450
+xAxis:
+  domain: [-2, 10]
+yAxis:
+  domain: [-8.5, 0.5]
+data:
+  - fn: x^2 - 8x + 9
+    graphType: polyline
+  - fn: -2x
+  - fn: 1/2 * (x - 3) - 6
 ~~~
 
 ::: example
-Trouvez la tangente de $y = x^2 - 8x + 9$ au point $(3, -6)$
+Trouvez la tangente et la normale de $y = x^2 - 8x + 9$ au point $(3, -6)$
 :::
 
+::: text-sm
 ~~~ python {.run}
 from sympy import *
 x = Symbol("x")
 y = x**2 - 8*x + 9
 m = y.diff(x).subs({x: 3})
-Eq(Symbol("y"), m * (x - 3) - 6)
+[Eq(Symbol("y"), m * (x - 3) - 6), Eq(Symbol("y"), -1/m * (x - 3) - 6)]
 ~~~
+:::
 
 # Fonction dérivée p. 120 {.w-1--2}
 
@@ -238,6 +299,14 @@ $$
 
 ::: example
 Calculez $\sin'$
+:::
+
+::: text-sm
+~~~ python {.run}
+from sympy import *
+x, h = symbols("x h")
+expand_trig((sin(x + h) - sin(x)) / h)
+~~~
 :::
 
 ~~~ yaml {.plot}
@@ -414,6 +483,12 @@ Calculez les dérivées suivantes:
 ::: remark
 Entraînez-vous sur [learning.ecam.be](/PM1C/practice/differentiation/differentiation)
 :::
+
+~~~ python {.run}
+from sympy import *
+x = Symbol("x")
+diff(x**2 * sin(x))
+~~~
 
 # Dérivation implicite p. 166 {.w-1--2}
 
