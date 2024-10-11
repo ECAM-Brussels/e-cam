@@ -18,7 +18,6 @@ function generate(params: Params): State {
 test('generator works', async () => {
   const [data, setData] = createStore<Omit<ExerciseProps<State, Params>, 'setter'>>({
     initialOptions: {
-      mark: false,
       readOnly: false,
       remainingAttempts: true,
       showSolution: false,
@@ -46,7 +45,7 @@ test('generator works', async () => {
   expect(data.feedback).not.toHaveProperty('correct')
 
   // Submit wrong answer
-  setData('state', { ...data, attempt: 0 })
+  setData('state', 'attempt', 0)
   let button = await findByRole('button')
   expect(button).not.toBeFalsy()
   await user.click(button)
@@ -57,7 +56,7 @@ test('generator works', async () => {
   expect(await findByText('Pas de chance !')).not.toBeFalsy()
 
   // Resubmit correct response
-  setData('state', { ...data, attempt: 1 })
+  setData('state', 'attempt', 1)
   button = await findByRole('button')
   await user.click(button)
 
