@@ -220,9 +220,9 @@ data:
 ~~~
 
 ::: definition
-La **tangente** à $y = f(x)$ en $(a, f(a))$ est la droite
+La **normale** à $y = f(x)$ en $(a, f(a))$ est la droite
 $$
-y = f'(a) (x - a) + f(a)
+y = \frac {-1} {f'(a)} (x - a) + f(a)
 $$
 :::
 
