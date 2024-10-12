@@ -118,7 +118,7 @@ export default function Whiteboard(props: WhiteboardProps) {
       } else if (mode() === 'draw') {
         ctx()?.beginPath()
       }
-      if (mode() === 'draw' || 'erase') {
+      if (mode() === 'draw') {
         save.cancel()
       }
     }),
