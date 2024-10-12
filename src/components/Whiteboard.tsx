@@ -168,13 +168,15 @@ export default function Whiteboard(props: WhiteboardProps) {
     on(
       () => currentStroke.points.length,
       () => {
-        if (currentStroke.points.length < 2) {
+        if (currentStroke.points.length < 4) {
           return
         }
         const context = ctx()!
         const lastPoint = (i: number) => currentStroke.points[currentStroke.points.length - i]
-        context.moveTo(...lastPoint(2))
-        context.lineTo(...lastPoint(1))
+        const x = (lastPoint(2)[0] + lastPoint(1)[0]) / 2
+        const y = (lastPoint(2)[1] + lastPoint(1)[1]) / 2
+        context.moveTo(...lastPoint(3))
+        context.quadraticCurveTo(...lastPoint(2), x, y)
         context.stroke()
       },
     ),
