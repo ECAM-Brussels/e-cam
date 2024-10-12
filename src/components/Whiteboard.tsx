@@ -55,10 +55,10 @@ export default function Whiteboard(props: WhiteboardProps) {
   const [strokes, setStrokes] = createStore<Stroke[]>([])
   const savedStrokes = createAsync(() => loadBoard(location.pathname, props.id || ''))
   const [status, setStatus] = createSignal<Status>('saved')
-  const save = debounce(async () => {
+  const save = debounce(async (id: string = props.id || '') => {
     setStatus('saving')
-    await upsertBoard(location.pathname, props.id || '', strokes)
-    revalidate(loadBoard.keyFor(location.pathname, props.id || ''))
+    await upsertBoard(location.pathname, id, strokes)
+    revalidate(loadBoard.keyFor(location.pathname, id))
   }, 3000)
   createEffect(() => {
     const saved = savedStrokes()
@@ -161,7 +161,29 @@ export default function Whiteboard(props: WhiteboardProps) {
   )
 
   // Saving
-  createEffect(on(() => strokes.length, save, { defer: true }))
+  createEffect(
+    on(
+      () => strokes.length,
+      () => {
+        save(props.id || '')
+      },
+      { defer: true },
+    ),
+  )
+
+  createEffect(
+    on(
+      () => props.id,
+      async () => {
+        // Wait for save before clearing the strokes
+        await save.flush()
+        setStrokes([])
+        setTimeout(save.cancel)
+        revalidate(loadBoard.keyFor(location.pathname, props.id || ''))
+      },
+      { defer: true },
+    ),
+  )
 
   // Adding points
   createEffect(
