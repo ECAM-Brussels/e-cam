@@ -268,9 +268,9 @@ export default function Whiteboard(props: WhiteboardProps) {
           onMouseUp={() => {
             setMode('read')
           }}
-          ontouchstart={fireMouseEvent(canvasRef!, 'mousedown')}
-          ontouchmove={fireMouseEvent(canvasRef!, 'mousemove')}
-          ontouchend={fireMouseEvent(canvasRef!, 'mouseup')}
+          onTouchStart={fireMouseEvent(canvasRef!, 'mousedown')}
+          onTouchMove={fireMouseEvent(canvasRef!, 'mousemove')}
+          onTouchEnd={fireMouseEvent(canvasRef!, 'mouseup')}
         />
       </div>
     </div>
