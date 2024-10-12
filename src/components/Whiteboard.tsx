@@ -37,6 +37,21 @@ const upsertBoard = async (url: string, id: string, data: Stroke[]) => {
   })
 }
 
+function fireMouseEvent(el: HTMLCanvasElement, mouseEvent: string) {
+  return (event: TouchEvent) => {
+    event.preventDefault()
+    el.dispatchEvent(
+      new MouseEvent(mouseEvent, {
+        bubbles: true,
+        cancelable: true,
+        button: 0,
+        clientX: event.changedTouches[0].clientX,
+        clientY: event.changedTouches[0].clientY,
+      }),
+    )
+  }
+}
+
 type WhiteboardProps = {
   id?: string
   class?: string
@@ -253,6 +268,9 @@ export default function Whiteboard(props: WhiteboardProps) {
           onMouseUp={() => {
             setMode('read')
           }}
+          ontouchstart={fireMouseEvent(canvasRef!, 'mousedown')}
+          ontouchmove={fireMouseEvent(canvasRef!, 'mousemove')}
+          ontouchend={fireMouseEvent(canvasRef!, 'mouseup')}
         />
       </div>
     </div>
