@@ -1,4 +1,10 @@
-import { faBroom, faFloppyDisk, faHighlighter, faPen } from '@fortawesome/free-solid-svg-icons'
+import {
+  faBroom,
+  faEraser,
+  faFloppyDisk,
+  faHighlighter,
+  faPen,
+} from '@fortawesome/free-solid-svg-icons'
 import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
 import { cloneDeep, debounce, find } from 'lodash-es'
 import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
@@ -208,6 +214,8 @@ export default function Whiteboard(props: WhiteboardProps) {
     canvasRef!.oncontextmenu = () => false
   })
 
+  const [erasing, setErasing] = createSignal(false)
+
   return (
     <div class={props.class} style={{ width: `${props.width}px`, height: `${props.height}px` }}>
       <div
@@ -219,6 +227,8 @@ export default function Whiteboard(props: WhiteboardProps) {
           currentStroke={currentStroke}
           setter={setCurrentStroke}
           status={status()}
+          erasing={erasing()}
+          setErasing={setErasing}
           onDelete={() => {
             setStrokes([])
           }}
@@ -231,6 +241,10 @@ export default function Whiteboard(props: WhiteboardProps) {
           width={props.width}
           onPointerDown={(event) => {
             if (props.readOnly) {
+              return
+            }
+            if (erasing()) {
+              setMode('erase')
               return
             }
             if (event.pointerType === 'pen') {
@@ -270,6 +284,8 @@ type ToolbarProps = {
   onDelete?: () => void
   setter: SetStoreFunction<Stroke>
   status: Status
+  erasing: boolean
+  setErasing: (nextVal: boolean) => void
 }
 
 function Toolbar(props: ToolbarProps) {
@@ -286,11 +302,12 @@ function Toolbar(props: ToolbarProps) {
         {(color) => (
           <button
             class="rounded-lg px-2 py-1 text-2xl border z-20"
-            classList={{ border: props.currentStroke.color === color }}
+            classList={{ border: props.currentStroke.color === color && !props.erasing }}
             style={{ color, 'border-color': color }}
             onClick={() => {
               props.setter('color', color)
               props.setter('lineWidth', 2)
+              props.setErasing(false)
             }}
           >
             <Fa icon={faPen} />
@@ -301,17 +318,27 @@ function Toolbar(props: ToolbarProps) {
         {(color) => (
           <button
             class="rounded-lg px-2 py-1 text-2xl border z-20"
-            classList={{ border: props.currentStroke.color === color }}
+            classList={{ border: props.currentStroke.color === color && !props.erasing }}
             style={{ color, 'border-color': color }}
             onClick={() => {
               props.setter('color', color)
               props.setter('lineWidth', 30)
+              props.setErasing(false)
             }}
           >
             <Fa icon={faHighlighter} />
           </button>
         )}
       </For>
+      <button
+        class="rounded-lg px-2 py-1 text-2xl z-20"
+        classList={{ border: props.erasing }}
+        onClick={() => {
+          props.setErasing(true)
+        }}
+      >
+        <Fa icon={faEraser} />
+      </button>
       <button
         class="rounded-lg px-2 py-1 text-2xl z-20"
         onClick={() => {
