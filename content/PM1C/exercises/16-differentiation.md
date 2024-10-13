@@ -16,7 +16,7 @@ Trouvez une équation de la tangente de $x^2 + y^2 = (2x^2 + 2y^2 - x)^2$ en $(0
 ::: {.exercise title="Exercice 2.7: 1, 2"}
 ![](/images/exercises/2.7.1.png){.w-1--2}
 
-1. $f(t) = t^3 - 8t^2 + 24t$
+1. $f(t) = t^3 - 9t^2 + 24t$
 2. $f(t) = \frac {9t} {t^2 + 9}$
 :::
 
