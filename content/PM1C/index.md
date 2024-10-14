@@ -22,6 +22,7 @@ title: 'Pont vers le supérieur: mathématiques'
 |   6 | Fonctions           |             [A](/PM1C/slides/06-functions?boardName=A)             |             [B](/PM1C/slides/06-functions?boardName=B)             |
 |   7 | Limites             |              [A](/PM1C/slides/07-limits?boardName=A)               |              [B](/PM1C/slides/07-limits?boardName=B)               |
 |   8 | Dérivées            |          [A](/PM1C/slides/08-differentiation?boardName=A)          |          [B](/PM1C/slides/08-differentiation?boardName=B)          |
+|   9 | Dérivées            |          [A](/PM1C/slides/09-differentiation?boardName=A)          |          [B](/PM1C/slides/09-differentiation?boardName=B)          |
 
 :::
 
