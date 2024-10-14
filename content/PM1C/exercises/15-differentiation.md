@@ -61,7 +61,7 @@ $$
 ~~~ python {.run}
 from sympy import *
 h = Symbol("h")
-f = lambda x: x**2*sin(1/x) if x != 0 else 0
+f = lambda x: x*sin(1/x) if x != 0 else 0
 limit((f(h) - f(0)) / h, h, 0)
 ~~~
 
