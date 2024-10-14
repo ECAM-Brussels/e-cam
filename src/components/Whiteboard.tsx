@@ -234,7 +234,7 @@ export default function Whiteboard(props: WhiteboardProps) {
           }}
         />
         <canvas
-          class="z-10 touch-none"
+          class="z-10 touch-none select-none"
           classList={{ 'cursor-crosshair': !props.readOnly }}
           ref={canvasRef!}
           height={props.height}
