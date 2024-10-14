@@ -89,7 +89,7 @@ export default function Slideshow(props: SlideshowProps) {
   })
 
   return (
-    <div class="reveal">
+    <div class="reveal bg-white">
       <div class="slides">
         <For each={slides}>
           {(child, i) => (

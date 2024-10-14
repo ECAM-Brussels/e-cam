@@ -4,6 +4,7 @@ import {
   faFloppyDisk,
   faHighlighter,
   faPen,
+  faUpRightAndDownLeftFromCenter,
 } from '@fortawesome/free-solid-svg-icons'
 import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
 import { cloneDeep, debounce, find } from 'lodash-es'
@@ -359,6 +360,14 @@ function Toolbar(props: ToolbarProps) {
         }}
       >
         <Fa icon={faBroom} />
+      </button>
+      <button
+        class="rounded-lg px-2 py-1 text-2xl z-20"
+        onClick={() => {
+          document.body.requestFullscreen()
+        }}
+      >
+        <Fa icon={faUpRightAndDownLeftFromCenter} />
       </button>
       <span class="px-2 py-1 text-2xl z-20">
         <Show when={props.status === 'unsaved'}>
