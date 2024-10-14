@@ -240,7 +240,7 @@ export default function Whiteboard(props: WhiteboardProps) {
           height={props.height}
           width={props.width}
           onPointerDown={(event) => {
-            if (props.readOnly) {
+            if (props.readOnly || event.pointerType === 'touch') {
               return
             }
             if (erasing()) {
@@ -260,6 +260,7 @@ export default function Whiteboard(props: WhiteboardProps) {
             } else {
               setMode('draw')
             }
+            event.preventDefault()
           }}
           onPointerMove={(event) => {
             // Samsung S-Pen support
@@ -279,6 +280,7 @@ export default function Whiteboard(props: WhiteboardProps) {
             const x = (event.clientX - containerClient.left) * scaleX
             const y = (event.clientY - containerClient.top) * scaleY
             handlePointerMove(x, y)
+            event.preventDefault()
           }}
           onPointerUp={() => {
             setMode('read')
