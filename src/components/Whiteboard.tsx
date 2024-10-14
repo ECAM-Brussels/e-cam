@@ -283,7 +283,7 @@ export default function Whiteboard(props: WhiteboardProps) {
             handlePointerMove(x, y)
           }}
           onPointerUp={(event) => {
-            event.preventDefault
+            event.preventDefault()
             setMode('read')
           }}
         />
