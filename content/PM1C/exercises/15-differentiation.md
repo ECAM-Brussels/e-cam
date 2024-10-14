@@ -52,8 +52,8 @@ Eq(y, 4 * (x - 5) - 3)
 Détermine si $f'(0)$ existe.
 $$
 f(x) = \begin{cases}
-x \sin \frac 1 x & \text{if } x \neq 0\\
-0 & \text{sinon}
+x \sin \frac 1 x & \text{si } x \neq 0\\
+0 & \text{si } x = 0
 \end{cases}
 $$
 :::
