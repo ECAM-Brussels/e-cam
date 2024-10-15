@@ -153,6 +153,17 @@ $$
 $$
 :::
 
+# Exemple p. 224
+
+::: example
+Supposons que $f(0) = -3$ et $f'(x) \leq 5$ pour tout $x$.
+Trouvez une borne supérieure sur $f(2)$.
+:::
+
+~~~ python {.run}
+-3 + 2 * 5
+~~~
+
 # Croissance {.w-1--2}
 
 ::: proposition
