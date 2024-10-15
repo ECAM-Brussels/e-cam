@@ -250,7 +250,7 @@ export default function Whiteboard(props: WhiteboardProps) {
               return
             }
             if (event.pointerType === 'pen') {
-              setMode(event.button === 0 ? 'draw' : 'erase')
+              setMode('draw')
             } else if (event.pointerType === 'mouse') {
               const leftClick = event.button === 0 || event.button === 1
               const rightClick = event.button === 2
