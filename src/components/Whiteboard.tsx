@@ -250,7 +250,9 @@ export default function Whiteboard(props: WhiteboardProps) {
               return
             }
             if (event.pointerType === 'pen') {
-              setMode('draw')
+              if (event.pressure) {
+                setMode('draw')
+              }
             } else if (event.pointerType === 'mouse') {
               const leftClick = event.button === 0 || event.button === 1
               const rightClick = event.button === 2
@@ -265,16 +267,6 @@ export default function Whiteboard(props: WhiteboardProps) {
           }}
           onPointerMove={(event) => {
             event.preventDefault()
-            // Samsung S-Pen support
-            if (
-              mode() !== 'erase' &&
-              event.pointerType === 'pen' &&
-              event.pressure === 0 &&
-              event.buttons === 1
-            ) {
-              setMode('erase')
-            }
-
             const boundingClientRect = canvasRef.getBoundingClientRect()
             const scaleX = canvasRef.offsetWidth / boundingClientRect.width
             const scaleY = canvasRef.offsetHeight / boundingClientRect.height
