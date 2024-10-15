@@ -153,7 +153,7 @@ $$
 $$
 :::
 
-# Exemple p. 224
+# Exemple p. 224 {.w-1--2}
 
 ::: example
 Supposons que $f(0) = -3$ et $f'(x) \leq 5$ pour tout $x$.
