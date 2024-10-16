@@ -49,7 +49,7 @@ title: 'Pont vers le supérieur: mathématiques'
 |  15 | [Dérivées](/PM1C/exercises/15-differentiation)                  | 2.1: 17, 24; 2.2: 41, 47; 2.3: 13, 65        | 2.1: 28, 57; 2.2: 42, 49; 2.3: 63, 73, 119 |
 |  16 | [Dérivées II](/PM1C/exercises/16-differentiation)               | 2.4.19, 2.6.31, 2.7: 1, 2; 2.9.6, 3.1.5      | 2.4.40, 2.6.33, 2.9: 10, 44; 3.2.29        |
 |  17 | [Dérivées: applications](/PM1C/exercises/17-differentiation)    | 3.5: 55; 3.7: 4, 6, 13, 26                   | 3.5.59; 3.7: 30, 40, 60, 80                |
-|  18 | Fonctions réciproques                                           | 6.1.32; 6.2: 8, 15, 42; 6.3.23               | 6.1.22; 6.2.52; 6.3: 25, 43, 57; 6.4.29    |
+|  18 | [Fonctions réciproques](/PM1C/exercises/18-inverse-functions)   | 6.1.32; 6.2: 8, 15, 42; 6.3.23               | 6.1.22; 6.2.52; 6.3: 25, 43, 57; 6.4.29    |
 |  19 | Fonctions réciproques II                                        | 6.4: 41, 51; 6.6: 7, 23                      | 6.4: 42, 53; 6.6: 9, 24, 49                |
 |  20 | Fonctions réciproques III                                       | 6.7: 19, 53; 6.8: 15, 30, 33,35              | 6.7: 30, 59; 6.8: 47, 56, 59, 62           |
 
