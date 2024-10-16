@@ -51,6 +51,7 @@ type WhiteboardProps = {
   readOnly?: boolean
   width: number
   scale?: boolean
+  toolbarPosition?: 'top' | 'bottom'
 }
 
 export default function Whiteboard(props: WhiteboardProps) {
@@ -234,6 +235,7 @@ export default function Whiteboard(props: WhiteboardProps) {
           onDelete={() => {
             setStrokes([])
           }}
+          position={props.toolbarPosition || 'top'}
         />
         <canvas
           class="z-10 touch-none select-none"
@@ -297,6 +299,7 @@ type ToolbarProps = {
   status: Status
   erasing: boolean
   setErasing: (nextVal: boolean) => void
+  position: 'top' | 'bottom'
 }
 
 function Toolbar(props: ToolbarProps) {
@@ -308,7 +311,10 @@ function Toolbar(props: ToolbarProps) {
     'rgba(233, 79, 88, 0.4)',
   ]
   return (
-    <div class="absolute bottom-0 flex gap-1 p-2">
+    <div
+      class="absolute flex gap-1 p-2"
+      classList={{ 'top-0': props.position === 'top', 'bottom-0': props.position === 'bottom' }}
+    >
       <For each={pens}>
         {(color) => (
           <button
