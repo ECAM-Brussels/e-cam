@@ -104,6 +104,8 @@ export default function Slideshow(props: SlideshowProps) {
                       width={1920}
                       height={1080}
                       readOnly={!user()?.admin}
+                      scale
+                      toolbarPosition="bottom"
                     />
                     <Breadcrumbs class="absolute bottom-0 w-full" />
                   </section>
