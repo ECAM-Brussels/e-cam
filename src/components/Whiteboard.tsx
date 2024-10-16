@@ -50,6 +50,7 @@ type WhiteboardProps = {
   height: number
   readOnly?: boolean
   width: number
+  scale?: boolean
 }
 
 export default function Whiteboard(props: WhiteboardProps) {
@@ -268,11 +269,15 @@ export default function Whiteboard(props: WhiteboardProps) {
           onPointerMove={(event) => {
             event.preventDefault()
             const boundingClientRect = canvasRef.getBoundingClientRect()
-            const scaleX = canvasRef.offsetWidth / boundingClientRect.width
-            const scaleY = canvasRef.offsetHeight / boundingClientRect.height
             const containerClient = container.getBoundingClientRect()
-            const x = (event.clientX - containerClient.left) * scaleX
-            const y = (event.clientY - containerClient.top) * scaleY
+            let x = event.clientX - containerClient.left
+            let y = event.clientY - containerClient.top
+            if (props.scale) {
+              const scaleX = canvasRef.offsetWidth / boundingClientRect.width
+              const scaleY = canvasRef.offsetHeight / boundingClientRect.height
+              x = x * scaleX
+              y = y * scaleY
+            }
             handlePointerMove(x, y)
           }}
           onPointerUp={(event) => {
