@@ -1,5 +1,10 @@
 import { deleteAssignment, loadAssignment, upsertAssignment } from './ExerciseSequence.server'
-import { faChevronLeft, faChevronRight, faRotateRight } from '@fortawesome/free-solid-svg-icons'
+import {
+  faChevronDown,
+  faChevronRight,
+  faChevronUp,
+  faRotateRight,
+} from '@fortawesome/free-solid-svg-icons'
 import { Title } from '@solidjs/meta'
 import { createAsync, revalidate, useLocation } from '@solidjs/router'
 import { formatDistance } from 'date-fns'
@@ -205,6 +210,18 @@ export default function ExerciseSequence(props: ExerciseProps) {
     localStorage.setItem('showWhiteboard', showWhiteboard() ? 'true' : 'false')
   })
 
+  const [width, setWidth] = createSignal(800)
+  const [height, setHeight] = createSignal(700)
+  let container: HTMLDivElement
+  const resize = () => {
+    setWidth(container.offsetWidth)
+    setHeight(window.innerHeight)
+  }
+  onMount(() => {
+    resize()
+    window.addEventListener('resize', resize)
+  })
+
   const save = debounce(async () => {
     const url = location.pathname
     const exercise = cloneDeep(unwrap(data))
@@ -257,7 +274,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
       </Show>
       <Show when={exercise()}>
         <Suspense>
-          <div class="xl:flex items-start justify-between gap-4">
+          <div class="items-start justify-between gap-4" ref={container!}>
             <div class="w-full">
               <Dynamic
                 component={components[exercise().type]}
@@ -294,23 +311,23 @@ export default function ExerciseSequence(props: ExerciseProps) {
               </Show>
             </div>
             <Show when={props.whiteboard}>
-              <div class="flex">
+              <div class="flex flex-col">
                 <button
                   classList={{
-                    'bg-slate-100 text-slate-400 border border-e-0 px-px':
+                    'bg-slate-100 text-slate-400 border border-b-0 px-px text-sm':
                       showWhiteboard() === true,
                   }}
                   onClick={() => setShowWhiteBoard((prev) => !prev)}
                 >
-                  <Show when={showWhiteboard()} fallback={<Fa icon={faChevronLeft} />}>
-                    <Fa icon={faChevronRight} />
+                  <Show when={showWhiteboard()} fallback={<Fa icon={faChevronDown} />}>
+                    <Fa icon={faChevronUp} />
                   </Show>
                 </button>
                 <Show when={showWhiteboard()}>
                   <Whiteboard
-                    class="bg-white border"
-                    height={800}
-                    width={700}
+                    class="bg-white border z-40"
+                    height={height()}
+                    width={width()}
                     id={`exercises-${user()?.email}-${props.id}-${index()}`}
                   />
                 </Show>
