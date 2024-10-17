@@ -24,6 +24,8 @@ class System:
         n = len(variables)
         L = sympy.zeros(n, n)
         U = sympy.zeros(n, n)
+        if impossible:
+            zeroRows = min(zeroRows, 1)
         for i in range(n):
             L[i, i] = 1
             for j in range(n):
