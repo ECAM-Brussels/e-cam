@@ -18,6 +18,8 @@ class System:
         Uentries: list[Math],
         X: list[Math],
         elimination_count: Optional[int],
+        zeroRows: int = 0,
+        impossible: bool = False,
     ) -> list[Math]:
         n = len(variables)
         L = sympy.zeros(n, n)
@@ -30,23 +32,36 @@ class System:
                         L[i, j] = random.choice(Lentries)
                     if elimination_count is not None:
                         elimination_count -= 1
-                else:
+                elif i < n - zeroRows:
                     U[i, j] = random.choice(Uentries)
                     U[i, j] = 1 if i == j and U[i, j] == 0 else U[i, j]
 
         A = L * U
-        x = sympy.Matrix([random.choice(X) for _ in range(n)])
-        b = A * x
+        if not impossible:
+            x = sympy.Matrix([random.choice(X) for _ in range(n)])
+            b = A * x
+        else:
+            b = sympy.Matrix([random.choice(X) for _ in range(n)])
+            b[-1] = b[-1] if b[-1] != 0 else 1
+            b = L**(-1) * b
         system = A * sympy.Matrix(variables)
         return [sympy.Eq(system[i], b[i], evaluate=False) for i in range(n)]
     
     @strawberry.field
     def check(equations: list[Math], variables: list[Math], x: list[Math]) -> bool:
         subs = dict(zip(variables, x))
+        dim = len(variables) - len(sympy.solve(equations, variables))
+        symbols = set()
+        for var in x:
+            symbols = symbols.union(var.free_symbols)
+        if dim != len(symbols):
+            return False
         equations = [eq.subs(subs) for eq in equations]
         return all(equations)
 
     @strawberry.field
     def solve(self, equations: list[Math], variables: list[Math]) -> list["Expression"]:
         solution = sympy.solve(equations, variables)
-        return [Expression(expr=solution[t]) for t in variables]
+        if not solution:
+            return []
+        return [Expression(expr=solution[t] if t in solution else t) for t in variables]
