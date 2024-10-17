@@ -2,12 +2,12 @@
   mode: 'dynamic',
   streak: 200,
   whiteboard: true,
-  title: 'Systèmes à trois équations et trois inconnues (impossibles ou à une infinité de solution)',
+  title: 'Systèmes à trois équations et trois inconnues (impossibles ou indéterminés)',
   description: `
-    Systèmes inédterminés.
+    Systèmes indéterminés.
 
     Attention!
-    Les systèmes avec une infinité de solutions ont potentiellement des solutions avec des fractions.
+    Les systèmes indéterminés ont potentiellement des solutions fractionnaires.
   `,
   data: [
     {
