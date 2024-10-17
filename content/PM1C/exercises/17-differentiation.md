@@ -49,7 +49,7 @@ data:
 # Exercise 3.7.30 {.w-1--2}
 
 ::: exercise
-Trouvez l'aire du rectangle le plus large qui peut être inscrit dans l'ellipse
+Trouvez l'aire du rectangle le plus grand qui peut être inscrit dans l'ellipse
 $$
 \frac {x^2} {a^2} + \frac {y^2} {b^2} = 1.
 $$
