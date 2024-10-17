@@ -42,6 +42,13 @@ test('marks correctly', async () => {
     await mark({
       equations: ['x = 1', 'y = 1', '0 = 0'],
       variables: ['x', 'y', 'z'],
+      attempt: ['1', '1', 'x'],
+    }),
+  ).toBe(false)
+  expect(
+    await mark({
+      equations: ['x = 1', 'y = 1', '0 = 0'],
+      variables: ['x', 'y', 'z'],
       attempt: ['1', '1', 'z'],
     }),
   ).toBe(true)

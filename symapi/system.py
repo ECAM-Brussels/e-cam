@@ -52,9 +52,14 @@ class System:
         subs = dict(zip(variables, x))
         dim = len(variables) - len(sympy.solve(equations, variables))
         symbols = set()
-        for var in x:
-            symbols = symbols.union(var.free_symbols)
+        whitelist = set()
+        for name, val in zip(variables, x):
+            symbols = symbols.union(val.free_symbols)
+            if name == val:
+                whitelist.add(val)
         if dim != len(symbols):
+            return False
+        if symbols.difference(whitelist).intersection(set(variables)):
             return False
         equations = [eq.subs(subs) for eq in equations]
         return all(equations)
