@@ -53,6 +53,14 @@ test('marks correctly', async () => {
       impossible: true,
     }),
   ).toBe(true)
+  expect(
+    await mark({
+      equations: ['-4x - 3y + 3z = -6', '-20x - 16y + 19z = 30', '16x + 15y - 24z = 70'],
+      variables: ['x', 'y', 'z'],
+      attempt: ['', '', ''],
+      impossible: true,
+    })
+  )
 })
 
 test('solves correctly', async () => {

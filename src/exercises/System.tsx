@@ -18,23 +18,32 @@ export type State = z.infer<typeof schema>
 
 export const mark = cache(async (state: State) => {
   'use server'
+  if (state.impossible) {
+    const { system } = await request(
+      graphql(`
+        query CheckImpossibleSystem($equations: [Math!]!, $variables: [Math!]!) {
+          system {
+            solve(equations: $equations, variables: $variables) {
+              expr
+            }
+          }
+        }
+      `),
+      { attempt: [], ...state },
+    )
+    return system.solve.length === 0
+  }
   const { system } = await request(
     graphql(`
       query CheckSystem($equations: [Math!]!, $variables: [Math!]!, $attempt: [Math!]!) {
         system {
           check(equations: $equations, variables: $variables, x: $attempt)
-          solve(equations: $equations, variables: $variables) {
-            expr
-          }
         }
       }
     `),
     { attempt: [], ...state },
   )
-  if (system.solve.length === 0) {
-    return state.impossible === true
-  }
-  return !state.impossible && system.check
+  return system.check
 }, 'checkSystem')
 
 export const solve = cache(async (state: State): Promise<State> => {
