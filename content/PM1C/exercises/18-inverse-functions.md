@@ -6,7 +6,7 @@ slideshow: true
 # Préparation {.columns-2}
 
 ::: {.exercise title="6.1.32"}
-Sachant que $f(x) = 2 - x^2$ pour $x \geq 0$,
+Sachant que $f(x) = 2 - x^4$ pour $x \geq 0$,
 trouvez une formule explicite pour la réciproque $f^{-1}$ et utilisez-la pour esquisser $f$, $f^{-1}$ et $y = x$.
 :::
 
