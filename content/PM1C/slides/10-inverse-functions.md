@@ -557,6 +557,14 @@ data:
 - $\arctan' x = \frac 1 {1 + x^2}$
 :::
 
+# Dérivées de fonctions cyclométriques {.w-1--2}
+
+::: proposition
+- $\arcsin' x = \frac 1 {\sqrt{1 - x^2}}, \quad -1 < x < 1$
+- $\arccos' x = -\frac 1 {\sqrt{1 - x^2}}, \quad -1 < x < 1$
+- $\arctan' x = \frac 1 {1 + x^2}$
+:::
+
 # Exemples {.w-1--2}
 
 ::: {.example title="Exemple p. 487"}
