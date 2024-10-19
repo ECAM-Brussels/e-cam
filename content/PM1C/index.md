@@ -12,17 +12,18 @@ title: 'Pont vers le supérieur: mathématiques'
 
 ## Cours théoriques
 
-|   # | Titre               |                                                                    |                                                                    |
-| --: | ------------------- | :----------------------------------------------------------------: | :----------------------------------------------------------------: |
-|   1 | Trigonométrie       |           [A](/PM1C/slides/01-trigonometry?boardName=A)            |           [B](/PM1C/slides/01-trigonometry?boardName=B)            |
-|   2 | Vecteurs            |              [A](/PM1C/slides/02-vectors?boardName=A)              |              [B](/PM1C/slides/02-vectors?boardName=B)              |
-|   3 | Algèbre et systèmes |              [A](/PM1C/slides/03-algebra?boardName=A)              |              [B](/PM1C/slides/03-algebra?boardName=B)              |
-|   4 | Droites et coniques | [A](/PM1C/slides/04-straight-lines-and-conic-sections?boardName=A) | [B](/PM1C/slides/04-straight-lines-and-conic-sections?boardName=B) |
-|   5 | Nombres complexes   |          [A](/PM1C/slides/05-complex-numbers?boardName=A)          |          [B](/PM1C/slides/05-complex-numbers?boardName=B)          |
-|   6 | Fonctions           |             [A](/PM1C/slides/06-functions?boardName=A)             |             [B](/PM1C/slides/06-functions?boardName=B)             |
-|   7 | Limites             |              [A](/PM1C/slides/07-limits?boardName=A)               |              [B](/PM1C/slides/07-limits?boardName=B)               |
-|   8 | Dérivées            |          [A](/PM1C/slides/08-differentiation?boardName=A)          |          [B](/PM1C/slides/08-differentiation?boardName=B)          |
-|   9 | Dérivées            |          [A](/PM1C/slides/09-differentiation?boardName=A)          |          [B](/PM1C/slides/09-differentiation?boardName=B)          |
+|   # | Titre                 |                                                                    |                                                                    |
+| --: | --------------------- | :----------------------------------------------------------------: | :----------------------------------------------------------------: |
+|   1 | Trigonométrie         |           [A](/PM1C/slides/01-trigonometry?boardName=A)            |           [B](/PM1C/slides/01-trigonometry?boardName=B)            |
+|   2 | Vecteurs              |              [A](/PM1C/slides/02-vectors?boardName=A)              |              [B](/PM1C/slides/02-vectors?boardName=B)              |
+|   3 | Algèbre et systèmes   |              [A](/PM1C/slides/03-algebra?boardName=A)              |              [B](/PM1C/slides/03-algebra?boardName=B)              |
+|   4 | Droites et coniques   | [A](/PM1C/slides/04-straight-lines-and-conic-sections?boardName=A) | [B](/PM1C/slides/04-straight-lines-and-conic-sections?boardName=B) |
+|   5 | Nombres complexes     |          [A](/PM1C/slides/05-complex-numbers?boardName=A)          |          [B](/PM1C/slides/05-complex-numbers?boardName=B)          |
+|   6 | Fonctions             |             [A](/PM1C/slides/06-functions?boardName=A)             |             [B](/PM1C/slides/06-functions?boardName=B)             |
+|   7 | Limites               |              [A](/PM1C/slides/07-limits?boardName=A)               |              [B](/PM1C/slides/07-limits?boardName=B)               |
+|   8 | Dérivées              |          [A](/PM1C/slides/08-differentiation?boardName=A)          |          [B](/PM1C/slides/08-differentiation?boardName=B)          |
+|   9 | Dérivées              |          [A](/PM1C/slides/09-differentiation?boardName=A)          |          [B](/PM1C/slides/09-differentiation?boardName=B)          |
+|  10 | Fonctions réciproques |         [A](/PM1C/slides/10-inverse-functions?boardName=A)         |         [B](/PM1C/slides/10-inverse-functions?boardName=B)         |
 
 :::
 
