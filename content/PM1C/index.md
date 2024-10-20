@@ -102,6 +102,9 @@ Cours théoriques
 Séances d'exercices
 : Rolando GUERRIERI (R5G), Ruben HILLEWAERE (HIL), Marius JOLY (MJ5)
 
+Informations sur l'examen
+: [ici](/PM1C/exam).
+
 :::
 
 :::::
