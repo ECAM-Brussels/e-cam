@@ -64,7 +64,8 @@ class Expression:
         return bool(sympy.N(sympy.Abs(self.expr - expr)) <= error)
 
     @strawberry.field(description="Perform equality check")
-    def is_equal(self, expr: Math) -> bool:
+    def is_equal(self, expr: Math, complex: Optional[bool] = False) -> bool:
+        expand = sympy.expand_complex if complex else sympy.expand
         if isinstance(self.expr, sympy.Eq):
             if not isinstance(expr, sympy.Eq):
                 return False
@@ -77,11 +78,11 @@ class Expression:
                 return False
             return all(
                 [
-                    sympy.simplify(sympy.expand_complex(expr[i] - self.expr[i])) == 0
+                    sympy.simplify(expand(expr[i] - self.expr[i])) == 0
                     for i in range(len(expr.args))
                 ]
             )
-        result = sympy.expand_complex(expr - self.expr)
+        result = expand(expr - self.expr)
         return sympy.simplify(result) == 0
 
     @strawberry.field(description="Check if it's a number")
