@@ -44,7 +44,7 @@ def test_is_equal(expr: str, attempt: str, expected: bool):
         """
             query ($expr: Math!, $attempt: Math!) {
                 expression(expr: $attempt) {
-                    isEqual(expr: $expr)
+                    isEqual(expr: $expr, complex: true)
                 }
             }
         """,
