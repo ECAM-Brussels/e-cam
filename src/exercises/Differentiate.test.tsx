@@ -8,4 +8,8 @@ test('marks correctly', async () => {
   expect(await mark({ expr: 'x(x - 1)', attempt: '2x - 1' })).toBe(true)
   expect(await mark({ expr: '\\frac{x^2}{\\ln x}', attempt: '\\frac{2x}{\\ln x} - \\frac{x}{\\ln{(x)^2}}'})).toBe(false)
   expect(await mark({ expr: '\\frac{x^2}{\\ln x}', attempt: '\\frac{2x}{\\ln x} - \\frac{x}{\\ln^2(x)}'})).toBe(true)
+
+  expect(await mark({ expr: '\\arcsin(x)', attempt: '\\frac{1}{\\sqrt{1 - x^{2}}}' })).toBe(true)
+  expect(await mark({ expr: '\\arccos(x)', attempt: '\\frac{-1}{\\sqrt{1 - x^{2}}}' })).toBe(true)
+  expect(await mark({ expr: '\\arctan(x)', attempt: '\\frac{1}{1 + x^2}' })).toBe(true)
 })

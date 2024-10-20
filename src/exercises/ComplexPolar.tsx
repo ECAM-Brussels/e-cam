@@ -18,7 +18,7 @@ export const mark = cache(async (state: State) => {
     graphql(`
       query CheckComplexPolar($expr: Math!, $attempt: Math!) {
         attempt: expression(expr: $attempt) {
-          isEqual(expr: $expr)
+          isEqual(expr: $expr, complex: true)
           isPolar
         }
       }
