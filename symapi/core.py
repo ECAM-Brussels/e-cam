@@ -3,6 +3,7 @@ import strawberry
 import sympy
 import sympy.core.function
 import sympy.parsing.latex
+import sympy.parsing.sympy_parser
 from typing import NewType
 
 
@@ -13,13 +14,14 @@ def parse_latex(expr: str):
         return sympy.Tuple(*[parse_latex(e) for e in coordinates.group(1).split(",")])
     if "=" in expr:
         return sympy.Eq(*[parse_latex(s) for s in expr.split("=")])
-    parsed = sympy.parsing.latex.parse_latex(expr)
+    parsed = sympy.parsing.latex.parse_latex(expr, backend="lark")
+    parsed = sympy.parsing.sympy_parser.parse_expr(str(parsed), evaluate=False)
 
     # Perform substitutions without touching the expression
     subs = {
         sympy.Symbol("e"): sympy.E,
         sympy.Symbol("i"): sympy.I,
-        sympy.Symbol("pi"): sympy.pi,
+        # sympy.Symbol("pi"): sympy.pi,
     }
     with sympy.evaluate(False):
         for before, after in subs.items():
