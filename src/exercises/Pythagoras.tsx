@@ -32,6 +32,7 @@ type Params =
     }
 
 export async function generate(params: Params): Promise<State> {
+  'use server'
   const unknown = sample(['a', 'b', 'c']) as 'a' | 'b' | 'c'
   const x = sample(params.X)!
   let a, b, c: string | number

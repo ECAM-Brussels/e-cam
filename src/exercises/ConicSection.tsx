@@ -62,6 +62,7 @@ export const mark = cache(async (state: State) => {
 }, 'checkConicSection')
 
 export const solve = cache(async (state: State): Promise<State> => {
+  'use server'
   const { conicSection } = await request(
     graphql(`
       query SolveConicSection($equation: Math!) {
@@ -105,6 +106,7 @@ type Params = {
 }
 
 export async function generate(params: Params): Promise<State> {
+  'use server'
   const s = sample([1, -1])
   const type = sample(params.Types)!
   const x0 = sample(params.X0)

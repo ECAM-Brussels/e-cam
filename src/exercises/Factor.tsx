@@ -19,6 +19,7 @@ export async function generate(params: {
   X2: (number | 'x1' | '-x1')[]
   X3?: number[]
 }): Promise<State> {
+  'use server'
   const a = sample(params.A)
   const b = sample(params.B) || 1
   const x1 = sample(params.X1) as number

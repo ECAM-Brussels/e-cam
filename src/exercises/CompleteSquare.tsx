@@ -17,6 +17,7 @@ export async function generate(params: {
   Alpha: (number | string)[]
   Beta: (number | string)[]
 }): Promise<State> {
+  'use server'
   const a = sample(params.A)
   const alpha = sample(params.Alpha)
   const beta = sample(params.Beta)
