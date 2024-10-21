@@ -3,6 +3,8 @@ import strawberry
 import sympy
 import sympy.core.function
 import sympy.parsing.latex
+import sympy.parsing.sympy_parser
+from sympy.printing.latex import LatexPrinter
 from typing import NewType
 
 
@@ -38,6 +40,13 @@ def remove_funcs(expr: sympy.Basic) -> sympy.Basic:
             return expr.func(*args)
     return expr
 
+def custom_latex_log(expr, printer=None):
+    if len(expr.args) > 1 and expr.args[1] != sympy.E:
+        return r"\log_{{{}}}\left({}\right)".format(sympy.latex(expr.args[1]), sympy.latex(expr.args[0]))
+    else:
+        return r"\ln\left({}\right)".format(sympy.latex(expr.args[0]))
+
+sympy.log._latex = custom_latex_log
 
 Math = strawberry.scalar(
     NewType("Math", sympy.Basic),

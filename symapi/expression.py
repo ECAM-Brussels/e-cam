@@ -41,7 +41,13 @@ class Expression:
 
     @strawberry.field
     def diff(self, x: Math = sympy.Symbol("x"), n: int = 1) -> "Expression":
-        return Expression(expr=sympy.diff(self.expr, x, n))
+        expr = self.expr.replace(
+            lambda expr: expr.is_Function
+            and isinstance(expr, sympy.log)
+            and len(expr.args) == 2,
+            lambda expr: sympy.log(expr.args[0]) / sympy.log(expr.args[1]),
+        )
+        return Expression(expr=sympy.diff(expr, x, n))
 
     @strawberry.field(description="Expand")
     def expand(self) -> "Expression":
@@ -165,6 +171,10 @@ class Expression:
         if a is not None and b is not None:
             solset = solset.intersect(sympy.Interval(a, b))
         return Expression(expr=solset)
+
+    @strawberry.field
+    def str(self) -> str:
+        return str(self.expr)
 
     @strawberry.field
     def tangent(
