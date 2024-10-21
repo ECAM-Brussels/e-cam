@@ -24,7 +24,7 @@ title: 'Pont vers le supérieur: mathématiques'
 |   8 | Dérivées              |          [A](/PM1C/slides/08-differentiation?boardName=A)          |          [B](/PM1C/slides/08-differentiation?boardName=B)          |
 |   9 | Dérivées              |          [A](/PM1C/slides/09-differentiation?boardName=A)          |          [B](/PM1C/slides/09-differentiation?boardName=B)          |
 |  10 | Fonctions réciproques |         [A](/PM1C/slides/10-inverse-functions?boardName=A)         |         [B](/PM1C/slides/10-inverse-functions?boardName=B)         |
-|  10 | Fonctions réciproques |         [A](/PM1C/slides/11-inverse-functions?boardName=A)         |         [B](/PM1C/slides/11-inverse-functions?boardName=B)         |
+|  11 | Fonctions réciproques |         [A](/PM1C/slides/11-inverse-functions?boardName=A)         |         [B](/PM1C/slides/11-inverse-functions?boardName=B)         |
 
 :::
 
