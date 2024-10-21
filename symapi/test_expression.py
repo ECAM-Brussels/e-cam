@@ -2,6 +2,32 @@ import pytest
 
 from symapi import schema
 
+@pytest.mark.parametrize(
+    "expr,expected",
+    [
+        ("x^2", "2 x"),
+        ("2^x", r"2^{x} \ln\left(2\right)"),
+        ("\\log(x)", r"\frac{1}{x}"),
+        ("\\log_2(x)", r"\frac{1}{x \ln\left(2\right)}"),
+    ],
+)
+def test_diff(expr: str, expected: str):
+    result = schema.execute_sync(
+        """
+            query ($expr: Math!) {
+                expression(expr: $expr) {
+                    diff {
+                        expr
+                    }
+                }
+            }
+        """,
+        variable_values={"expr": expr},
+    )
+
+    assert result.data is not None
+    assert result.data["expression"]["diff"]["expr"] == expected
+
 
 @pytest.mark.parametrize(
     "expr,expected",
