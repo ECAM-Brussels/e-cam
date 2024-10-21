@@ -41,10 +41,14 @@ f^{-1}(f(x)) = x
 $$
 :::
 
-$$
-\mathrm{dom} f^{-1} = \mathrm{im} f \qquad
-\mathrm{im} f^{-1} = \mathrm{dom} f
-$$
+::: remark
+- En appliquant $f$ des deux côtés, on obtient
+  $$
+  f(f^{-1}(\underbrace{f(x)}_{y})) = \underbrace{f(x)}_y
+  $$
+
+- $f^{-1}$ a pour domaine $\mathrm{im} f$ et pour image $\mathrm{dom} f$
+:::
 
 ::: warning
 Dans l'écriture $f^{-1}$, $-1$ n'est pas un exposant.
@@ -192,7 +196,7 @@ Soit $0 < b$.
 $$
 \frac {\dd} {\dd x} b^x =
 b^x
-\left(\lim_{h \to 0} \frac {b^h - 1} h \right)
+\underbrace{\left(\lim_{h \to 0} \frac {b^h - 1} h \right)}_{\ln b}
 $$
 :::
 
