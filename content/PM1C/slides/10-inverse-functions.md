@@ -323,8 +323,15 @@ data:
 
 ::: remark
 - $\ln = \log_e$: logarithme naturel, base $e$
-- $\log = \log_{10}$
+- $\log = \log_{10}$ ou $\log = \log_e$ (littérature anglophone)
 :::
+
+~~~ python {.run}
+from sympy import *
+x = Symbol("x", real=True)
+# Base 10 ou e?
+log(exp(x))
+~~~
 
 # Exemples p. 436 {.w-1--2}
 
@@ -358,15 +365,22 @@ expand_log(f, force=True)
 
 # Dérivée des logarithmes {.w-1--2}
 
-$$
-(f^{-1})'(x) = \frac 1 {f'(f^{-1}(x))}
-$$
-
 ::: proposition
 $$
 \frac {\dd} {\dd x} \ln x = \frac 1 x
 $$
 :::
+
+~~~ yaml {.plot}
+- data:
+    - fn: log(x)
+      derivative:
+        fn: 1 / x
+        updateOnMouseMove: true
+- data:
+    - fn: 1 / x
+      range: [0, 2000]
+~~~
 
 # Dérivée de $a^x$ et $\log_a x$ {.w-1--2}
 
