@@ -368,7 +368,11 @@ function Toolbar(props: ToolbarProps) {
       <button
         class="rounded-lg px-2 py-1 text-2xl z-20"
         onClick={() => {
-          document.body.requestFullscreen()
+          if (!document.fullscreenElement) {
+            document.body.requestFullscreen()
+          } else {
+            document.exitFullscreen()
+          }
         }}
       >
         <Fa icon={faUpRightAndDownLeftFromCenter} />
