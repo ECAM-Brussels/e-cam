@@ -17,6 +17,8 @@ Les commentaires suivants sont valides pour les examens de novembre, avril et se
   - Vous devez connaître les valeurs exacte de $\sin$, $\cos$, $\tan$ pour les angles $\frac \pi 6$, $\frac \pi 4$, $\frac \pi 3$: [exercices](/PM1C/practice/trigonometry/exact_values)
   - Vous devez connaître les lois des logarithmes et des exponentielles.
   - Vous devez connaître les formules de dérivées, y compris celles des fonctions cyclométriques: [exercices](/PM1C/practice/differentiation/differentiation)
+  - Vous devez connaître les limites classiques: $\frac \sin x x$, $\frac {1 - \cos x} {x}$
+  - Vous devez connaître les propriétés des coniques
 
 - Exercices types
   - L'examen contiendra un **problème d'optimisation** (voir Calculus pour des exercices supplémentaires).
