@@ -22,6 +22,7 @@ import Pagination from '~/components/Pagination'
 import { loadResults } from '~/components/Results'
 import Whiteboard from '~/components/Whiteboard'
 import { getUser } from '~/lib/auth/session'
+import { request } from '~/lib/graphql'
 
 const exercises = {
   CompleteSquare: () => import('~/exercises/CompleteSquare'),
@@ -218,7 +219,9 @@ export default function ExerciseSequence(props: ExerciseProps) {
     setHeight(window.innerHeight)
   }
   onMount(() => {
-    resize()
+    setTimeout(() => {
+      requestAnimationFrame(resize)
+    }, 200)
     window.addEventListener('resize', resize)
   })
 
