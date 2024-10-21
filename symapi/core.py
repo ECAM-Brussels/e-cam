@@ -10,7 +10,9 @@ from typing import NewType
 
 def parse_latex(expr: str):
     expr = re.sub(r"\\sqrt(\d+)", r"\\sqrt{\1}", expr)
-    coordinates = re.search(r"^(?:\\left\s*)?\(([^\(\)]*,[^\(\)]*)(?:\s*\\right)?\)$", expr)
+    coordinates = re.search(
+        r"^(?:\\left\s*)?\(([^\(\)]*,[^\(\)]*)(?:\s*\\right)?\)$", expr
+    )
     if coordinates:
         return sympy.Tuple(*[parse_latex(e) for e in coordinates.group(1).split(",")])
     if "=" in expr:
@@ -40,11 +42,14 @@ def remove_funcs(expr: sympy.Basic) -> sympy.Basic:
             return expr.func(*args)
     return expr
 
+
 def custom_latex_log(expr, printer=None):
+    del printer
     if len(expr.args) > 1 and expr.args[1] != sympy.E:
-        return r"\log_{{{}}}\left({}\right)".format(sympy.latex(expr.args[1]), sympy.latex(expr.args[0]))
+        return rf"\log_{{{sympy.latex(expr.args[1])}}}\left({expr.args[0]}\right)"
     else:
-        return r"\ln\left({}\right)".format(sympy.latex(expr.args[0]))
+        return rf"\ln\left({sympy.latex(expr.args[0])}\right)"
+
 
 sympy.log._latex = custom_latex_log
 
