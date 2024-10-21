@@ -4,6 +4,7 @@ import {
   faFloppyDisk,
   faHighlighter,
   faPen,
+  faPlus,
   faUpRightAndDownLeftFromCenter,
 } from '@fortawesome/free-solid-svg-icons'
 import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
@@ -52,6 +53,7 @@ type WhiteboardProps = {
   width: number
   scale?: boolean
   toolbarPosition?: 'top' | 'bottom'
+  onAdd?: () => void
 }
 
 export default function Whiteboard(props: WhiteboardProps) {
@@ -235,6 +237,7 @@ export default function Whiteboard(props: WhiteboardProps) {
           onDelete={() => {
             setStrokes([])
           }}
+          onAdd={props.onAdd}
           position={props.toolbarPosition || 'top'}
         />
         <canvas
@@ -295,6 +298,7 @@ export default function Whiteboard(props: WhiteboardProps) {
 
 type ToolbarProps = {
   currentStroke: Stroke
+  onAdd?: () => void
   onDelete?: () => void
   setter: SetStoreFunction<Stroke>
   status: Status
@@ -365,6 +369,16 @@ function Toolbar(props: ToolbarProps) {
       >
         <Fa icon={faBroom} />
       </button>
+      <Show when={props.onAdd}>
+        <button
+          class="rounded-lg px-2 py-1 text-2xl z-20"
+          onClick={() => {
+            props.onAdd?.()
+          }}
+        >
+          <Fa icon={faPlus} />
+        </button>
+      </Show>
       <button
         class="rounded-lg px-2 py-1 text-2xl z-20"
         onClick={() => {

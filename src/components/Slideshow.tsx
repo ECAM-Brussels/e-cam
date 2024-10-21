@@ -101,6 +101,13 @@ export default function Slideshow(props: SlideshowProps) {
                     <Whiteboard
                       id={`slide-${props.boardName || ''}-${i()}-${j}`}
                       class="absolute top-0 left-0"
+                      onAdd={async () => {
+                        const { h, v } = deck.getIndices()
+                        if (v === (count()?.[String(h)] || 1) - 1 && user()?.admin) {
+                          await addBoard(location.pathname, props.boardName || '', h, v + 1)
+                          revalidate(getBoardCount.keyFor(location.pathname, props.boardName || ''))
+                        }
+                      }}
                       width={1920}
                       height={1080}
                       readOnly={!user()?.admin}
