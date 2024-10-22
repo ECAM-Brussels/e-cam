@@ -94,7 +94,7 @@ solveset(4 - x**2 > 0, x, S.Reals)
 
 ::: exercise
 Montrez que la fonction $f(x) = \ln(x + \sqrt{x^2 + 1})$ est une fonction impaire,
-et trouvez son inverse
+et trouvez sa réciproque.
 :::
 
 ~~~ yaml {.plot}
@@ -108,7 +108,7 @@ from sympy import *
 x, y, t = symbols("x y t")
 eq = Eq(y, ln(x + sqrt(x**2 + 1)))
 inverse = solve(eq, x)[0].rewrite(exp)
-Eq(y, inverse).subs({x: y, y: x})
+Eq(y, inverse.subs({x: y, y: x}))
 ~~~
 
 # Exercice 6.4.29 {.w-1--2}
