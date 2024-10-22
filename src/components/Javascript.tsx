@@ -1,9 +1,7 @@
 import dedent from 'dedent-js'
-import { type JSXElement } from 'solid-js'
-import Html from '~/components/Html'
+import Html, { type Props } from '~/components/Html'
 
-type JavascriptProps = {
-  value: string
+type JavascriptProps = Props & {
   framework?: 'react'
 }
 
@@ -33,5 +31,5 @@ export default function Javascript(props: JavascriptProps) {
     }
     return props.value
   }
-  return <Html value={code()} />
+  return <Html {...props} value={code()} />
 }

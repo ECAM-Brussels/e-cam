@@ -1,8 +1,9 @@
 import dedent from 'dedent-js'
 
-type Props = {
+export type Props = {
   class?: string
   value: string
+  tailwind?: boolean
 }
 
 export default function Html(props: Props) {
@@ -18,6 +19,7 @@ export default function Html(props: Props) {
         border: 1px solid white;
       }
     </style>
+    ${props.tailwind ? '<script src="https://cdn.tailwindcss.com"></script>' : ''}
     <body>
     ${props.value}
     </body>

@@ -8,6 +8,7 @@ import Javascript from '~/components/Javascript'
 type CodeProps = {
   class?: string
   framework?: 'react'
+  tailwind?: boolean
   lang: string
   readOnly?: boolean
   run?: boolean
@@ -76,10 +77,10 @@ export default function Code(props: CodeProps) {
         <Python value={codeToRun()} />
       </Show>
       <Show when={props.lang === 'html' && props.run}>
-        <Html value={codeToRun()} />
+        <Html value={codeToRun()} tailwind={props.tailwind} />
       </Show>
       <Show when={props.lang === 'tsx' && props.run}>
-        <Javascript value={codeToRun()} framework={props.framework} />
+        <Javascript value={codeToRun()} framework={props.framework} tailwind={props.tailwind} />
       </Show>
     </div>
   )
