@@ -13,6 +13,9 @@ export default function Home() {
           <Card src="images/IC1T.png" alt="Programmation" href="/IC1T/">
             <h3>Programmation</h3>
           </Card>
+          <Card src="images/LW3L.png" alt="Web Technologies" href="/LW3L/">
+            <h3>Web technologies</h3>
+          </Card>
         </div>
       </section>
     </Page>
