@@ -3,9 +3,11 @@ import { clientOnly } from '@solidjs/start'
 import { createEffect, createSignal, on, Show } from 'solid-js'
 import Fa from '~/components/Fa'
 import Html from '~/components/Html'
+import Javascript from '~/components/Javascript'
 
 type CodeProps = {
   class?: string
+  framework?: 'react'
   lang: string
   readOnly?: boolean
   run?: boolean
@@ -35,15 +37,17 @@ export default function Code(props: CodeProps) {
   return (
     <div class={`m-8 ${props.class}`}>
       <div class="flex items-end relative z-20">
-        <button
-          class="block text-cyan-950 px-2 text-xl"
-          onClick={() => {
-            setCodeToRun('')
-            setCodeToRun(textarea.value)
-          }}
-        >
-          <Fa icon={faPlayCircle} />
-        </button>
+        <Show when={props.run}>
+          <button
+            class="block text-cyan-950 px-2 text-xl"
+            onClick={() => {
+              setCodeToRun('')
+              setCodeToRun(textarea.value)
+            }}
+          >
+            <Fa icon={faPlayCircle} />
+          </button>
+        </Show>
         <div class="border rounded-xl shadow w-full">
           <Editor
             language={props.lang}
@@ -73,6 +77,9 @@ export default function Code(props: CodeProps) {
       </Show>
       <Show when={props.lang === 'html' && props.run}>
         <Html value={codeToRun()} />
+      </Show>
+      <Show when={props.lang === 'tsx' && props.run}>
+        <Javascript value={codeToRun()} framework={props.framework} />
       </Show>
     </div>
   )

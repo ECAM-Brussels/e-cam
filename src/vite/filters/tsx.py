@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import json
 import panflute as pf
 
 
@@ -48,8 +49,12 @@ def code(el: pf.Element, doc: pf.Doc):
     del doc
     if type(el) == pf.CodeBlock and el.classes:
         run = "true" if "run" in el.classes else "false"
+        props = json.dumps(el.attributes)
+        props = f"{{...{props}}}" if el.attributes else ""
         return pf.RawBlock(
-            "<Code value={String.raw`"
+            "<Code "
+            + props
+            + " value={String.raw`"
             + el.text
             + '`} lang="'
             + el.classes[0]
