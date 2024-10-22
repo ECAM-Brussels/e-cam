@@ -12,7 +12,7 @@ title: Web Technologies
 
 1. HTML and CSS
 2. JavaScript and the DOM
-3. Consuming APIs and JavaScript frameworks
+3. [Consuming APIs and JavaScript frameworks](/LW3L/slides/03-react)
 4. Express
 5. Databases
 6. Review
