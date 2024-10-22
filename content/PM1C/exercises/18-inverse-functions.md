@@ -26,7 +26,11 @@ Dérivez $f(t) = \tan(1 + e^{2t})$
 :::
 
 ::: {.exercise title="6.3.23"}
-Résoudre $\ln (4x + 2) = 3$.
+Résoudre 
+
+a. $\ln (4x + 2) = 3$.
+b. $e^{2x - 3} = 12$
+
 Donnez une solution exacte,
 et une solution arrondie à 3 décimales.
 :::
@@ -68,7 +72,11 @@ y = f.diff(x).subs({x: 0}) * x + f.subs({x: 0})
 # 6.3.25 p. 439 {.w-1--2}
 
 ::: exercise
-Résolvez l'équation $\ln x + \ln(x - 1) = 0$.
+Résolvez les équations
+
+a. $\ln x + \ln(x - 1) = 0$
+b. $5^{1 - 2x} = 9$
+
 Donnez la solution exacte, et arrondie à 3 chiffres après la virgule.
 :::
 
@@ -76,6 +84,12 @@ Donnez la solution exacte, et arrondie à 3 chiffres après la virgule.
 from sympy import *
 x = Symbol("x")
 solve(ln(x) + ln(x - 1))[0]
+~~~
+
+~~~ python {.run}
+from sympy import *
+x = Symbol("x", real=True)
+solve(5 ** (1 - 2*x) - 9)[0]
 ~~~
 
 # 6.3.43 p. 439 {.w-1--2}
