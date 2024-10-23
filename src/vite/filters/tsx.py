@@ -49,7 +49,9 @@ def code(el: pf.Element, doc: pf.Doc):
     del doc
     if type(el) == pf.CodeBlock and el.classes:
         run = "true" if "run" in el.classes else "false"
-        props = json.dumps(el.attributes)
+        attrs = el.attributes
+        attrs["class"] = " ".join(el.classes)
+        props = json.dumps(attrs)
         props = f"{{...{props}}}" if el.attributes else ""
         return pf.RawBlock(
             "<Code "
