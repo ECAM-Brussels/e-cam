@@ -302,3 +302,5 @@ from sympy import *
 x = Symbol("x")
 limit(x ** x, x, 0, "+")
 ~~~
+
+# Questions?
