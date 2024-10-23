@@ -22,7 +22,6 @@ import Pagination from '~/components/Pagination'
 import { loadResults } from '~/components/Results'
 import Whiteboard from '~/components/Whiteboard'
 import { getUser } from '~/lib/auth/session'
-import { request } from '~/lib/graphql'
 
 const exercises = {
   CompleteSquare: () => import('~/exercises/CompleteSquare'),
@@ -241,7 +240,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
       revalidate(loadAssignment.keyFor(url, props.id || '', props.userEmail || ''))
       revalidate(loadResults.keyFor(url, props.id || ''))
     })
-  }, 500)
+  }, 3000)
 
   return (
     <>
