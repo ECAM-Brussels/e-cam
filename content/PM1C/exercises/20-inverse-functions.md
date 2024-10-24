@@ -53,7 +53,7 @@ solve(eq, x)[1].subs({y: x})
 from sympy import *
 x = Symbol("x")
 y = 20 * cosh(x / 20) - 15
-N(y.diff(x).subs({x: 7}))
+y.diff(x).subs({x: 7})
 ~~~
 
 ~~~ python {.run}
@@ -61,7 +61,7 @@ from sympy import *
 x = Symbol("x")
 y = 20 * cosh(x / 20) - 15
 m = y.diff(x).subs({x: 7})
-N(pi / 2 - atan(m))
+N((pi / 2 - atan(m)) * 180 / pi)
 ~~~
 
 # 6.8.47 p. 512 {.w-1--2}
