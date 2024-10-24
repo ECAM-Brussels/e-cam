@@ -140,7 +140,7 @@ export default function ExerciseBase<S, G>(
             if (focused) {
               (focused as HTMLInputElement).blur()
             }
-            setTimeout(submit, 300)
+            submit()
           }
         }}
       >
