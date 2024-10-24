@@ -1,6 +1,5 @@
 import { faCheckCircle, faPaperPlane, faXmark } from '@fortawesome/free-solid-svg-icons'
-import { debounce } from 'lodash-es'
-import { JSXElement, Show, createEffect, createSignal, on, onCleanup, onMount } from 'solid-js'
+import { JSXElement, Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
 import { SetStoreFunction } from 'solid-js/store'
 import { type ZodObject } from 'zod'
 import Fa from '~/components/Fa'
@@ -64,7 +63,7 @@ export default function ExerciseBase<S, G>(
     }
   })
 
-  const mark = debounce(async () => {
+  const mark = async () => {
     if (props.state) {
       try {
         props.schema.parse(props.state)
@@ -84,7 +83,7 @@ export default function ExerciseBase<S, G>(
         props.setter('feedback', 'correct', false)
       }
     }
-  }, 200)
+  }
 
   createEffect(async () => {
     if (props.options?.readOnly && props.feedback?.correct === undefined && !marking()) {
