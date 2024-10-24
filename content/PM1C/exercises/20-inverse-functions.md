@@ -6,6 +6,7 @@ slideshow: true
 # Préparation {.columns-2}
 
 ::: {.exercise title="Exercice 6.7.19 p. 501"}
+Prouvez que
 $$
 \sinh 2x = 2 \sinh x \cosh x
 $$
