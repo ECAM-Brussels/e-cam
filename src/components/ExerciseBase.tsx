@@ -1,5 +1,5 @@
 import { faCheckCircle, faPaperPlane, faXmark } from '@fortawesome/free-solid-svg-icons'
-import { JSXElement, Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
+import { ErrorBoundary, JSXElement, Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
 import { SetStoreFunction } from 'solid-js/store'
 import { type ZodObject } from 'zod'
 import Fa from '~/components/Fa'
@@ -136,6 +136,10 @@ export default function ExerciseBase<S, G>(
         class="bg-white border rounded-s-xl p-4 mb-4"
         onKeyDown={(e) => {
           if (e.code === 'Enter') {
+            const focused = document.activeElement;
+            if (focused) {
+              (focused as HTMLInputElement).blur()
+            }
             setTimeout(submit, 300)
           }
         }}
