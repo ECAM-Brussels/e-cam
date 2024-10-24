@@ -79,6 +79,7 @@ export default function ExerciseBase<S, G>(
         }
         props.onMarked?.()
       } catch {
+        setMarking(false)
         props.setter('feedback', 'valid', false)
         props.setter('feedback', 'correct', false)
       }
@@ -108,7 +109,7 @@ export default function ExerciseBase<S, G>(
 
   createEffect(async () => {
     if (props.state) {
-      if (props.options?.showSolution && props.solve) {
+      if (props.options?.showSolution && props.solve && !props.feedback?.solution) {
         const solution = await props.solve(props.state)
         props.setter('feedback', 'solution', solution)
       }
