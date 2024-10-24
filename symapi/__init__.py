@@ -1,4 +1,5 @@
 import fastapi
+from fastapi.middleware.cors import CORSMiddleware
 import strawberry
 import strawberry.fastapi
 
@@ -32,4 +33,11 @@ class Query:
 schema = strawberry.Schema(Query)
 graphql = strawberry.fastapi.GraphQLRouter(schema)
 app = fastapi.FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.include_router(graphql, prefix="/graphql")
