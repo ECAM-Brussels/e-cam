@@ -242,6 +242,16 @@ export default function ExerciseSequence(props: ExerciseProps) {
     })
   }, 3000)
 
+  // Focus the 'next question button'
+  let nextButton: HTMLButtonElement
+  createEffect(() => {
+    if (exercise().feedback?.correct !== undefined && index() < data.length - 1) {
+      setTimeout(() => {
+        nextButton.focus()
+      })
+    }
+  })
+
   return (
     <>
       <div class="flex justify-between">
@@ -294,6 +304,11 @@ export default function ExerciseSequence(props: ExerciseProps) {
                     setData(data.length, cloneDeep(props.data[dynamicIndex()]))
                     save()
                   }
+                  if (nextButton) {
+                    setTimeout(() => {
+                      nextButton.focus()
+                    }, 3000)
+                  }
                 }}
                 onMarked={save}
                 setter={(...args: any) => {
@@ -306,6 +321,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
                   <button
                     class="bg-green-900 text-white rounded-xl py-2 px-4"
                     onClick={() => setIndex((prev) => prev + 1)}
+                    ref={nextButton!}
                   >
                     Question suivante <Fa icon={faChevronRight} />
                   </button>
