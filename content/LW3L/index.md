@@ -12,32 +12,10 @@ title: Web Technologies
 
 1. HTML and CSS
 2. JavaScript and the DOM
-3. [Consuming APIs and JavaScript frameworks](/LW3L/slides/03-react)
-4. Express
+3. [React](/LW3L/slides/03-react)
+4. API
 5. Databases
-6. Review
-
-## Tests
-
-Tailwind + React
-
-~~~ tsx {.run framework="react" tailwind="true"}
-function App() {
-  const [count, setCount] = React.useState(0)
-
-  function increaseCount() {
-    setCount(count + 1)
-  }
-
-  return (
-    <button
-      class="border rounded text-3xl bg-green-700 text-white px-8 py-3"
-      onClick={increaseCount}
-    >
-    {count}
-    </button>
-  )
-}
-~~~
+6. Sessions
+7. Review
 
 :::
