@@ -7,34 +7,56 @@ slideshow: true
 
 - Développé par Facebook (maintenant Meta)
 
-# React: Hello world {.w-3--5}
+- Framework le plus utilisé.
 
-~~~ html {.run}
-<!-- Import pour traiter le JSX (plus tard) -->
+# Pourquoi utiliser un framework? {.w-1--2}
+
+::: question
+Pourquoi utiliser un framework ?
+:::
+
+- Synchroniser l'état et le DOM est une tâche très difficile.
+
+# React: Hello world {.columns-2}
+
+~~~ html {.run .break-inside-avoid}
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-<!-- React placera notre application ici -->
 <div id="app"></div>
 
 <script type="text/babel" data-presets="react" data-type="module">
   import React from 'https://esm.sh/react'
   import ReactDOM from 'https://esm.sh/react-dom'
 
-  // Crée un composant (~ une balise) <App />
   function App() {
-    return <>Hello world</>
+    return <p>Hello world</p>
   }
 
-  // On attache <App /> à div#app
   const appContainer = document.getElementById('app')
-  const root = ReactDOM.createRoot(appContainer)
-  root.render(<App />)
+  ReactDOM.createRoot(appContainer).render(<App />)
 </script>
 ~~~
 
-# Exemple: le compteur {.w-1--2}
+::: break-inside-avoid
+### Explications
 
-~~~ tsx {.run framework="react"}
+- **L1**: Import d'un compilateur qui permet d'écrire du JSX,
+  un mélange hybride entre le HTML et le JavaScript.
+
+- **L3**: Conteneur où React placera l'application.
+
+- **L5**: On signale au compilateur que ce code contient du code
+  à transpiler en JavaScript.
+
+- **L10-12**: On crée un composant `<App />` en définissant une **fonction** qui retourne ce qui semble être du HTML.
+  Ce mélange hybride s'appelle JSX.
+
+- **L13-14**: On attache `<App />` au noeud `#app`.
+:::
+
+# Exemple: le compteur {.columns-2}
+
+~~~ tsx {.run .break-inside-avoid framework="react"}
 function App() {
   const [count, setCount] = React.useState(0)
 
@@ -48,8 +70,16 @@ function App() {
 }
 ~~~
 
-::: remark
-React se charge des mutations du DOM pour vous.
+::: break-inside-avoid
+- Les **variables réactives** sont créées avec `React.useState`.
+  Ici, on définit une variable `count` et `setCount`:
+  le premier pour avoir la valeur du compteur à tout moment,
+  et `setCount` pour changer la valeur du compteur.
+  Tout appel à `setCount` **réexécutera complètement** la fonction `App`.
+- La fonction retourne du JSX.
+  Le JSX diffère principalement du HTML par l'emploi du `camelCase`, e.g. `onClick` au lieu de `onclick`,
+  et par le fait que les attributs sont en JavaScript au lieu de simple chaînes.
+  Les expressions entre crochets peuvent contenir une expression Javascript arbitraire.
 :::
 
 # Exemple: formulaire et condition {.w-1--2}
@@ -84,21 +114,22 @@ function App() {
   const [newTask, setNewTask] = React.useState('')
   const [tasks, setTasks] = React.useState([])
   return (
-    <>
+    <form onSubmit={(event) => {
+      event.preventDefault()
+      setTasks([...tasks, newTask])
+      setNewTask("")
+    }}>
       <input
         value={newTask}
         onInput={(event) => {
           setNewTask(event.target.value)
         }}
       />
-      <input type="submit" onClick={() => {
-        setTasks([...tasks, newTask])
-        setNewTask("")
-      }} />
+      <input type="submit" />
       <ul>
         {tasks.map(task => <li>{task}</li>)}
       </ul>
-    </>
+    </form>
   )
 }
 ~~~
@@ -107,8 +138,7 @@ function App() {
 ::::: break-inside-avoid
 ### Explications
 
-- `newTask` est synchronisé avec l'`input`
+- `newTask` est synchronisé avec le texte de l'`input`
+
 - `tasks` contient une liste de tâches
 :::::
-
-# Hello
