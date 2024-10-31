@@ -16,6 +16,9 @@ export default function Home() {
           <Card src="images/LW3L.png" alt="Web Technologies" href="/LW3L/">
             <h3>Web technologies</h3>
           </Card>
+          <Card src="images/SA4T.webp" alt="Algorithms" href="/SA4T/">
+            <h3>Algorithms</h3>
+          </Card>
         </div>
       </section>
     </Page>
@@ -37,6 +40,7 @@ function Card(props: CardProps) {
           src={props.src}
           alt={props.alt}
           class="rounded-t opacity-60 h-96 object-cover w-full"
+          loading="lazy"
         />
         <div class="px-2 py-4 prose">{props.children}</div>
       </div>
