@@ -15,4 +15,9 @@ title: Algorithms
 3. Greedy algorithms
 4. Graphs
 
+## Assessment
+
+- 30%: Advent of Code
+- 70%: oral exam
+
 :::
