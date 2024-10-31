@@ -18,6 +18,7 @@ export default function Geogebra(props: GeogebraProps) {
   }
   return (
     <iframe
+      loading="lazy"
       classList={{ relative: true, 'z-20': true }}
       class={props.class}
       src={src()}
