@@ -1,5 +1,34 @@
-import { type JSXElement } from 'solid-js'
+import { For, type JSXElement } from 'solid-js'
 import Page from '~/components/Page'
+
+type Course = {
+  href: string
+  src: string
+  title: string
+}
+
+const courses: Course[] = [
+  {
+    href: '/PM1C/',
+    src: '/images/PM1C.png',
+    title: 'Pont vers le supérieur: mathématiques',
+  },
+  {
+    href: '/IC1T/',
+    src: '/images/IC1T.png',
+    title: 'Programmation',
+  },
+  {
+    href: '/LW3L/',
+    src: '/images/LW3L.png',
+    title: 'Web Technologies',
+  },
+  {
+    href: '/SA4T/',
+    src: '/images/SA4T.webp',
+    title: 'Algorithms',
+  },
+]
 
 export default function Home() {
   return (
@@ -7,18 +36,13 @@ export default function Home() {
       <section>
         <h2 class="text-3xl text-slate-800 mb-4">Cours</h2>
         <div class="grid lg:grid-cols-2 gap-8">
-          <Card src="images/PM1C.png" alt="Pont mathématiques" href="/PM1C/">
-            <h3>Pont mathématiques vers le supérieur (ba1)</h3>
-          </Card>
-          <Card src="images/IC1T.png" alt="Programmation" href="/IC1T/">
-            <h3>Programmation</h3>
-          </Card>
-          <Card src="images/LW3L.png" alt="Web Technologies" href="/LW3L/">
-            <h3>Web technologies</h3>
-          </Card>
-          <Card src="images/SA4T.webp" alt="Algorithms" href="/SA4T/">
-            <h3>Algorithms</h3>
-          </Card>
+          <For each={courses}>
+            {(course) => (
+              <Card src={course.src} alt={course.title} href={course.href}>
+                <h3>{course.title}</h3>
+              </Card>
+            )}
+          </For>
         </div>
       </section>
     </Page>
