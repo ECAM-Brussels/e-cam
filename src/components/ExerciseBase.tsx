@@ -1,5 +1,13 @@
 import { faCheckCircle, faPaperPlane, faXmark } from '@fortawesome/free-solid-svg-icons'
-import { ErrorBoundary, JSXElement, Show, createEffect, createSignal, onCleanup, onMount } from 'solid-js'
+import {
+  ErrorBoundary,
+  JSXElement,
+  Show,
+  createEffect,
+  createSignal,
+  onCleanup,
+  onMount,
+} from 'solid-js'
 import { SetStoreFunction } from 'solid-js/store'
 import { type ZodObject } from 'zod'
 import Fa from '~/components/Fa'
@@ -136,16 +144,33 @@ export default function ExerciseBase<S, G>(
         class="bg-white border rounded-s-xl p-4 mb-4"
         onKeyDown={(e) => {
           if (e.code === 'Enter') {
-            const focused = document.activeElement;
+            const focused = document.activeElement
             if (focused) {
-              (focused as HTMLInputElement).blur()
+              ;(focused as HTMLInputElement).blur()
             }
             submit()
           }
         }}
       >
         <Show when={props.state} fallback={<Spinner />}>
-          {props.children}
+          <ErrorBoundary
+            fallback={(error, reset) => (
+              <div>
+                <h3 class="font-bold text-xl mb-4">Erreur</h3>
+                <p class="my-4">
+                  Une erreur s'est produite lors de l'affichage de l'exercice. Réessayez, et si
+                  l'erreur se reproduit, envoyez le message d'erreur ci-dessous à{' '}
+                  <code>ngy[at]ecam.be</code>
+                </p>
+                <pre class="my-4 border rounded-xl">{JSON.stringify(error, null, 2)}</pre>
+                <button class="border rounded-xl px-4 py-3" onClick={reset}>
+                  Réessayer
+                </button>
+              </div>
+            )}
+          >
+            {props.children}
+          </ErrorBoundary>
         </Show>
         <Show when={!props.options?.readOnly}>
           <p class="mt-6">
