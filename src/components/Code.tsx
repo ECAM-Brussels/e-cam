@@ -1,9 +1,11 @@
 import { faPlayCircle } from '@fortawesome/free-solid-svg-icons'
+import { createAsync } from '@solidjs/router'
 import { clientOnly } from '@solidjs/start'
 import { createEffect, createSignal, on, Show } from 'solid-js'
 import Fa from '~/components/Fa'
 import Html from '~/components/Html'
 import Javascript from '~/components/Javascript'
+import { getUser } from '~/lib/auth/session'
 
 type CodeProps = {
   class?: string
@@ -15,23 +17,29 @@ type CodeProps = {
   runImmediately?: boolean
   onCodeUpdate?: (newValue: string) => void
   value: string
+  hideUntil?: Date | string
 }
 
 const Editor = clientOnly(() => import('./PrismEditor'))
 const Python = clientOnly(() => import('./Python'))
 
 export default function Code(props: CodeProps) {
-  const [value, setValue] = createSignal(props.value)
+  const [value, setValue] = createSignal('')
+  const [index, setIndex] = createSignal(0)
+  const fragments = () => props.value.split(/^.*---\s*fragment$/m).map((p) => p.trim())
+
   const [codeToRun, setCodeToRun] = createSignal(props.runImmediately ? props.value : '')
   createEffect(() => {
-    setValue(props.value)
-    setCodeToRun(props.runImmediately ? props.value : '')
+    setValue(fragments()[index() % fragments().length])
+    setCodeToRun(props.runImmediately ? value() : '')
   })
   createEffect(
     on(value, () => {
       props.onCodeUpdate?.(value())
     }),
   )
+
+  const user = createAsync(() => getUser())
 
   let textarea: HTMLTextAreaElement
 
@@ -73,6 +81,21 @@ export default function Code(props: CodeProps) {
           />
         </div>
       </div>
+      <Show
+        when={
+          fragments().length > 0 &&
+          (user()?.admin || !props.hideUntil || new Date() >= new Date(props.hideUntil))
+        }
+      >
+        <button
+          class="relative z-20 text-sm"
+          onClick={() => {
+            setIndex((index() + 1) % fragments().length)
+          }}
+        >
+          {index() === 0 ? 'Solution' : 'Reset'}
+        </button>
+      </Show>
       <Show when={props.lang === 'python' && props.run}>
         <Python value={codeToRun()} />
       </Show>
