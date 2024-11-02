@@ -83,7 +83,7 @@ export default function Code(props: CodeProps) {
       </div>
       <Show
         when={
-          fragments().length > 0 &&
+          fragments().length > 1 &&
           (user()?.admin || !props.hideUntil || new Date() >= new Date(props.hideUntil))
         }
       >
