@@ -30,8 +30,9 @@ export default function Code(props: CodeProps) {
 
   const [codeToRun, setCodeToRun] = createSignal(props.runImmediately ? props.value : '')
   createEffect(() => {
-    setValue(fragments()[index() % fragments().length])
-    setCodeToRun(props.runImmediately ? value() : '')
+    const value = fragments()[index() % fragments().length]
+    setValue(value)
+    setCodeToRun(props.runImmediately ? value : '')
   })
   createEffect(
     on(value, () => {
