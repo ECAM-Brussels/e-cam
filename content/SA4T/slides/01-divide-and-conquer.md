@@ -3,6 +3,48 @@ title: Divide and Conquer
 slideshow: true
 ---
 
+# Algorithm example: Insertion sort {.w-1--2}
+
+::: question
+Given a set of cards, how do you sort them in increasing order?
+:::
+
+~~~ python {.run hideUntil="2024-11-05 16:15"}
+cards = [3, 7, 4, 1, 2, 7, 3]
+# --- fragment
+right_hand = [3, 7, 4, 1, 2, 7, 3]
+left_hand = []
+
+for card in right_hand:
+    position = len([c for c in left_hand if c <= card])
+    left_hand.insert(position, card)
+
+left_hand
+~~~
+
+# Correctness and complexity {.w-1--2}
+
+~~~ python {.run}
+right_hand = [3, 7, 4, 1, 2, 7, 3]
+left_hand = []
+
+for card in right_hand:
+    position = len([c for c in left_hand if c <= card])
+    left_hand.insert(position, card)
+
+left_hand
+~~~
+
+The algorithm above is called **insertion sort**.
+
+For every algorithm, we'll ask the following questions.
+
+- Does the algorithm terminate?
+
+- Is it correct?
+
+- Is it efficient?
+
 # Divide and conquer {.columns-2}
 
 ::: {.break-inside-avoid .shadow .rounded-xl .border .p-4 .mx-12}
