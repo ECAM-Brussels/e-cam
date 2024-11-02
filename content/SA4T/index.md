@@ -10,7 +10,7 @@ title: Algorithms
 
 ## Outline
 
-1. Divide and Conquer
+1. [Divide and Conquer](/SA4T/slides/01-divide-and-conquer)
 2. Dynamic programming
 3. Greedy algorithms
 4. Graphs
