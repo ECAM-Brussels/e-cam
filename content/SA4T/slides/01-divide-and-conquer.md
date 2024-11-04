@@ -326,3 +326,52 @@ def karatsuba(x, y):
 
 karatsuba(34, 13)
 ~~~
+
+# Maximum subarray {.columns-2}
+
+::::: break-inside-avoid
+::: exercise
+Given an integer array `nums`,
+find the subarray (slice) with the largest sum, and return its sum.
+Show then that the complexity is $O(n \log n)$.
+:::
+
+### Example
+
+- **Input**: `nums = [-2,1,-3,4,-1,2,1,-5,4]`
+- **Output**: `6`
+- **Explanation**: The subarray `[4,-1,2,1]` has the largest sum `6`.
+
+::: hint
+Split the array in half.
+The largest sum will either be:
+
+- entirely contained within the first half
+- entirely contained within the second half
+- will cross the midpoint (the tricky part)
+:::
+:::::
+
+~~~ python {.run .break-inside-avoid hideUntil="2024-11-05 16:15"}
+def max_sum(A: list[float]) -> float:
+    pass
+# --- fragment
+def max_sum(A: list[float]) -> float:
+    if len(A) < 2:
+        return max(sum(A), 0)
+
+    m = len(A) // 2
+    left = max_sum(A[:m])
+    right = max_sum(A[m:])
+
+    crossing = A[m]
+    for i in [-1, 1]:
+        attempt = crossing
+        for n in A[m + i::i]:
+            attempt += n
+            if attempt > crossing:
+                crossing = attempt
+    return max(crossing, left, right)
+
+max_sum([-2,1,-3,4,-1,2,1,-5,4])
+~~~
