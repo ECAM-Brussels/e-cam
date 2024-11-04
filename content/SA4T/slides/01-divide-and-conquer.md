@@ -127,9 +127,8 @@ a^{\log_b n} = n^{\log_b a}
 $$
 :::
 
-# Exercise: maximum difference {.columns-2}
+# Exercise: maximum difference {.w-1--2}
 
-::::: break-inside-avoid
 ::: exercise
 Find an $O(n)$ divide-and-conquer algorithm that,
 given an array $A$ of $n$ numbers,
@@ -142,9 +141,10 @@ You may not use `max` and `min` for more than two elements.
 ::: hint
 We just need to find the `max` and the `min`.
 :::
-:::::
 
-~~~ python {.run .break-inside-avoid hideUntil="2024-11-05 16:15"}
+# Maximum difference: solution {.w-1--2}
+
+~~~ python {.run hideUntil="2024-11-05 16:15"}
 def min_max(A: list[float]) -> tuple[float, float]:
     pass
 
@@ -162,9 +162,8 @@ def min_max(A: list[float]) -> tuple[float, float]:
 min_max([1, 3, 2, 7, 4, 9, 8, 3])
 ~~~
 
-# Exercise: quicksort {.columns-2}
+# Exercise: quicksort {.w-1--2}
 
-::::: break-inside-avoid
 Quicksort is a sorting algorithm which
 selects a 'pivot' element from the array
 and subequently partitions the other elements into two sub-arrays:
@@ -179,9 +178,10 @@ What about the worst case complexity?
 Challenge: can you implement it in place,
 i.e. without creating copies of the array?
 :::
-:::::
 
-~~~ python {.run .break-inside-avoid hideUntil="2024-11-05 16:15"}
+# Quicksort: solution {.w-1--2}
+
+~~~ python {.run hideUntil="2024-11-05 16:15"}
 def quicksort(A):
     pass
 quicksort([1, 2, 6, 5, 3, 7, 4])
@@ -198,9 +198,8 @@ def quicksort(A):
 quicksort([1, 2, 6, 5, 3, 7, 4])
 ~~~
 
-# Exercise: Peak search {.columns-2}
+# Exercise: Peak search {.w-1--2}
 
-::::: break-inside-avoid
 ::: exercise
 Given an array of numbers `A`,
 find any peak (local maximum),
@@ -233,9 +232,9 @@ data:
       - [5, 7]
       - [6, 4]
 ~~~
-:::::
 
-::::: break-inside-avoid
+# Peak search: solution {.w-1--2}
+
 ~~~ python {.run hideUntil="2024-11-05 16:15"}
 A = [1, 2, 6, 5, 3, 7, 4]
 
@@ -260,7 +259,6 @@ def peak_find(start: int = 0, end: int = len(A)):
 # Complexity O(log n)
 peak_find()
 ~~~
-:::::
 
 # Karatsuba's trick for multiplication {.w-1--2}
 
@@ -327,9 +325,8 @@ def karatsuba(x, y):
 karatsuba(34, 13)
 ~~~
 
-# Maximum subarray {.columns-2}
+# Maximum subarray {.w-1--2}
 
-::::: break-inside-avoid
 ::: exercise
 Given an integer array `nums`,
 find the subarray (slice) with the largest sum, and return its sum.
@@ -350,9 +347,10 @@ The largest sum will either be:
 - entirely contained within the second half
 - will cross the midpoint (the tricky part)
 :::
-:::::
 
-~~~ python {.run .break-inside-avoid hideUntil="2024-11-05 16:15"}
+# Maximum subarray: solution {.w-1--2}
+
+~~~ python {.run hideUntil="2024-11-05 16:15"}
 def max_sum(A: list[float]) -> float:
     pass
 # --- fragment
