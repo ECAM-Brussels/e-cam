@@ -1,6 +1,7 @@
 import { faPlayCircle } from '@fortawesome/free-solid-svg-icons'
 import { createAsync } from '@solidjs/router'
 import { clientOnly } from '@solidjs/start'
+import { formatDistance } from 'date-fns'
 import { createEffect, createSignal, on, Show } from 'solid-js'
 import Fa from '~/components/Fa'
 import Html from '~/components/Html'
@@ -82,20 +83,24 @@ export default function Code(props: CodeProps) {
           />
         </div>
       </div>
-      <Show
-        when={
-          fragments().length > 1 &&
-          (user()?.admin || !props.hideUntil || new Date() >= new Date(props.hideUntil))
-        }
-      >
-        <button
-          class="relative z-20 text-sm"
-          onClick={() => {
-            setIndex((index() + 1) % fragments().length)
-          }}
+      <Show when={fragments().length > 1}>
+        <Show
+          when={user()?.admin || !props.hideUntil || new Date() >= new Date(props.hideUntil)}
+          fallback={
+            <p class="text-sm">
+              Solution available in {formatDistance(new Date(), new Date(props.hideUntil!))}
+            </p>
+          }
         >
-          {index() === 0 ? 'Solution' : 'Reset'}
-        </button>
+          <button
+            class="relative z-20 text-sm"
+            onClick={() => {
+              setIndex((index() + 1) % fragments().length)
+            }}
+          >
+            {index() === 0 ? 'Solution' : 'Reset'}
+          </button>
+        </Show>
       </Show>
       <Show when={props.lang === 'python' && props.run}>
         <Python value={codeToRun()} />
