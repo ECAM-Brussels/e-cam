@@ -1,7 +1,7 @@
-import { MetaProvider, Title } from '@solidjs/meta'
 import { RouteDefinition, useSearchParams } from '@solidjs/router'
 import { clientOnly } from '@solidjs/start'
 import { lazy } from 'solid-js'
+import MetaProvider from '~/components/MetaProvider'
 import { getBoardCount } from '~/components/Slideshow'
 
 const Slideshow = clientOnly(() => import('~/components/Slideshow'))
@@ -19,8 +19,7 @@ export const route = {
 export default function () {
   const [searchParams] = useSearchParams()
   return (
-    <MetaProvider>
-      <Title>$title$</Title>
+    <MetaProvider title="$title$" lang={'$if(lang)$$lang$$else$fr$endif$' as 'fr' | 'en'}>
       <Slideshow boardName={searchParams.boardName}>$body$</Slideshow>
     </MetaProvider>
   )

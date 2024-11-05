@@ -110,6 +110,7 @@ async function generateImports() {
     if (
       name === 'Slideshow' ||
       name === 'Page' ||
+      name === 'MetaProvider' ||
       name.endsWith('.test') ||
       name.endsWith('.server')
     ) {

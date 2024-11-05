@@ -32,7 +32,7 @@ const courses: Course[] = [
 
 export default function Home() {
   return (
-    <Page>
+    <Page title="Accueil">
       <section>
         <h2 class="text-3xl text-slate-800 mb-4">Cours</h2>
         <div class="grid lg:grid-cols-2 gap-8">
