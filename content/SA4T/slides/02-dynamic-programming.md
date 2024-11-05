@@ -74,19 +74,19 @@ What is the maximum revenue you can get?
 # Rod cutting: implementation {.w-1--2}
 
 ~~~ python {.run}
-p = { 1: 1, 2: 5, 3: 8, 4: 9, 5: 10, 6: 17, 7: 17, 8: 20, 9: 24 }
-
 import functools
+
+p = [0, 1, 5, 8, 9, 10, 17, 17, 20, 24 ]
+
 @functools.cache
 def cut_rod(n: max):
     if n == 0:
         return 0
-    q, cut = 0, 0
+    revenue = 0
     for i in range(1, n + 1):
-        if q < p[i] + cut_rod(n - i):
-            q = p[i] + cut_rod(n - i)
-            cut = i
-    return q
+        if revenue < p[i] + cut_rod(n - i):
+            revenue = p[i] + cut_rod(n - i)
+    return revenue
 
 cut_rod(5)
 ~~~
@@ -101,13 +101,13 @@ p = { 1: 1, 2: 5, 3: 8, 4: 9, 5: 10, 6: 17, 7: 17, 8: 20, 9: 24 }
 @functools.cache
 def cut_rod(n: max):
     if n == 0:
-        return { "total": 0, "cuts": []}
-    q, cuts = 0, []
+        return { "revenue": 0, "cuts": []}
+    revenue, cuts = 0, []
     for i in range(1, n + 1):
-        if q < p[i] + cut_rod(n - i)["total"]:
-            q = p[i] + cut_rod(n - i)["total"]
+        if revenue < p[i] + cut_rod(n - i)["revenue"]:
+            revenue = p[i] + cut_rod(n - i)["revenue"]
             cuts = cut_rod(n - i)["cuts"] + [i]
-    return { "total": q, "cuts": cuts }
+    return { "revenue": revenue, "cuts": cuts }
 
 cut_rod(5)
 ~~~
