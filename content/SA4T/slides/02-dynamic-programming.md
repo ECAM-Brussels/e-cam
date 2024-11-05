@@ -134,17 +134,15 @@ E.g. HYPERLINKING, DOLPHINSPEAK: PINK
 ~~~ python {.run}
 import functools
 
-A, B = "HYPERLINKING", "DOLPHINSPEAK"
-
 @functools.cache
-def C(i, j):
-    if i == 0 or j == 0:
+def LCS(A, B):
+    if len(A) == 0 or len(B) == 0:
         return 0
-    if A[i] == B[j]:
-        return 1 + C(i - 1, j - 1)
-    return max(C(i, j - 1), C(i - 1, j))
+    if A[-1] == B[-1]:
+        return 1 + LCS(A[:-1], B[:-1])
+    return max(LCS(A, B[:-1]), LCS(A[:-1], B))
 
-C(len(A) - 1, len(B) - 1)
+LCS("HYPERLINKING", "DOLPHINSPEAK")
 ~~~
 
 # Longest common subsequence {.w-1--2}
@@ -152,24 +150,18 @@ C(len(A) - 1, len(B) - 1)
 ~~~ python {.run}
 import functools
 
-A, B = "HYPERLINKING", "DOLPHINSPEAK"
-
 @functools.cache
-def C(i, j):
-    if i == 0 or j == 0:
-        return (0, '', 0, 0)
-    if A[i] == B[j]:
-        return (1 + C(i - 1, j - 1)[0], A[i], i - 1, j - 1)
-    if C(i, j - 1)[0] > C(i - 1, j)[0]:
-        return C(i, j - 1)
-    else:
-        return C(i - 1, j)
+def LCS(A, B):
+    if len(A) == 0 or len(B) == 0:
+        return {"length": 0, "string": ""}
+    if A[-1] == B[-1]:
+        lcs = LCS(A[:-1], B[:-1])
+        return {"length": 1 + lcs["length"], "string": lcs["string"] + A[-1]}
+    case1 = LCS(A, B[:-1])
+    case2 = LCS(A[:-1], B)
+    return case1 if case1["length"] > case2["length"] else case2
 
-result, i, j = [], len(A) - 1, len(B) - 1
-while i * j > 0:
-    _, letter, i, j = C(i, j)
-    result.append(letter)
-''.join(reversed(result))
+LCS("HYPERLINKING", "DOLPHINSPEAK")
 ~~~
 
 # Knapsack {.w-1--2}
