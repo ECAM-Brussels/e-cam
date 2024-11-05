@@ -153,6 +153,7 @@ The following formulae are useful
 
 $$
 \sum_{k = 0}^n q^n = O(1) \quad \text{if} \ 0 < q < 1\\
+\sum_{k = 0}^n q^n = O(q^n) \quad \text{if } q > 1\\
 a^{\log_b n} = n^{\log_b a}
 $$
 :::
