@@ -96,18 +96,18 @@ cut_rod(5)
 ~~~ python {.run}
 import functools
 
-p = [0, 1, 5, 8, 9, 10, 17, 17, 20, 24 ]
+p = [0, 1, 5, 8, 9, 10, 17, 17, 20, 24]
+value = lambda cuts: sum([p[c] for c in cuts])
 
 @functools.cache
-def cut_rod(n: max):
+def cut_rod(n: int):
     if n == 0:
-        return { "revenue": 0, "cuts": []}
-    revenue, cuts = 0, []
+        return []
+    cuts = []
     for i in range(1, n + 1):
-        if revenue < p[i] + cut_rod(n - i)["revenue"]:
-            revenue = p[i] + cut_rod(n - i)["revenue"]
-            cuts = cut_rod(n - i)["cuts"] + [i]
-    return { "revenue": revenue, "cuts": cuts }
+        if value(cuts) < p[i] + value(cut_rod(n - i)):
+            cuts = cut_rod(n - i) + [i]
+    return cuts
 
 cut_rod(5)
 ~~~
@@ -153,13 +153,11 @@ import functools
 @functools.cache
 def LCS(A, B):
     if len(A) == 0 or len(B) == 0:
-        return {"length": 0, "string": ""}
+        return ""
     if A[-1] == B[-1]:
-        lcs = LCS(A[:-1], B[:-1])
-        return {"length": 1 + lcs["length"], "string": lcs["string"] + A[-1]}
-    case1 = LCS(A, B[:-1])
-    case2 = LCS(A[:-1], B)
-    return case1 if case1["length"] > case2["length"] else case2
+        return LCS(A[:-1], B[:-1]) + A[-1]
+    guesses = [LCS(A, B[:-1]), LCS(A[:-1], B)]
+    return max(guesses, key=lambda s: len(s))
 
 LCS("HYPERLINKING", "DOLPHINSPEAK")
 ~~~
@@ -216,20 +214,20 @@ import functools
 v = [10, 40, 30, 50]
 s = [5, 4, 6, 3]
 
+value = lambda items: sum([v[i] for i in items])
+
 @functools.cache
 def knapsack(i: int, capacity: int):
     if i == 0 or capacity == 0:
-        return (0, [])
+        return []
     if s[i] > capacity:
         return knapsack(i - 1, capacity)
 
-    without_i = knapsack(i - 1, capacity)
-    with_i = knapsack(i - 1, capacity - s[i])
-    with_i = (with_i[0] + v[i], with_i[1] + [i])
-    if with_i[0] > without_i[0]:
-        return with_i
-    else:
-        return without_i
+    guesses = [
+        knapsack(i - 1, capacity),
+        knapsack(i - 1, capacity - s[i]) + [i]
+    ]
+    return max(guesses, key=lambda g: value(g))
 
 knapsack(3, 10)
 ~~~
