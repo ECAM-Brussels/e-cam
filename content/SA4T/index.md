@@ -1,5 +1,6 @@
 ---
 title: Algorithms
+lang: en
 ---
 
 # Algorithms
@@ -8,12 +9,14 @@ title: Algorithms
 
 ::: {.bg-white .rounded-xl .p-4 .shadow}
 
-## Outline
+## Provisional outline
 
 1. [Divide and Conquer](/SA4T/slides/01-divide-and-conquer)
 2. Dynamic programming
 3. Greedy algorithms
 4. Graphs
+5. Google's PageRank
+6. Fast Fourier Transform, Revisions
 
 ## Assessment
 
