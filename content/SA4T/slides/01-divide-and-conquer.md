@@ -1,6 +1,7 @@
 ---
 title: Divide and Conquer
 slideshow: true
+lang: en
 ---
 
 # Algorithm example: Insertion sort {.w-1--2}
