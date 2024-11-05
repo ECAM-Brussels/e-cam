@@ -45,6 +45,35 @@ For every algorithm, we'll ask the following questions.
 
 - Is it efficient?
 
+# Complexity {.w-1--2}
+
+~~~ python {.run}
+right_hand = [3, 7, 4, 1, 2, 7, 3]
+left_hand = []
+
+for card in right_hand:
+    position = len([c for c in left_hand if c <= card])
+    left_hand.insert(position, card)
+
+left_hand
+~~~
+
+::: definition
+$T(n)$ = Computer time required to run algorithm on problem of size $n$.
+:::
+
+::: {.definition title="Big-O notation"}
+$$
+f(x) = O(g(x))
+\quad \Longleftrightarrow \quad
+|f(x)| \leq C g(x)
+$$
+:::
+
+# Complexity chart {.w-1--2}
+
+![](/images/complexity_chart.svg)
+
 # Divide and conquer {.columns-2}
 
 ::: {.break-inside-avoid .shadow .rounded-xl .border .p-4 .mx-12}
