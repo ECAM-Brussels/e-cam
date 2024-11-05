@@ -2,7 +2,7 @@ import { faPlayCircle } from '@fortawesome/free-solid-svg-icons'
 import { createAsync } from '@solidjs/router'
 import { clientOnly } from '@solidjs/start'
 import { formatDistance } from 'date-fns'
-import { createEffect, createSignal, on, Show } from 'solid-js'
+import { createEffect, createSignal, on, onCleanup, Show } from 'solid-js'
 import Fa from '~/components/Fa'
 import Html from '~/components/Html'
 import Javascript from '~/components/Javascript'
@@ -40,6 +40,14 @@ export default function Code(props: CodeProps) {
       props.onCodeUpdate?.(value())
     }),
   )
+
+  const [now, setNow] = createSignal(new Date())
+  const clock = setInterval(() => {
+    setNow(new Date())
+  }, 1000)
+  onCleanup(() => {
+    clearInterval(clock)
+  })
 
   const user = createAsync(() => getUser())
 
@@ -85,10 +93,10 @@ export default function Code(props: CodeProps) {
       </div>
       <Show when={fragments().length > 1}>
         <Show
-          when={user()?.admin || !props.hideUntil || new Date() >= new Date(props.hideUntil)}
+          when={user()?.admin || !props.hideUntil || now() >= new Date(props.hideUntil)}
           fallback={
             <p class="text-sm">
-              Solution available in {formatDistance(new Date(), new Date(props.hideUntil!))}
+              Solution available in {formatDistance(now(), new Date(props.hideUntil!))}
             </p>
           }
         >
@@ -98,7 +106,10 @@ export default function Code(props: CodeProps) {
               setIndex((index() + 1) % fragments().length)
             }}
           >
-            {index() === 0 ? 'Solution' : 'Reset'}
+            {index() === 0 ? 'Solution ' : 'Reset'}
+            <Show when={props.hideUntil && now() < new Date(props.hideUntil) && index() === 0}>
+              (available to students in {formatDistance(now(), new Date(props.hideUntil!))})
+            </Show>
           </button>
         </Show>
       </Show>
