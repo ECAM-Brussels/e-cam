@@ -12,7 +12,7 @@ lang: en
 ## Provisional outline
 
 1. [Divide and Conquer](/SA4T/slides/01-divide-and-conquer)
-2. Dynamic programming
+2. [Dynamic programming](/SA4T/slides/02-dynamic-programming)
 3. Greedy algorithms
 4. Graphs
 5. Google's PageRank
