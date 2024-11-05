@@ -96,7 +96,7 @@ cut_rod(5)
 ~~~ python {.run}
 import functools
 
-p = { 1: 1, 2: 5, 3: 8, 4: 9, 5: 10, 6: 17, 7: 17, 8: 20, 9: 24 }
+p = [0, 1, 5, 8, 9, 10, 17, 17, 20, 24 ]
 
 @functools.cache
 def cut_rod(n: max):
