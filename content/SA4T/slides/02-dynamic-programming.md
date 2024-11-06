@@ -157,7 +157,7 @@ def LCS(A, B):
     if A[-1] == B[-1]:
         return LCS(A[:-1], B[:-1]) + A[-1]
     guesses = [LCS(A, B[:-1]), LCS(A[:-1], B)]
-    return max(guesses, key=lambda s: len(s))
+    return max(guesses, key=len)
 
 LCS("HYPERLINKING", "DOLPHINSPEAK")
 ~~~
@@ -193,17 +193,14 @@ v = [10, 40, 30, 50]
 s = [5, 4, 6, 3]
 
 @functools.cache
-def knapsack(i: int, capacity: int):
-    if i == 0 or capacity == 0:
+def KS(i: int, C: int):
+    if i == 0 or C == 0:
         return 0
-    if s[i] > capacity:
-        return knapsack(i - 1, capacity)
-    return max(
-        knapsack(i - 1, capacity),
-        knapsack(i - 1, capacity - s[i]) + v[i]
-    )
+    if s[i] > C:
+        return KS(i - 1, C)
+    return max(KS(i - 1, C), KS(i - 1, C - s[i]) + v[i])
 
-knapsack(3, 10)
+KS(3, 10)
 ~~~
 
 # Knapsack: finding items {.w-1--2}
@@ -214,20 +211,17 @@ import functools
 v = [10, 40, 30, 50]
 s = [5, 4, 6, 3]
 
-value = lambda items: sum([v[i] for i in items])
+val = lambda items: sum([v[i] for i in items])
 
 @functools.cache
-def knapsack(i: int, capacity: int):
-    if i == 0 or capacity == 0:
+def KS(i: int, C: int):
+    if i == 0 or C == 0:
         return []
-    if s[i] > capacity:
-        return knapsack(i - 1, capacity)
+    if s[i] > C:
+        return KS(i - 1, C)
 
-    guesses = [
-        knapsack(i - 1, capacity),
-        knapsack(i - 1, capacity - s[i]) + [i]
-    ]
-    return max(guesses, key=lambda g: value(g))
+    guesses = [KS(i - 1, C), KS(i - 1, C - s[i]) + [i]]
+    return max(guesses, key=val)
 
-knapsack(3, 10)
+KS(3, 10)
 ~~~
