@@ -152,11 +152,10 @@ p = [0, 1, 5, 8, 9, 10, 17, 17, 20, 24 ]
 def cut_rod(n: int):
     if n == 0:
         return 0
-    revenue = 0
-    for i in range(1, n + 1):
-        if revenue < p[i] + cut_rod(n - i):
-            revenue = p[i] + cut_rod(n - i)
-    return revenue
+    return max([
+        p[i] + cut_rod(n - i)
+        for i in range(1, n + 1)
+    ])
 
 cut_rod(5)
 ```
@@ -174,11 +173,12 @@ def cut_rod(n: int):
     pass
 # --- fragment
 def cut_rod(n: int):
-    cache = { 0: 0}
+    cache = {0: 0}
     for l in range(1, n + 1):
-        cache[l] = 0
-        for i in range(1, l + 1):
-            cache[l] = max(cache[l], p[i] + cache[l - i])
+        cache[l] = max([
+            p[i] + cache[l - i]
+            for i in range(1, l + 1)
+        ])
     return cache[l]
 
 cut_rod(5)
@@ -191,7 +191,7 @@ Adapt your code to know how to cut the rod to maximize revenue.
 :::
 
 ```python {.run}
-p = [0, 1, 5, 8, 9, 10, 17, 17, 20, 24 ]
+p = [0, 1, 5, 8, 9, 10, 17, 17, 20, 24]
 
 def cut_rod(n: int):
     pass
@@ -205,11 +205,10 @@ value = lambda cuts: sum([p[c] for c in cuts])
 def cut_rod(n: int):
     if n == 0:
         return []
-    cuts = []
-    for i in range(1, n + 1):
-        if value(cuts) < p[i] + value(cut_rod(n - i)):
-            cuts = cut_rod(n - i) + [i]
-    return cuts
+    return max(
+        [cut_rod(n - i) + [i] for i in range(1, n + 1)],
+        key=value
+    )
 
 cut_rod(5)
 ```
@@ -360,7 +359,6 @@ def KS(i: int, C: int):
         return []
     if s[i] > C:
         return KS(i - 1, C)
-
     guesses = [KS(i - 1, C), KS(i - 1, C - s[i]) + [i]]
     return max(guesses, key=val)
 
@@ -409,12 +407,10 @@ coins = [1, 3, 4, 5, 10, 25]
 def min_coins(value: int):
     if value == 0:
         return 0
-    count = float('inf')
-    for coin in coins:
-        if coin > value:
-            continue
-        count = min(count, 1 + min_coins(value - coin))
-    return count
+    return min([
+        1 + min_coins(value - c)
+        for c in coins if c <= value
+    ])
 
 min_coins(65)
 ```
