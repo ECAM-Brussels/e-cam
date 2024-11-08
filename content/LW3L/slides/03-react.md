@@ -249,7 +249,7 @@ function App() {
   `tasks.map(function)` applique `function` à chaque élément de `tasks`.
   Par exemple,
   ```js
-  [1, 2, 3, 4].map(number => number * 2) // [2, 4, 6, 8]
+  [1, 2, 3, 4].map(n => n * 2) // [2, 4, 6, 8]
   ```
   En JSX, une liste est affichée comme un fragment avec comme enfants les éléments de la liste.
 :::::
