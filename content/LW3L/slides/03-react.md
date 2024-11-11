@@ -202,7 +202,7 @@ function App() {
 
   ```js
   const age = 12
-  (age < 18) || 'mineur' // Retourne 'majeur'
+  (age > 18) || 'mineur' // Retourne 'mineur'
   ```
 :::
 
