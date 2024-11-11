@@ -124,13 +124,13 @@ function App() {
 # Components and props {.columns-2}
 
 ~~~ tsx {.run .break-inside-avoid framework="react"}
-function Counter({ initialValue, increment }) {
-  const [value, setValue] = useState(initialValue || 1)
+function Counter({ initialValue = 0, increment = 1 }) {
+  const [value, setValue] = useState(initialValue)
   return (
     <p>
       <button
         onClick={() => {
-          setValue(value + (increment || 1))
+          setValue(value + increment)
         }}
       >
         {value}
