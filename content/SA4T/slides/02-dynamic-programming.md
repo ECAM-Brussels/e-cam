@@ -481,3 +481,47 @@ def jumps(start: int, dest: int):
 
 jumps(0, len(allowed) - 1)
 ```
+
+# Edit distance {.w-1--2}
+
+::: exercise
+The _Edit Distance_ measures the similarity between two strings by calculating the minimum number of operations required to transform one series into another. The allowed operations are:
+
+Insertion
+: Add a character to the string.
+Deletion
+: Remove a character from the line.
+Substitution
+: Replace one character with another
+:::
+
+::: example
+For example, to transform the word "kitten" into "sitting," we need the following operations:
+
+- Substitute 'k' with 's'
+- Substitute 'e' with 'i'
+- Insert 'g'
+
+The Edit Distance between "kitten" and "sitting" is 3.
+:::
+
+# Edit distance {.w-1--2}
+
+```python {.run hideUntil="2024-11-12 12:00"}
+def dist(A: str, B: str) -> int:
+    return 0
+
+dist("kitten", "sitting")
+# --- fragment
+import functools
+
+@functools.cache
+def dist(A: str, B: str) -> int:
+    if not A or not B:
+        return len(A) + len(B)
+    if A[-1] == B[-1]:
+        return dist(A[:-1], B[:-1])
+    return 1 + min(dist(A[:-1], B), dist(A, B[:-1]), dist(A[:-1], B[:-1]))
+
+dist("kitten", "sitting")
+```
