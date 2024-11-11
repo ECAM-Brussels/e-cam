@@ -487,22 +487,24 @@ jumps(0, len(allowed) - 1)
 ::: exercise
 The _Edit Distance_ measures the similarity between two strings by calculating the minimum number of operations required to transform one series into another. The allowed operations are:
 
+::::: text-sm
 Insertion
 : Add a character to the string.
+
 Deletion
 : Remove a character from the line.
+
 Substitution
 : Replace one character with another
+:::::
 :::
 
 ::: example
-For example, to transform the word "kitten" into "sitting," we need the following operations:
+For example, to transform the word "kitten" into "sitting," we need 3 operations.
+:::
 
-- Substitute 'k' with 's'
-- Substitute 'e' with 'i'
-- Insert 'g'
-
-The Edit Distance between "kitten" and "sitting" is 3.
+::: remark
+Algorithm used for spellchecking.
 :::
 
 # Edit distance {.w-1--2}
