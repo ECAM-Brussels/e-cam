@@ -8,7 +8,7 @@ slideshow: true
 ::::: {.border .rounded-xl .shadow .px-3 .mb-8}
 #### Consigne
 
-Lisez les exemples ci-dessous avant d'entamer les exercices.
+Lisez les exemples ci-dessous pour vous aider à résoudre les exercices.
 :::::
 
 ::::: {.border .rounded-xl .shadow .px-3}
@@ -21,6 +21,7 @@ Lisez les exemples ci-dessous avant d'entamer les exercices.
   - [Composant et props](#/4)
   - [Formulaire](#/5)
   - [Tableaux](#/6)
+- [Comment fonctionne React?](#/7)
 :::::
 
 # Exercices {.columns-2}
@@ -113,6 +114,11 @@ function App() {
   Le JSX diffère principalement du HTML par l'emploi du `camelCase`, e.g. `onClick` au lieu de `onclick`,
   et par le fait que les attributs sont en JavaScript au lieu de simple chaînes.
   Les expressions entre crochets peuvent contenir une expression Javascript arbitraire.
+
+#### Documentation officielle
+
+- [JSX](https://fr.react.dev/learn/writing-markup-with-jsx)
+- [JS dans le JSX avec les accolades](https://fr.react.dev/learn/javascript-in-jsx-with-curly-braces)
 :::
 
 # Components and props {.columns-2}
@@ -153,6 +159,9 @@ function App() {
 - Comme une fonction ne peut retourner qu'une balise (enfants non compris),
   on enveloppe les deux `<Counter />` dans un **fragment** `<></>`,
   une balise vide qui n'a pas de rôle particulier et qui est propre au JSX.
+
+#### Documentation officielle
+- [Props](https://fr.react.dev/learn/passing-props-to-a-component)
 :::
 
 # Exemple: formulaire et condition {.columns-2}
@@ -204,6 +213,10 @@ function App() {
   const age = 12
   (age > 18) || 'mineur' // Retourne 'mineur'
   ```
+
+#### Documentation
+
+- [Affichage conditionnel](https://fr.react.dev/learn/conditional-rendering)
 :::
 
 # Travailler avec des tableaux {.columns-2}
@@ -252,4 +265,43 @@ function App() {
   [1, 2, 3, 4].map(n => n * 2) // [2, 4, 6, 8]
   ```
   En JSX, une liste est affichée comme un fragment avec comme enfants les éléments de la liste.
+
+#### Documentation
+
+- [Afficher des listes](https://fr.react.dev/learn/rendering-lists)
+:::::
+
+# Comment fonctionne React? Pourquoi l'utiliser? {.columns-2}
+
+::::: break-inside-avoid
+- Le JSX est transpilé en appel de fonctions.
+  Par exemple, `<h1 className="greeting">Hello, world!</h1>` devient
+
+  ~~~ js
+  React.createElement(
+    'h1',
+    { className: 'greeting' },
+    'Hello, world!'
+  );
+  ~~~
+
+- À chaque changement d'état, le composant est réexécuté entièrement
+  sur une copie du DOM (le *Virtual DOM*) pour des raisons de performance.
+
+- React compare le DOM virtuel et le vrai DOM pour mettre à jour ce dernier le plus efficacement possible.
+:::::
+
+::::: break-inside-avoid
+::: question
+Pourquoi React est-il utile?
+:::
+
+- **Déclaratif**: on donne une *description* du DOM à tout moment,
+  les mutations sont faites par React.
+
+- **Encapsulation**: les composants sont développés en isolation les uns des autres.
+  Cela rend également les tests plus faciles.
+
+- **Composition**: les composants sont un mécanisme efficace de réutilisation de code,
+  car ils peuvent dépendre de paramètres, s'imbriquer et se répéter.
 :::::
