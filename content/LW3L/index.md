@@ -13,7 +13,7 @@ title: Web Technologies
 1. HTML and CSS
 2. JavaScript and the DOM
 3. [React](/LW3L/slides/03-react)
-4. API
+4. [API](/LW3L/slides/04-api)
 5. Databases
 6. Sessions
 7. Review
