@@ -4,6 +4,18 @@ slideshow: true
 lang: fr
 ---
 
+# Exercices {.columns-2}
+
+::: exercise
+Créez un Pokedex en utilisant React et l'API [https://pokeapi.co/](https://pokeapi.co/).
+:::
+
+::: exercise
+Créez une application fullstack "Todo list" pour traiter vos tâches.
+Vous devez utiliser React en front-end,
+et FastAPI en backend.
+:::
+
 # Motivations {.w-1--2}
 
 Certaines opérations, comme les communications serveur-client, prennent du temps.
@@ -241,6 +253,8 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
+
+# Votre code
 
 # Cette ligne doit être à la fin du fichier!
 app.mount("/", StaticFiles(directory="static", html=True), name="static")
