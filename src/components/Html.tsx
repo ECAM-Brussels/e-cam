@@ -34,5 +34,11 @@ export default function Html(props: Props) {
     </script>
     </html>
   `
-  return <iframe class={props.class} classList={{ 'z-20': true, relative: true }} srcdoc={code()} />
+  return (
+    <iframe
+      class={props.class}
+      classList={{ 'z-20': true, relative: true, 'w-full': true }}
+      srcdoc={code()}
+    />
+  )
 }
