@@ -19,9 +19,10 @@ Lisez les exemples ci-dessous pour vous aider à résoudre les exercices.
   - [Page de base: hello world](#/2)
   - [Compteur](#/3)
   - [Composant et props](#/4)
-  - [Formulaire](#/5)
-  - [Tableaux](#/6)
-- [Comment fonctionne React?](#/7)
+  - [Composabilité et enfants](#/5)
+  - [Formulaire](#/6)
+  - [Tableaux](#/7)
+- [Comment fonctionne React?](#/8)
 :::::
 
 # Exercices {.columns-2}
@@ -163,6 +164,43 @@ function App() {
 #### Documentation officielle
 - [Props](https://fr.react.dev/learn/passing-props-to-a-component)
 :::
+
+# Exemple: enfants {.columns-2}
+
+~~~ tsx {.run .break-inside-avoid framework="react"}
+function App() {
+  return (
+    <CVLine date="2022-2025" employer="ECAM" title="Bachelier en sciences industrielles">
+      <ul>
+        <li>Grade: distinction</li>
+        <li>Cours préféré: technologies web</li>
+      </ul>
+    </CVLine>
+  )
+}
+
+function CVLine({ children, employer, date, title }) {
+  return (
+    <div>
+      <h3>{title}, {employer} ({date}</h3>
+      {children}
+    </div>
+  )
+}
+~~~
+
+::::: break-inside-avoid
+#### Explications
+
+`children` est une propriété spéciale d'un composant.
+Elle sera populée par le le contenu situé entre la balise ouvrante et la balise fermante.
+
+Dans notre exemple, `{children}` à la ligne 16 sera remplacé par la liste définie entre les lignes 4 et 7.
+
+#### Documentation
+
+- [Passer du JSX comme enfant](https://fr.react.dev/learn/passing-props-to-a-component#passing-jsx-as-children)
+:::::
 
 # Exemple: formulaire et condition {.columns-2}
 
