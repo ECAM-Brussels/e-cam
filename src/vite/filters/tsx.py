@@ -20,7 +20,7 @@ def math(el: pf.Element, doc: pf.Doc):
         )
 
 
-def environments(el: pf.Element, doc: pf.Doc):
+def environments(el: pf.Element, doc: pf.Doc) -> None | list[pf.Element] | pf.Element:
     del doc
     classes = [
         "definition",
@@ -49,7 +49,7 @@ def environments(el: pf.Element, doc: pf.Doc):
 def code(el: pf.Element, doc: pf.Doc):
     del doc
     if type(el) == pf.Code:
-        el.text = re.sub(r'(\{|\})', r'{"\1"}', el.text)
+        el.text = re.sub(r"(\{|\})", r'{"\1"}', el.text)
     if type(el) == pf.CodeBlock and el.classes:
         run = "true" if "run" in el.classes else "false"
         attrs = el.attributes

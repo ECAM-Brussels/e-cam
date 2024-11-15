@@ -3,7 +3,8 @@ import panflute as pf
 import yaml
 
 
-def plot(el: pf.Element, doc: pf.Doc = None):
+def plot(el: pf.Element, doc: pf.Doc):
+    del doc
     if isinstance(el, pf.CodeBlock) and "plot" in el.classes:
         plots = yaml.safe_load(el.text)
         props = json.dumps(plots)
