@@ -52,6 +52,17 @@ et retourne une **promesse** de réponse.
 
 ::: example
 1. `fetch('https://pokeapi.co/api/v2/pokemon/pikachu')` effectue une requête `GET`
+1. Pour effectuer une requête `POST`:
+
+~~~ js
+fetch('/users/', {
+  method: 'POST',
+  body: JSON.stringify({
+    lastName: 'Fockedey',
+    firstName: 'Martin',
+  })
+})
+~~~
 :::
 
 # Async/Await {.columns-2}
