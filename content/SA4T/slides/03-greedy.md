@@ -229,13 +229,22 @@ def job_sequencing(jobs: list[job]) -> list[int | None]:
 job_sequencing([(0, 4, 20), (1, 1, 10), (2, 1, 40), (3, 1, 30)])
 ```
 
-# Data structure: Heaps and Min Heaps {.w-1--2}
+# Data structure: Heaps and Min Heaps {.columns-2}
 
 ::: definition
 - A **heap** is an array visualized as a nearly complete binary tree.
+- A **max-heap** is a heap with the additional property
+  that a parent is always greater than or equal to its children.
 - A **min-heap** is a heap with the additional property
   that a parent is always less than or equal to its children.
 :::
+
+::: remark
+Heaps are the maximally efficient implementation of priority queues.
+It can be seen as *partial sorting*.
+:::
+
+![](/images/max_heap.svg){.w-3--4 .m-auto}
 
 # Heap queues {.w-1--2}
 
@@ -244,12 +253,42 @@ The librairy `heapq` has a few useful methods:
 - `heapq.heapify(l)`: transform a list `l` into a heap in-place ($O(n)$).
 
 - `heapq.pop(heap)`: remove and return the smallest item from the heap,
-  maintaining the heap invariant.
+  maintaining the heap invariant ($O(\log n)$).
 
 - `heapq.push(heap, item)`: push the item onto the heap,
-  maintaining the heap invariant.
+  maintaining the heap invariant ($O(\log n)$).
+
+::: remark
+See later slides for an implementation of the above.
+:::
 
 # Huffman encoding: introduction {.w-1--2}
+
+We'd like to encode a set of characters (e.g. `A -> 010`, `B -> 0010`)
+as efficiently as possible in order to compress a string.
+
+- The encoding can depend on the text to encode,
+  so you can give shorter codes to common letters.
+
+- It has to be **prefix-free**:
+  if `A` was `01`, `B` was `10` and `C` was `011`,
+  there would be a conflict if our encoded string was `011...`
+
+![](/images/prefix_code_tree.png)
+
+# Key observation {.w-1--2}
+
+::: proposition
+In the tree representation of the code,
+the bottom level of an optimal encoding
+should have at least two leaves.
+:::
+
+::: hint
+Which letters should be at the bottom?
+:::
+
+# Huffman encoding: example {.w-1--2}
 
 ![](https://upload.wikimedia.org/wikipedia/commons/d/d8/HuffmanCodeAlg.png){.h-full}
 
@@ -263,8 +302,7 @@ from typing import Optional
 class Node:
     freq: int
     char: Optional[str] = None
-    left: Optional['Node'] = None
-    right: Optional['Node'] = None
+    children: Optional[list['Node']] = None
     def __lt__(self, other):
         return self.freq < other.freq
 
@@ -285,30 +323,85 @@ from typing import Optional
 class Node:
     freq: int
     char: Optional[str] = None
-    left: Optional['Node'] = None
-    right: Optional['Node'] = None
+    children: Optional[list['Node']] = None
     def __lt__(self, other):
         return self.freq < other.freq
 
+# O(n log n)
 def huffman(text: str):
     heap = [Node(char=c, freq=f) for c, f in Counter(text).items()]
     heapify(heap)
     while len(heap) > 1:
-        y, z = heappop(heap), heappop(heap)
-        w = Node(freq=y.freq + z.freq, left=y, right=z)
-        heappush(heap, w)
+        y, z = heappop(heap), heappop(heap) # O(log n)
+        w = Node(freq=y.freq + z.freq, children=[y, z])
+        heappush(heap, w) # O(log n)
 
     codebook = {}
     def build_code(letter: Node, prefix: str = ""):
         if letter.char is not None:
             codebook[letter.char] = prefix
-        if letter.left:
-            build_code(letter.left, prefix + "0")
-        if letter.right:
-            build_code(letter.right, prefix + "1")
+        if letter.children:
+            build_code(letter.children[0], prefix + "0")
+        if letter.children:
+            build_code(letter.children[1], prefix + "1")
     build_code(heap[0])
 
     return codebook
 
 huffman('helllo')
 ```
+
+# Appendix: heapify {.w-2--3}
+
+``` python {.run}
+def sift_up(array: list, i):
+    """
+    Recursively swaps array[i] with its parent
+    if it's smaller.
+    """
+    smallest = i
+    left, right, n = 2*i + 1, 2*i + 2
+    if left < len(array) and array[left] < array[smallest]:
+        smallest = left
+    if right < len(array) and array[right] < array[smallest]:
+        smallest = right
+    if smallest != i:
+        array[i], array[smallest] = array[smallest], array[i]
+        heapify(array, smallest)
+
+# Time complexity: O(n)
+def heapify(array: list):
+    for i in range(len(array) // 2 - 1, -1, -1):
+        sift_up(array, i)
+```
+
+# Appendix: heap.push {.w-1--2}
+
+``` python {.run}
+# O(log n)
+def push(heap, key):
+    heap.append(key)
+    i = len(heap) - 1
+    
+    while i > 0:
+        parent = (i - 1) // 2
+        if heap[i] < heap[parent]:
+            heap[i], heap[parent] = heap[parent], heap[i]
+            i = parent
+        else:
+            break
+```
+
+# Appendix: heap.pop {.w-1--2}
+
+::: exercise
+Implement `heapq.pop`.
+:::
+
+::: hint
+- Swap the root with the last element
+
+- Pop the former root (now last element)
+
+- Bubble down the tree the elements that are too big.
+:::
