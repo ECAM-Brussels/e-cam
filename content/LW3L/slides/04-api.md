@@ -57,6 +57,7 @@ et retourne une **promesse** de réponse.
 ~~~ js
 fetch('/users/', {
   method: 'POST',
+  headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
     lastName: 'Fockedey',
     firstName: 'Martin',
@@ -185,12 +186,13 @@ function App() {
   const [url, setUrl] = React.useState('posts?userId=1')
   const [data, setData] = React.useState({})
 
+  async function getData() {
+    const data = await fetch('https://jsonplaceholder.typicode.com/' + url)
+    const json = await data.json()
+    setData(json)
+  }
+
   React.useEffect(() => {
-    async function getData() {
-      const data = await fetch('https://jsonplaceholder.typicode.com/' + url)
-      const json = await data.json()
-      setData(json)
-    }
     getData()
   }, [url])
 
@@ -243,6 +245,8 @@ def root():
 Pour lancer le server, utilisez la commande `fastapi dev app.py`,
 où vous remplacez `app.py` par le chemin relatif vers votre fichier.
 Le serveur sera automatiquement relancé en cas de modification de fichiers.
+
+Ensuite, allez sur `http://localhost:8000/`.
 :::
 :::::
 
@@ -346,4 +350,8 @@ def register(user: User) -> User:
   crée un nouvel utilisateur.
   Grâce à l'annotation de type à la ligne 21,
   FastAPI validera l'utilisateur avec le modèle Pydantic.
+
+::: remark
+Essayez les routes sur `http://localhost:8000/docs`
+:::
 :::::
