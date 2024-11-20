@@ -126,7 +126,7 @@ function App() {
 
 ~~~ tsx {.run .break-inside-avoid framework="react"}
 function Counter({ initialValue = 0, increment = 1 }) {
-  const [value, setValue] = useState(initialValue)
+  const [value, setValue] = React.useState(initialValue)
   return (
     <p>
       <button
