@@ -11,11 +11,24 @@ title: Web Technologies
 ## Outline
 
 1. HTML and CSS
+
 2. JavaScript and the DOM
+
 3. [React](/LW3L/slides/03-react)
+
+   *Une préparation vous sera demandée à remettre pour la session suivante*.
+
 4. [API](/LW3L/slides/04-api)
-5. Databases
-6. Sessions
-7. Review
+
+5. API 2
+
+   - Review de code en groupe
+   - *Une préparation vous sera demandée à remettre pour la session suivante*.
+
+6. [Base de données et ORM](/LW3L/slides/05-orm)
+
+   - Peer review du devoir de la session 5
+
+7. Préparation à l'examen et déploiement automatisé
 
 :::
