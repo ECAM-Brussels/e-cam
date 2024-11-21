@@ -10,6 +10,7 @@ import { getUser } from '~/lib/auth/session'
 
 type CodeProps = {
   class?: string
+  hideEditor?: boolean
   framework?: 'react'
   tailwind?: boolean
   lang: string
@@ -22,6 +23,7 @@ type CodeProps = {
 }
 
 const Editor = clientOnly(() => import('./PrismEditor'))
+const Dot = clientOnly(() => import('./Dot'))
 const Python = clientOnly(() => import('./Python'))
 
 export default function Code(props: CodeProps) {
@@ -55,42 +57,44 @@ export default function Code(props: CodeProps) {
 
   return (
     <div class={`m-8 ${props.class}`}>
-      <div class="flex items-end relative z-20">
-        <Show when={props.run}>
-          <button
-            class="block text-cyan-950 px-2 text-xl"
-            onClick={() => {
-              setCodeToRun('')
-              setCodeToRun(textarea.value)
-            }}
-          >
-            <Fa icon={faPlayCircle} />
-          </button>
-        </Show>
-        <div class="border rounded-xl shadow w-full">
-          <Editor
-            language={props.lang}
-            value={value()}
-            readOnly={props.readOnly}
-            onMount={(editor) => {
-              textarea = editor.textarea
-              textarea.addEventListener('blur', (event) => {
-                setValue(textarea.value)
-              })
-              textarea.addEventListener('keydown', (event) => {
-                if (event.code === 'Enter') {
-                  event.stopPropagation()
-                }
-                if (event.code === 'Enter' && (event.shiftKey || event.ctrlKey)) {
-                  event.preventDefault()
-                  setCodeToRun('')
-                  setCodeToRun(textarea.value)
-                }
-              })
-            }}
-          />
+      <Show when={!props.hideEditor}>
+        <div class="flex items-end relative z-20">
+          <Show when={props.run}>
+            <button
+              class="block text-cyan-950 px-2 text-xl"
+              onClick={() => {
+                setCodeToRun('')
+                setCodeToRun(textarea.value)
+              }}
+            >
+              <Fa icon={faPlayCircle} />
+            </button>
+          </Show>
+          <div class="border rounded-xl shadow w-full">
+            <Editor
+              language={props.lang}
+              value={value()}
+              readOnly={props.readOnly}
+              onMount={(editor) => {
+                textarea = editor.textarea
+                textarea.addEventListener('blur', (event) => {
+                  setValue(textarea.value)
+                })
+                textarea.addEventListener('keydown', (event) => {
+                  if (event.code === 'Enter') {
+                    event.stopPropagation()
+                  }
+                  if (event.code === 'Enter' && (event.shiftKey || event.ctrlKey)) {
+                    event.preventDefault()
+                    setCodeToRun('')
+                    setCodeToRun(textarea.value)
+                  }
+                })
+              }}
+            />
+          </div>
         </div>
-      </div>
+      </Show>
       <Show when={fragments().length > 1}>
         <Show
           when={user()?.admin || !props.hideUntil || now() >= new Date(props.hideUntil)}
@@ -121,6 +125,9 @@ export default function Code(props: CodeProps) {
       </Show>
       <Show when={props.lang === 'tsx' && props.run}>
         <Javascript value={codeToRun()} framework={props.framework} tailwind={props.tailwind} />
+      </Show>
+      <Show when={props.lang === 'dot' && props.run}>
+        <Dot value={codeToRun()} />
       </Show>
     </div>
   )
