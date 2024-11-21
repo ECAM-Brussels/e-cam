@@ -20,6 +20,11 @@ title: Web Technologies
 
 4. [API](/LW3L/slides/04-api)
 
+   Solutions:
+
+   - [Pokedex](/LW3L/solutions/pokedex)
+   - [Users (fullstack)](/LW3L/solutions/users)
+
 5. API 2
 
    - Review de code en groupe
