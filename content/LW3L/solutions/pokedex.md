@@ -66,7 +66,7 @@ title: Pokedex
           <Info label="Type" value={data.type} />
           <Info label="Weight" value={data.weight} />
           <Info label="Height" value={data.height} />
-          <audio controls ref={audio}>
+          <audio controls>
             <source src={data.audio} type="audio/ogg" />
           </audio>
         </dl>
