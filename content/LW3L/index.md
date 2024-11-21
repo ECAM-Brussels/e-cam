@@ -30,7 +30,7 @@ title: Web Technologies
    - Review de code en groupe
    - *Une préparation vous sera demandée à remettre pour la session suivante*.
 
-6. [Base de données et ORM](/LW3L/slides/05-orm)
+6. Base de données et ORM
 
    - Peer review du devoir de la session 5
 
