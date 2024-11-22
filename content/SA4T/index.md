@@ -14,7 +14,7 @@ lang: en
 1. [Divide and Conquer](/SA4T/slides/01-divide-and-conquer)
 2. [Dynamic programming](/SA4T/slides/02-dynamic-programming)
 3. [Greedy algorithms](/SA4T/slides/03-greedy)
-4. [Weighted Graphs](/SA4T/slides/04-graphs)
+4. [Unweighted Graphs](/SA4T/slides/04-graphs)
 5. Weighted Graphs
 6. PageRank and Advent of Code
 
