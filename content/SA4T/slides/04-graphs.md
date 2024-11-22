@@ -154,7 +154,10 @@ We try to track the parent node that brought us to the current node.
 
 # Shortest paths: implementation {.w-1--2}
 
-``` python
+``` python {.run hideUntil="2024-11-26 12:00"}
+def shortest_paths(adj, start):
+    pass
+# --- fragment
 def shortest_paths(adj, start):
     dist = {start: 0}
     queue = [start]
@@ -165,7 +168,6 @@ def shortest_paths(adj, start):
                 dist[neighbour] = dist[node] + 1
                 queue.append(neighbour)
     return dist
-# --- fragment
 ```
 
 # Sudoku {.w-1--2}
@@ -185,7 +187,12 @@ Write a code that solves any Sudoku grid.
 
 # Sudoku: implementation {.w-1--2}
 
-``` python {.run}
+``` python {.run hideUntil="2024-11-26 12:00"}
+def solve(grid: list[int]):
+    return grid
+
+solve(81*[0])
+# --- fragment
 def blacklist(grid: list[int], n: int) -> set[int]:
     i, j = n // 9, n % 9
     row = set(grid[9 * i + k] for k in range(9))
@@ -230,7 +237,13 @@ Part II: find the path itself.
 
 # Snakes and ladders: implementation {.w-1--2}
 
-``` python {.run}
+``` python {.run hideUntil="2024-11-26 12:00"}
+snakes = {17: 13, 52: 29, 57: 40, 62: 22, 88: 18, 95: 51, 97: 79}
+ladders = {3: 21, 8: 30, 28: 84, 58: 77, 75: 86, 80: 100, 90: 91} 
+
+def minimum_turns(snakes, ladders):
+    return 0
+# --- fragment
 snakes = {17: 13, 52: 29, 57: 40, 62: 22, 88: 18, 95: 51, 97: 79}
 ladders = {3: 21, 8: 30, 28: 84, 58: 77, 75: 86, 80: 100, 90: 91} 
 
@@ -298,8 +311,13 @@ and log at the beginning and at the end of an "exploration".
 
 # Topological sort: implementation {.w-1--2}
 
-``` python {.run}
-def topological_sort(adj: dict[any, set]):
+``` python {.run hideUntil="2024-11-26 12:00"}
+def topological_sort(adj: dict[any, set]) -> list:
+    return []
+
+topological_sort({ 1: {2}, 0: {1}, 2: {3}, 3: set() })
+# --- fragment
+def topological_sort(adj: dict[any, set]) -> list:
     visited = set()
     result = []
 
@@ -327,8 +345,11 @@ determine if it has a cycle (a loop).
 
 # Detecting cycles {.w-1--2}
 
-``` python {.run}
-def has_cycles(adj: dict[any, set]):
+``` python {.run hideUntil="2024-11-26 12:00"}
+def has_cycles(adj: dict[any, set]) -> bool:
+    return False
+# --- fragment
+def has_cycles(adj: dict[any, set]) -> bool:
     visited = set()
 
     def find_visited(start, parent) -> bool:
