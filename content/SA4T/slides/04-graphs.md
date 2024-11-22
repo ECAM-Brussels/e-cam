@@ -84,6 +84,11 @@ Depth-First Search (DFS)
 
 ``` python {.run .break-inside-avoid}
 def BFS(adj, start):
+    pass
+
+BFS({ 0: {1, 2}, 1: {3, 4}, 2: {5, 6}, 3: set(), 4: set(), 5: set(), 6: set() }, 0)
+# --- fragment
+def BFS(adj, start):
     visited = set()
     queue = [start]
     while queue:
@@ -109,6 +114,11 @@ digraph {
 # Depth-First Search {.columns-2}
 
 ``` python {.run .break-inside-avoid}
+def DFS(adj: dict[any, set]):
+    pass
+
+DFS({ 0: {1, 2}, 1: {3, 4}, 2: {5, 6}, 3: set(), 4: set(), 5: set(), 6: set() })
+# --- fragment
 def DFS(adj: dict[any, set]):
     visited = set()
 
