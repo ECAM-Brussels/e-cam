@@ -33,6 +33,36 @@ const urlParams = new URLSearchParams(queryString);
 urlParams.get('id') // 1
 ```
 
+# Paramètres dans l'URL côté backend {.w-1--2}
+
+```python
+import fastapi
+import pydantic
+
+app = fastapi.FastAPI()
+
+class User(pydantic.BaseModel):
+    first_name: str
+    last_name: str
+
+users: list[User] = [
+    User(first_name="Martin", last_name="Fockedey")
+]
+
+@app.get("/users/{user_id}")
+def read_user(user_id: int):
+    if user_id in range(len(users)):
+        raise HTTPException(status_code=404, detail="User not found")
+    return users[user_id]
+
+@app.put("/users/{user_id}")
+def update_user(user_id: int, user: User):
+    if user_id in range(len(users)):
+        raise HTTPException(status_code=404, detail="User not found")
+    users[user_id] = user
+    return user
+```
+
 # Bonus: éviter les 'race conditions' {.columns-2}
 
 ```tsx {.run framework="react"}
