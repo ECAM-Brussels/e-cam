@@ -7,6 +7,7 @@ lang: en
 
 ![](/images/SA4T.webp){.w-full .lg:max-h-96 .max-h-84 .object-cover .rounded-xl .opacity-70}
 
+:::::::::: {.lg:grid .lg:grid-cols-2 .gap-4}
 ::: {.bg-white .rounded-xl .p-4 .shadow}
 
 ## Provisional outline
@@ -18,9 +19,21 @@ lang: en
 5. Weighted Graphs
 6. PageRank and Advent of Code
 
+:::
+
+::: {.bg-white .rounded-xl .p-4 .shadow}
 ## Assessment
 
 - 30%: Advent of Code
-- 70%: oral exam
+- 20%: PageRank
+- 50%: oral exam
 
+#### Algorithms to know
+
+- Merge sort, quicksort
+- Longest common subsequence
+- Huffman encoding
+- BFS, DFS, Shortest paths, topological sort
+- Dijkstra, A*, PageRank
 :::
+::::::::::

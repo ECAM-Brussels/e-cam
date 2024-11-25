@@ -25,7 +25,7 @@ title: Web Technologies
    - [Pokedex](/LW3L/solutions/pokedex)
    - [Users (fullstack)](/LW3L/solutions/users)
 
-5. API 2
+5. [CRUD](/LW3L/slides/05-crud)
 
    - Review de code en groupe
    - *Une préparation vous sera demandée à remettre pour la session suivante*.
