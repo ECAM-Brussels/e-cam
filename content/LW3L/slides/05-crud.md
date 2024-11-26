@@ -9,7 +9,7 @@ slideshow: true
 Construisez un blog qui vérifie les contraintes suivantes:
 
 - La page `/` affiche la liste des articles
-- La page `/post.html?id=1` affiche le premier post
+- La page `/article.html?id=3` affiche le troisième article
 - La page `/admin.html` affiche l'ensemble des articles en permettant de les modifier, supprimer,
   et comporte un lien qui permet de créer un article.
 - Les articles sont stockés sur un backend (FastAPI)
