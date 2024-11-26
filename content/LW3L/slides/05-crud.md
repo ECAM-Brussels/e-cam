@@ -51,13 +51,13 @@ users: list[User] = [
 
 @app.get("/users/{user_id}")
 def read_user(user_id: int):
-    if user_id in range(len(users)):
+    if user_id not in range(len(users)):
         raise HTTPException(status_code=404, detail="User not found")
     return users[user_id]
 
 @app.put("/users/{user_id}")
 def update_user(user_id: int, user: User):
-    if user_id in range(len(users)):
+    if user_id not in range(len(users)):
         raise HTTPException(status_code=404, detail="User not found")
     users[user_id] = user
     return user
