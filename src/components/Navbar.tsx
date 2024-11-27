@@ -8,7 +8,7 @@ import { getUser, logout } from '~/lib/auth/session'
 export default function Navbar() {
   const user = createAsync(() => getUser())
   return (
-    <div class="bg-white border-b border-b-gray-200 mb-6 shadow-md shadow-teal-900/5 sticky top-0 z-10">
+    <div class="bg-white border-b border-b-gray-200 mb-6 shadow-md shadow-teal-900/5 sticky top-0 z-40">
       <nav class="container mx-auto flex items-end justify-between">
         <ul class="flex items-center">
           <NavbarItem class="font-bold text-2xl text-slate-600 border-b-0" href="/">
