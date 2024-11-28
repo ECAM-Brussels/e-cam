@@ -35,5 +35,15 @@ lang: en
 - Huffman encoding
 - BFS, DFS, Shortest paths, topological sort
 - Dijkstra, A*, PageRank
+
+#### Possible questions
+
+This list is non-exhaustive.
+
+- Apply a known algorithm on a given example
+- Give the time complexity of an algorithm and justify
+- Implementation small variations of an algorithm studied in class
+  (parent pointers, different input, different output, etc.)
+- Explain the key ideas of the course (divide and conquer, dynamic programming, priority queues, etc.)
 :::
 ::::::::::
