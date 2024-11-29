@@ -88,6 +88,7 @@ def BFS(adj, start):
 
 BFS({ 0: {1, 2}, 1: {3, 4}, 2: {5, 6}, 3: set(), 4: set(), 5: set(), 6: set() }, 0)
 # --- fragment
+# Complexity: O(V + E)
 def BFS(adj, start):
     visited = set()
     queue = [start]
@@ -119,6 +120,7 @@ def DFS(adj: dict[any, set]):
 
 DFS({ 0: {1, 2}, 1: {3, 4}, 2: {5, 6}, 3: set(), 4: set(), 5: set(), 6: set() })
 # --- fragment
+# Complexity: O(V + E)
 def DFS(adj: dict[any, set]):
     visited = set()
 
@@ -168,6 +170,7 @@ We try to track the parent node that brought us to the current node.
 def shortest_paths(adj, start):
     pass
 # --- fragment
+# Complexity: O(V + E)
 def shortest_paths(adj, start):
     dist = {start: 0}
     queue = [start]
@@ -327,6 +330,7 @@ def topological_sort(adj: dict[any, set]) -> list:
 
 topological_sort({ 1: {2}, 0: {1}, 2: {3}, 3: set() })
 # --- fragment
+# Complexity: O(V + E)
 def topological_sort(adj: dict[any, set]) -> list:
     visited = set()
     result = []

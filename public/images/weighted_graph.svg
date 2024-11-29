@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="Layer_2"
+   x="0px"
+   y="0px"
+   width="350"
+   height="200"
+   viewBox="0 0 350 200"
+   enable-background="new 0 0 430 195"
+   xml:space="preserve"
+   sodipodi:docname="Weighted_Graph.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="1701"
+   inkscape:window-height="917"
+   id="namedview65"
+   showgrid="false"
+   inkscape:zoom="1.7209302"
+   inkscape:cx="192.43846"
+   inkscape:cy="124.51884"
+   inkscape:window-x="0"
+   inkscape:window-y="27"
+   inkscape:window-maximized="0"
+   inkscape:current-layer="Layer_2" /><metadata
+   id="metadata69"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+   id="defs67"><radialGradient
+     inkscape:collect="always"
+     xlink:href="#path5436_1_"
+     id="radialGradient988"
+     gradientUnits="userSpaceOnUse"
+     cx="4.25"
+     cy="-4.25"
+     r="14.5" /></defs>
+<symbol
+   viewBox="-15.052 -15.052 30.103 30.103"
+   id="New_Symbol"
+   transform="translate(0,5)">
+	<radialGradient
+   gradientUnits="userSpaceOnUse"
+   r="14.5"
+   cy="-4.25"
+   cx="4.25"
+   id="path5436_1_">
+		<stop
+   id="stop2"
+   style="stop-color:#1E71FF"
+   offset="0" />
+		<stop
+   id="stop4"
+   style="stop-color:#679FFF"
+   offset="1" />
+	</radialGradient>
+	<path
+   d="M 14.5,0 C 14.5,-8.008 8.008,-14.5 0,-14.5 -8.008,-14.5 -14.5,-8.008 -14.5,0 -14.5,8.008 -8.008,14.5 0,14.5 8.008,14.5 14.5,8.008 14.5,0 Z"
+   id="path5436_3_"
+   inkscape:connector-curvature="0"
+   style="fill:url(#radialGradient988);stroke:#000000;stroke-width:1.10339999" />
+</symbol>
+<path
+   style="fill:none;stroke:#000000"
+   inkscape:connector-curvature="0"
+   d="M 125.62162,76.567 70.621622,110.86101"
+   id="path5464" />
+<path
+   style="fill:none;stroke:#000000"
+   inkscape:connector-curvature="0"
+   d="m 70.621622,132.71501 35.999998,30"
+   id="path5466" />
+<path
+   style="fill:none;stroke:#000000"
+   inkscape:connector-curvature="0"
+   d="M 124.26062,160.21501 137.98362,82.215"
+   id="path5468" />
+<path
+   style="fill:none;stroke:#000000"
+   inkscape:connector-curvature="0"
+   d="M 132.46662,160.21501 217.77762,42.215"
+   id="path5470" />
+<path
+   style="fill:none;stroke:#000000"
+   inkscape:connector-curvature="0"
+   d="m 152.80962,82.215 53.625,66.00001"
+   id="path5472" />
+<path
+   style="fill:none;stroke:#000000"
+   inkscape:connector-curvature="0"
+   d="m 233.62162,149.75301 48,-43.076"
+   id="path5474" />
+<path
+   style="fill:none;stroke:#000000"
+   inkscape:connector-curvature="0"
+   d="m 281.62162,78.655 -38,-36.882"
+   id="path5476" />
+
+
+
+
+
+<use
+   style="overflow:visible"
+   overflow="visible"
+   transform="matrix(1,0,0,-1,228.62112,32.2153)"
+   y="-15.052"
+   x="-15.052"
+   id="XMLID_1_"
+   height="30.103001"
+   width="30.103001"
+   xlink:href="#New_Symbol" />
+
+<use
+   style="overflow:visible"
+   id="use24"
+   enable-background="new    "
+   overflow="visible"
+   transform="matrix(1,0,0,-1,55.621122,125.21481)"
+   y="-15.052"
+   x="-15.052"
+   height="30.103001"
+   width="30.103001"
+   xlink:href="#New_Symbol" />
+<use
+   style="overflow:visible"
+   id="use26"
+   enable-background="new    "
+   overflow="visible"
+   transform="matrix(1,0,0,-1,140.62112,72.2153)"
+   y="-15.052"
+   x="-15.052"
+   height="30.103001"
+   width="30.103001"
+   xlink:href="#New_Symbol" />
+<use
+   style="overflow:visible"
+   id="use28"
+   enable-background="new    "
+   overflow="visible"
+   transform="matrix(1,0,0,-1,296.62162,98.215304)"
+   y="-15.052"
+   x="-15.052"
+   height="30.103001"
+   width="30.103001"
+   xlink:href="#New_Symbol" />
+<use
+   style="overflow:visible"
+   id="use30"
+   enable-background="new    "
+   overflow="visible"
+   transform="matrix(1,0,0,-1,121.62112,180.21481)"
+   y="-15.052"
+   x="-15.052"
+   height="30.103001"
+   width="30.103001"
+   xlink:href="#New_Symbol" />
+
+<use
+   style="overflow:visible"
+   id="use34"
+   enable-background="new    "
+   overflow="visible"
+   transform="matrix(1,0,0,-1,218.62112,168.21481)"
+   y="-15.052"
+   x="-15.052"
+   height="30.103001"
+   width="30.103001"
+   xlink:href="#New_Symbol" />
+
+
+<text
+   style="font-size:17px;font-family:'Liberation Sans'"
+   y="68.564499"
+   x="185.12163"
+   id="text40"
+   font-size="17">1</text>
+
+
+<text
+   style="font-size:17px;font-family:'Liberation Sans'"
+   y="128.21481"
+   x="193.12163"
+   id="text42"
+   font-size="17">1</text>
+
+
+
+<text
+   style="font-size:17px;font-family:'Liberation Sans'"
+   y="124.71481"
+   x="117.1216"
+   id="text46"
+   font-size="17">2</text>
+
+
+<text
+   style="font-size:17px;font-family:'Liberation Sans'"
+   y="62.214798"
+   x="273.62161"
+   id="text48"
+   font-size="17">2</text>
+
+
+
+
+
+<text
+   style="font-size:17px;font-family:'Liberation Sans'"
+   y="90.714798"
+   x="84.621628"
+   id="text56"
+   font-size="17">4</text>
+
+
+<text
+   style="font-size:17px;font-family:'Liberation Sans'"
+   y="163.21481"
+   x="74.62162"
+   id="text58"
+   font-size="17">4</text>
+
+
+<text
+   style="font-size:17px;font-family:'Liberation Sans'"
+   y="122.21581"
+   x="253.12163"
+   id="text60"
+   font-size="17">4</text>
+
+
+
+<text
+   id="text878"
+   y="127.36485"
+   x="48.171551"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:22.96228409px;line-height:1.25;font-family:'Baekmuk Dotum';-inkscape-font-specification:'Baekmuk Dotum';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1"
+   xml:space="preserve"><tspan
+     y="127.36485"
+     x="48.171551"
+     id="tspan876"
+     sodipodi:role="line"
+     style="stroke-width:1">A</tspan></text>
+
+
+<text
+   id="text918"
+   y="75.559372"
+   x="136.59583"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:22.96228409px;line-height:1.25;font-family:'Baekmuk Dotum';-inkscape-font-specification:'Baekmuk Dotum';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1"
+   xml:space="preserve"><tspan
+     id="tspan916"
+     style="stroke-width:1">B</tspan></text>
+<text
+   id="text922"
+   y="185.03326"
+   x="112.83638"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:22.96228409px;line-height:1.25;font-family:'Baekmuk Dotum';-inkscape-font-specification:'Baekmuk Dotum';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1"
+   xml:space="preserve"><tspan
+     id="tspan920"
+     style="stroke-width:1">C</tspan></text>
+<text
+   id="text926"
+   y="36.303524"
+   x="221.21762"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:22.96228409px;line-height:1.25;font-family:'Baekmuk Dotum';-inkscape-font-specification:'Baekmuk Dotum';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1"
+   xml:space="preserve"><tspan
+     id="tspan924"
+     style="stroke-width:1">D</tspan></text>
+<text
+   id="text930"
+   y="169.95218"
+   x="212.80151"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:22.96228409px;line-height:1.25;font-family:'Baekmuk Dotum';-inkscape-font-specification:'Baekmuk Dotum';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1"
+   xml:space="preserve"><tspan
+     id="tspan928"
+     style="stroke-width:1">E</tspan></text>
+<text
+   id="text934"
+   y="101.96568"
+   x="290.38541"
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:22.96228409px;line-height:1.25;font-family:'Baekmuk Dotum';-inkscape-font-specification:'Baekmuk Dotum';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1"
+   xml:space="preserve"><tspan
+     id="tspan932"
+     style="stroke-width:1">F</tspan></text>
+</svg>
