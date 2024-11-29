@@ -2,7 +2,7 @@
 title: Base de données
 ---
 
-:::::::::: {.bg-white .rounded-xl .shadow .px-4 .py-8}
+:::::::::: {.bg-white .border .rounded-xl .shadow .px-4 .py-8}
 
 # ORM
 
