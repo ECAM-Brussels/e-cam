@@ -5,12 +5,22 @@ type JavascriptProps = Props & {
   framework?: 'react'
 }
 
-function fixImports(code: string): string {
+function fixCode(code: string): string {
   code = code.replace(
     /(import\s+(\w+,?\s*)?(\{[^}]*\})?\s*(from\s*)?)['"](.+)['"]\s*;?/gm,
     (_, begin, __, ___, ____, packageName) => `${begin}'${packageName}';`,
   )
-  return code
+  const prefix = dedent`
+    const _logs = []
+    const _node = document.createElement('pre')
+    document.body.appendChild(_node)
+    console.log = function (...args) {
+      _logs.push(args.join(' '))
+      _node.innerText = _logs.join('\\n')
+    }
+
+  `
+  return prefix + code
 }
 
 export default function Javascript(props: JavascriptProps) {
@@ -23,13 +33,17 @@ export default function Javascript(props: JavascriptProps) {
         <script type="text/babel" data-presets="react" data-type="module">
         import React, { useState, useEffect, useMemo } from 'https://esm.sh/react';
         import ReactDOM from 'https://esm.sh/react-dom';
-        ${fixImports(props.value)}
+        ${fixCode(props.value)}
         const root = ReactDOM.createRoot(document.getElementById('app'));
         root.render(React.createElement(App, null));
         </script>
       `
     }
-    return props.value
+    return dedent`
+      <script>
+      ${fixCode(props.value)}
+      </script>
+    `
   }
   return <Html {...props} value={code()} />
 }
