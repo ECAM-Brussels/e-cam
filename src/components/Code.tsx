@@ -29,13 +29,16 @@ const Python = clientOnly(() => import('./Python'))
 export default function Code(props: CodeProps) {
   const [value, setValue] = createSignal('')
   const [index, setIndex] = createSignal(0)
-  const fragments = () => props.value.split(/^.*---\s*fragment$/m).map((p) => p.trim())
+  const parts = () => props.value.split(/^.*---\s*start$/m).map((p) => p.trim())
+  const before = () => parts().length === 1 ? "" : parts()[0] + "\n"
+  const main = () => parts().length <= 1 ? props.value : parts()[1]
+  const fragments = () => main().split(/^.*---\s*fragment$/m).map((p) => p.trim())
 
   const [codeToRun, setCodeToRun] = createSignal(props.runImmediately ? props.value : '')
   createEffect(() => {
     const value = fragments()[index() % fragments().length]
     setValue(value)
-    setCodeToRun(props.runImmediately ? value : '')
+    setCodeToRun(props.runImmediately ? before() + value : '')
   })
   createEffect(
     on(value, () => {
@@ -64,7 +67,7 @@ export default function Code(props: CodeProps) {
               class="block text-cyan-950 px-2 text-xl"
               onClick={() => {
                 setCodeToRun('')
-                setCodeToRun(textarea.value)
+                setCodeToRun(before() + textarea.value)
               }}
             >
               <Fa icon={faPlayCircle} />
