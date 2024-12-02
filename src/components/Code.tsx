@@ -30,9 +30,12 @@ export default function Code(props: CodeProps) {
   const [value, setValue] = createSignal('')
   const [index, setIndex] = createSignal(0)
   const parts = () => props.value.split(/^.*---\s*start$/m).map((p) => p.trim())
-  const before = () => parts().length === 1 ? "" : parts()[0] + "\n"
-  const main = () => parts().length <= 1 ? props.value : parts()[1]
-  const fragments = () => main().split(/^.*---\s*fragment$/m).map((p) => p.trim())
+  const before = () => (parts().length === 1 ? '' : parts()[0] + '\n')
+  const main = () => (parts().length <= 1 ? props.value : parts()[1])
+  const fragments = () =>
+    main()
+      .split(/^.*---\s*fragment$/m)
+      .map((p) => p.trim())
 
   const [codeToRun, setCodeToRun] = createSignal(props.runImmediately ? props.value : '')
   createEffect(() => {
@@ -126,7 +129,9 @@ export default function Code(props: CodeProps) {
       <Show when={props.lang === 'html' && props.run}>
         <Html value={codeToRun()} tailwind={props.tailwind} />
       </Show>
-      <Show when={props.lang === 'tsx' && props.run}>
+      <Show
+        when={['tsx', 'js', 'ts', 'javascript', 'typescript'].includes(props.lang) && props.run}
+      >
         <Javascript value={codeToRun()} framework={props.framework} tailwind={props.tailwind} />
       </Show>
       <Show when={props.lang === 'dot' && props.run}>
