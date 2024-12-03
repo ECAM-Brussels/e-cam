@@ -15,6 +15,10 @@ Your aim is to rank all the pages by order of importance
 and implement a basic search function.
 :::
 
+Extra credit: implement PageRank with a **damping factor**.
+You need to find out what it is yourself,
+and understand **why** a damping factor is necessary.
+
 # Random browsing {.w-1--2}
 
 ![](/images/random_browsing.webp){.w-2--3 .m-auto}
@@ -93,31 +97,44 @@ $$
 $$
 \begin{align*}
 T_{ij} 
-&= \text{probability of going to}\ i\ \text{from}\ j\\
+&= \text{probability of from}\ j\ \text{to}\ i\\
 &= P(X^{(k + 1)} = i \,|\, X^{(k)} = j)
 \end{align*}
 $$
 :::
 
-::: proposition
-$$
-\vec p^{(k + 1)}
-=
-T
-\vec p^{(k)}
-$$
+::: example
+![](/images/pagerank-graph.png){.w-2--3 .m-auto}
 :::
 
+# Stochastic matrix {.grid .grid-cols-2}
+
+::::: col
+::: proposition
 $$
-\begin{align*}
-(T \vec p^k)_i
-&= \sum_{j = 1}^n
-\underbrace{P(X^{(k + 1)} = i \, | \, X^{(k)} = j)}_{T_{ij}}
-\underbrace{P(X^{(k)} = j)}_{\vec p^{(k)}_j}\\
-&= P(X^{(k + 1)} = i)\\
-&= \vec p^{(k + 1)}_i
-\end{align*}
+\underbrace{\vec p^{(k + 1)}}_{\text{probabilities after } k + 1 \text{ clicks}}
+=
+\overbrace{T}^{\text{stochastic matrix}}
+\underbrace{\vec p^{(k)}}_{\text{probabilities after } k \text{ clicks}}
 $$
+:::
+:::::
+
+::::: col
+```python {.run}
+from numpy import matrix
+T = matrix([
+    [0, 0, 1, 1/2],
+    [1/3, 0, 0, 0],
+    [1/3, 1/2, 0, 1/2],
+    [1/3, 1/2, 0, 0],
+])
+p = matrix([[1/4], [1/4], [1/4], [1/4]])
+for i in range(100):
+   p = T*p
+p
+```
+:::::
 
 # Stopping criterion {.w-1--2}
 
