@@ -33,6 +33,8 @@ BONUS:
 Si vous n'avez pas au moins un site servi sur le port 80,
 vous serez plafonné à 9.5.
 :::
+
+Note à moi-même: **évaluation** du cours.
 :::::
 
 # Déploiement {.w-1--2}
