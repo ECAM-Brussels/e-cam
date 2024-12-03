@@ -34,6 +34,6 @@ title: Web Technologies
 
    - Peer review du devoir de la session 5
 
-7. Préparation à l'examen et déploiement automatisé
+7. [Préparation à l'examen et déploiement automatisé](/LW3L/slides/07-deployment)
 
 :::
