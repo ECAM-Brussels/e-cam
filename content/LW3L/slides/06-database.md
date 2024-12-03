@@ -1,19 +1,37 @@
 ---
 title: Base de données
+slideshow: true
 ---
 
-:::::::::: {.bg-white .border .rounded-xl .shadow .px-4 .py-8}
+# ORM {.grid .grid-cols-2}
 
-# ORM
-
+::: col
 L'idée centrale d'un ORM est l'utilisation d'une classe
 pour représenter la structure d'une table SQL.
 Les instances de cette classe représenteront des entrées dans la table.
 
+```python
+import sqlmodel
+
+class User(sqlmodel.SQLModel, table=True):
+    id: int | None = sqlmodel.Field(primary_key=True)
+    first_name: str
+    last_name: str
+```
+
 Cette idée devrait déjà être familière,
 puisque nous employons déjà une classe pour la validation (avec Pydantic).
+:::
 
-# Installation
+::::: col
+::: exercise
+1. Modifiez le blog pour qu'il emploie une base de données
+
+2. Créez une application TODO qui emploie une base de données.
+:::
+:::::
+
+# Installation {.w-1--2}
 
 Nous emploierons `SQLModel`, qui intègre l'ORM `SQLAlchemy` avec FastApi et Pydantic.
 
@@ -21,9 +39,8 @@ Nous emploierons `SQLModel`, qui intègre l'ORM `SQLAlchemy` avec FastApi et Pyd
 pip install sqlmodel
 ```
 
-# Exemple
+# Exemple {.grid .grid-cols-2}
 
-::::: {.grid .grid-cols-2}
 ```python
 import fastapi
 import fastapi.staticfiles
@@ -89,7 +106,7 @@ def delete_user(user_id: int) -> User:
 app.mount("/", fastapi.staticfiles.StaticFiles(directory="static", html=True))
 ```
 
-::: div
+::: column
 #### Explications
 
 - Lignes 7-10: création d'un modèle **associé à une table SQL**.
@@ -108,6 +125,3 @@ app.mount("/", fastapi.staticfiles.StaticFiles(directory="static", html=True))
 
 - Lignes 27-30: requête pour voir tous les utilisateurs.
 :::
-:::::
-
-::::::::::
