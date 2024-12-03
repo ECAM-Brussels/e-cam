@@ -17,7 +17,7 @@ lang: en
 3. [Greedy algorithms](/SA4T/slides/03-greedy)
 4. [Unweighted Graphs](/SA4T/slides/04-graphs)
 5. [Weighted Graphs](/SA4T/slides/05-graphs)
-6. PageRank and Advent of Code
+6. [PageRank](/SA4T/slides/06-pagerank) and Advent of Code
 
 :::
 
