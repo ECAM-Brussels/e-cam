@@ -13,9 +13,9 @@ Exercice `CRUD` employant React et une base de données
 | Critère                                       | /10 |
 | --------------------------------------------- | --: |
 | Persistence des données (modèle SQL)          |   1 |
-| Fonctionnalité (Create, Read, Update, Delete) |   4 |
-| Qualité du code (Lint, Python, JavaScript)    |   3 |
-| Interface (Apparence, Accessibilité)          |   2 |
+| Fonctionnalité (Create, Read, Update, Delete) |   6 |
+| Qualité du code (Lint, Python, JavaScript)    |   2 |
+| Interface (Apparence, Accessibilité)          |   1 |
 
 BONUS:
 
