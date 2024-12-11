@@ -42,8 +42,7 @@ Note à moi-même: **évaluation** du cours.
 À effectuer la première fois
 
 ``` bash
-sudo apt install python3-pip
-pip install fastapi[standard] sqlmodel
+sudo apt install python3-fastapi python3-sqlmodel
 ```
 
 À effectuer à chaque changement
