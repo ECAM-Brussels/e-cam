@@ -48,7 +48,7 @@ sudo apt install python3-fastapi python3-sqlmodel
 À effectuer à chaque changement
 
 ``` bash
-python3 -m fastapi run main.py
+sudo python3 -m uvicorn app:app --port 80 --reload
 ```
 
 ::: remark
