@@ -9,10 +9,10 @@ slideshow: true
 const effects = {
   running: [],
   get current() {
-    return this.stack[this.stack.length - 1]
+    return this.running[this.running.length - 1]
   },
   run(effect) {
-    function wrappedEffect() {
+    const wrappedEffect = () =>
       this.running.push(wrappedEffect)
       effect()
       this.running.pop()
@@ -43,8 +43,20 @@ function createEffect(callback) {
 # `createSignal` {.grid .grid-cols-2}
 
 ``` js {.run}
-console.log('hello')
-console.log('hello')
+const effects = {
+  running: [],
+  get current() {
+    return this.running[this.running.length - 1]
+  },
+  run(effect) {
+    const wrappedEffect = () => {
+      this.running.push(wrappedEffect)
+      effect()
+      this.running.pop()
+    }
+    wrappedEffect()
+  },
+}
 // --- start
 function createSignal(value) {
   const subscribers = new Set()
@@ -89,3 +101,72 @@ because it needs to be rerun when `read()` changes.
 3. Change the signal value,
     and rerun all the dependent effects.
 :::::
+
+# Wrapping it up {.grid .grid-cols-2}
+
+``` js
+const effects = []
+
+function createEffect(effect) {
+  function wrappedEffect() {
+    effects.push(wrappedEffect)
+    effect()
+    effects.pop()
+  }
+  wrappedEffect()
+}
+
+function createSignal(value) {
+  const subscribers = new Set()
+  const read = () => {
+    if (effects) {
+      subscribers.add(effects[effects.length - 1])
+    }
+    return value
+  }
+  const write = (newValue) => {
+    value = newValue
+    subscribers.forEach(effect => effect())
+  }
+  return [read, write]
+}
+```
+
+``` js {.run}
+const effects = []
+
+function createEffect(effect) {
+  function wrappedEffect() {
+    effects.push(wrappedEffect)
+    effect()
+    effects.pop()
+  }
+  wrappedEffect()
+}
+
+function createSignal(value) {
+  const subscribers = new Set()
+  const read = () => {
+    if (effects) {
+      subscribers.add(effects[effects.length - 1])
+    }
+    return value
+  }
+  const write = (newValue) => {
+    value = newValue
+    subscribers.forEach(effect => effect())
+  }
+  return [read, write]
+}
+// --- start
+const [signal, setSignal] = createSignal(0)
+
+createEffect(() => {
+  console.log('signal has been changed to', signal())
+})
+
+setSignal(1)
+setSignal(2)
+setSignal(3)
+setSignal(4)
+```

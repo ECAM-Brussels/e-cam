@@ -31,8 +31,8 @@ export default function Javascript(props: JavascriptProps) {
         <div id="app">
         </div>
         <script type="text/babel" data-presets="react" data-type="module">
-        import React, { useState, useEffect, useMemo } from 'https://esm.sh/react';
-        import ReactDOM from 'https://esm.sh/react-dom';
+        import React, { useState, useEffect, useMemo } from 'https://esm.sh/react@18';
+        import ReactDOM from 'https://esm.sh/react-dom@18';
         ${fixCode(props.value)}
         const root = ReactDOM.createRoot(document.getElementById('app'));
         root.render(React.createElement(App, null));

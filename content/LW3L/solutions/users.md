@@ -10,8 +10,8 @@ title: Users
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <div id="app"></div>
 <script type="text/babel" data-presets="react" data-type="module">
-  import React from "https://esm.sh/react";
-  import ReactDOM from "https://esm.sh/react-dom";
+  import React from "https://esm.sh/react@18";
+  import ReactDOM from "https://esm.sh/react-dom@18";
 
   function App() {
     const [users, setUsers] = React.useState([]);
