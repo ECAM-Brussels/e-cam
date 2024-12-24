@@ -1,5 +1,11 @@
-import ExerciseSequence, { type Exercise as ExerciseProps } from '~/components/ExerciseSequence'
+import ExerciseSequence from '~/components/ExerciseSequence'
+
+type ExerciseProps = {
+  id?: string
+  data: string
+}
 
 export default function Exercise(props: ExerciseProps) {
-  return <ExerciseSequence data={[props]} />
+  const data = () => JSON.parse(props.data)
+  return <ExerciseSequence id={props.id} data={[data()]} />
 }
