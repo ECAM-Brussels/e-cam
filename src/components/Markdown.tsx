@@ -4,6 +4,7 @@ import { math, mathHtml } from 'micromark-extension-math'
 type MarkdownProps = {
   class?: string
   value: string
+  noprose?: boolean
 }
 
 export default function Markdown(props: MarkdownProps) {
@@ -12,5 +13,11 @@ export default function Markdown(props: MarkdownProps) {
       extensions: [math()],
       htmlExtensions: [mathHtml()],
     })
-  return <span class={`prose max-w-none ${props.class}`} innerHTML={html()} />
+  return (
+    <span
+      class={`max-w-none ${props.class}`}
+      classList={{ prose: !props.noprose }}
+      innerHTML={html()}
+    />
+  )
 }

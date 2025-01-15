@@ -23,7 +23,7 @@ export default function Slide(props: SlideProps) {
       <div
         class={props.class}
         classList={{
-          'h-full': true,
+          'h-[58rem]': true,
           'overflow-y-auto': true,
           prose: true,
           'prose-2xl': true,

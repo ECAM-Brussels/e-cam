@@ -1,6 +1,7 @@
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { For } from 'solid-js'
 import Fa from '~/components/Fa'
+import Markdown from './Markdown'
 
 type Message = {
   incoming?: boolean
@@ -24,7 +25,7 @@ function Message(props: Message) {
           'text-zinc-800': props.incoming,
         }}
       >
-        {props.text}
+        <Markdown value={props.text} noprose class="" />
       </div>
     </div>
   )
@@ -32,7 +33,7 @@ function Message(props: Message) {
 
 export default function Conversation(props: Props) {
   return (
-    <div class="border border-zinc-200 w-96">
+    <div class="border border-zinc-200 w-96 not-prose">
       <div class="text-center font-semibold bg-zinc-50 text-slate-700 border-b border-zinc-200 py-2">
         {props.recipient}
       </div>
