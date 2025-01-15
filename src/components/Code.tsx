@@ -5,7 +5,6 @@ import { formatDistance } from 'date-fns'
 import { createEffect, createSignal, on, onCleanup, Show } from 'solid-js'
 import Fa from '~/components/Fa'
 import Html from '~/components/Html'
-import Javascript from '~/components/Javascript'
 import { getUser } from '~/lib/auth/session'
 
 type CodeProps = {
@@ -24,6 +23,7 @@ type CodeProps = {
 
 const Editor = clientOnly(() => import('./PrismEditor'))
 const Dot = clientOnly(() => import('./Dot'))
+const Javascript = clientOnly(() => import('./Javascript'))
 const Python = clientOnly(() => import('./Python'))
 
 export default function Code(props: CodeProps) {
