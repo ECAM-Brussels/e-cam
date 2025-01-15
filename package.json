@@ -28,6 +28,7 @@
     "katex": "^0.16.11",
     "lodash-es": "^4.17.21",
     "mathlive": "^0.100.0",
+    "mermaid": "^11.4.1",
     "micromark": "^4.0.0",
     "micromark-extension-math": "^3.1.0",
     "node-env-run": "^4.0.2",
