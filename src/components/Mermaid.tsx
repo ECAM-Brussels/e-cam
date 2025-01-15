@@ -9,16 +9,19 @@ type MermaidProps = {
 
 export default function Mermaid(props: MermaidProps) {
   const [svg] = createResource(
-    () => [props.value, props.class],
-    async ([value, cls]) => {
-      const { svg } = await mermaid.render(createUniqueId(), value || '')
-      return svg.replace('<svg', `<svg class="${cls}"`)
+    () => props.value,
+    async (value) => {
+      const { svg } = await mermaid.render(createUniqueId(), value)
+      return svg
     },
   )
 
   return (
     <Suspense fallback={<Spinner />}>
-      <span innerHTML={svg()} />
+      <img
+        class={`no-prose max-w-[750px] ${props.class}`}
+        src={`data:image/svg+xml,${encodeURIComponent(svg() || '')}`}
+      />
     </Suspense>
   )
 }
