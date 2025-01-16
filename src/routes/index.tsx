@@ -24,6 +24,11 @@ const courses: Course[] = [
     title: 'Web Technologies',
   },
   {
+    href: '/AW4C/',
+    src: '/images/LW3L.png',
+    title: 'Web Architecture for Business Analysts',
+  },
+  {
     href: '/SA4T/',
     src: '/images/SA4T.webp',
     title: 'Algorithms',
