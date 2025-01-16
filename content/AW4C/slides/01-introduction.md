@@ -323,11 +323,13 @@ sequenceDiagram
 - Simply by copying the cookie(s) of a victim,
   you can usurp their identity.
 
-# Exercise: sequence diagrams
+# Exercise: sequence diagrams {.w-1--2}
 
 ::: exercise
-#. Draw a sequence diagram
-   of a visit
+#. Draw a sequence diagram to explain how a website could implement a darkmode
+   for their users.
+#. Draw a sequence diagram of a user logging in to a website
+   to access a private admin space.
 :::
 
 # HyperText Markup Language {.w-1--2}
