@@ -122,6 +122,10 @@ Think of it as a *telephone directory* or the *Contact* application of your phon
 On the web, client-server communications follow the **HTTP** protocol
 (HTTP: 80, HTTPS: 443).
 
+# Rise of mobile devices {.w-1--2}
+
+![](https://firstsiteguide.com/wp-content/uploads/2021/03/desktop-vs.-mobile-market-share-worldwide-708x1024.png){.w-3--5}
+
 # Client-Server Model {.w-1--2}
 
 - Clients can access their data from multiple devices,
@@ -323,6 +327,12 @@ sequenceDiagram
 - Simply by copying the cookie(s) of a victim,
   you can usurp their identity.
 
+# Demos
+
+1. Cookie theft
+
+2. Guessing the cookie
+
 # Exercise: sequence diagrams {.w-1--2}
 
 ::: exercise
@@ -442,7 +452,7 @@ A web page is represented as a tree.
 
 # JavaScript {.w-1--2}
 
-![](https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png){.w-96 .mx-auto}
+![](https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png){.w-72 .mx-auto}
 
 ::: definition
 JavaScript is a **programming language** (like Python, PHP, etc.)
@@ -452,6 +462,9 @@ which has the particularity that it can run in the browser and manipulate the DO
 - Appeared in 1995
 - Filename extension: `.js`
 - 99% of Websites use client-side JavaScript
+
+*Any application that can be written in JavaScript, will eventually be written in JavaScript*
+(Jeff Atwood, founder of StackExchange)
 
 # JavaScript: DOM manipulations
 
@@ -495,3 +508,19 @@ sequenceDiagram
 - It works for other extensions
 - Folders such as `/folder/` display `/folder/index.html`
 :::
+
+# Why the Web
+
+![](https://dx1ienyxpbg1x.cloudfront.net/index_dev/articles/gallery_images/1721736888583863258_10_blob)
+
+# Why build for the Web?
+
+::: question
+Why build for the web?
+:::
+
+- **Scalability** and **reach**
+
+- **Data-driven insights**
+
+- **Ease of deployment and maintenance**
