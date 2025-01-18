@@ -1,10 +1,10 @@
 import dedent from 'dedent-js'
 import { createResource } from 'solid-js'
 import Html, { type Props } from '~/components/Html'
-import { transform } from '~/lib/repl/babel'
+import { svelteTransform, transform } from '~/lib/repl/babel'
 
 type JavascriptProps = Props & {
-  framework?: 'react' | 'solid'
+  framework?: 'react' | 'solid' | 'svelte'
 }
 
 function fixCode(code: string): string {
@@ -48,6 +48,17 @@ export default function Javascript(props: JavascriptProps) {
         ${value}
         import { render } from "https://esm.sh/solid-js/web";
         render(App, document.body)
+        </script>
+      `
+    } else if (props.framework === 'svelte') {
+      value = await svelteTransform(value)
+      return dedent`
+        <div id="app">
+        </div>
+        <script type="module">
+        ${value}
+        import { mount } from 'https://esm.sh/svelte'
+        mount(Component, { target: document.getElementById('app') })
         </script>
       `
     }

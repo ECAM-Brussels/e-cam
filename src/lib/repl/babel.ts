@@ -1,7 +1,8 @@
 import type * as Babel from '@babel/standalone'
+import dedent from 'dedent-js'
 
 type Options = {
-  framework?: 'react' | 'solidjs'
+  framework?: 'react' | 'solidjs' | 'svelte'
   babel?: Promise<typeof Babel>
   presets?: string[]
 }
@@ -51,5 +52,12 @@ export async function transform(code: string, options: Options = {}) {
   )
 
   code = babel.transform(code, { presets, plugins: [importPlugin] }).code || ''
+  return code
+}
+
+export async function svelteTransform(code: string) {
+  const compiler = await import(/* @vite-ignore */`${cdn}/svelte/compiler`)
+  code = compiler.compile(code, { name: 'Component' }).js.code
+  code = await transform(code, {})
   return code
 }
