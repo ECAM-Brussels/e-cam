@@ -308,7 +308,7 @@ sequenceDiagram
   server ->> client: HTTP/1.1 200 OK<br>Set-Cookie: name=lily
   client ->> server: GET /my-name HTTP/1.1<br>Cookie: name=lily
   server ->> client: HTTP/1.1 200 OK<br>Content-Type: text/html<br><br>Your name is Lily
-  client ->> server: GET /belly-rub HTTP/1.1
+  client ->> server: GET /belly-rub HTTP/1.1<br>Cookie: name=lily
   server ->> client: HTTP/1.1 501 Not Implemented
 ```
 :::::
