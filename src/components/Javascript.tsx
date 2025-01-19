@@ -1,7 +1,8 @@
 import dedent from 'dedent-js'
-import { createResource } from 'solid-js'
+import { createResource, Suspense } from 'solid-js'
 import Html, { type Props } from '~/components/Html'
 import { transform } from '~/lib/repl/babel'
+import Spinner from './Spinner'
 
 type JavascriptProps = Props & {
   framework?: 'react' | 'solid' | 'svelte'
@@ -16,6 +17,11 @@ export default function Javascript(props: JavascriptProps) {
         ${await transform(value, props.framework)}
         </script>
       `,
+    { initialValue: '' }
   )
-  return <Html {...props} value={code() || ''} />
+  return (
+    <Suspense fallback={<Spinner />}>
+      <Html {...props} value={code()} />
+    </Suspense>
+  )
 }
