@@ -1,6 +1,7 @@
 import Spinner from './Spinner'
+import { createAsync } from '@solidjs/router'
 import mermaid from 'mermaid'
-import { createResource, createUniqueId, Suspense } from 'solid-js'
+import { createUniqueId, Suspense } from 'solid-js'
 
 type MermaidProps = {
   class?: string
@@ -8,13 +9,10 @@ type MermaidProps = {
 }
 
 export default function Mermaid(props: MermaidProps) {
-  const [svg] = createResource(
-    () => props.value,
-    async (value) => {
-      const { svg } = await mermaid.render(createUniqueId(), value)
-      return svg
-    },
-  )
+  const svg = createAsync(async () => {
+    const { svg } = await mermaid.render(createUniqueId(), props.value)
+    return svg
+  })
 
   return (
     <Suspense fallback={<Spinner />}>

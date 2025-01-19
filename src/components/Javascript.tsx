@@ -1,23 +1,23 @@
+import Spinner from './Spinner'
+import { createAsync } from '@solidjs/router'
 import dedent from 'dedent-js'
-import { createResource, Suspense } from 'solid-js'
+import { Suspense } from 'solid-js'
 import Html, { type Props } from '~/components/Html'
 import { transform } from '~/lib/repl/babel'
-import Spinner from './Spinner'
 
 type JavascriptProps = Props & {
   framework?: 'react' | 'solid' | 'svelte'
 }
 
 export default function Javascript(props: JavascriptProps) {
-  const [code] = createResource(
-    () => props.value,
-    async (value: string): Promise<string> =>
+  const code = createAsync(
+    async () =>
       dedent`
         <script type="module">
-        ${await transform(value, props.framework)}
+        ${await transform(props.value, props.framework)}
         </script>
       `,
-    { initialValue: '' }
+    { initialValue: '' },
   )
   return (
     <Suspense fallback={<Spinner />}>
