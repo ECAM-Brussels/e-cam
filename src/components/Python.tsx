@@ -1,4 +1,5 @@
-import { createResource, Show } from 'solid-js'
+import { createAsync } from '@solidjs/router'
+import { Show } from 'solid-js'
 import Math from '~/components/Math'
 import Spinner from '~/components/Spinner'
 import runPython from '~/lib/pyodide/api'
@@ -8,15 +9,10 @@ type PythonProps = {
 }
 
 export default function Python(props: PythonProps) {
-  const [result] = createResource(
-    () => props.value,
-    async (code) => {
-      return await runPython(code)
-    },
-  )
+  const result = createAsync(() => runPython(props.value))
   return (
     <p>
-      <Show when={result.state === 'ready' && result()} fallback={<Spinner class="block m-auto" />}>
+      <Show when={result()} fallback={<Spinner class="block m-auto" />}>
         {(output) => (
           <>
             <Show when={output().format === 'latex'}>
