@@ -42,15 +42,15 @@ async function babelTransform(code: string, presetNames: string[] = []) {
       }
     }),
   )
-  return babel.transform(code, { presets, plugins: [importPlugin] }).code || ''
+  return babel.transform(code, { presets, plugins: [importPlugin], filename: 'index.tsx' }).code || ''
 }
 
 export async function transform(code: string, framework?: 'react' | 'solid' | 'svelte') {
-  let presets: string[] = []
+  let presets: string[] = ['typescript']
   let before: string = ''
   let after: string = ''
   if (framework === 'react') {
-    presets = ['react']
+    presets = [...presets, 'react']
     before = dedent`
       import React, { useEffect, useState } from "https://esm.sh/react"
     `
@@ -60,15 +60,10 @@ export async function transform(code: string, framework?: 'react' | 'solid' | 's
       root.render(React.createElement(App, null));
     `
   } else if (framework === 'solid') {
-    presets = ['babel-preset-solid']
-    before = dedent`
-      import { createEffect, createSignal } from "https://esm.sh/solid-js"
-    `
+    presets = [...presets, 'babel-preset-solid']
     after = dedent`
-      if (App) {
-        import { render } from "https://esm.sh/solid-js/web";
-        render(App, document.body)
-      }
+      import { render } from "https://esm.sh/solid-js/web";
+      render(App, document.body)
     `
   } else if(framework === 'svelte') {
     const compiler = await import(/* @vite-ignore */ `${cdn}/svelte/compiler`)
