@@ -463,32 +463,47 @@ which has the particularity that it can run in the browser and manipulate the DO
 - Filename extension: `.js`
 - 99% of Websites use client-side JavaScript
 
-*Any application that can be written in JavaScript, will eventually be written in JavaScript*
-(Jeff Atwood, founder of StackExchange)
-
 # JavaScript: DOM manipulations
 
 In particular, JavaScript makes pages **interactive**.
 
 ```html {.run .grid-cols-2 .grid .gap-12}
-<!-- Uncommenting the next line will break the code -->
-<!-- <input style="display: none" /> -->
-<p>Quel est ton nom?</p>
-<label>Nom: <input /></label>
-<p>Bonjour <span id="name"></span></p>
+<form>
+  <label>New Task: <input /></label>
+  <input type="submit" />
+</form>
+<ul id="tasks">
+</ul>
 
 <script>
-  // Select DOM nodes
+  const form = document.getElementsByTagName('form')[0]
   const input = document.getElementsByTagName('input')[0]
-  const name = document.getElementById('name')
+  const taskList = document.getElementById('tasks')
 
-  function getNameFromInput() {
-    name.innerText = input.value
+  form.onsubmit = function(event) {
+    event.preventDefault()
+    taskList.innerHTML += '<li>' + input.value + '</li>'
+    input.value = ''
   }
-
-  input.addEventListener('input', getNameFromInput)
 </script>
 ```
+
+# JavaScript: beyond the Web
+
+JavaScript can be used
+
+- in the browser (e.g. V8)
+
+- on the server (e.g. NodeJS)
+
+- for mobile apps (e.g. React Native)
+
+- for desktop apps (e.g. Electron)
+
+*Any application that can be written in JavaScript,
+will eventually be written in JavaScript*
+
+(Jeff Atwood, founder of StackExchange)
 
 # Static website {.w-1--2}
 
@@ -513,7 +528,7 @@ sequenceDiagram
 
 ![](https://dx1ienyxpbg1x.cloudfront.net/index_dev/articles/gallery_images/1721736888583863258_10_blob)
 
-# Why build for the Web?
+# Why build for the Web? {.w-1--2}
 
 ::: question
 Why build for the web?
@@ -524,3 +539,51 @@ Why build for the web?
 - **Data-driven insights**
 
 - **Ease of deployment and maintenance**
+
+# Dynamic, interactive website {.w-1--2}
+
+::: definition
+A web page is
+
+- **dynamic** if the page rendered depends on anything else than the HTTP verb and the path.
+
+- **interactive** if the DOM can change after the first render.
+:::
+
+# The network boundary {.w-1--2}
+
+![](/images/client-server-dns.webp)
+
+In the client-server architecture,
+two computers can execute code:
+
+- the client (frontend)
+
+- the server (backend)
+
+# Exercise: backend or frontend? {.w-1--2}
+
+::: exercise
+Should these tasks be performed on the client or on the server?
+Are these frontend or backend tasks?
+:::
+
+- Storing user profile information
+
+- Implementing a payment gateway
+
+- Styling a page
+
+- Create an interactive data visualisation
+
+- Authentication logic
+
+- Rendering the page
+
+- Form validation
+
+# Isomorphic JavaScript {.w-1--2}
+
+::: question
+What is the advantage of using JavaScript on the client and on the server?
+:::
