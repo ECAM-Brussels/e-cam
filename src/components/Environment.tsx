@@ -3,6 +3,7 @@ import { useMeta } from './MetaProvider'
 import {
   faBook,
   faCircleExclamation,
+  faCircleInfo,
   faCogs,
   faLightbulb,
   faPen,
@@ -16,6 +17,7 @@ const environments = {
   example: ['Example', 'Exemple', 'bg-teal-700 text-teal-100', faPen],
   exercise: ['Exercise', 'Exercice', 'bg-teal-700 text-teal-100', faPen],
   hint: ['Hint', 'Indication', 'bg-yellow-200 text-yellow-700', faLightbulb],
+  info: ['Information', 'Information', 'bg-sky-900 text-sky-50', faCircleInfo],
   proposition: ['Proposition', 'Proposition', 'bg-slate-700 text-slate-100', faBook],
   question: ['Question', 'Question', 'bg-blue-950 text-blue-50', faQuestionCircle],
   remark: ['Remark', 'Remarque', 'bg-amber-600 text-amber-50', faCircleExclamation],
