@@ -4,11 +4,27 @@ lang: en
 slideshow: true
 ---
 
-# Aim of the project
+# About the project {.grid .grid-cols-2 .gap-12}
+
+::: col
+### Instructions
+
+- In pairs or by yourself
+
+- Dynamic website with at least some interactivity
+
+- Secure Authentication
+:::
+
+::: col
+### Technical constraints
 
 - Interactive but should have good SEO
 
-- Written fully in JavaScript but works without Javascript
+- Written fully in JavaScript but should work without Javascript
+
+- Responsive and accessible
+:::
 
 # Install Node.js {.grid .grid-cols-2 .gap-12}
 
@@ -81,10 +97,87 @@ It is a more beginner-friendly alternative to the more famous React/Next.js or A
 - `Terminal` > `New Terminal`
 - In the terminal that you've just opened, type `npm run dev -- --open`
 
-# Routing
+# Home Page {.columns-2 .gap-8}
 
-TODO
+::::: column
+::: exercise
+Edit `src/routes/+page.svelte`,
+which is your home page.
 
-# Layout
+Create a `<style>` tag at the bottom of the file
+to style your page.
+:::
 
-TODO
+::: info
+- The CSS you type here will only apply to that file,
+  so you don't need to be too specific.
+:::
+:::::
+
+::: col
+```javascript {.run framework="svelte"}
+<h1>Your first home page with SvelteKit</h1>
+<p>Welcome</p>
+
+<style>
+  h1 {
+    color: red;
+  }
+</style>
+```
+:::
+
+# Static web page with File-based routing {.w-3--5}
+
+::: info
+A web page is associated with a specific file.
+To serve `/blog/tinder-for-dogs`,
+I need to create `src/routes/blog/tinder-for-dogs/+page.svelte`
+:::
+
+$$
+\boxed{\mathtt{GET\, /blog/tinder-for-dogs}}\\
+\updownarrow \text{associated file} \updownarrow\\
+\boxed{
+  \underbrace{\mathtt{src/routes}}_1
+  \overbrace{\mathbf{\mathtt{/blog/tinder-for-dogs}}}^2
+  \underbrace{\mathtt{/+page.svelte}}_3
+}
+$$
+
+1. Specify that your file will be used to answer server requests.
+   It has to be **exactly** `src/routes`.
+2. The path of the request
+3. Must be exactly `+page.svelte`.
+   We specify that it's a standard page,
+   so the file will be associated with a GET request.
+
+::: exercise
+Create other static pages, which should introduce your project.
+Link your pages.
+:::
+
+# Layout {.w-1--2}
+
+Web pages tend to share common elements (navigation bar, footer, etc.).
+This is called a **layout**.
+To create one, edit `src/routes/+layout.svelte`
+
+```javascript {framework="svelte"}
+<script>
+  let { children } = $props();
+</script>
+
+<nav>
+  <a href="/">home</a>
+  <a href="/about">about</a>
+</nav>
+
+{@render children()}
+```
+
+::: info
+- `{@render children()}` indicates where to put the page contents
+- The first three lines are important to define `children`.
+  More on what this means later.
+:::
