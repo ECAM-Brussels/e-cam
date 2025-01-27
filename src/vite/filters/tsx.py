@@ -28,6 +28,7 @@ def environments(el: pf.Element, doc: pf.Doc) -> None | list[pf.Element] | pf.El
         "exercise",
         "hint",
         "info",
+        "instruction",
         "proposition",
         "question",
         "remark",

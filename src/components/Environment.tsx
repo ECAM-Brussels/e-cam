@@ -2,6 +2,7 @@ import Fa from './Fa'
 import { useMeta } from './MetaProvider'
 import {
   faBook,
+  faChalkboardTeacher,
   faCircleExclamation,
   faCircleInfo,
   faCogs,
@@ -18,6 +19,7 @@ const environments = {
   exercise: ['Exercise', 'Exercice', 'bg-teal-700 text-teal-100', faPen],
   hint: ['Hint', 'Indication', 'bg-yellow-200 text-yellow-700', faLightbulb],
   info: ['Information', 'Information', 'bg-sky-900 text-sky-50', faCircleInfo],
+  instruction: ['Instruction', 'Instruction', 'bg-sky-900 text-sky-50', faChalkboardTeacher],
   proposition: ['Proposition', 'Proposition', 'bg-slate-700 text-slate-100', faBook],
   question: ['Question', 'Question', 'bg-blue-950 text-blue-50', faQuestionCircle],
   remark: ['Remark', 'Remarque', 'bg-amber-600 text-amber-50', faCircleExclamation],
