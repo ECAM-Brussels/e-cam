@@ -493,3 +493,95 @@ to design User Interfaces?
 ::: warning
 This is an exam question.
 :::
+
+# Key Idea {.w-1--2}
+
+```typescript
+createEffect(function effect() {
+  console.log(signal(), 'has changed')
+})
+```
+
+```dot {.run hideEditor=true}
+digraph {
+  rankdir = "LR"
+  setSignal -> effect
+  effect -> signal
+}
+```
+
+#. `signal()` bust be aware that it is inside `effect`,
+   and keep a list of subscribed effects.
+
+#. When calling `setSignal`,
+   we need to rerun all the subscribed effects.
+
+# Implementing `createEffect` {.grid .grid-cols-2}
+
+```typescript
+const running = []
+
+function createEffect(effect) {
+  function wrappedEffect() {
+    running.push(wrappedEffect)
+    fn()
+    running.pop()
+  }
+  wrappedEffect()
+}
+```
+
+::: col
+- We keep a LIFO stack of running effects (i.e. `running`).
+  To know which effect is currently running,
+  we can check the element at the top of the stack,
+  i.e. `running[running.length - 1]`.
+
+- When creating an effect,
+  we change it so that it pushes itself on and off the stack.
+:::
+
+# Implementing `createSignal` {.grid .grid-cols-2}
+
+```typescript
+function createSignal(value) {
+  const subscribers = new Set()
+  function getter() {
+    if (running) {
+      subscribers.add(running[running.length - 1])
+    }
+    return value
+  }
+  function setter(newValue) {
+    value = newValue
+    subscribers.map(effect => effect())
+  }
+  return [getter, setter]
+}
+```
+
+::: col
+- `createSignal` must return a getter and a setter,
+  which will get or set `value`.
+
+- The getter will check if it's running inside an effect.
+  If so, it will add it to its subscribers.
+
+  ```typescript
+  createEffect(function effect() {
+    console.log(signal(), 'has changed')
+  })
+  ```
+
+  In the example above,
+  when `signal()` is executed,
+  it is aware of effect
+  and adds it to its subscribers.
+
+- When the setter is called,
+  it runs all the subscribed effects.
+:::
+
+# Prop drilling
+
+# Context

@@ -33,6 +33,11 @@ const courses: Course[] = [
     src: '/images/SA4T.webp',
     title: 'Algorithms',
   },
+  {
+    href: '/AW4L/',
+    src: '/images/AW4L.webp',
+    title: 'Web Architecture',
+  },
 ]
 
 export default function Home() {
