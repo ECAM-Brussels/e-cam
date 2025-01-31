@@ -181,3 +181,7 @@ To create one, edit `src/routes/+layout.svelte`
 - The first three lines are important to define `children`.
   More on what this means later.
 :::
+
+# Responsive design
+
+<Iframe src="https://quentin.lurkin.xyz/courses/ergonomy/lab1/" class="w-[50%] h-full border rounded-xl shadow-xl" />
