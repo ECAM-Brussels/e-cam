@@ -454,7 +454,7 @@ function App() {
 # Styling
 
 When you set up SolidJS,
-you also installed **tailwindcss**,
+you also installed **tailwindcss**.
 
 
 ```javascript {.run framework="solid" .grid .grid-cols-2 .gap-12 tailwind=true}
@@ -480,21 +480,75 @@ Implement a tic-tac-toe with the following requirements.
 :::
 
 ::: exercise
-Implement the [Wordle](https://www.nytimes.com/games/wordle/index.html) game.
+Implement a Minesweeper clone.
+:::
+
+# React: comparison {.grid .grid-cols-2}
+
+::: col
+SolidJS's syntax is heavily inspired from that of React.
+
+- `createSignal` becomes `useState`
+
+- `createEffect` becomes `useEffect`
+
+- Conditions are done via the `&&` and the ternary operator:
+
+  ```javascript
+  {age > 18 && <p>You are an adult</p>}
+  ```
+
+- Loops are done via `.map` instead of `<For />`
+
+- Dependencies must be explicitly stated in React.
+  Effects cannot be marked with `async` in React.
+
+  ```javascript
+  useEffect(() => {
+    console.log('name is now', name)
+  }, [name]) // Specify that it will rerun when name changes
+  ```
+:::
+
+::: col
+~~~ javascript {.run framework="react"}
+import { useState } from 'react'
+
+function App() {
+  const [task, setTask] = useState('')
+  const [tasks, setTasks] = useState([])
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    setTask('')
+    setTasks([...tasks, task])
+  }
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>
+        New task:
+        <input value={task} onInput={(e) => setTask(e.target.value)} />
+      </label>
+      <ul>
+        {tasks.map(task => <li>{task}</li>)}
+      </ul>
+    </form>
+  )
+}
+~~~
 :::
 
 # JavaScript frameworks {.w-1--2}
 
 ::: question
 What are the benefits and drawbacks of using JavaScript frameworks
-to design User Interfaces?
+for designing User Interfaces?
 :::
 
 ::: warning
 This is an exam question.
 :::
 
-# Key Idea {.w-1--2}
+# Implementing SolidJS: Key Idea {.w-1--2}
 
 ```typescript
 createEffect(function effect() {
@@ -582,6 +636,22 @@ function createSignal(value) {
   it runs all the subscribed effects.
 :::
 
+# Comparison with React {.w-1--2}
+
+::: question
+How does React work?
+:::
+
+- Components are **fully re-executed** at each state change.
+
+- To avoid costly operations,
+  React works with a **Virtual DOM**.
+  A diffing algorithm is then used to update the actual DOM.
+
 # Prop drilling
 
+TODO
+
 # Context
+
+TODO

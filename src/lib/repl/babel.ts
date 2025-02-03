@@ -52,7 +52,7 @@ export async function transform(code: string, framework?: 'react' | 'solid' | 's
   if (framework === 'react') {
     presets = [...presets, 'react']
     before = dedent`
-      import React, { useEffect, useState } from "https://esm.sh/react"
+      import React from "https://esm.sh/react"
     `
     after = dedent`
       import { createRoot } from 'https://esm.sh/react-dom/client';
