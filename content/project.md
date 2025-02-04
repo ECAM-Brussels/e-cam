@@ -6,15 +6,19 @@ slideshow: true
 # learning.ecam.be {.grid .grid-cols-2 .gap-8}
 
 ::::: column
-<Iframe src="/" class="w-full h-4/5 border rounded-xl shadow-lg overflow-hidden" />
+<Iframe src="/" class="w-full h-full border rounded-xl shadow-lg overflow-hidden" />
 :::::
 
 ::::: column
+<https://learning.ecam.be>
+
 Une plateforme d'apprentissage spécialisée pour les cours techniques.
 
 - Intégrée
 
 - Correction symbolique automatique
+
+- Correction d'exercices d'informatique
 
 - Génération d'exercices mathématiques
 :::::
@@ -29,13 +33,25 @@ Une plateforme d'apprentissage spécialisée pour les cours techniques.
 
 ::::: column
 - L'expression est réellement analysée mathématiquement
+
+- L'interface est claire et intuitive pour les étudiants
 :::::
+
+# Suivi des résultats {.grid .grid-cols-2 .gap-8}
 
 # Génération d'exercices aléatoires {.grid .grid-cols-2 .gap-8}
 
 ::::: {.z-20 .not-prose}
 <Exercise id="presentation-system" data='{"type": "System", "params": {"variables": ["x", "y", "z"], "L": ["-3", "-2", "-1", "0", "1", "2", "3"], "U": ["-3", "-2", "-1", "1", "2", "3"], "X": ["-3", "-2", "-1", "0", "1", "2", "3"]}}' />
 :::::
+
+::: column
+- L'exercice ci-contre a été généré aléatoirement de sorte que:
+
+  - les réponses comportent des chiffres entiers uniquement entre $-3$ et $3$.
+
+  - les étapes intermédiaires ne travaillent que sur des nombres entiers de $-3$ à $-3$.
+:::
 
 # Python {.w-1--2}
 
