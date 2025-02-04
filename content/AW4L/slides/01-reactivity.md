@@ -747,3 +747,174 @@ More info:
 Note that the syntax is identical in React.
 :::
 :::::
+
+# Basic data fetching {.grid .grid-cols-2}
+
+::::: col
+Fetching data could be done directly via `fetch`,
+often inside an effect.
+
+```typescript {.run framework="solid"}
+import { createSignal, For } from 'solid-js'
+
+type Pokemon = { name: string, url: string }
+
+function App() {
+  const [pokemons, setPokemons] = createSignal<Pokemon[]>([])
+  async function fetchPokemons() {
+    const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=6&offset=0')
+    const pokemons = (await res.json()).results as Pokemon[]
+    setPokemons(pokemons)
+  }
+  fetchPokemons()
+  return (
+    <For each={pokemons()}>
+      {pokemon => <li>{pokemon.name}</li>}
+    </For>
+  )
+}
+```
+:::::
+
+::::: col
+- Civilized people use `try/catch` in `fetchPokemons`
+
+- `await` means that the main thread pauses the execution of the function
+  until the promise has completed,
+  and returns the result of said promise.
+
+- In React, line 11 must be replaced by
+  ```typescript
+  useEffect(() => {
+    fetchPokemons()
+  }, [])
+  ```
+  otherwise it is continuously executed.
+  React re-executes the function entirely at each state change.
+
+- Should be done:
+
+  - Spinner when loading
+  - Handle errors on the UI
+:::::
+
+# Fetching with signals {.grid .grid-cols-2}
+
+::::: col
+If what we fetch depends on a signal, we can use `createEffect`:
+
+```typescript {.run framework="solid"}
+import { createEffect, createSignal } from 'solid-js'
+
+function App() {
+  const [name, setName] = createSignal('pikachu')
+  const [json, setJson] = createSignal('')
+  createEffect(async () => {
+    const res = await fetch('https://pokeapi.co/api/v2/pokemon/' + name())
+    const data = await res.json()
+    setJson(JSON.stringify(data, null, 2).substring(0, 150))
+  })
+  return (
+    <>
+      <input value={name()} onInput={e => setName(e.target.value)} />
+      <pre>{json()}</pre>
+    </>
+  )
+}
+```
+:::::
+
+::::: col
+- Subject to race conditions.
+  If you type 'mewtwo', you might end up with 'mew'!
+
+- In React, the effect cannot be marked with `async`,
+  and the dependencies needs to be explicitely stated:
+
+  ```typescript
+  createEffect(() => {
+    async function fetchPokemon() {
+      const res = await fetch('https://pokeapi.co/api/v2/pokemon/' + name)
+      const data = await res.json()
+      setJson(JSON.stringify(data, null, 2).substring(0, 150))
+    }
+
+    fetchPokemon()
+  }, [name])
+  ```
+:::::
+
+# Better data fetching {.grid .grid-cols-5}
+
+::::: col-span-3
+It is better to use `createResource`:
+
+```typescript {.run framework="solid"}
+import { createSignal, createResource, ErrorBoundary, Suspense, resetErrorBoundaries } from 'solid-js'
+
+function App() {
+  const [name, setName] = createSignal('pikachu')
+  const [json] = createResource(name, async (name) => {
+    resetErrorBoundaries()
+    const res = await fetch('https://pokeapi.co/api/v2/pokemon/' + name)
+    const data = await res.json()
+    return JSON.stringify(data, null, 2).substring(0, 150)
+  })
+  return (
+    <>
+      <input value={name()} onInput={e => setName(e.target.value)} />
+      <ErrorBoundary fallback={err => <p>Error when loading {name()}</p>}>
+        <Suspense fallback={<p>Loading {name()}...</p>}>
+          <pre>{json()}</pre>
+        </Suspense>
+      </ErrorBoundary>
+    </>
+  )
+}
+```
+:::::
+
+::::: col-span-2
+- `const [data] = createResource(source, fetcher)`{.javascript} calls `fetcher`
+  every time the `source` signal changes,
+  and `data` is a signal.
+  The value of `source` is supplied as a parameter to the fetcher.
+
+- The `Suspense` component tracks all resources under it
+  and shows a fallback placeholder until they are resolved.
+
+- The `ErrorBoundary` component renders fallback content
+  if an error is uncaught.
+
+- For `React` and `React Native`,
+  use `tanstack-query`.
+:::::
+
+# Exercise: Pokedex {.w-2--3}
+
+::: exercise
+Use the [PokeAPI](https://pokeapi.co/) to create a pokédex.
+Structure it as such:
+
+```typescript
+function App() {
+  const [name, setName] = createSignal('pikachu')
+  return (
+    <>
+      <Sidebar name={name()} onNameChange={setName} />
+      <Pokemon name={name()} />
+    </>
+  )
+}
+```
+
+- `Sidebar` must contain a list of all the Pokemon,
+  and clicking it must load the pokedex page of that Pokemon.
+  It must have a search bar at the top.
+
+- `Pokemon` must show at least a picture,
+  the base stats, the moves it can learn, the type,
+  and you should be able to play its cry.
+
+Let's try not to use AI.
+:::
