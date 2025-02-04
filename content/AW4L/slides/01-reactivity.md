@@ -504,15 +504,15 @@ Give instant feedback to the user.
 :::
 
 ::: exercise
-Implement a Minesweeper clone.
-:::
-
-::: exercise
 Implement a tic-tac-toe with the following requirements.
 
 - At least two components: `Square`, `Board`
-- History of all the moves
 - Type safe
+- If bored: History of all the moves
+:::
+
+::: exercise
+Implement a Minesweeper clone.
 :::
 
 # React: comparison {.grid .grid-cols-2}
