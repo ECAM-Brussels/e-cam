@@ -11,4 +11,18 @@ lang: en
 ## Slides
 
 #. [Reactivity](/AW4L/slides/01-reactivity)
+
+#. Isomorphic Applications
+
+#. Validation and data fetching
+
+#. Databases et authentication
+::::::::::
+
+:::::::::: {.bg-white .rounded-xl .p-4 .shadow}
+# Exam questions
+
+- Why do we use UI frameworks?
+
+- Explain how you could implement a basic reactivity system.
 ::::::::::

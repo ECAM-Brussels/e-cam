@@ -494,15 +494,25 @@ const App = () => (
 # Exercises {.columns-2}
 
 ::: exercise
+Implement a simple registration form with client-side validation
+
+- Check the email is valid
+- Check the password is complex enough
+  and both passwords are the same.
+
+Give instant feedback to the user.
+:::
+
+::: exercise
+Implement a Minesweeper clone.
+:::
+
+::: exercise
 Implement a tic-tac-toe with the following requirements.
 
 - At least two components: `Square`, `Board`
 - History of all the moves
 - Type safe
-:::
-
-::: exercise
-Implement a Minesweeper clone.
 :::
 
 # React: comparison {.grid .grid-cols-2}
