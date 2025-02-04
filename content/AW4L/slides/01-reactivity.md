@@ -58,6 +58,15 @@ Then, open `my-first-solid-project` with Visual Code.
 
 - [Tutorial](https://www.solidjs.com/tutorial/introduction_basics)
 - [SolidJS in 100 seconds](https://www.youtube.com/watch?v=hw3Bx5vxKl0)
+
+::: info
+If you'd like to try React: `npm create vite@latest`
+:::
+
+::: warning
+Neither the SolidJS nor the React project that we are creating now
+are enough for the final project's requirements.
+:::
 :::::
 
 ::::: col
@@ -81,7 +90,7 @@ What if I want to use something else?
 - [Angular + Analog](https://analogjs.org/)
 :::::
 
-# TypeScript
+# TypeScript {.w-2--3}
 
 <Iframe src="https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes.html" class="w-full h-full border rounded-xl shadow" />
 
@@ -352,10 +361,11 @@ Fragment({
   and **camel case** for attributes,
   e.g. `<input value={name()} onInput={e => setName(e.target.value)} />`
 
-# Components {.w-2--3}
+# Components and props {.w-2--3}
 
-::: {.definition title="JSX Element"}
-A **component** is a function which returns JSX.
+::: {.definition title="Component"}
+A **component** is a function which takes an object as parameter and which returns JSX.
+The properties of the parameter are called **props**.
 :::
 
 ```typescript {.run framework="solid"}
@@ -450,6 +460,18 @@ function App() {
   )
 }
 ```
+
+# Documentation
+
+### SolidJS
+
+- [SolidJS tutorial](https://www.solidjs.com/tutorial/introduction_basics)
+- [Documentation](https://docs.solidjs.com/)
+
+### React
+
+- [React tutorial](https://react.dev/learn/tutorial-tic-tac-toe)
+- [React documentation](https://react.dev/reference/react)
 
 # Styling
 
@@ -648,10 +670,70 @@ How does React work?
   React works with a **Virtual DOM**.
   A diffing algorithm is then used to update the actual DOM.
 
-# Prop drilling
+# Prop drilling {.w-1--2}
 
-TODO
+Data flows from parent to child via props.
 
-# Context
+```javascript
+function App() {
+  // Passing a prop named "name" from App to MyComponent
+  return (
+    <div>
+      <MyComponent name="NGY" />
+    </div>
+  );
+}
+```
 
-TODO
+::: question
+How to pass state from a component to grand-grand children?
+:::
+
+For example,
+properties such as the *theme* or *language* are useful to the whole component tree.
+
+# Context {.grid .grid-cols-2}
+
+::::: col
+### Providing context
+
+```typescript
+import { createContext } from 'solid-js';
+
+const Context = createContext<{ lang: string }>({ lang: 'en' })
+
+function App() {
+  return (
+    <Context.Provider value={{ lang: 'en' }}>
+      <Child />
+      <Child />
+    </Context.Provider>
+  )
+}
+```
+:::::
+
+::::: col
+### Consuming context
+
+```typescript
+import { useContext } from 'solid-js'
+import { Context } from './App.tsx'
+
+function GrandChild() {
+  const userPreferences = useContext(Context)
+  return (
+    <p>Language: {userPreferences().lang}</p>
+  )
+}
+```
+
+::: info
+More info:
+
+- SolidJS: [Context documentation](https://docs.solidjs.com/concepts/context)
+- React: [createContext](https://react.dev/reference/react/createContext)
+
+Note that the syntax is identical in React.
+:::
+:::::
