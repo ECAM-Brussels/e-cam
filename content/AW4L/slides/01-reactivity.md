@@ -569,12 +569,52 @@ function App() {
 ~~~
 :::
 
+# Solid vs React {.grid .grid-cols-2}
+
+```typescript {.run framework="solid"}
+import { createSignal } from 'solid-js'
+
+function App() {
+  const [count, setCount] = createSignal(0)
+  const increase = () => setCount(count() + 1)
+
+  console.log('Executing App...')
+
+  return <button onClick={increase}>{count()}</button>
+}
+```
+
+```typescript {.run framework="react"}
+import { useState } from 'react'
+
+function App() {
+  const [count, setCount] = useState(0)
+  const increase = () => setCount(count + 1)
+
+  console.log('Executing App...')
+
+  return <button onClick={increase}>{count}</button>
+}
+```
+
 # JavaScript frameworks {.w-1--2}
 
 ::: question
 What are the benefits and drawbacks of using JavaScript frameworks
 for designing User Interfaces?
 :::
+
+Because it **scales extremely well**.
+
+- Declarative approach
+
+- Encapsulation
+
+- Reusability
+
+- Testability
+
+- Easier to debugs: unidirectional data flow, read/write segregation
 
 ::: warning
 This is an exam question.
@@ -757,7 +797,7 @@ often inside an effect.
 ```typescript {.run framework="solid"}
 import { createSignal, For } from 'solid-js'
 
-type Pokemon = { name: string, url: string }
+type Pokemon = { name: string; url: string }
 
 function App() {
   const [pokemons, setPokemons] = createSignal<Pokemon[]>([])
@@ -915,6 +955,4 @@ function App() {
 - `Pokemon` must show at least a picture,
   the base stats, the moves it can learn, the type,
   and you should be able to play its cry.
-
-Let's try not to use AI.
 :::
