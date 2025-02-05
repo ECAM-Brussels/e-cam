@@ -12,7 +12,7 @@ lang: en
 
 #. [Reactivity](/AW4L/slides/01-reactivity)
 
-#. Isomorphic Applications
+#. [Isomorphic Applications](/AW4L/slides/02-isomorphic-apps)
 
 #. Validation and data fetching
 
