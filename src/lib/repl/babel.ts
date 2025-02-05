@@ -42,7 +42,9 @@ async function babelTransform(code: string, presetNames: string[] = []) {
       }
     }),
   )
-  return babel.transform(code, { presets, plugins: [importPlugin], filename: 'index.tsx' }).code || ''
+  return (
+    babel.transform(code, { presets, plugins: [importPlugin], filename: 'index.tsx' }).code || ''
+  )
 }
 
 export async function transform(code: string, framework?: 'react' | 'solid' | 'svelte') {
@@ -65,7 +67,7 @@ export async function transform(code: string, framework?: 'react' | 'solid' | 's
       import { render } from "https://esm.sh/solid-js/web";
       render(App, document.body)
     `
-  } else if(framework === 'svelte') {
+  } else if (framework === 'svelte') {
     const compiler = await import(/* @vite-ignore */ `${cdn}/svelte/compiler`)
     const output = compiler.compile(code, { name: 'Component' })
     const css = output.css.code
