@@ -419,7 +419,7 @@ const App = () => (
 # Conditional rendering
 
 ```typescript {framework="solid" .run .grid .grid-cols-2 .gap-12}
-import { createSignal } from 'solid-js'
+import { createSignal, Show } from 'solid-js'
 
 function App() {
   const [name, setName] = createSignal('')
