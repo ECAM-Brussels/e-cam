@@ -9,7 +9,7 @@ lang: en
 ## Slides
 
 - [Introduction](/AW4C/slides/01-introduction)
-- [Backend](/AW4C/slides/02-backend)
+- [MPA and AJAX](/AW4C/slides/02-mpa)
 
 # Labs
 
