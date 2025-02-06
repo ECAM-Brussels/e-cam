@@ -70,8 +70,8 @@ export async function transform(code: string, framework?: 'react' | 'solid' | 's
   } else if (framework === 'svelte') {
     const compiler = await import(/* @vite-ignore */ `${cdn}/svelte/compiler`)
     const output = compiler.compile(code, { name: 'Component' })
-    const css = output.css.code
-    code = output.js.code
+    const css = output?.css?.code || ''
+    code = output?.js?.code || ''
     presets = []
     after = dedent`
       import { mount } from 'https://esm.sh/svelte'
