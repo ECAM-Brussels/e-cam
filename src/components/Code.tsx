@@ -10,7 +10,7 @@ import { getUser } from '~/lib/auth/session'
 type CodeProps = {
   class?: string
   hideEditor?: boolean
-  framework?: 'react'
+  framework?: 'react' | 'svelte'
   tailwind?: boolean
   lang: string
   readOnly?: boolean
@@ -27,6 +27,12 @@ const Javascript = clientOnly(() => import('./Javascript'))
 const Python = clientOnly(() => import('./Python'))
 
 export default function Code(props: CodeProps) {
+  const lang = () => {
+    if (props.framework === 'svelte') {
+      return 'html'
+    }
+    return props.lang
+  }
   const [value, setValue] = createSignal('')
   const [index, setIndex] = createSignal(0)
   const parts = () => props.value.split(/^.*---\s*start$/m).map((p) => p.trim())
@@ -78,7 +84,7 @@ export default function Code(props: CodeProps) {
           </Show>
           <div class="border rounded-xl shadow w-full">
             <Editor
-              language={props.lang}
+              language={lang()}
               value={value()}
               readOnly={props.readOnly}
               onMount={(editor) => {
