@@ -321,9 +321,17 @@ dealing with DOM mutations was thought to be the hardest problem in web developm
 > we blow away the entire UI
 > and start from scratch?
 
-# React documentary
+# React documentary {.w-1--2}
 
-<Youtube src="https://www.youtube.com/watch?v=8pDqJVdNa44" class="mx-auto" zoom={2} />
+<Youtube src="https://www.youtube.com/watch?v=8pDqJVdNa44" class="mx-auto" zoom={1.5} />
+
+- **Key idea**: write UI
+  as if the page is re-created from scratch everything happens
+
+- Controversial at the time because of:
+
+  - Doubts about whether the approach will work and be performant
+  - End of separation by language
 
 # React {.w-1--2}
 
@@ -445,6 +453,26 @@ in web architecture
 #. Considerable DX Improvements
 
    Cheaper and easier to make pages highly interactive.
+
+# Case Study: facebook.com
+
+- 2004-2009: MPA (PHP & MySQL)
+
+  - HTML and data are mixed
+  - 2005: AJAX for partial page updates
+
+- 2009-2013: API to serve mobile clients
+
+  - Split into multiple services
+  - 2011-2012: HTML5 Mobile client $\implies$ code reuse, but bad performance
+  - 2012-2013: Switch to native apps
+  - API still not suitable for mobile (over/under-fetching)
+
+- 2013-2017: React/GraphQL
+
+  - 2013: Introduction of React
+  - 2015: GraphQL for backend APIs
+  - 2015: Introduction of React native
 
 # What's next? {.grid .grid-cols-2}
 
