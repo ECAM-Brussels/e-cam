@@ -16,17 +16,23 @@ export const getUserAssignments = cache(async (userEmail: string) => {
     throw new Error("You don't have the required permissions to see this data")
   }
   const records = await prisma.assignment.findMany({ where: { userEmail } })
-  return records.map((record) => {
-    const exercises = JSON.parse(record.body as string) as Exercise[]
-    const correct = exercises.map((ex) => ex.feedback?.correct).length
-    return {
-      url: record.url,
-      lastModified: formatDistance(record.lastModified, new Date(), { addSuffix: true }),
-      correct,
-      total: exercises.length,
-      score: correct / Math.max(exercises.length, 1),
-    }
-  })
+  return records
+    .filter((record) => {
+      const exercises = JSON.parse(record.body as string) as Exercise[]
+      return exercises.filter((ex) => ex.feedback?.correct !== undefined).length
+    })
+    .map((record) => {
+      const exercises = JSON.parse(record.body as string) as Exercise[]
+      const correct = exercises.filter((ex) => ex.feedback?.correct).length
+      const total = exercises.filter((ex) => ex.feedback?.correct !== undefined).length
+      return {
+        url: record.url,
+        lastModified: formatDistance(record.lastModified, new Date(), { addSuffix: true }),
+        correct,
+        total,
+        score: correct / Math.max(total, 1),
+      }
+    })
 }, 'getUserAssignments')
 
 export default function UserProfile(props: UserProfileProps) {
@@ -40,7 +46,7 @@ export default function UserProfile(props: UserProfileProps) {
           <tr>
             <th>Assignment</th>
             <th>Exercises</th>
-            <th>Last modified</th>
+            <th class="text-right">Last modified</th>
           </tr>
         </thead>
         <tbody>
@@ -51,11 +57,8 @@ export default function UserProfile(props: UserProfileProps) {
                   <td class="py-2">
                     <a href={result.url}>{result.url}</a>
                   </td>
-                  <td
-                    class="text-white text-center"
-                    classList={{ 'bg-green-700': result.score > 0.7 }}
-                  >
-                    {result.correct}/{result.total} ({result.score * 100}%)
+                  <td>
+                    <progress value={result.score} /> {result.correct}/{result.total}
                   </td>
                   <td class="text-right">{result.lastModified}</td>
                 </tr>
