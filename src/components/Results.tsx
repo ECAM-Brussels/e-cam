@@ -1,5 +1,5 @@
 import { faCheck, faQuestion, faXmark } from '@fortawesome/free-solid-svg-icons'
-import { cache, createAsync, revalidate } from '@solidjs/router'
+import { cache, createAsync, redirect, revalidate } from '@solidjs/router'
 import Fuse from 'fuse.js'
 import { countBy } from 'lodash-es'
 import { createSignal, For, Show } from 'solid-js'
@@ -30,6 +30,7 @@ export const loadResults = cache(async (url: string, id: string) => {
       questions = JSON.parse(String(record.assignments[0].body))
     }
     return {
+      id: record.email.split('@')[0],
       firstName: record.firstName,
       lastName: record.lastName,
       email: record.email,
@@ -62,7 +63,7 @@ export default function Results(props: ResultsProps) {
   }
 
   const filtered = () => {
-    let res = (results() || [])
+    let res = results() || []
     if (!Array.isArray(res)) {
       revalidate(loadResults.keyFor(props.url, props.id || ''))
       return []
@@ -107,7 +108,9 @@ export default function Results(props: ResultsProps) {
           <For each={filtered()}>
             {(result) => (
               <tr class="odd:bg-white even:bg-slate-50 text-slate-500 text-sm">
-                <td class="py-2">{result.email.split('@')[0]}</td>
+                <td class="py-2">
+                  <a href={`/users/${result.id}`}>{result.email.split('@')[0]}</a>
+                </td>
                 <td>{result.lastName}</td>
                 <td>{result.firstName}</td>
                 <td class="text-right pr-4">
