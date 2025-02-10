@@ -29,6 +29,8 @@ Why do we do this?
 
 - Allows data (API) / markup (HTML) separation,
   which is better when developping for multiple clients.
+
+- Because React made it easier than anything else.
 :::::
 
 # Single-Page Applications: drawbacks {.grid .grid-cols-2}
@@ -40,6 +42,7 @@ sequenceDiagram
   client ->> server: GET /page
   server ->> client: shell page + bundle.js
   client ->> client: loads bundle.js and /page
+  Note over client,server: Data fetching: Waterfall
   client ->> server: fetch data
   client ->> server: response
   client ->> server: fetch data
@@ -123,7 +126,22 @@ npm create solid
 
 - Use TypeScript? yes
 
+# SSR {.w-1--2}
+
+- We get that for free with Solid-Start
+
+- Unified way to create UI!
+
+::: remark
+Some components will not work on the server
+(because they rely too much on the DOM),
+if you are in the situation,
+import these components with [clientOnly](https://docs.solidjs.com/solid-start/reference/client/client-only).
+:::
+
 # File-Based routing {.w-1--2}
+
+Solid-start handles routing client and server-side.
 
 - `public/`: files to be served as is.
   For example, `public/folder/image.png` will be accessible at the URL `/folder/image.png`.
@@ -167,10 +185,6 @@ export default function NameItWhateverYouWant() {
 
 - [Documentation: API route](https://docs.solidjs.com/solid-start/building-your-application/api-routes)
 
-# Layout
-
-TODO
-
 # Metadata {.w-1--2}
 
 Install `@solidjs/meta` via `npm install @solidjs/meta`.
@@ -191,6 +205,29 @@ export default function About() {
 
 [Documentation: head and metadata](https://docs.solidjs.com/solid-start/building-your-application/head-and-metadata)
 
+# Server functions {.w-1--2}
+
+::::: col
+```typescript
+function getPosts() {
+  'use server'
+  // code here...
+}
+```
+
+A function marked with *'use server'* will only run on the server.
+
+- If called on the server side, it will run as-is;
+- On the client, it will be an API request.
+
+This has huge benefits, including preserving **type safety**.
+
+::: remark
+Remember server functions are API calls,
+always **sanitize the client's input**!
+:::
+:::::
+
 # Data fetching {.grid .grid-cols-2}
 
 ::::: col
@@ -199,8 +236,8 @@ import { ErrorBoundary, Suspense, For } from 'solid-js'
 import { query, createAsync, type RouteDefinition } from '@solidjs/router'
 
 const getPosts = query(async () => {
-  const posts = await fetch('https://my-api.com/posts')
-  return await posts.json()
+  'use server'
+  // Your logic
 }, 'posts')
 
 export const route = {
@@ -225,4 +262,28 @@ export default function Page() {
 ::::: col
 - `query` creates a cached function,
   'posts' is supplied as a cache key.
+
+- Lines 9-11: ensure `getPosts` gets preloaded before the
+  component is rendered
+  to avoid waterfalls.
+  
+  Preloads are also triggered when hovering links.
+
+- We now wrap async functions with `createAsync`
+  (rather than `createResource`),
+  as it works better with caching.
+
+- As usual, fetched data should be wrapped by an error boundary
+  and Suspense.
 :::::
+
+# Caching
+
+TODO
+
+# Start your project
+
+- Structure your project clearly, e.g.:
+
+  - `src/components`: put all components here
+  - `src/lib`:
