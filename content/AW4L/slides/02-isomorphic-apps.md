@@ -33,6 +33,42 @@ Why do we do this?
 - Because React made it easier than anything else.
 :::::
 
+# In practice with Solid {.grid .grid-cols-2}
+
+```typescript
+import { Router, Route } from "@solidjs/router"
+
+import Home from "./routes/index"
+import About from "./routes/about"
+
+function App() {
+  return (
+    <Router>
+      <Route path="/" component={Home} />
+      <Route path="/about" component={About} />
+    </Router>
+  )
+}
+```
+
+::::: col
+
+- Install SolidJS's router
+
+  ```bash
+  npm install @solidjs/router
+  ```
+
+- Each page is a component,
+  and is associated with a particular path.
+
+::: remark
+You don't need to do this.
+We'll set up Solid Start,
+which will set up **file based-routing**.
+:::
+:::::
+
 # Single-Page Applications: drawbacks {.grid .grid-cols-2}
 
 ```mermaid
@@ -65,7 +101,6 @@ sequenceDiagram
   This **breaks usual practices**.
   If you are not careful,
   your app might have **poor accessibility**.
-
 
 - After the data is fully loaded,
   it will ask for the extra data it needs.
@@ -106,7 +141,7 @@ which has the following functionalities.
 
 - **Runtime**: Database interactions, etc.
 
-- **Data-fetching**: link between front-end and backend.
+- **Data-fetching/caching**: link between front-end and backend.
 
 - **Routing**: unified way of dealing with "real" and "fake" navigation.
 
@@ -162,12 +197,12 @@ Solid-start handles routing client and server-side.
 
 Example: `routes/users/[id].tsx`
 
-``` typescript
+```typescript
 import { useParams } from '@solidjs/router'
 import type { APIEvent } from '@solidjs/start/server'
 
-// Example of an API Route for the GET endpoint
-export function GET(event: APIEvent) {
+// Example of an API Route for the POST endpoint
+export function POST(event: APIEvent) {
   return {
     msg: 'hello world',
     foo: true,
@@ -215,7 +250,7 @@ function getPosts() {
 }
 ```
 
-A function marked with *'use server'* will only run on the server.
+A function marked with _'use server'_ will only run on the server.
 
 - If called on the server side, it will run as-is;
 - On the client, it will be an API request.
@@ -231,7 +266,7 @@ always **sanitize the client's input**!
 # Data fetching {.grid .grid-cols-2}
 
 ::::: col
-``` typescript
+```typescript
 import { ErrorBoundary, Suspense, For } from 'solid-js'
 import { query, createAsync, type RouteDefinition } from '@solidjs/router'
 
@@ -262,11 +297,12 @@ export default function Page() {
 ::::: col
 - `query` creates a cached function,
   'posts' is supplied as a cache key.
+  Cached functions won't be called twice during the lifetime of the request.
 
 - Lines 9-11: ensure `getPosts` gets preloaded before the
   component is rendered
   to avoid waterfalls.
-  
+
   Preloads are also triggered when hovering links.
 
 - We now wrap async functions with `createAsync`
@@ -277,13 +313,81 @@ export default function Page() {
   and Suspense.
 :::::
 
-# Caching
+# Caching {.w-1--2}
 
-TODO
+The issue with caching is it might display out-of-date data.
+
+```typescript
+import { revalidate } from '@solidjs/router'
+
+export const getTasks = async () => {
+  'use server'
+  // your code here
+}
+
+export const addTask = async (task: Task) => {
+  'use server'
+  // your code here
+  revalidate(getTasks.key)
+}
+```
+
+- [Revalidate](https://docs.solidjs.com/solid-router/reference/response-helpers/revalidate)
+- [Reload](https://docs.solidjs.com/solid-router/reference/response-helpers/reload)
 
 # Start your project
 
 - Structure your project clearly, e.g.:
 
   - `src/components`: put all components here
-  - `src/lib`:
+  - `src/lib`: server code and other helpers
+  - `src/routes`: your page
+
+# Components {.flex}
+
+::::: {.w-2--3}
+```typescript
+import { type JSXElement } from 'solid-js'
+
+type Props = {
+  class?: string
+  onClick?: () => void
+  variant?: 'contained' | 'outlined'
+  children: JSXElement
+}
+
+export default function Button(props) {
+  return (
+    <button
+      onClick={() => props.onClick?.()}
+      class={props.class}
+      classList={{
+        'rounded-xl p-2': true,
+        'bg-green-500 text-white': props.variant !== 'outlined',
+        'border border-green-500 text-green-500': props.variant === 'outlined',
+      }}
+    >
+      {props.children}
+    </button>
+  )
+}
+```
+:::::
+
+::::: col
+- Make your components small and customizable.
+- Expose the `class` props for tailwind customization
+- Avoid code repetition if possible
+:::::
+
+# Databases {.w-1--2}
+
+We'll use [Prisma](https://www.prisma.io/).
+
+```typescript
+npm install prisma --save-dev
+```
+
+- [Quickstart](https://www.prisma.io/docs/getting-started/quickstart-prismaPostgres)
+- [Schema](https://www.prisma.io/docs/orm/prisma-schema)
+- [Basic queries](https://www.prisma.io/docs/orm/prisma-client/queries/crud)
