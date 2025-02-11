@@ -313,28 +313,6 @@ export default function Page() {
   and Suspense.
 :::::
 
-# Caching {.w-1--2}
-
-The issue with caching is it might display out-of-date data.
-
-```typescript
-import { revalidate } from '@solidjs/router'
-
-export const getTasks = async () => {
-  'use server'
-  // your code here
-}
-
-export const addTask = async (task: Task) => {
-  'use server'
-  // your code here
-  revalidate(getTasks.key)
-}
-```
-
-- [Revalidate](https://docs.solidjs.com/solid-router/reference/response-helpers/revalidate)
-- [Reload](https://docs.solidjs.com/solid-router/reference/response-helpers/reload)
-
 # Start your project
 
 - Structure your project clearly, e.g.:
