@@ -25,4 +25,10 @@ lang: en
 - Why do we use UI frameworks?
 
 - Explain how you could implement a basic reactivity system.
+
+- What is an SPA? What are the advantages and the drawbacks of this type of architecture?
+
+- What is SSR, and what problem is it trying to solve?
+
+- What do we need to be careful of when fetching data?
 ::::::::::

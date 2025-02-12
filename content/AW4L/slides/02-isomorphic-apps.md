@@ -369,3 +369,7 @@ npm install prisma --save-dev
 - [Quickstart](https://www.prisma.io/docs/getting-started/quickstart-prismaPostgres)
 - [Schema](https://www.prisma.io/docs/orm/prisma-schema)
 - [Basic queries](https://www.prisma.io/docs/orm/prisma-client/queries/crud)
+
+# Examples {.w-1--2}
+
+Use [these examples](https://github.com/solidjs/solid-start/tree/main/examples) to guide you.
