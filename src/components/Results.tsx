@@ -1,5 +1,5 @@
 import { faCheck, faQuestion, faXmark } from '@fortawesome/free-solid-svg-icons'
-import { cache, createAsync, redirect, revalidate } from '@solidjs/router'
+import { createAsync, query, redirect, revalidate } from '@solidjs/router'
 import Fuse from 'fuse.js'
 import { countBy } from 'lodash-es'
 import { createSignal, For, Show } from 'solid-js'
@@ -7,7 +7,7 @@ import { type Exercise } from '~/components/ExerciseSequence'
 import Fa from '~/components/Fa'
 import { prisma } from '~/lib/db'
 
-export const loadResults = cache(async (url: string, id: string) => {
+export const loadResults = query (async (url: string, id: string) => {
   'use server'
   const users = await prisma.user.findMany({
     include: {

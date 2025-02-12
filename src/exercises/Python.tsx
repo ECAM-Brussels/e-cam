@@ -1,4 +1,4 @@
-import { cache } from '@solidjs/router'
+import { query } from '@solidjs/router'
 import dedent from 'dedent-js'
 import { z } from 'zod'
 import Code from '~/components/Code'
@@ -57,7 +57,7 @@ async function compareResults(answer: string, results: string[]) {
   return serverResults.filter((v, i) => v === results[i]).length
 }
 
-export const mark = cache(async (state: State) => {
+export const mark = query(async (state: State) => {
   let code = state.code || ''
   if (state.constraints) {
     for (const constraint of state.constraints) {

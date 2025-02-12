@@ -1,5 +1,5 @@
 import { faPlus, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
-import { cache } from '@solidjs/router'
+import { query } from '@solidjs/router'
 import { sample } from 'lodash-es'
 import { For, Show } from 'solid-js'
 import { z } from 'zod'
@@ -19,7 +19,7 @@ export const schema = z.object({
 })
 export type State = z.infer<typeof schema>
 
-export const mark = cache(async (state: State) => {
+export const mark = query(async (state: State) => {
   'use server'
 
   const { equation } = await request(
@@ -44,7 +44,7 @@ export const mark = cache(async (state: State) => {
   return equation.solveset.isSetEqual
 }, 'checkEquation')
 
-export const solve = cache(async (state: State) => {
+export const solve = query(async (state: State) => {
   'use server'
   const { equation } = await request(
     graphql(`

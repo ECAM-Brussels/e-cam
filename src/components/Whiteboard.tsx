@@ -7,7 +7,7 @@ import {
   faPlus,
   faUpRightAndDownLeftFromCenter,
 } from '@fortawesome/free-solid-svg-icons'
-import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
+import { query, createAsync, revalidate, useLocation } from '@solidjs/router'
 import { cloneDeep, debounce, find } from 'lodash-es'
 import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
 import { createStore, SetStoreFunction, unwrap } from 'solid-js/store'
@@ -25,7 +25,7 @@ type Stroke = {
   points: [number, number][]
 }
 
-export const loadBoard = cache(async (url: string, id: string) => {
+export const loadBoard = query(async (url: string, id: string) => {
   'use server'
   const record = await prisma.board.findUnique({ where: { url_id: { url, id } } })
   return record ? (JSON.parse(String(record.body)) as Stroke[]) : null

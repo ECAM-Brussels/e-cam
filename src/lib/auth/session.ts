@@ -1,4 +1,4 @@
-import { action, cache, reload } from '@solidjs/router'
+import { action, query, reload } from '@solidjs/router'
 import { useSession } from 'vinxi/http'
 import { loadAssignment } from '~/components/ExerciseSequence.server'
 import { getUserInfo } from '~/lib/auth/azure'
@@ -15,7 +15,7 @@ function getSession() {
   })
 }
 
-export const getUser = cache(async () => {
+export const getUser = query(async () => {
   'use server'
   try {
     const session = await getSession()

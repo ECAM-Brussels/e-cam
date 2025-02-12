@@ -1,4 +1,4 @@
-import { cache } from '@solidjs/router'
+import { query } from '@solidjs/router'
 import { sample } from 'lodash-es'
 import { Show } from 'solid-js'
 import { z } from 'zod'
@@ -20,7 +20,7 @@ export const schema = z.object({
 })
 export type State = z.infer<typeof schema>
 
-export const mark = cache(async (state: State) => {
+export const mark = query(async (state: State) => {
   'use server'
   const { conicSection } = await request(
     graphql(`
@@ -61,7 +61,7 @@ export const mark = cache(async (state: State) => {
   return conicSection.type === 'parabola' || conicSection.vertices.isSetEqual
 }, 'checkConicSection')
 
-export const solve = cache(async (state: State): Promise<State> => {
+export const solve = query(async (state: State): Promise<State> => {
   'use server'
   const { conicSection } = await request(
     graphql(`

@@ -1,4 +1,4 @@
-import { cache } from '@solidjs/router'
+import { query } from '@solidjs/router'
 import { sample } from 'lodash-es'
 import { z } from 'zod'
 import ExerciseBase, { type ExerciseProps } from '~/components/ExerciseBase'
@@ -15,7 +15,7 @@ export const schema = z.object({
 })
 export type State = z.infer<typeof schema>
 
-export const mark = cache(async (state: State): Promise<boolean> => {
+export const mark = query(async (state: State): Promise<boolean> => {
   'use server'
   const { expression } = await request(
     graphql(`
@@ -32,7 +32,7 @@ export const mark = cache(async (state: State): Promise<boolean> => {
   return expression.tangent.isEqual
 }, 'checkTangent')
 
-export const solve = cache(async (state: State): Promise<State> => {
+export const solve = query(async (state: State): Promise<State> => {
   'use server'
   const { expression } = await request(
     graphql(`

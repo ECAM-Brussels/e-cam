@@ -1,4 +1,4 @@
-import { cache } from '@solidjs/router'
+import { query } from '@solidjs/router'
 import { sample } from 'lodash-es'
 import { Show } from 'solid-js'
 import { z } from 'zod'
@@ -31,7 +31,7 @@ export function generate(params: Params): State {
   }
 }
 
-export const mark = cache(async (state: State) => {
+export const mark = query(async (state: State) => {
   'use server'
   const { vector } = await request(
     graphql(`
@@ -54,7 +54,7 @@ export const mark = cache(async (state: State) => {
   return vector.angle.isApproximatelyEqual
 }, 'CheckAngle')
 
-export const solve = cache(async (state: State): Promise<State> => {
+export const solve = query(async (state: State): Promise<State> => {
   'use server'
   const { vector } = await request(
     graphql(`

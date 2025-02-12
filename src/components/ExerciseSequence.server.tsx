@@ -1,9 +1,9 @@
-import { cache } from '@solidjs/router'
+import { query } from '@solidjs/router'
 import { type Exercise } from '~/components/ExerciseSequence'
 import { getUser } from '~/lib/auth/session'
 import { prisma } from '~/lib/db'
 
-export const loadAssignment = cache(
+export const loadAssignment = query(
   async (url: string, id: string = '', userEmail: string = '') => {
     'use server'
     const user = await getUser()

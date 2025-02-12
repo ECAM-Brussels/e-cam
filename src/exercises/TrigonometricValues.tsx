@@ -1,4 +1,4 @@
-import { cache } from '@solidjs/router'
+import { query } from '@solidjs/router'
 import { sample } from 'lodash-es'
 import { z } from 'zod'
 import ExerciseBase, { ExerciseProps } from '~/components/ExerciseBase'
@@ -45,7 +45,7 @@ export async function generate(params: {
   }
 }
 
-export const mark = cache(async (state: State) => {
+export const mark = query(async (state: State) => {
   'use server'
 
   const { attempt } = await request(
@@ -62,7 +62,7 @@ export const mark = cache(async (state: State) => {
   return attempt.isEqual && attempt.isNumber
 }, 'checkTrigonometricValue')
 
-export const solve = cache(async (state: State) => {
+export const solve = query(async (state: State) => {
   'use server'
 
   const { expression } = await request(

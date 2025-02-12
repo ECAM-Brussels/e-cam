@@ -1,9 +1,9 @@
-import { cache, createAsync } from '@solidjs/router'
+import { query, createAsync } from '@solidjs/router'
 import { createSignal, For } from 'solid-js'
 import { getUser } from '~/lib/auth/session'
 import { prisma } from '~/lib/db'
 
-const getUsers = cache(async () => {
+const getUsers = query(async () => {
   'use server'
   const user = await getUser()
   if (!user?.admin) {

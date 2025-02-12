@@ -1,6 +1,6 @@
 import Fa from './Fa'
 import { faCalculator } from '@fortawesome/free-solid-svg-icons'
-import { cache } from '@solidjs/router'
+import { query } from '@solidjs/router'
 import { createResource, createSignal, Show, Suspense } from 'solid-js'
 import Math from '~/components/Math'
 import Spinner from '~/components/Spinner'
@@ -13,7 +13,7 @@ type CalculatorResponse = {
   isNumeric: boolean
 }
 
-const calculate = cache(async (expr: string): Promise<CalculatorResponse> => {
+const calculate = query(async (expr: string): Promise<CalculatorResponse> => {
   'use server'
   let response = { symbolic: '', numeric: '', isNumeric: false }
   if (!expr) {

@@ -1,4 +1,4 @@
-import { cache } from '@solidjs/router'
+import { query } from '@solidjs/router'
 import { z } from 'zod'
 import ExerciseBase, { type ExerciseProps } from '~/components/ExerciseBase'
 import Math from '~/components/Math'
@@ -13,7 +13,7 @@ export const schema = z.object({
 })
 export type State = z.infer<typeof schema>
 
-export const mark = cache(async (state: State) => {
+export const mark = query(async (state: State) => {
   'use server'
   const { expression } = await request(
     graphql(`
@@ -30,7 +30,7 @@ export const mark = cache(async (state: State) => {
   return expression.limit.isEqual
 }, 'checkLimit')
 
-export const solve = cache(async (state: State) => {
+export const solve = query(async (state: State) => {
   'use server'
   const { expression } = await request(
     graphql(`

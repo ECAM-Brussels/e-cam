@@ -1,4 +1,4 @@
-import { cache } from '@solidjs/router'
+import { query } from '@solidjs/router'
 import { random, sample, sampleSize } from 'lodash-es'
 import { z } from 'zod'
 import ExerciseBase, { type ExerciseProps } from '~/components/ExerciseBase'
@@ -93,7 +93,7 @@ export async function generate(params: Params): Promise<State> {
   return state
 }
 
-export const mark = cache(async (state: State) => {
+export const mark = query(async (state: State) => {
   'use server'
   const data = { ...state }
   data[state.unknown] = state.attempt

@@ -1,4 +1,4 @@
-import { cache, createAsync, revalidate, useLocation } from '@solidjs/router'
+import { query, createAsync, revalidate, useLocation } from '@solidjs/router'
 import 'reveal.js/dist/reveal.css'
 import { createEffect, For, onCleanup, onMount, type JSXElement } from 'solid-js'
 import Breadcrumbs from '~/components/Breadcrumbs'
@@ -11,7 +11,7 @@ type SlideshowProps = {
   boardName?: string
 }
 
-export const getBoardCount = cache(async (url: string, boardName: string) => {
+export const getBoardCount = query(async (url: string, boardName: string) => {
   'use server'
   const boards = await prisma.board.findMany({
     where: { url, id: { startsWith: `slide-${boardName}-` } },

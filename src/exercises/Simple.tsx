@@ -1,4 +1,4 @@
-import { cache } from '@solidjs/router'
+import { query } from '@solidjs/router'
 import { z } from 'zod'
 import ExerciseBase, { type ExerciseProps } from '~/components/ExerciseBase'
 import Markdown from '~/components/Markdown'
@@ -14,7 +14,7 @@ export const schema = z.object({
 })
 export type State = z.infer<typeof schema>
 
-export const mark = cache(async (state: State) => {
+export const mark = query(async (state: State) => {
   'use server'
 
   const { attempt } = await request(
@@ -30,7 +30,7 @@ export const mark = cache(async (state: State) => {
   return attempt.isEqual
 }, 'checkSimple')
 
-export const solve = cache(async (state: State): Promise<State> => {
+export const solve = query(async (state: State): Promise<State> => {
   'use server'
 
   return { ...state, answer: decrypt(state.answer, import.meta.env.VITE_PASSPHRASE) }

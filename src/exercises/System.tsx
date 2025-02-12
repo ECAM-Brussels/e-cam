@@ -1,4 +1,4 @@
-import { cache } from '@solidjs/router'
+import { query } from '@solidjs/router'
 import dedent from 'dedent-js'
 import { sample } from 'lodash-es'
 import { For, Show } from 'solid-js'
@@ -16,7 +16,7 @@ export const schema = z.object({
 })
 export type State = z.infer<typeof schema>
 
-export const mark = cache(async (state: State) => {
+export const mark = query(async (state: State) => {
   'use server'
   if (state.impossible) {
     const { system } = await request(
@@ -46,7 +46,7 @@ export const mark = cache(async (state: State) => {
   return system.check
 }, 'checkSystem')
 
-export const solve = cache(async (state: State): Promise<State> => {
+export const solve = query(async (state: State): Promise<State> => {
   'use server'
   const { system } = await request(
     graphql(`
