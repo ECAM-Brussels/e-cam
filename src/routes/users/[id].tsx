@@ -1,4 +1,4 @@
-import { RouteDefinition, useParams } from '@solidjs/router'
+import { redirect, RouteDefinition, useNavigate, useParams } from '@solidjs/router'
 import { createSignal } from 'solid-js'
 import Page from '~/components/Page'
 import UserProfile from '~/components/UserProfile'
@@ -9,15 +9,20 @@ export const route = {
   preload: ({ params }) => {
     getUser()
     getUserAssignments(params.id)
-  }
+  },
 } satisfies RouteDefinition
 
 export default function User() {
   const params = useParams()
-  const [id, setId] = createSignal(params.id)
+  const navigate = useNavigate()
   return (
     <Page title="User">
-      <UserProfile id={id()} onSelect={setId} />
+      <UserProfile
+        id={params.id}
+        onSelect={(newId: string) => {
+          navigate(`../${newId}`)
+        }}
+      />
     </Page>
   )
 }
