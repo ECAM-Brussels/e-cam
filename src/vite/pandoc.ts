@@ -1,6 +1,7 @@
 import { type ExerciseProps } from '../components/ExerciseSequence'
 import { encrypt } from '../lib/cryptography'
 import { wrapCode } from '../lib/helpers'
+import { PrismaClient } from '@prisma/client'
 import { exec as execWithCallback, spawn } from 'child_process'
 import dedent from 'dedent-js'
 import glob from 'fast-glob'
@@ -76,12 +77,15 @@ async function generatePage(file: string) {
   }
 }
 
-async function createAssignment(file: string, passphrase: string) {
+async function createAssignment(file: string, passphrase: string, prisma: PrismaClient) {
   const relativePath = relative(resolve('content'), file)
   const outputPath = resolve('src/routes/(generated)', relativePath.replace(/\.ts$/, '.tsx'))
   mkdirSync(dirname(outputPath), { recursive: true })
   const contents = String(readFileSync(file, 'utf-8'))
   const assignment = eval(transpile(contents)) as ExerciseProps
+  const url = file.replace('/index.ts', '').replace('.ts', '').replace('content', '')
+  const title = assignment.title || ''
+  await prisma.page.upsert({ where: { url }, update: { title }, create: { url, title } })
   for (const exercise of assignment.data) {
     if (exercise.type === 'Simple' && exercise.state) {
       exercise.state.answer = encrypt(exercise.state.answer, passphrase)
@@ -122,34 +126,42 @@ async function generateImports() {
   return imports
 }
 
-async function buildAll(passphrase: string) {
+async function buildAll(passphrase: string, prisma: PrismaClient) {
   const pages = await glob.glob('content/**/*.md')
   for (const file of pages) {
     generatePage(file)
   }
   const assignments = await glob.glob('content/**/*.ts')
   for (const file of assignments) {
-    createAssignment(file, passphrase)
+    createAssignment(file, passphrase, prisma)
   }
 }
 
 const pandocPlugin = (): Plugin => {
   let passphrase = ''
+  let prisma: PrismaClient
   return {
     name: 'pandoc-plugin',
     buildStart() {
-      buildAll(passphrase)
+      buildAll(passphrase, prisma)
     },
-    config(config, { mode }) {
-      const env = loadEnv(mode, process.cwd(), 'VITE')
+    configResolved(config) {
+      const env = loadEnv(config.mode, process.cwd(), 'VITE')
       passphrase = env.VITE_PASSPHRASE
+      prisma = new PrismaClient({
+        datasources: {
+          db: {
+            url: env.VITE_DATABASE_URL,
+          },
+        },
+      })
     },
     async handleHotUpdate({ file }) {
       if (file.startsWith(resolve('src/vite'))) {
-        buildAll(passphrase)
+        buildAll(passphrase, prisma)
       }
       if (file.endsWith('.ts') && file.startsWith(resolve('content'))) {
-        createAssignment(file, passphrase)
+        createAssignment(file, passphrase, prisma)
       }
       if (file.endsWith('.md') && file.startsWith(resolve('content'))) {
         generatePage(file)

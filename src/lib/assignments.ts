@@ -10,7 +10,10 @@ export const getUserAssignments = query(async (userEmail: string) => {
   if (!user || (user.email !== userEmail && !user.admin)) {
     throw new Error("You don't have the required permissions to see this data")
   }
-  const records = await prisma.assignment.findMany({ where: { userEmail } })
+  const records = await prisma.assignment.findMany({
+    where: { userEmail },
+    include: { page: true },
+  })
   return records
     .filter((record) => {
       const exercises = JSON.parse(record.body as string) as Exercise[]
@@ -24,6 +27,7 @@ export const getUserAssignments = query(async (userEmail: string) => {
         url: record.url,
         lastModified: formatDistance(record.lastModified, new Date(), { addSuffix: true }),
         correct,
+        title: record.page.title,
         total,
         score: correct / Math.max(total, 1),
       }

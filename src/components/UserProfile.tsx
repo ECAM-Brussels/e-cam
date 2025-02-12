@@ -35,7 +35,7 @@ export default function UserProfile(props: UserProfileProps) {
               return (
                 <tr class="odd:bg-white even:bg-slate-50 text-slate-500 text-sm">
                   <td class="border flex-grow p-3">
-                    <a href={result.url}>{result.url}</a>
+                    <a href={result.url}>{result.title}</a>
                   </td>
                   <td class="border p-3 w-0 whitespace-nowrap">
                     <progress value={result.score} /> {result.correct}/{result.total}

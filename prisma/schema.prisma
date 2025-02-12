@@ -13,7 +13,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Page {
+  url String @id @unique
+  title String
+  assignments Assignment[]
+}
+
 model Assignment {
+  page Page @relation(fields: [url], references: [url])
   url String
   user User @relation(fields: [userEmail], references: [email])
   userEmail String
