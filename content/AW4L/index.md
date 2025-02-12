@@ -24,6 +24,8 @@ lang: en
 
 - Why do we use UI frameworks?
 
+- What is JSX?
+
 - Explain how you could implement a basic reactivity system.
 
 - What is an SPA? What are the advantages and the drawbacks of this type of architecture?
