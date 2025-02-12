@@ -24,7 +24,7 @@ export default function UserSelect(props: UserSelectProps) {
     <>
       <input
         list="users"
-        class="border rounded-full w-full px-4 py-3 my-2 shadow-md"
+        class="border rounded-full w-full px-4 py-3 my-2 shadow-sm"
         placeholder="Look up a student"
         value={search()}
         onInput={(e) => {

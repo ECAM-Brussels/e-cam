@@ -3,6 +3,7 @@ import { createAsync } from '@solidjs/router'
 import { For, Show } from 'solid-js'
 import { getUserAssignments } from '~/lib/assignments'
 import { getUser } from '~/lib/auth/session'
+import { getUserInfo } from '~/lib/user'
 
 type UserProfileProps = {
   id: string
@@ -13,12 +14,13 @@ export default function UserProfile(props: UserProfileProps) {
   const username = () => `${props.id}@ecam.be`
   const assignments = createAsync(() => getUserAssignments(username()))
   const user = createAsync(() => getUser())
+  const userInfo = createAsync(() => getUserInfo(username()))
   return (
     <div class="bg-white rounded-xl p-8">
       <Show when={user()?.admin}>
         <UserSelect onSelect={props.onSelect} />
       </Show>
-      <h1 class="text-3xl">User: {username()}</h1>
+      <h1 class="text-4xl font-bold my-8">{userInfo()?.lastName}, {userInfo()?.firstName}</h1>
       <table class="container">
         <thead class="border-b">
           <tr>
