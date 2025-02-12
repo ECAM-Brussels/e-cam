@@ -15,8 +15,8 @@
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@prisma/client": "^5.18.0",
     "@solidjs/meta": "^0.29.4",
-    "@solidjs/router": "^0.14.10",
-    "@solidjs/start": "^1.0.9",
+    "@solidjs/router": "^0.15.3",
+    "@solidjs/start": "^1.1.0",
     "@types/babel__standalone": "^7.1.9",
     "@viz-js/viz": "^3.11.0",
     "crypto-js": "^4.2.0",
@@ -34,11 +34,14 @@
     "node-env-run": "^4.0.2",
     "pyodide": "^0.26.2",
     "reveal.js": "^5.1.0",
-    "solid-js": "^1.9.3",
+    "solid-js": "^1.9.4",
     "solid-prism-editor": "^1.1.0",
     "typescript": "^5.5.4",
-    "vinxi": "^0.4.1",
+    "vinxi": "^0.5.3",
     "zod": "^3.23.8"
+  },
+  "overrides": {
+    "vite": "^5.4.14"
   },
   "engines": {
     "node": ">=18"
