@@ -4,9 +4,11 @@ import { For } from 'solid-js'
 import { type Exercise } from '~/components/ExerciseSequence'
 import { getUser } from '~/lib/auth/session'
 import { prisma } from '~/lib/db'
+import UserSelect from './UserSelect'
 
 type UserProfileProps = {
   id: string
+  onSelect?: (newUser: string) => void
 }
 
 export const getUserAssignments = cache(async (userEmail: string) => {
@@ -40,6 +42,7 @@ export default function UserProfile(props: UserProfileProps) {
   const assignments = createAsync(() => getUserAssignments(username()))
   return (
     <div class="bg-white rounded-xl p-8">
+      <UserSelect onSelect={props.onSelect} />
       <h1 class="text-3xl">User: {username()}</h1>
       <table class="container">
         <thead class="border-b">
@@ -54,13 +57,13 @@ export default function UserProfile(props: UserProfileProps) {
             {(result) => {
               return (
                 <tr class="odd:bg-white even:bg-slate-50 text-slate-500 text-sm">
-                  <td class="py-2">
+                  <td class="py-2 flex-grow">
                     <a href={result.url}>{result.url}</a>
                   </td>
-                  <td>
+                  <td class="w-0 whitespace-nowrap">
                     <progress value={result.score} /> {result.correct}/{result.total}
                   </td>
-                  <td class="text-right">{result.lastModified}</td>
+                  <td class="text-right w-0 whitespace-nowrap">{result.lastModified}</td>
                 </tr>
               )
             }}
