@@ -319,7 +319,7 @@ export default function Page() {
 
   - `src/components`: put all components here
   - `src/lib`: server code and other helpers
-  - `src/routes`: your page
+  - `src/routes`: your pages
 
 # Components {.flex}
 

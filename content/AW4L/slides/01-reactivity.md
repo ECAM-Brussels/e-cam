@@ -614,7 +614,7 @@ Because it **scales extremely well**.
 
 - Testability
 
-- Easier to debugs: unidirectional data flow, read/write segregation
+- Easier to debug: unidirectional data flow, read/write segregation
 
 ::: warning
 This is an exam question.
