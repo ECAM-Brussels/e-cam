@@ -30,6 +30,7 @@ export default function UserSelect(props: UserSelectProps) {
           const filtered = users()?.filter((u) => u.email.split('@')[0] === e.target.value)
           if (filtered?.length === 1) {
             props.onSelect?.(filtered[0].email.split('@')[0])
+            setSearch(filtered[0].email.split('@')[0])
           }
         }}
       />
