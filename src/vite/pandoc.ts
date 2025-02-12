@@ -85,7 +85,11 @@ async function createAssignment(file: string, passphrase: string, prisma: Prisma
   const assignment = eval(transpile(contents)) as ExerciseProps
   const url = file.replace('/index.ts', '').replace('.ts', '').replace('content', '')
   const title = assignment.title || ''
-  await prisma.page.upsert({ where: { url }, update: { title }, create: { url, title } })
+  try {
+    await prisma.page.upsert({ where: { url }, update: { title }, create: { url, title } })
+  } catch {
+    console.log('Upsert failed')
+  }
   for (const exercise of assignment.data) {
     if (exercise.type === 'Simple' && exercise.state) {
       exercise.state.answer = encrypt(exercise.state.answer, passphrase)
