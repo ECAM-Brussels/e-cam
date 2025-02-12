@@ -16,7 +16,7 @@ export default function User() {
   const params = useParams()
   const navigate = useNavigate()
   return (
-    <Page title="User">
+    <Page title={`User profile - ${params.id}`}>
       <UserProfile
         id={params.id}
         onSelect={(newId: string) => {
