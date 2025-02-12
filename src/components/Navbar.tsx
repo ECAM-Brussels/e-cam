@@ -25,13 +25,12 @@ export default function Navbar() {
           </NavbarItem>
         </ul>
         <ul class="flex items-center text-sm">
-          <Show
-            when={user() && user()?.firstName}
-            fallback={<NavbarItem href="/auth/login">Se connecter</NavbarItem>}
-          >
-            {(name) => (
+          <Show when={user()} fallback={<NavbarItem href="/auth/login">Se connecter</NavbarItem>}>
+            {(user) => (
               <>
-                <NavbarItem>{name()}</NavbarItem>
+                <NavbarItem href={`/users/${user().email.split('@')[0]}`}>
+                  {user().firstName}
+                </NavbarItem>
                 <NavbarItem>
                   <form action={logout} method="post">
                     <button type="submit">

@@ -4,6 +4,7 @@ import { getUser } from '~/lib/auth/session'
 import { prisma } from '~/lib/db'
 
 const getUsers = cache(async () => {
+  'use server'
   const user = await getUser()
   if (!user?.admin) {
     throw new Error('Only admins can access user information')
