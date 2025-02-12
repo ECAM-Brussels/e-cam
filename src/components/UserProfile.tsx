@@ -16,17 +16,17 @@ export default function UserProfile(props: UserProfileProps) {
   const user = createAsync(() => getUser())
   const userInfo = createAsync(() => getUserInfo(username()))
   return (
-    <div class="bg-white rounded-xl p-8">
+    <div class="bg-white rounded-xl p-8 border shadow">
       <Show when={user()?.admin}>
         <UserSelect onSelect={props.onSelect} />
       </Show>
       <h1 class="text-4xl font-bold my-8">{userInfo()?.lastName}, {userInfo()?.firstName}</h1>
-      <table class="container">
+      <table class="container max-w-5xl mx-auto border rounded-xl shadow mb-8">
         <thead class="border-b">
           <tr>
-            <th>Assignment</th>
-            <th>Exercises</th>
-            <th class="text-right whitespace-nowrap">Last modified</th>
+            <th class="border p-3">Assignment</th>
+            <th class="border p-3">Exercises</th>
+            <th class="border text-right whitespace-nowrap p-3">Last modified</th>
           </tr>
         </thead>
         <tbody>
@@ -34,13 +34,13 @@ export default function UserProfile(props: UserProfileProps) {
             {(result) => {
               return (
                 <tr class="odd:bg-white even:bg-slate-50 text-slate-500 text-sm">
-                  <td class="py-2 flex-grow">
+                  <td class="border flex-grow p-3">
                     <a href={result.url}>{result.url}</a>
                   </td>
-                  <td class="w-0 whitespace-nowrap">
+                  <td class="border p-3 w-0 whitespace-nowrap">
                     <progress value={result.score} /> {result.correct}/{result.total}
                   </td>
-                  <td class="text-right w-0 whitespace-nowrap">{result.lastModified}</td>
+                  <td class="border p-3 text-right w-0 whitespace-nowrap">{result.lastModified}</td>
                 </tr>
               )
             }}
