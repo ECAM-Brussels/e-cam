@@ -15,6 +15,7 @@ export default function UserProfile(props: UserProfileProps) {
   const assignments = createAsync(() => getUserAssignments(username()))
   const user = createAsync(() => getUser())
   const userInfo = createAsync(() => getUserInfo(username()))
+  const suffix = () => username() !== user()?.email ? `?userEmail=${username()}` : ''
   return (
     <div class="bg-white rounded-xl p-8 border shadow">
       <Show when={user()?.admin}>
@@ -35,7 +36,7 @@ export default function UserProfile(props: UserProfileProps) {
               return (
                 <tr class="odd:bg-white even:bg-slate-50 text-slate-500 text-sm">
                   <td class="border flex-grow p-3">
-                    <a href={result.url}>{result.title}</a>
+                    <a href={result.url + suffix()}>{result.title}</a>
                   </td>
                   <td class="border p-3 w-0 whitespace-nowrap">
                     <progress value={result.score} /> {result.correct}/{result.total}

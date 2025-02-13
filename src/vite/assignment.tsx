@@ -60,6 +60,7 @@ export default function () {
         fallback={
           <>
             <ExerciseSequence
+              userEmail={searchParams.userEmail as string}
               index={parseInt(searchParams.exercise || '1') - 1}
               onIndexChange={(index) => {
                 setSearchParams({ exercise: index + 1 })

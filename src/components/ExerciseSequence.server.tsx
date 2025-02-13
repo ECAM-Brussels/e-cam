@@ -24,11 +24,7 @@ export const loadAssignment = query(
   'loadAssignment',
 )
 
-export async function deleteAssignment(
-  url: string,
-  id: string,
-  userEmail: string = '',
-) {
+export async function deleteAssignment(url: string, id: string, userEmail: string = '') {
   'use server'
   const user = await getUser()
   if (!userEmail) {
@@ -38,7 +34,7 @@ export async function deleteAssignment(
     throw new Error('Not Authorized')
   }
   await prisma.assignment.delete({
-    where: {url_userEmail_id: {url, userEmail, id}}
+    where: { url_userEmail_id: { url, userEmail, id } },
   })
 }
 
@@ -48,7 +44,7 @@ export async function upsertAssignment(
   userEmail: string = '',
   data: Exercise[],
   date: Date,
-  finished: boolean = false
+  finished: boolean = false,
 ) {
   'use server'
   const user = await getUser()
@@ -57,6 +53,9 @@ export async function upsertAssignment(
   }
   if (!userEmail || !user.admin) {
     userEmail = user.email
+  }
+  if (userEmail && userEmail !== user.email) {
+    return
   }
   let body = JSON.stringify(data)
   await prisma.assignment.upsert({
