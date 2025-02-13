@@ -15,7 +15,7 @@ let pyodide: PyodideInterface
 
 async function load() {
   pyodide = await loadPyodide({
-    indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/',
+    indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.27.2/full/',
   })
 }
 const loadPromise = load()
