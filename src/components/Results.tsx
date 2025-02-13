@@ -80,7 +80,7 @@ export default function Results(props: ResultsProps) {
     <>
       <p class="my-4">
         <input
-          class="border rounded-full w-full px-4 py-3 my-2 shadow-md"
+          class="border rounded-full w-full px-4 py-3 my-2 shadow"
           placeholder="Rechercher un étudiant"
           value={search()}
           onInput={(e) => setSearch(e.target.value)}
@@ -108,7 +108,7 @@ export default function Results(props: ResultsProps) {
           <For each={filtered()}>
             {(result) => (
               <tr class="odd:bg-white even:bg-slate-50 text-slate-500 text-sm">
-                <td class="py-2">
+                <td class="py-3">
                   <a href={`/users/${result.id}`}>{result.email.split('@')[0]}</a>
                 </td>
                 <td>{result.lastName}</td>

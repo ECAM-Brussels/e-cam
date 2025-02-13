@@ -21,10 +21,10 @@ export default function UserProfile(props: UserProfileProps) {
         <UserSelect onSelect={props.onSelect} />
       </Show>
       <h1 class="text-4xl font-bold my-8">{userInfo()?.lastName}, {userInfo()?.firstName}</h1>
-      <table class="container max-w-5xl mx-auto border rounded-xl shadow mb-8">
+      <table class="container max-w-5xl mx-auto border shadow mb-8">
         <thead class="border-b">
           <tr>
-            <th class="border p-3">Assignment</th>
+            <th class="p-3">Assignment</th>
             <th class="border p-3">Exercises</th>
             <th class="border text-right whitespace-nowrap p-3">Last modified</th>
           </tr>
