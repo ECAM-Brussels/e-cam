@@ -183,7 +183,7 @@ They are a direct consequence of the **components architecture**.
 ```html
 <script>
   document.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', function(event) => {
+    link.addEventListener('click', function(event) {
       event.preventDefault()
       const path = link.getAttribute('href')
       history.pushState({ path }, '', path)
@@ -212,7 +212,7 @@ history.pushState(state, unused, url)
 - `url`: the address of the new page
 :::::
 
-# Example: scroll position
+# Example: scroll position {.grid .grid-cols-2}
 
 ```html
 <script>
@@ -233,6 +233,15 @@ history.pushState(state, unused, url)
   }
 </script>
 ```
+
+::::: col
+- We push the scroll position in the state in the history stack
+
+- When pressing back or forward,
+  `popstate` is triggered,
+  and we can access the state of that history entry
+  to restore the scroll position.
+:::::
 
 # Sequence diagram: navigation
 
