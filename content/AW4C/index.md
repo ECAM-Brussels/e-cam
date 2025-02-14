@@ -10,6 +10,7 @@ lang: en
 
 - [Introduction](/AW4C/slides/01-introduction)
 - [MPA and AJAX](/AW4C/slides/02-mpa)
+- [SPA](/AW4C/slides/03-spa)
 
 # Labs
 
