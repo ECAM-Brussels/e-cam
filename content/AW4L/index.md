@@ -14,9 +14,7 @@ lang: en
 
 #. [Isomorphic Applications](/AW4L/slides/02-isomorphic-apps)
 
-#. Validation and data fetching
-
-#. Databases et authentication
+#. [CRUD example](/AW4L/slides/03-crud)
 ::::::::::
 
 :::::::::: {.bg-white .rounded-xl .p-4 .shadow}
