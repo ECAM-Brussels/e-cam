@@ -14,7 +14,7 @@ with the following requirements:
 
 - No waterfalls
 
-- Type-safety everywhere,
+- Type safety everywhere,
   including in client-server communications.
 
 - Validation of user input
@@ -247,7 +247,7 @@ export default function Todo() {
 - [Documentation: useSubmissions](https://docs.solidjs.com/solid-router/reference/data-apis/use-submissions)
 :::::
 
-# Examples
+# Examples {.w-1--2}
 
 Use the [official examples](https://github.com/solidjs/solid-start/tree/main/examples)
 to guide you.
