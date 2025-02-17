@@ -212,7 +212,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
 
   const [width, setWidth] = createSignal(800)
   const [height, setHeight] = createSignal(700)
-  let container: HTMLDivElement
+  let container!: HTMLDivElement
   const resize = () => {
     setWidth(container.offsetWidth)
     setHeight(window.innerHeight)
@@ -243,7 +243,7 @@ export default function ExerciseSequence(props: ExerciseProps) {
   }, 3000)
 
   // Focus the 'next question button'
-  let nextButton: HTMLButtonElement
+  let nextButton!: HTMLButtonElement
   createEffect(() => {
     if (exercise().feedback?.correct !== undefined && index() < data.length - 1) {
       setTimeout(() => {
