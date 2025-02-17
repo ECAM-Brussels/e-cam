@@ -14,6 +14,8 @@ with the following requirements:
 
 - No waterfalls
 
+- Data persistence
+
 - Type safety everywhere,
   including in client-server communications.
 
@@ -97,6 +99,7 @@ export const getTasks = query(async () => {
 ::::: col
 - `query` creates a cached function.
   Calls are deduped to prevent multiple calls to the function.
+  (Remember the function might be called in different components!)
 
 - `use server` ensures the function runs on the server.
   If it is called on the client,
@@ -140,7 +143,8 @@ export const removeTask = action(async (id: number) => {
 ::::: col
 - Create a **schema** that will be used for validation
 
-- `action` creates a form action from a server function
+- `action` creates a form action from a server function.
+  By default, cached functions are revalidated.
 
 - [Documentation: action](https://docs.solidjs.com/solid-router/reference/data-apis/action)
 :::::
@@ -216,7 +220,9 @@ export default function Todo() {
         </For>
         <For each={addingTask}>
           {(sub) => (
-            <li class="text-red-800">{String(sub.input[0].get("title"))}</li>
+            <Show when={sub.pending}>
+              <li>{String(sub.input[0].get("title"))} (pending)</li>
+            </Show>
           )}
         </For>
       </ul>
@@ -249,8 +255,7 @@ export default function Todo() {
 
 # Examples {.w-1--2}
 
-Use the [official examples](https://github.com/solidjs/solid-start/tree/main/examples)
-to guide you.
+Use the [official examples](https://github.com/solidjs/solid-start/tree/main/examples) to guide you.
 
 ::: warning
 Solid-Start is probably too recent for your favourite AI.
