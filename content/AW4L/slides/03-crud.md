@@ -124,19 +124,21 @@ const taskSchema = z.object({
   completed: z.boolean(),
 })
 
-export const addTask = action(async (form: FormData) => {
+export const addTask = async (form: FormData) => {
   'use server'
   const task = taskSchema.parse({
     title: form.get('title'),
     completed: false,
   })
   return await db.task.create({ data: task })
-})
+}
+export const addTaskAction = action(addTask)
 
-export const removeTask = action(async (id: number) => {
+export const removeTask = (async (id: number) => {
   'use server'
   return await db.task.delete({ where: { id } })
 })
+export const removeTaskAction = action(removeTask)
 ```
 :::::
 
@@ -184,7 +186,7 @@ import {
   type RouteDefinition,
 } from "@solidjs/router";
 import { For } from "solid-js";
-import { addTask, getTasks, removeTask } from "~/lib/task";
+import { addTaskAction, getTasks, removeTaskAction } from "~/lib/task";
 
 export const route = {
   preload() {
@@ -196,15 +198,15 @@ export default function Todo() {
   const tasks = createAsyncStore(() => getTasks(), {
     initialValue: [],
   });
-  const addingTask = useSubmissions(addTask);
-  const removingTask = useSubmissions(removeTask);
+  const addingTask = useSubmissions(addTaskAction);
+  const removingTask = useSubmissions(removeTaskAction);
   const filtered = () =>
     tasks().filter((task) => {
       return !removingTask.some((d) => d.input[0] === task.id);
     });
   return (
     <>
-      <form action={addTask} method="post">
+      <form action={addTaskAction} method="post">
         <input name="title" />
       </form>
       <ul>
@@ -213,7 +215,7 @@ export default function Todo() {
             <li>
               {task.title}
               <form method="post">
-                <button formAction={removeTask.with(task.id)}>Delete</button>
+                <button formAction={removeTaskAction.with(task.id)}>Delete</button>
               </form>
             </li>
           )}
