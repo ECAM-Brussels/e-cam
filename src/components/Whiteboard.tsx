@@ -58,8 +58,8 @@ type WhiteboardProps = {
 
 export default function Whiteboard(props: WhiteboardProps) {
   const location = useLocation()
-  let canvasRef: HTMLCanvasElement
-  let container: HTMLDivElement
+  let canvasRef!: HTMLCanvasElement
+  let container!: HTMLDivElement
   const ctx = () => canvasRef?.getContext('2d')
   const [mode, setMode] = createSignal<Mode>('read')
 
