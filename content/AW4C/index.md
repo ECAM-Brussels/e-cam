@@ -15,4 +15,5 @@ lang: en
 # Labs
 
 - [Routes and Layouts](/AW4C/slides/lab-01-routes)
+- [Components](/AW4C/slides/lab-02-components)
 ::::::::::
