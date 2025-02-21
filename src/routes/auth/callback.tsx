@@ -24,7 +24,7 @@ export default function Callback() {
   })
 
   return (
-    <Page>
+    <Page title="Authenticating">
       <div>Authenticating...</div>
     </Page>
   )
