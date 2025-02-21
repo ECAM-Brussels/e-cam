@@ -6,47 +6,55 @@ import Fa from '~/components/Fa'
 import { getUser, logout } from '~/lib/auth/session'
 
 export default function Navbar() {
+  return <NavbarShell>{[<Logo />, <Links />, <UserInfo />]}</NavbarShell>
+}
+
+function Logo() {
+  return (
+    <NavbarItem class="font-bold text-2xl text-slate-600 border-b-0" href="/">
+      <span>e</span>
+      <span class="mx-px text-gray-400">·</span>cam
+    </NavbarItem>
+  )
+}
+
+function Links() {
+  return (
+    <>
+      <NavbarItem href="/PM1C" underline>
+        Pont maths
+      </NavbarItem>
+      <NavbarItem href="/IC1T" underline>
+        Programmation
+      </NavbarItem>
+    </>
+  )
+}
+
+function UserInfo() {
   const user = createAsync(() => getUser())
   return (
-    <NavbarShell>
-      {[
-        <>
-          <NavbarItem class="font-bold text-2xl text-slate-600 border-b-0" href="/">
-            <span>e</span>
-            <span class="mx-px text-gray-400">·</span>cam
-          </NavbarItem>
-        </>,
-        <>
-          <NavbarItem href="/PM1C" underline>
-            Pont maths
-          </NavbarItem>
-          <NavbarItem href="/IC1T" underline>
-            Programmation
-          </NavbarItem>
-        </>,
-        <>
-          <Show when={user()} fallback={<NavbarItem href="/auth/login">Se connecter</NavbarItem>}>
-            {(user) => (
-              <>
-                <NavbarItem href={`/users/${user().email.split('@')[0]}`}>
-                  {user().firstName}
-                </NavbarItem>
-                <NavbarItem>
-                  <form action={logout} method="post">
-                    <button type="submit">
-                      <Fa icon={faRightFromBracket} /> Se déconnecter
-                    </button>
-                  </form>
-                </NavbarItem>
-              </>
-            )}
-          </Show>
-          <NavbarItem href="https://github.com/ECAM-Brussels/e-cam" class="text-xl text-gray-400">
-            <Fa icon={faGithub} />
-          </NavbarItem>
-        </>,
-      ]}
-    </NavbarShell>
+    <>
+      <Show when={user()} fallback={<NavbarItem href="/auth/login">Se connecter</NavbarItem>}>
+        {(user) => (
+          <>
+            <NavbarItem href={`/users/${user().email.split('@')[0]}`}>
+              {user().firstName}
+            </NavbarItem>
+            <NavbarItem>
+              <form action={logout} method="post">
+                <button type="submit">
+                  <Fa icon={faRightFromBracket} /> Se déconnecter
+                </button>
+              </form>
+            </NavbarItem>
+          </>
+        )}
+      </Show>
+      <NavbarItem href="https://github.com/ECAM-Brussels/e-cam" class="text-xl text-gray-400">
+        <Fa icon={faGithub} />
+      </NavbarItem>
+    </>
   )
 }
 
