@@ -6,35 +6,39 @@ import Fa from '~/components/Fa'
 import { getUser, logout } from '~/lib/auth/session'
 
 export default function Navbar() {
-  return <NavbarShell>{[<Logo />, <Links />, <UserInfo />]}</NavbarShell>
+  return (
+    <NavbarShell>
+      <Logo />
+      <Links />
+      <UserInfo />
+    </NavbarShell>
+  )
 }
 
-function Logo() {
-  return (
+const Logo = () => (
+  <ul class="flex items-center">
     <NavbarItem class="font-bold text-2xl text-slate-600 border-b-0" href="/">
       <span>e</span>
       <span class="mx-px text-gray-400">·</span>cam
     </NavbarItem>
-  )
-}
+  </ul>
+)
 
-function Links() {
-  return (
-    <>
-      <NavbarItem href="/PM1C" underline>
-        Pont maths
-      </NavbarItem>
-      <NavbarItem href="/IC1T" underline>
-        Programmation
-      </NavbarItem>
-    </>
-  )
-}
+const Links = () => (
+  <ul class="flex items-center">
+    <NavbarItem href="/PM1C" underline>
+      Pont maths
+    </NavbarItem>
+    <NavbarItem href="/IC1T" underline>
+      Programmation
+    </NavbarItem>
+  </ul>
+)
 
 function UserInfo() {
   const user = createAsync(() => getUser())
   return (
-    <>
+    <ul class="flex items-center">
       <Show when={user()} fallback={<NavbarItem href="/auth/login">Se connecter</NavbarItem>}>
         {(user) => (
           <>
@@ -54,22 +58,18 @@ function UserInfo() {
       <NavbarItem href="https://github.com/ECAM-Brussels/e-cam" class="text-xl text-gray-400">
         <Fa icon={faGithub} />
       </NavbarItem>
-    </>
+    </ul>
   )
 }
 
 type NavbarShellProps = {
-  children: [JSXElement, JSXElement, JSXElement]
+  children: JSXElement
 }
 
 function NavbarShell(props: NavbarShellProps) {
   return (
     <div class="bg-white border-b border-b-gray-200 mb-6 shadow-md shadow-teal-900/5 sticky top-0 z-40">
-      <nav class="container mx-auto flex items-end justify-between">
-        <ul class="flex items-center">{props.children[0]}</ul>
-        <ul class="flex items-center text-sm">{props.children[1]}</ul>
-        <ul class="flex items-center text-sm">{props.children[2]}</ul>
-      </nav>
+      <nav class="container mx-auto flex items-end justify-between">{props.children}</nav>
     </div>
   )
 }
@@ -91,6 +91,8 @@ function NavbarItem(props: NavbarItemProps) {
           class={classes()}
           classList={{
             'hover:text-blue-700': props.href ? true : false,
+            'hover:border-b-4': props.underline,
+            'hover:border-blue-700': props.underline,
             'border-b-4': props.underline,
             'border-slate-400': props.underline && location.pathname.startsWith(props.href || ''),
             'border-white': props.underline && !location.pathname.startsWith(props.href || ''),
