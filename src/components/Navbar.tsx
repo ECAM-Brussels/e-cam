@@ -8,23 +8,25 @@ import { getUser, logout } from '~/lib/auth/session'
 export default function Navbar() {
   const user = createAsync(() => getUser())
   return (
-    <div class="bg-white border-b border-b-gray-200 mb-6 shadow-md shadow-teal-900/5 sticky top-0 z-40">
-      <nav class="container mx-auto flex items-end justify-between">
-        <ul class="flex items-center">
-          <NavbarItem class="font-bold text-2xl text-slate-600 border-b-0" href="/">
-            <span>e</span>
-            <span class="mx-px text-gray-400">·</span>cam
-          </NavbarItem>
-        </ul>
-        <ul class="flex items-center text-sm">
+    <NavbarShell
+      left={
+        <NavbarItem class="font-bold text-2xl text-slate-600 border-b-0" href="/">
+          <span>e</span>
+          <span class="mx-px text-gray-400">·</span>cam
+        </NavbarItem>
+      }
+      center={
+        <>
           <NavbarItem href="/PM1C" underline>
             Pont maths
           </NavbarItem>
           <NavbarItem href="/IC1T" underline>
             Programmation
           </NavbarItem>
-        </ul>
-        <ul class="flex items-center text-sm">
+        </>
+      }
+      right={
+        <>
           <Show when={user()} fallback={<NavbarItem href="/auth/login">Se connecter</NavbarItem>}>
             {(user) => (
               <>
@@ -44,7 +46,25 @@ export default function Navbar() {
           <NavbarItem href="https://github.com/ECAM-Brussels/e-cam" class="text-xl text-gray-400">
             <Fa icon={faGithub} />
           </NavbarItem>
-        </ul>
+        </>
+      }
+    />
+  )
+}
+
+type NavbarShellProps = {
+  left: JSXElement
+  center: JSXElement
+  right: JSXElement
+}
+
+function NavbarShell(props: NavbarShellProps) {
+  return (
+    <div class="bg-white border-b border-b-gray-200 mb-6 shadow-md shadow-teal-900/5 sticky top-0 z-40">
+      <nav class="container mx-auto flex items-end justify-between">
+        <ul class="flex items-center">{props.left}</ul>
+        <ul class="flex items-center text-sm">{props.center}</ul>
+        <ul class="flex items-center text-sm">{props.right}</ul>
       </nav>
     </div>
   )
