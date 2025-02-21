@@ -8,14 +8,14 @@ import { getUser, logout } from '~/lib/auth/session'
 export default function Navbar() {
   const user = createAsync(() => getUser())
   return (
-    <NavbarShell
-      left={
-        <NavbarItem class="font-bold text-2xl text-slate-600 border-b-0" href="/">
-          <span>e</span>
-          <span class="mx-px text-gray-400">·</span>cam
-        </NavbarItem>
-      }
-      center={
+    <NavbarShell>
+      {[
+        <>
+          <NavbarItem class="font-bold text-2xl text-slate-600 border-b-0" href="/">
+            <span>e</span>
+            <span class="mx-px text-gray-400">·</span>cam
+          </NavbarItem>
+        </>,
         <>
           <NavbarItem href="/PM1C" underline>
             Pont maths
@@ -23,9 +23,7 @@ export default function Navbar() {
           <NavbarItem href="/IC1T" underline>
             Programmation
           </NavbarItem>
-        </>
-      }
-      right={
+        </>,
         <>
           <Show when={user()} fallback={<NavbarItem href="/auth/login">Se connecter</NavbarItem>}>
             {(user) => (
@@ -46,25 +44,23 @@ export default function Navbar() {
           <NavbarItem href="https://github.com/ECAM-Brussels/e-cam" class="text-xl text-gray-400">
             <Fa icon={faGithub} />
           </NavbarItem>
-        </>
-      }
-    />
+        </>,
+      ]}
+    </NavbarShell>
   )
 }
 
 type NavbarShellProps = {
-  left: JSXElement
-  center: JSXElement
-  right: JSXElement
+  children: [JSXElement, JSXElement, JSXElement]
 }
 
 function NavbarShell(props: NavbarShellProps) {
   return (
     <div class="bg-white border-b border-b-gray-200 mb-6 shadow-md shadow-teal-900/5 sticky top-0 z-40">
       <nav class="container mx-auto flex items-end justify-between">
-        <ul class="flex items-center">{props.left}</ul>
-        <ul class="flex items-center text-sm">{props.center}</ul>
-        <ul class="flex items-center text-sm">{props.right}</ul>
+        <ul class="flex items-center">{props.children[0]}</ul>
+        <ul class="flex items-center text-sm">{props.children[1]}</ul>
+        <ul class="flex items-center text-sm">{props.children[2]}</ul>
       </nav>
     </div>
   )
