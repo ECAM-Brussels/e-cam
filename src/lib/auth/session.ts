@@ -1,7 +1,7 @@
-import { action, query, reload } from '@solidjs/router'
+import { action, query, redirect, reload } from '@solidjs/router'
 import { useSession } from 'vinxi/http'
 import { loadAssignment } from '~/components/ExerciseSequence.server'
-import { getUserInfo } from '~/lib/auth/azure'
+import { generatePKCE, getUserInfo } from '~/lib/auth/azure'
 import { prisma } from '~/lib/db'
 
 type SessionData = {
@@ -30,6 +30,17 @@ export const getUser = query(async () => {
   }
 }, 'getUser')
 
+export const startLogin = action(async () => {
+  const { codeVerifier, codeChallenge } = await generatePKCE()
+  sessionStorage.setItem('codeVerifier', codeVerifier)
+  throw redirect(
+    `https://login.microsoftonline.com/${import.meta.env.VITE_AZURE_TENANT_ID}` +
+      `/oauth2/v2.0/authorize?client_id=${import.meta.env.VITE_AZURE_CLIENT_ID}&response_type=code` +
+      `&redirect_uri=${import.meta.env.VITE_AZURE_REDIRECT_URI}&response_mode=query&scope=openid profile email` +
+      `&code_challenge=${codeChallenge}&code_challenge_method=S256`,
+  )
+}, 'startLogin')
+
 export const login = action(async (token: string) => {
   'use server'
   const session = await getSession()
@@ -49,7 +60,6 @@ export const login = action(async (token: string) => {
       data.email = userInfo.email
       return data
     })
-    reload({ revalidate: [getUser.key, loadAssignment.key] })
   }
 })
 
@@ -57,5 +67,4 @@ export const logout = action(async () => {
   'use server'
   const session = await getSession()
   await session.clear()
-  reload({ revalidate: [getUser.key, loadAssignment.key] })
 })

@@ -3,7 +3,7 @@ import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import { createAsync, useLocation } from '@solidjs/router'
 import { Show, type JSXElement } from 'solid-js'
 import Fa from '~/components/Fa'
-import { getUser, logout } from '~/lib/auth/session'
+import { getUser, logout, startLogin } from '~/lib/auth/session'
 
 export default function Navbar() {
   return (
@@ -39,7 +39,16 @@ function UserInfo() {
   const user = createAsync(() => getUser())
   return (
     <ul class="flex items-center">
-      <Show when={user()} fallback={<NavbarItem href="/auth/login">Se connecter</NavbarItem>}>
+      <Show
+        when={user()}
+        fallback={
+          <NavbarItem>
+            <form method="post" action={startLogin}>
+              <button type="submit">Se connecter</button>
+            </form>
+          </NavbarItem>
+        }
+      >
         {(user) => (
           <>
             <NavbarItem href={`/users/${user().email.split('@')[0]}`}>
