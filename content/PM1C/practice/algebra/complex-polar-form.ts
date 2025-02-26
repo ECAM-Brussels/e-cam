@@ -2,7 +2,7 @@
   mode: 'dynamic',
   streak: 200,
   whiteboard: true,
-  title: 'Nombres complexes: forme polaire',
+  title: 'Nombres complexes: forme exponentielle',
   data: [
     {
       type: 'ComplexPolar',

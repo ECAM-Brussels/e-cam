@@ -81,7 +81,7 @@ Les exercices supplémentaires sur les nombres complexes sont accessibles [ici](
    - Systèmes: [3 inconnues: impossibles ou indéterminés](/PM1C/practice/algebra/systems-3-vars-2)
    - Systèmes: [3 inconnues: solution unique, impossibles ou indéterminés](/PM1C/practice/algebra/systems-3-vars-3)
 #. Nombres complexes
-   - [Forme polaire](/PM1C/practice/algebra/complex-polar-form)
+   - [Forme exponentielle](/PM1C/practice/algebra/complex-polar-form)
    - [Racines n-ièmes](/PM1C/practice/algebra/complex-roots)
 #. Géométrie
    - [Théorème de Pythagore](/PM1C/practice/geometry/pythagoras)
