@@ -29,7 +29,7 @@ const handleSubmit = vi.fn((event: { state: any }) => {
   console.log(event)
 })
 const history = createMemoryHistory()
-history.set({ value: '/' }) // go to some url
+history.set({ value: '/' })
 
 test('exercise type creation works', async () => {
   const results = render(() => (
