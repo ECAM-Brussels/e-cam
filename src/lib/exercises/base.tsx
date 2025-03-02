@@ -1,4 +1,4 @@
-import { action, createAsync } from '@solidjs/router'
+import { action, createAsyncStore } from '@solidjs/router'
 import { Component, Show, type JSXElement } from 'solid-js'
 import { z } from 'zod'
 import { extractFormData } from '../form'
@@ -104,7 +104,7 @@ export function createExerciseType<
   Sol extends object,
 >(exercise: ExerciseType<Name, Schema, G, Sol>) {
   const Component: ExerciseComponent<z.infer<Schema>, z.infer<G>, Sol> = (props) => {
-    const state = createAsync(
+    const state = createAsyncStore(
       async () => {
         if (props.params && !props.state && exercise.generator) {
           const newState = await exercise.generator(props.params)
@@ -133,14 +133,14 @@ export function createExerciseType<
           solution: solution || undefined,
         },
       })
-    })
+    }, `exercise-${exercise.name}-form-action`)
 
     return (
       <>
-        <Show when={state} fallback={<p>Generating...</p>}>
-          <form method="post" action={formAction.with(state)}>
+        <Show when={state()} fallback={<p>Generating...</p>}>
+          <form method="post" action={formAction.with(state())}>
             <fieldset disabled={props.feedback !== undefined}>
-              <exercise.Component {...state} />
+              <exercise.Component {...state()} />
               <button type="submit">Soumettre</button>
             </fieldset>
           </form>
