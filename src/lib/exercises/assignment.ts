@@ -14,7 +14,7 @@ export type Exercise = z.infer<typeof exerciseSchema>
 
 export const assignmentSchema = z.object({
   url: z.string(),
-  userEmail: z.string(),
+  userEmail: z.string().email(),
   id: z.string().optional().default(''),
   lastModified: z.date().optional().default(new Date()),
   body: z.union([

@@ -80,7 +80,7 @@ type ExerciseType<
    * @param params parameters that satisfy the 'params' schema
    * @returns state for the main component
    */
-  generator?: (params: z.infer<GeneratorSchema>) => Promise<z.infer<Schema>>
+  generator?: (params: z.infer<GeneratorSchema>) => Promise<z.input<Schema>> | z.input<Schema>
 }
 
 /**
@@ -108,7 +108,7 @@ export function createExerciseType<
       async () => {
         if (props.params && !props.state && exercise.generator) {
           const newState = await exercise.generator(props.params)
-          props.onGenerate?.({ state: newState })
+          props.onGenerate?.({ state: exercise.schema.parse(newState) })
           return newState
         }
         return props.state
