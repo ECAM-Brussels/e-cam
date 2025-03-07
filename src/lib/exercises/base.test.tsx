@@ -1,6 +1,6 @@
 import { createExerciseType } from './base'
 import { createMemoryHistory, MemoryRouter, Route } from '@solidjs/router'
-import { render, waitFor } from '@solidjs/testing-library'
+import { render } from '@solidjs/testing-library'
 import userEvent from '@testing-library/user-event'
 import { expect, test, vi } from 'vitest'
 import { z } from 'zod'
@@ -18,7 +18,7 @@ const { Component } = createExerciseType({
       <p>Copy the expression {props.expr} exactly as is</p>
       <label>
         Your attempt:
-        <input name="attempt" value={props.attempt} />
+        <input name="attempt" value={props.attempt} required />
       </label>
     </>
   ),
@@ -51,5 +51,13 @@ test('exercise type creation works', async () => {
   expect(handleSubmit).toHaveBeenCalledWith({
     state: { expr: 'hello', attempt: 'world' },
     feedback: { correct: false, solution: { expr: 'hello', attempt: 'hello' } },
+  })
+  await user.clear(input)
+  await user.type(input, 'hello')
+  expect(input.value).toBe('hello')
+  await user.click(button)
+  expect(handleSubmit).toHaveBeenCalledWith({
+    state: { expr: 'hello', attempt: 'hello' },
+    feedback: { correct: true, solution: { expr: 'hello', attempt: 'hello' } },
   })
 })

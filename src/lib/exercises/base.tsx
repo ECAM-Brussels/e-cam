@@ -1,7 +1,7 @@
-import { action, createAsyncStore } from '@solidjs/router'
+import { extractFormData } from '../form'
+import { action, createAsyncStore, useSubmission } from '@solidjs/router'
 import { Component, Show, type JSXElement } from 'solid-js'
 import { z } from 'zod'
-import { extractFormData } from '../form'
 
 type Feedback<Solution> = {
   correct: boolean
@@ -117,7 +117,6 @@ export function createExerciseType<
     )
 
     const formAction = action(async (initialState: z.infer<Schema>, formData: FormData) => {
-      'use server'
       const newState: z.infer<Schema> = exercise.schema.parse({
         ...initialState,
         ...extractFormData(formData),
@@ -134,6 +133,7 @@ export function createExerciseType<
         },
       })
     }, `exercise-${exercise.name}-form-action`)
+    const submission = useSubmission(formAction)
 
     return (
       <>
@@ -141,8 +141,12 @@ export function createExerciseType<
           <form method="post" action={formAction.with(state())}>
             <fieldset disabled={props.feedback !== undefined}>
               <exercise.Component {...state()} />
-              <button type="submit">Soumettre</button>
             </fieldset>
+            {!props.feedback && (
+              <button type="submit" disabled={submission.pending}>
+                {submission.pending ? 'Correction en cours' : 'Corriger'}
+              </button>
+            )}
           </form>
         </Show>
         <Show when={props.feedback}>
@@ -173,5 +177,6 @@ export function createExerciseType<
   return {
     Component,
     schema: exercise.params ? state.or(params) : state,
+    mark: exercise.mark,
   }
 }
