@@ -19,7 +19,7 @@ export const assignmentSchema = z.object({
   lastModified: z.date().optional().default(new Date()),
   body: z.union([
     exerciseSchema.array(),
-    z.any().transform((str) => exerciseSchema.array().parse(JSON.parse(String(str)))),
+    z.string().transform((str) => exerciseSchema.array().parse(JSON.parse(String(str)))),
   ]),
 })
 export const fullAssignmentSchema = assignmentSchema.extend({
@@ -27,7 +27,7 @@ export const fullAssignmentSchema = assignmentSchema.extend({
   description: z.string().optional(),
   streak: z.number().default(0),
   mode: z.literal('static').or(z.literal('dynamic')).optional().default('static'),
-  whiteboard: z.boolean(),
+  whiteboard: z.boolean().default(true),
 })
 
 export type Assignment = z.infer<typeof assignmentSchema>

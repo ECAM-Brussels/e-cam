@@ -38,7 +38,8 @@
     "solid-prism-editor": "^1.1.0",
     "typescript": "^5.5.4",
     "vinxi": "^0.5.3",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "zod-to-json-schema": "^3.24.3"
   },
   "overrides": {
     "vite": "^5.4.14"
