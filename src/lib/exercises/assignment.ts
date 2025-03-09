@@ -26,7 +26,7 @@ export const fullAssignmentSchema = assignmentSchema.extend({
   title: z.string().optional(),
   description: z.string().optional(),
   streak: z.number().default(0),
-  mode: z.literal('static').or(z.literal('dynamic')).optional().default('static'),
+  mode: z.literal('static').or(z.literal('dynamic')).default('static'),
   whiteboard: z.boolean().default(true),
 })
 
