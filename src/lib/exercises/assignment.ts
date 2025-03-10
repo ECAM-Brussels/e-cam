@@ -4,12 +4,14 @@ import { schema as FactorSchema } from './example'
 import { query } from '@solidjs/router'
 import { lazy } from 'solid-js'
 import { z } from 'zod'
+import { schema as SimpleSchema } from '~/exercises/Math/Simple'
 
 export const exercises = {
   Factor: lazy(() => import('./example')),
+  Simple: lazy(() => import('~/exercises/Math/Simple')),
 } as const
 
-export const exerciseSchema = FactorSchema
+export const exerciseSchema = z.union([FactorSchema, SimpleSchema])
 export type Exercise = z.infer<typeof exerciseSchema>
 
 export const assignmentSchema = z.object({
