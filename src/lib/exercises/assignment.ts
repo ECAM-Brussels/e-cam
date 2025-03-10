@@ -1,13 +1,13 @@
 import { getUser } from '../auth/session'
 import { prisma } from '../db'
-import { schema as FactorSchema } from './example'
 import { query } from '@solidjs/router'
 import { lazy } from 'solid-js'
 import { z } from 'zod'
+import { schema as FactorSchema } from '~/exercises/Math/Factor'
 import { schema as SimpleSchema } from '~/exercises/Math/Simple'
 
 export const exercises = {
-  Factor: lazy(() => import('./example')),
+  Factor: lazy(() => import('~/exercises/Math/Factor')),
   Simple: lazy(() => import('~/exercises/Math/Simple')),
 } as const
 

@@ -153,6 +153,13 @@ class Expression:
         return [Expression(expr=item) for item in list(self.expr)]
 
     @strawberry.field
+    def normalize_roots(self) -> "Expression":
+        multiple = 1
+        for root in sympy.roots(self.expr, multiple=True):
+            multiple = sympy.Mul(multiple, sympy.fraction(root)[1])
+        return Expression(expr=sympy.expand(multiple * self.expr))
+
+    @strawberry.field
     def simplify(self) -> "Expression":
         return Expression(expr=sympy.simplify(self.expr))
 
