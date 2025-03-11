@@ -33,10 +33,7 @@ export const getUser = query(async () => {
 export const saveAuthState = async (state: string, codeVerifier: string) => {
   'use server'
   const session = await getSession()
-  await session.update((data: SessionData) => {
-    data = { ...data, state, codeVerifier }
-    return data
-  })
+  await session.update({ state, codeVerifier })
 }
 
 export const logout = action(async () => {

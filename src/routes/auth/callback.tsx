@@ -38,10 +38,10 @@ export async function GET(event: APIEvent) {
       lastName: userInfo.family_name,
     },
   })
-  await session.update((data) => {
-    delete data.codeVerifier, data.state
-    data.email = userInfo.email
-    return data
+  await session.update({
+    codeVerifier: undefined,
+    state: undefined,
+    email: userInfo.email,
   })
   return new Response(null, {
     status: 302,
