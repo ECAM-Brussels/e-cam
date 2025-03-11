@@ -1,34 +1,50 @@
-import { useAction, useLocation, useNavigate } from '@solidjs/router'
-import { onMount } from 'solid-js'
-import Page from '~/components/Page'
+import { type APIEvent } from '@solidjs/start/server'
+import { decodeIdToken } from 'arctic'
+import { z } from 'zod'
 import { entra } from '~/lib/auth/azure'
-import { login as loginAction } from '~/lib/auth/session'
+import { getSession } from '~/lib/auth/session'
+import { prisma } from '~/lib/db'
 
-export default function Callback() {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const login = useAction(loginAction)
+const profileSchema = z.object({
+  email: z.string().email(),
+  given_name: z.string(),
+  family_name: z.string(),
+})
 
-  onMount(async () => {
-    const params = new URLSearchParams(location.search)
-    const code = params.get('code')
-    const state = params.get('state')
-    const storedState = sessionStorage.getItem('state')
-    const codeVerifier = sessionStorage.getItem('codeVerifier')
-    if (code && codeVerifier && state === storedState) {
-      try {
-        const tokens = await entra.validateAuthorizationCode(code, codeVerifier)
-        await login(tokens.idToken(), tokens.accessToken())
-        navigate('/')
-      } catch (error) {
-        console.error('Authentication error:', error)
-      }
-    }
+export async function GET(event: APIEvent) {
+  const session = await getSession()
+  const url = new URL(event.request.url)
+  const code = url.searchParams.get('code')
+  const state = url.searchParams.get('state')
+  const { state: storedState, codeVerifier } = session.data
+  if (!code || !state || !storedState || !codeVerifier || state !== storedState) {
+    return new Response(null, { status: 400 })
+  }
+  const tokens = await entra.validateAuthorizationCode(code, codeVerifier)
+  const userInfo = profileSchema.parse({
+    ...decodeIdToken(tokens.idToken()),
+    ...decodeIdToken(tokens.accessToken()),
   })
-
-  return (
-    <Page title="Authenticating">
-      <div>Authenticating...</div>
-    </Page>
-  )
+  if (!userInfo) {
+    return new Response(null, { status: 400 })
+  }
+  await prisma.user.upsert({
+    where: { email: userInfo.email },
+    update: {},
+    create: {
+      admin: /^[a-zA-Z][a-zA-Z0-9]{2}@/.test(userInfo.email),
+      email: userInfo.email,
+      firstName: userInfo.given_name,
+      lastName: userInfo.family_name,
+    },
+  })
+  await session.update((data) => {
+    delete data.codeVerifier, data.state
+    data.email = userInfo.email
+    return data
+  })
+  return new Response(null, {
+    status: 302,
+    headers: { Location: '/' },
+  })
 }
