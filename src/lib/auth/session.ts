@@ -1,8 +1,5 @@
-import { action, query, redirect } from '@solidjs/router'
-import { decodeIdToken, generateCodeVerifier, generateState } from 'arctic'
+import { action, query } from '@solidjs/router'
 import { useSession } from 'vinxi/http'
-import { z } from 'zod'
-import { entra } from '~/lib/auth/azure'
 import { prisma } from '~/lib/db'
 
 type SessionData = {
@@ -33,7 +30,7 @@ export const getUser = query(async () => {
   }
 }, 'getUser')
 
-export const saveState = async (state: string, codeVerifier: string) => {
+export const saveAuthState = async (state: string, codeVerifier: string) => {
   'use server'
   const session = await getSession()
   await session.update((data: SessionData) => {
@@ -41,14 +38,6 @@ export const saveState = async (state: string, codeVerifier: string) => {
     return data
   })
 }
-
-export const startLogin = action(async () => {
-  const state = generateState()
-  const codeVerifier = generateCodeVerifier()
-  const url = entra.createAuthorizationURL(state, codeVerifier, ['openid', 'profile', 'email'])
-  await saveState(state, codeVerifier)
-  throw redirect(url.toString())
-}, 'startLogin')
 
 export const logout = action(async () => {
   'use server'

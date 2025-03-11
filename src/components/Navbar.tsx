@@ -1,9 +1,10 @@
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
-import { createAsync, useLocation } from '@solidjs/router'
+import { action, createAsync, redirect, useLocation } from '@solidjs/router'
 import { Show, type JSXElement } from 'solid-js'
 import Fa from '~/components/Fa'
-import { getUser, logout, startLogin } from '~/lib/auth/session'
+import { getLoginUrl } from '~/lib/auth/azure'
+import { getUser, logout } from '~/lib/auth/session'
 
 export default function Navbar() {
   return (
@@ -43,7 +44,12 @@ function UserInfo() {
         when={user()}
         fallback={
           <NavbarItem>
-            <form method="post" action={startLogin}>
+            <form
+              method="post"
+              action={action(async () => {
+                throw redirect(await getLoginUrl())
+              }, 'startLogin')}
+            >
               <button type="submit">Se connecter</button>
             </form>
           </NavbarItem>
