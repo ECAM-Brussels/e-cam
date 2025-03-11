@@ -1,7 +1,8 @@
-import { action, query, redirect, reload } from '@solidjs/router'
+import { action, query, redirect } from '@solidjs/router'
+import { decodeIdToken, generateCodeVerifier, generateState } from 'arctic'
 import { useSession } from 'vinxi/http'
-import { loadAssignment } from '~/components/ExerciseSequence.server'
-import { generatePKCE, getUserInfo } from '~/lib/auth/azure'
+import { z } from 'zod'
+import { entra } from '~/lib/auth/azure'
 import { prisma } from '~/lib/db'
 
 type SessionData = {
@@ -31,20 +32,24 @@ export const getUser = query(async () => {
 }, 'getUser')
 
 export const startLogin = action(async () => {
-  const { codeVerifier, codeChallenge } = await generatePKCE()
+  const state = generateState()
+  const codeVerifier = generateCodeVerifier()
+  const url = entra.createAuthorizationURL(state, codeVerifier, ['openid', 'profile', 'email'])
+  sessionStorage.setItem('state', state)
   sessionStorage.setItem('codeVerifier', codeVerifier)
-  throw redirect(
-    `https://login.microsoftonline.com/${import.meta.env.VITE_AZURE_TENANT_ID}` +
-      `/oauth2/v2.0/authorize?client_id=${import.meta.env.VITE_AZURE_CLIENT_ID}&response_type=code` +
-      `&redirect_uri=${import.meta.env.VITE_AZURE_REDIRECT_URI}&response_mode=query&scope=openid profile email` +
-      `&code_challenge=${codeChallenge}&code_challenge_method=S256`,
-  )
+  throw redirect(url.toString())
 }, 'startLogin')
 
-export const login = action(async (token: string) => {
+const profileSchema = z.object({
+  email: z.string().email(),
+  given_name: z.string(),
+  family_name: z.string(),
+})
+
+export const login = action(async (idToken, accessToken: string) => {
   'use server'
   const session = await getSession()
-  const userInfo = await getUserInfo(token)
+  const userInfo = profileSchema.parse({ ...decodeIdToken(idToken), ...decodeIdToken(accessToken) })
   if (userInfo) {
     await prisma.user.upsert({
       where: { email: userInfo.email },

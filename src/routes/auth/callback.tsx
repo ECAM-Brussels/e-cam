@@ -1,7 +1,7 @@
 import { useAction, useLocation, useNavigate } from '@solidjs/router'
 import { onMount } from 'solid-js'
 import Page from '~/components/Page'
-import { getMicrosoftToken } from '~/lib/auth/azure'
+import { entra } from '~/lib/auth/azure'
 import { login as loginAction } from '~/lib/auth/session'
 
 export default function Callback() {
@@ -12,11 +12,13 @@ export default function Callback() {
   onMount(async () => {
     const params = new URLSearchParams(location.search)
     const code = params.get('code')
+    const state = params.get('state')
+    const storedState = sessionStorage.getItem('state')
     const codeVerifier = sessionStorage.getItem('codeVerifier')
-    if (code && codeVerifier) {
+    if (code && codeVerifier && state === storedState) {
       try {
-        const tokenData = await getMicrosoftToken(code, codeVerifier)
-        await login(tokenData.access_token)
+        const tokens = await entra.validateAuthorizationCode(code, codeVerifier)
+        await login(tokens.idToken(), tokens.accessToken())
         navigate('/')
       } catch (error) {
         console.error('Authentication error:', error)
