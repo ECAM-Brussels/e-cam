@@ -33,7 +33,8 @@ export function getSession() {
 - In this example,
   we determine if a user is connected by checking the email variable is the session data.
 
-- `VITE_SESSION_SECRET` is a variable declared in `.env`
+- You need to define `VITE_SESSION_SECRET` in `.env`.
+  Generate a password via `openssl rand -base64 32`.
 
 ::::: warning
 - Ensure `VITE_SESSION_SECRET` does not make it to the client bundle
@@ -41,6 +42,7 @@ export function getSession() {
 - Remember that **server functions** create an API endpoint.
   If it mutates data, it **must** be validated.
   If it returns JSON serializable data,
+  it cannot be critical.
 :::::
 :::
 
