@@ -15,6 +15,8 @@ lang: en
 #. [Isomorphic Applications](/AW4L/slides/02-isomorphic-apps)
 
 #. [CRUD example](/AW4L/slides/03-crud)
+
+#. [Authentication](/AW4L/slides/04-auth)
 ::::::::::
 
 :::::::::: {.bg-white .rounded-xl .p-4 .shadow}
