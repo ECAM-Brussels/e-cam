@@ -6,7 +6,7 @@ import 'solid-prism-editor/search.css'
 import { basicSetup } from 'solid-prism-editor/setups'
 import 'solid-prism-editor/themes/github-light.css'
 
-export default function PrismEditor(props: Parameters<typeof Editor>[0] & { name: string }) {
+export default function PrismEditor(props: Parameters<typeof Editor>[0] & { name?: string }) {
   let textarea: HTMLTextAreaElement
   createEffect(() => {
     if (textarea && props.name) {
