@@ -2,7 +2,7 @@ import katex from 'katex'
 import 'katex/dist/katex.min.css'
 import 'mathlive'
 import type { MathfieldElement } from 'mathlive'
-import { ComponentProps, Show, splitProps } from 'solid-js'
+import { ComponentProps, createSignal, Show, splitProps } from 'solid-js'
 
 declare module 'solid-js' {
   namespace JSX {
@@ -42,15 +42,22 @@ export default function Math(props: MathProps) {
         '\\imaginaryI': 'i',
       },
     })
-  const [listeners, others] = splitProps(props, ['onInput', 'onBlur'])
+  const [extra, others] = splitProps(props, ['onInput', 'onBlur', 'name'])
+  const [value, setValue] = createSignal(props.value)
   return (
     <Show when={props.editable} fallback={<span innerHTML={html()} class={props.class} />}>
       <math-field
         className={props.class}
         {...others}
-        oninput={listeners.onInput}
-        onblur={listeners.onBlur}
+        oninput={(event: MathInputEvent) => {
+          extra.onInput?.(event)
+          setValue(event.target.value)
+        }}
+        onblur={extra.onBlur}
       />
+      <Show when={props.name}>
+        <input type="hidden" name={props.name} value={value()} />
+      </Show>
     </Show>
   )
 }
