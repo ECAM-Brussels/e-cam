@@ -32,7 +32,23 @@ lang: en
 
 - What is SSR, and what problem is it trying to solve?
 
+- What is a meta-framework?
+
 - What do we need to be careful of when fetching data?
+
+- How do we handle server state?
+
+- What are actions and queries?
+  What problems do they solve?
+
+- What are server functions?
+  What are its advantages and drawbacks?
+
+- Why do we need to salt and hash passwords?
+
+- How do sessions work?
+
+- How does OAuth work?
 ::::::::::
 
 :::::::::: {.bg-white .rounded-xl .p-4 .shadow .my-8}
