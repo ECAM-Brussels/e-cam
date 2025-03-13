@@ -1,7 +1,9 @@
 import { extractFormData } from '../form'
+import { faCheckCircle, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { action, createAsyncStore, useSubmission } from '@solidjs/router'
 import { Component, Show, type JSXElement } from 'solid-js'
 import { z } from 'zod'
+import Fa from '~/components/Fa'
 
 type Feedback<Solution> = {
   correct: boolean
@@ -137,21 +139,25 @@ export function createExerciseType<
 
     return (
       <>
-        <Show when={state()} fallback={<p>Generating...</p>}>
-          <form method="post" action={formAction.with(state())}>
-            <fieldset disabled={props.feedback !== undefined}>
-              <exercise.Component {...state()} />
-            </fieldset>
-            {!props.feedback && (
-              <button type="submit" disabled={submission.pending}>
-                {submission.pending ? 'Correction en cours' : 'Corriger'}
-              </button>
-            )}
-          </form>
-        </Show>
+        <div class="bg-white border rounded-xl p-4 my-8">
+          <Show when={state()} fallback={<p>Generating...</p>}>
+            <form method="post" action={formAction.with(state())}>
+              <fieldset disabled={props.feedback !== undefined}>
+                <exercise.Component {...state()} />
+              </fieldset>
+              {!props.feedback && (
+                <button type="submit" disabled={submission.pending}>
+                  {submission.pending ? 'Correction en cours' : 'Corriger'}
+                </button>
+              )}
+            </form>
+          </Show>
+        </div>
         <Show when={props.feedback}>
           {(feedback) => (
-            <div>{exercise.Solution && <exercise.Solution {...feedback().solution} />}</div>
+            <Feedback {...feedback()}>
+              {exercise.Solution && <exercise.Solution {...feedback().solution} />}
+            </Feedback>
           )}
         </Show>
       </>
@@ -179,4 +185,24 @@ export function createExerciseType<
     schema: exercise.params ? state.or(params) : state,
     mark: exercise.mark,
   }
+}
+
+function Feedback<S>(props: { children: JSXElement; correct: boolean; solution: S }) {
+  return (
+    <div class="bg-white border rounded-xl p-4 my-8">
+      <Show
+        when={props.correct}
+        fallback={
+          <p class="text-red-800 font-bold text-2xl mb-4">
+            <Fa icon={faXmark} /> Pas de chance&nbsp;!
+          </p>
+        }
+      >
+        <p class="text-green-800 font-bold text-2xl mb-4">
+          <Fa icon={faCheckCircle} /> Correct&nbsp;!
+        </p>
+      </Show>
+      {props.children}
+    </div>
+  )
 }
