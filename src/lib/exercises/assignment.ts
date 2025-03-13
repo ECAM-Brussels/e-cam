@@ -54,7 +54,7 @@ export const getAssignmentBody = query(
     })
     let result: Exercise[] = record ? exerciseSchema.array().parse(record.body) : []
     if (mode === 'static') {
-      result = result || initialBody
+      result = result.length ? result : initialBody
     } else if (mode === 'dynamic') {
       let [dynamicId, currentStreak] = [0, 0]
       for (const exercise of result) {
