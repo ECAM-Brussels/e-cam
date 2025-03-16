@@ -134,7 +134,7 @@ export function createExerciseType<
           solution: solution || undefined,
         },
       })
-    }, `exercise-${exercise.name}-form-action`)
+    })
     const submission = useSubmission(formAction)
 
     return (

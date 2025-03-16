@@ -18,7 +18,7 @@ export const assignmentSchema = z.object({
   url: z.string(),
   userEmail: z.string().email(),
   id: z.string().optional().default(''),
-  lastModified: z.date().optional().default(new Date()),
+  lastModified: z.string().transform((str) => new Date(str)),
   body: z.union([
     exerciseSchema.array(),
     z.string().transform((str) => exerciseSchema.array().parse(JSON.parse(String(str)))),
@@ -104,4 +104,25 @@ export async function saveExercise(key: PK, pos: number, exercise: Exercise) {
     where: { url_userEmail_id: key, lastModified: record.lastModified },
     data: { body, lastModified: new Date() },
   })
+}
+
+export async function registerAssignment(assignment: z.input<typeof fullAssignmentSchema>) {
+  'use server'
+  let page = await prisma.page.findUnique({ where: { url: assignment.url } })
+  if (!page || !assignment.lastModified || new Date(assignment.lastModified) > page.lastModified) {
+    const payload = {
+      title: assignment.title || '',
+      body: fullAssignmentSchema.parse(assignment),
+      lastModified: new Date(assignment.lastModified),
+    }
+    page = await prisma.page.upsert({
+      where: { url: assignment.url },
+      create: { url: assignment.url, ...payload },
+      update: payload,
+    })
+    await prisma.assignment.deleteMany({
+      where: { url: assignment.url, id: assignment.id },
+    })
+  }
+  return page.body as unknown as AssignmentProps
 }
