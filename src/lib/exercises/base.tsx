@@ -118,23 +118,26 @@ export function createExerciseType<
       { initialValue: props.state },
     )
 
-    const formAction = action(async (initialState: z.infer<Schema>, formData: FormData) => {
-      const newState: z.infer<Schema> = exercise.schema.parse({
-        ...initialState,
-        ...extractFormData(formData),
-      })
-      const [correct, solution] = await Promise.all([
-        exercise.mark(newState),
-        exercise.solve(newState),
-      ])
-      await props.onSubmit?.({
-        state: newState,
-        feedback: {
-          correct,
-          solution: solution || undefined,
-        },
-      })
-    })
+    const formAction = action(
+      async (initialState: z.infer<Schema>, formData: FormData) => {
+        const newState: z.infer<Schema> = exercise.schema.parse({
+          ...initialState,
+          ...extractFormData(formData),
+        })
+        const [correct, solution] = await Promise.all([
+          exercise.mark(newState),
+          exercise.solve(newState),
+        ])
+        await props.onSubmit?.({
+          state: newState,
+          feedback: {
+            correct,
+            solution: solution || undefined,
+          },
+        })
+      },
+      `exercise-${btoa(JSON.stringify(props.state))}`,
+    )
     const submission = useSubmission(formAction)
 
     return (

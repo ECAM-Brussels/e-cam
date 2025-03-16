@@ -106,23 +106,30 @@ export async function saveExercise(key: PK, pos: number, exercise: Exercise) {
   })
 }
 
-export async function registerAssignment(assignment: z.input<typeof fullAssignmentSchema>) {
-  'use server'
-  let page = await prisma.page.findUnique({ where: { url: assignment.url } })
-  if (!page || !assignment.lastModified || new Date(assignment.lastModified) > page.lastModified) {
-    const payload = {
-      title: assignment.title || '',
-      body: fullAssignmentSchema.parse(assignment),
-      lastModified: new Date(assignment.lastModified),
+export const registerAssignment = query(
+  async (assignment: z.input<typeof fullAssignmentSchema>) => {
+    'use server'
+    let page = await prisma.page.findUnique({ where: { url: assignment.url } })
+    if (
+      !page ||
+      !assignment.lastModified ||
+      new Date(assignment.lastModified) > page.lastModified
+    ) {
+      const payload = {
+        title: assignment.title || '',
+        body: fullAssignmentSchema.parse(assignment),
+        lastModified: new Date(assignment.lastModified),
+      }
+      page = await prisma.page.upsert({
+        where: { url: assignment.url },
+        create: { url: assignment.url, ...payload },
+        update: payload,
+      })
+      await prisma.assignment.deleteMany({
+        where: { url: assignment.url, id: assignment.id },
+      })
     }
-    page = await prisma.page.upsert({
-      where: { url: assignment.url },
-      create: { url: assignment.url, ...payload },
-      update: payload,
-    })
-    await prisma.assignment.deleteMany({
-      where: { url: assignment.url, id: assignment.id },
-    })
-  }
-  return page.body as unknown as AssignmentProps
-}
+    return page.body as unknown as AssignmentProps
+  },
+  'registerAssignment',
+)
