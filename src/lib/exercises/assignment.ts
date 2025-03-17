@@ -47,7 +47,7 @@ async function check(key: PK) {
 export const getAssignmentBody = query(
   async (key: PK, mode: 'static' | 'dynamic', streak: number, initialBody: Exercise[]) => {
     'use server'
-    check(key)
+    await check(key)
     const record = await prisma.assignment.findUnique({
       where: { url_userEmail_id: key },
       select: { body: true },
@@ -82,7 +82,7 @@ export const getAssignmentBody = query(
 
 export async function saveAssignment(key: PK, body: Exercise[]) {
   'use server'
-  check(key)
+  await check(key)
   body = assignmentSchema.shape.body.parse(body)
   await prisma.assignment.upsert({
     where: { url_userEmail_id: key },
@@ -93,7 +93,7 @@ export async function saveAssignment(key: PK, body: Exercise[]) {
 
 export async function saveExercise(key: PK, pos: number, exercise: Exercise) {
   'use server'
-  check(key)
+  await check(key)
   const record = await prisma.assignment.findUniqueOrThrow({
     select: { body: true, lastModified: true },
     where: { url_userEmail_id: key },
