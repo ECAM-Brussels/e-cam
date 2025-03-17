@@ -112,6 +112,7 @@ export const registerAssignment = query(
     let page = await prisma.page.findUnique({ where: { url: assignment.url } })
     if (
       !page ||
+      !page.body ||
       !assignment.lastModified ||
       new Date(assignment.lastModified) > page.lastModified
     ) {
@@ -129,7 +130,7 @@ export const registerAssignment = query(
         where: { url: assignment.url, id: assignment.id },
       })
     }
-    return page.body as unknown as AssignmentProps
+    return page.body as unknown as z.infer<typeof fullAssignmentSchema>
   },
   'registerAssignment',
 )

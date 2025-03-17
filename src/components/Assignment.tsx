@@ -13,7 +13,7 @@ import {
 import { ExerciseComponentProps } from '~/lib/exercises/base'
 
 export default function Assignment(
-  props: AssignmentProps & { index: number; onIndexChange: (newIndex: number) => void },
+  props: AssignmentProps & { index: number; onIndexChange?: (newIndex: number) => void },
 ) {
   const primary = () => ({ url: props.url, userEmail: props.userEmail, id: props.id })
   const key = () => [primary(), props.mode, props.streak, props.body] as const
