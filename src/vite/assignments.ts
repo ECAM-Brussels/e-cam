@@ -46,7 +46,6 @@ export default function (): Plugin {
     },
     async handleHotUpdate({ file }) {
       if (file.startsWith(resolve('content')) && file.endsWith('.yaml')) {
-        console.log('hello')
         createAssignment(file, prisma)
       }
     },
