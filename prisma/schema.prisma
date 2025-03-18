@@ -11,8 +11,8 @@ model Page {
   url String @id @unique
   title String
   body Json?
+  hash String?
   assignments Assignment[]
-  lastModified DateTime @default(now())
 }
 
 model Assignment {

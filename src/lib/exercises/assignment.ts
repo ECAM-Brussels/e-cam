@@ -1,6 +1,7 @@
 import { getUser } from '../auth/session'
 import { prisma } from '../db'
 import { query } from '@solidjs/router'
+import CryptoJS from 'crypto-js'
 import { lazy } from 'solid-js'
 import { z } from 'zod'
 import { schema as FactorSchema } from '~/exercises/Math/Factor'
@@ -110,16 +111,12 @@ export const registerAssignment = query(
   async (assignment: z.input<typeof fullAssignmentSchema>) => {
     'use server'
     let page = await prisma.page.findUnique({ where: { url: assignment.url } })
-    if (
-      !page ||
-      !page.body ||
-      !assignment.lastModified ||
-      new Date(assignment.lastModified) > page.lastModified
-    ) {
+    let hash = CryptoJS.SHA256(JSON.stringify(assignment)).toString()
+    if (!page || !page.body || page.hash !== hash) {
       const payload = {
         title: assignment.title || '',
         body: fullAssignmentSchema.parse(assignment),
-        lastModified: new Date(assignment.lastModified),
+        hash,
       }
       page = await prisma.page.upsert({
         where: { url: assignment.url },
