@@ -2,7 +2,7 @@ import katex from 'katex'
 import 'katex/dist/katex.min.css'
 import 'mathlive'
 import type { MathfieldElement } from 'mathlive'
-import { ComponentProps, createSignal, Show, splitProps } from 'solid-js'
+import { ComponentProps, createEffect, createSignal, onMount, Show, splitProps } from 'solid-js'
 
 declare module 'solid-js' {
   namespace JSX {
@@ -31,8 +31,23 @@ type MathProps = ComponentProps<'math-field'> & {
 }
 
 export default function Math(props: MathProps) {
+  const [value, setValue] = createSignal(props.value)
+  createEffect(() => setValue(props.value))
+
+  const [disabled, setDisabled] = createSignal(props.disabled)
+  createEffect(() => setDisabled(props.disabled))
+  let field: HTMLInputElement
+  onMount(() => {
+    if (props.name && field!) {
+      const fieldset = field.closest('fieldset')
+      if (fieldset) {
+        setDisabled(fieldset.disabled)
+      }
+    }
+  })
+
   const html = () =>
-    katex.renderToString(props.value || '', {
+    katex.renderToString(value() || '', {
       displayMode: props.displayMode,
       strict: false,
       macros: {
@@ -43,9 +58,11 @@ export default function Math(props: MathProps) {
       },
     })
   const [extra, others] = splitProps(props, ['onInput', 'onBlur', 'name'])
-  const [value, setValue] = createSignal(props.value)
   return (
-    <Show when={props.editable} fallback={<span innerHTML={html()} class={props.class} />}>
+    <Show
+      when={props.editable && !disabled()}
+      fallback={<span innerHTML={html()} class={props.class} />}
+    >
       <math-field
         className={props.class}
         {...others}
@@ -56,7 +73,7 @@ export default function Math(props: MathProps) {
         onblur={extra.onBlur}
       />
       <Show when={props.name}>
-        <input type="hidden" name={props.name} value={value()} />
+        <input type="hidden" name={props.name} value={value()} ref={field!} />
       </Show>
     </Show>
   )
