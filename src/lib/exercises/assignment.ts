@@ -26,7 +26,7 @@ export const assignmentSchema = z.object({
   ]),
 })
 export const fullAssignmentSchema = assignmentSchema.extend({
-  title: z.string().optional(),
+  title: z.string().default(''),
   description: z.string().optional(),
   streak: z.number().default(0),
   mode: z.literal('static').or(z.literal('dynamic')).default('static'),
@@ -107,15 +107,17 @@ export async function saveExercise(key: PK, pos: number, exercise: Exercise) {
   })
 }
 
+export const original = fullAssignmentSchema.omit({ userEmail: true })
+
 export const registerAssignment = query(
-  async (assignment: z.input<typeof fullAssignmentSchema>) => {
+  async (assignment: z.input<typeof original>) => {
     'use server'
     let page = await prisma.page.findUnique({ where: { url: assignment.url } })
     let hash = CryptoJS.SHA256(JSON.stringify(assignment)).toString()
     if (!page || !page.body || page.hash !== hash) {
       const payload = {
         title: assignment.title || '',
-        body: fullAssignmentSchema.parse(assignment),
+        body: original.parse(assignment),
         hash,
       }
       page = await prisma.page.upsert({
@@ -127,7 +129,7 @@ export const registerAssignment = query(
         where: { url: assignment.url, id: assignment.id },
       })
     }
-    return page.body as unknown as z.infer<typeof fullAssignmentSchema>
+    return page.body as unknown as z.infer<typeof original>
   },
   'registerAssignment',
 )

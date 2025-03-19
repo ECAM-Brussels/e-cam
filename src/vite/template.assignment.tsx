@@ -11,38 +11,36 @@ import Page from '~/components/Page'
 import { getUser } from '~/lib/auth/session'
 import { registerAssignment } from '~/lib/exercises/assignment'
 
-const getAssignment = query((url: string) => {
+const getOriginalAssignment = query((url: string) => {
   'use server'
   return registerAssignment({
     /** @ts-ignore */
     ...$body$,
     url,
-    userEmail: 'ngy@ecam.be',
   })
-}, 'getAssignment')
+}, 'getOriginalAssignment')
 
 export const route = {
   preload({ location }) {
     getUser()
-    getAssignment(location.pathname)
+    getOriginalAssignment(location.pathname)
   },
 } satisfies RouteDefinition
 
 export default function () {
   const location = useLocation()
-  const assignment = createAsync(() => getAssignment(location.pathname))
+  const original = createAsync(() => getOriginalAssignment(location.pathname))
   const user = createAsync(() => getUser())
   const [searchParams, setSearchParams] = useSearchParams()
   return (
-    <Show when={assignment()}>
-      {(assignment) => (
+    <Show when={original()}>
+      {(original) => (
         <Show when={user()}>
           {(user) => (
-            <Page title={assignment().title || ''}>
+            <Page title={original().title || ''}>
               <Assignment
-                {...assignment()}
+                {...original()}
                 userEmail={(searchParams.userEmail as string) || user().email}
-                url={location.pathname}
                 index={parseInt((searchParams.index as string) || '0')}
                 onIndexChange={(newIndex) => {
                   setSearchParams({ index: newIndex })
