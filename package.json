@@ -20,6 +20,7 @@
     "@types/babel__standalone": "^7.1.9",
     "@viz-js/viz": "^3.11.0",
     "arctic": "^3.5.0",
+    "bcryptjs": "^3.0.2",
     "crypto-js": "^4.2.0",
     "date-fns": "^3.6.0",
     "dedent-js": "^1.0.1",

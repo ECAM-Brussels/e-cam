@@ -5,8 +5,17 @@ body:
     state:
       question: What is my favourite food?
       answer: \pi
-  - type: Simple
+  - type: Factor
     state:
-      question: What do I want to eat?
-      answer: 2 \pi
-      
+      expr: x^2 - 5x + 6
+  - type: Python
+    state:
+      question: Factorial
+      answer: |
+        def fact(n):
+            return n * fact(n - 1) if n > 1 else 1
+      tests:
+        - fact(1)
+        - fact(2)
+        - fact(3)
+        - fact(4)

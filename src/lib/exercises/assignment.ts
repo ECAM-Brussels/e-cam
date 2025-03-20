@@ -4,15 +4,17 @@ import { query } from '@solidjs/router'
 import CryptoJS from 'crypto-js'
 import { lazy } from 'solid-js'
 import { z } from 'zod'
+import { schema as PythonSchema } from '~/exercises/CompSci/Python'
 import { schema as FactorSchema } from '~/exercises/Math/Factor'
 import { schema as SimpleSchema } from '~/exercises/Math/Simple'
 
 export const exercises = {
+  Python: lazy(() => import('~/exercises/CompSci/Python')),
   Factor: lazy(() => import('~/exercises/Math/Factor')),
   Simple: lazy(() => import('~/exercises/Math/Simple')),
 } as const
 
-export const exerciseSchema = z.union([FactorSchema, SimpleSchema])
+export const exerciseSchema = z.union([PythonSchema, FactorSchema, SimpleSchema])
 export type Exercise = z.infer<typeof exerciseSchema>
 
 export const assignmentSchema = z.object({
@@ -20,10 +22,7 @@ export const assignmentSchema = z.object({
   userEmail: z.string().email(),
   id: z.string().optional().default(''),
   lastModified: z.string().transform((str) => new Date(str)),
-  body: z.union([
-    exerciseSchema.array(),
-    z.string().transform((str) => exerciseSchema.array().parse(JSON.parse(String(str)))),
-  ]),
+  body: exerciseSchema.array(),
 })
 export const fullAssignmentSchema = assignmentSchema.extend({
   title: z.string().default(''),
