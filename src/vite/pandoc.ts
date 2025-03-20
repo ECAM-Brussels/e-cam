@@ -161,9 +161,6 @@ const pandocPlugin = (): Plugin => {
       })
     },
     async handleHotUpdate({ file }) {
-      if (file.startsWith(resolve('src/vite'))) {
-        buildAll(passphrase, prisma)
-      }
       if (file.endsWith('.ts') && file.startsWith(resolve('content'))) {
         createAssignment(file, passphrase, prisma)
       }
