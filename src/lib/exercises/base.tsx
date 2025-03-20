@@ -7,7 +7,7 @@ import Fa from '~/components/Fa'
 
 type Feedback<Solution> = {
   correct: boolean
-  solution: Solution
+  solution?: Solution
 }
 
 export type ExerciseComponentProps<State, Params, Solution> = (
@@ -67,7 +67,7 @@ type ExerciseType<
    * @param state question and student's answer
    * @returns props for the Solution component
    */
-  solve: (state: z.infer<Schema>) => Promise<Solution> | Solution
+  solve?: (state: z.infer<Schema>) => Promise<Solution> | Solution
   /**
    * Component for showing a detailed resolution
    * @param props Output of the 'solve' function
@@ -126,7 +126,7 @@ export function createExerciseType<
         })
         const [correct, solution] = await Promise.all([
           exercise.mark(newState),
-          exercise.solve(newState),
+          exercise.solve?.(newState),
         ])
         await props.onSubmit?.({
           state: newState,
@@ -158,9 +158,13 @@ export function createExerciseType<
         </div>
         <Show when={props.feedback}>
           {(feedback) => (
-            <Feedback {...feedback()}>
-              {exercise.Solution && <exercise.Solution {...feedback().solution} />}
-            </Feedback>
+            <Show when={feedback().solution}>
+              {(solution) => (
+                <Feedback {...feedback()}>
+                  {exercise.Solution && <exercise.Solution {...solution()} />}
+                </Feedback>
+              )}
+            </Show>
           )}
         </Show>
       </>
@@ -190,7 +194,7 @@ export function createExerciseType<
   }
 }
 
-function Feedback<S>(props: { children: JSXElement; correct: boolean; solution: S }) {
+function Feedback<S>(props: { children: JSXElement; correct: boolean; solution?: S }) {
   return (
     <div class="bg-white border rounded-xl p-4 my-8">
       <Show
