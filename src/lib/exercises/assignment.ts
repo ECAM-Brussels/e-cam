@@ -53,7 +53,7 @@ export const getAssignmentBody = query(
       where: { url_userEmail_id: key },
       select: { body: true },
     })
-    let result: Exercise[] = record ? exerciseSchema.array().parse(record.body) : []
+    let result: Exercise[] = record ? (record.body as unknown as Exercise[]) : []
     if (mode === 'static') {
       result = result.length ? result : initialBody
     } else if (mode === 'dynamic') {
@@ -76,7 +76,7 @@ export const getAssignmentBody = query(
     if (!record) {
       await saveAssignment(key, result)
     }
-    return exerciseSchema.array().parse(result)
+    return await exerciseSchema.array().parseAsync(result)
   },
   'getAssignmentBody',
 )
@@ -84,7 +84,7 @@ export const getAssignmentBody = query(
 export async function saveAssignment(key: PK, body: Exercise[]) {
   'use server'
   await check(key)
-  body = assignmentSchema.shape.body.parse(body)
+  body = await assignmentSchema.shape.body.parseAsync(body)
   await prisma.assignment.upsert({
     where: { url_userEmail_id: key },
     create: { ...key, body, lastModified: new Date() },
@@ -99,37 +99,34 @@ export async function saveExercise(key: PK, pos: number, exercise: Exercise) {
     select: { body: true, lastModified: true },
     where: { url_userEmail_id: key },
   })
-  const body = assignmentSchema.shape.body.parse(record.body)
-  body[pos] = exerciseSchema.parse(exercise)
+  const body = record.body as unknown as Exercise[]
+  body[pos] = await exerciseSchema.parseAsync(exercise)
   await prisma.assignment.update({
     where: { url_userEmail_id: key, lastModified: record.lastModified },
     data: { body, lastModified: new Date() },
   })
 }
 
-export const original = fullAssignmentSchema.omit({ userEmail: true })
+export const original = fullAssignmentSchema.omit({ userEmail: true, lastModified: true })
 
-export const registerAssignment = query(
-  async (assignment: z.input<typeof original>) => {
-    'use server'
-    let page = await prisma.page.findUnique({ where: { url: assignment.url } })
-    let hash = CryptoJS.SHA256(JSON.stringify(assignment)).toString()
-    if (!page || !page.body || page.hash !== hash) {
-      const payload = {
-        title: assignment.title || '',
-        body: original.parse(assignment),
-        hash,
-      }
-      page = await prisma.page.upsert({
-        where: { url: assignment.url },
-        create: { url: assignment.url, ...payload },
-        update: payload,
-      })
-      await prisma.assignment.deleteMany({
-        where: { url: assignment.url, id: assignment.id },
-      })
+export const registerAssignment = query(async (assignment: z.input<typeof original>) => {
+  'use server'
+  let page = await prisma.page.findUnique({ where: { url: assignment.url } })
+  let hash = CryptoJS.SHA256(JSON.stringify(assignment)).toString()
+  if (!page || !page.body || page.hash !== hash) {
+    const payload = {
+      title: assignment.title || '',
+      body: await original.parseAsync(assignment),
+      hash,
     }
-    return page.body as unknown as z.infer<typeof original>
-  },
-  'registerAssignment',
-)
+    page = await prisma.page.upsert({
+      where: { url: assignment.url },
+      create: { url: assignment.url, ...payload },
+      update: payload,
+    })
+    await prisma.assignment.deleteMany({
+      where: { url: assignment.url, id: assignment.id },
+    })
+  }
+  return page.body as unknown as z.infer<typeof original>
+}, 'registerAssignment')

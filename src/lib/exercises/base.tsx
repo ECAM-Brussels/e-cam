@@ -110,7 +110,7 @@ export function createExerciseType<
       async () => {
         if (props.params && !props.state && exercise.generator) {
           const newState = await exercise.generator(props.params)
-          props.onGenerate?.({ state: exercise.schema.parse(newState) })
+          props.onGenerate?.({ state: await exercise.schema.parseAsync(newState) })
           return newState
         }
         return props.state
@@ -120,7 +120,7 @@ export function createExerciseType<
 
     const formAction = action(
       async (initialState: z.infer<Schema>, formData: FormData) => {
-        const newState: z.infer<Schema> = exercise.schema.parse({
+        const newState: z.infer<Schema> = await exercise.schema.parseAsync({
           ...initialState,
           ...extractFormData(formData),
         })
