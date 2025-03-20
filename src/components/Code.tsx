@@ -13,6 +13,7 @@ type CodeProps = {
   framework?: 'react' | 'svelte'
   tailwind?: boolean
   lang: string
+  name?: string
   readOnly?: boolean
   run?: boolean
   runImmediately?: boolean
@@ -66,6 +67,11 @@ export default function Code(props: CodeProps) {
   const user = createAsync(() => getUser())
 
   let textarea: HTMLTextAreaElement
+  createEffect(() => {
+    if (props.name) {
+      textarea.name = props.name
+    }
+  })
 
   return (
     <div class={`m-8 ${props.class}`}>
@@ -89,6 +95,9 @@ export default function Code(props: CodeProps) {
               readOnly={props.readOnly}
               onMount={(editor) => {
                 textarea = editor.textarea
+                if (props.name) {
+                  textarea.name = props.name
+                }
                 textarea.addEventListener('blur', (event) => {
                   setValue(textarea.value)
                 })
