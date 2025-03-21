@@ -5,12 +5,12 @@ import Code from '~/components/Code'
 import Markdown from '~/components/Markdown'
 import { createExerciseType } from '~/lib/exercises/base'
 
-let execPython: (code: string) => Promise<string>
+let execPython: (code: string, test: string) => Promise<string>
 if (isServer) {
   const { spawn } = await import('child_process')
-  execPython = (code: string) => {
+  execPython = (code: string, test: string) => {
     return new Promise(async (resolve, reject) => {
-      const process = spawn('python', ['-c', code])
+      const process = spawn('python', ['-c', `${code}\nprint(${test})`])
       let out = { stdout: '', stderr: '' }
       for (const key of ['stdout', 'stderr'] as const) {
         process[key].on('data', (data) => {
@@ -27,8 +27,8 @@ if (isServer) {
   }
 } else {
   const { default: runPython } = await import('~/lib/pyodide/api')
-  execPython = async (code: string) => {
-    return (await runPython(code)).output
+  execPython = async (code: string, test: string) => {
+    return (await runPython(`${code}\n${test}`, true)).output
   }
 }
 
@@ -36,7 +36,7 @@ function runTests(code: string, tests: string[]): Promise<string>[]
 function runTests(code: string, tests: string[], hashes: string[]): Promise<boolean>[]
 function runTests(code: string, tests: string[], hashes?: string[]) {
   return tests.map(async (test, index) => {
-    const result = await execPython(code + '\n' + test)
+    const result = await execPython(code, test)
     return hashes ? compare(result, hashes[index]) : hash(result, 10)
   })
 }
@@ -87,7 +87,7 @@ const { Component, schema } = createExerciseType({
   Component: (props) => (
     <>
       <Markdown value={props.question} />
-      <Code lang="python" value={props.attempt} />
+      <Code lang="python" name="attempt" value={props.attempt} run />
     </>
   ),
 })
