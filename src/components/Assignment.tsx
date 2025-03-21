@@ -46,7 +46,7 @@ export default function Assignment(
           const component = exercises[exercise.type] as Component<typeof exerciseProps>
           async function save(event: {
             state: State
-            feedback?: { correct: boolean; solution: Sol }
+            feedback?: { correct: boolean; solution?: Sol }
           }) {
             await saveExercise(primary(), props.index, {
               type: exercise.type,

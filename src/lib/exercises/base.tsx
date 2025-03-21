@@ -158,13 +158,11 @@ export function createExerciseType<
         </div>
         <Show when={props.feedback}>
           {(feedback) => (
-            <Show when={feedback().solution}>
-              {(solution) => (
-                <Feedback {...feedback()}>
-                  {exercise.Solution && <exercise.Solution {...solution()} />}
-                </Feedback>
-              )}
-            </Show>
+            <Feedback {...feedback()}>
+              <Show when={feedback().solution}>
+                {(solution) => exercise.Solution && <exercise.Solution {...solution()} />}
+              </Show>
+            </Feedback>
           )}
         </Show>
       </>
