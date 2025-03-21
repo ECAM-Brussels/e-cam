@@ -21,10 +21,34 @@ const triplet = z.tuple([math, math, math])
 
 const { Component, schema } = createExerciseType({
   name: 'Factor',
-  schema: z.object({
-    expr: z.string(),
-    attempt: z.string().default(''),
-  }),
+  schema: z
+    .object({
+      expr: z.string(),
+      expand: z
+        .boolean()
+        .describe('Whether to expand expr before it is seen by the user')
+        .default(false),
+      attempt: z.string().default(''),
+    })
+    .transform(async (state) => {
+      if (state.expand) {
+        const { expression } = await request(
+          graphql(`
+            query ExpandExpr($expr: Math!) {
+              expression(expr: $expr) {
+                expand {
+                  expr
+                }
+              }
+            }
+          `),
+          state,
+        )
+        state.expr = expression.expand.expr
+        state.expand = false
+      }
+      return state as typeof state & { expand: false }
+    }),
   mark: async (state) => {
     const { attempt } = await request(
       graphql(`
