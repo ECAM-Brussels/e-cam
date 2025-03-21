@@ -1,5 +1,4 @@
 import { hash, compare } from 'bcryptjs'
-import { spawn } from 'child_process'
 import { isServer } from 'solid-js/web'
 import { z } from 'zod'
 import Code from '~/components/Code'
@@ -8,6 +7,7 @@ import { createExerciseType } from '~/lib/exercises/base'
 
 let execPython: (code: string) => Promise<string>
 if (isServer) {
+  const { spawn } = await import('child_process')
   execPython = (code: string) => {
     return new Promise(async (resolve, reject) => {
       const process = spawn('python', ['-c', code])
@@ -26,8 +26,8 @@ if (isServer) {
     }) as Promise<string>
   }
 } else {
+  const { default: runPython } = await import('~/lib/pyodide/api')
   execPython = async (code: string) => {
-    const runPython = (await import('~/lib/pyodide/api')).default
     return (await runPython(code)).output
   }
 }
