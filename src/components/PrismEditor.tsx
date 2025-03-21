@@ -20,6 +20,10 @@ export default function PrismEditor(props: Parameters<typeof Editor>[0] & { name
       {...props}
       onMount={(editor) => {
         textarea = editor.textarea
+        if (props.name) {
+          textarea.name = props.name
+        }
+        props.onMount?.(editor)
       }}
     />
   )
