@@ -21,8 +21,13 @@ export type ExerciseComponentProps<State, Params, Solution> = (
     }
 ) & {
   feedback?: Feedback<Solution>
-  onSubmit?: (event: { state: State; feedback: Feedback<Solution> }) => Promise<void> | void
-  onGenerate?: (event: { state: State }) => Promise<void> | void
+  onSubmit?: (event: {
+    state: State
+    feedback: Feedback<Solution>
+    attempts: true | number
+  }) => Promise<void> | void
+  onGenerate?: (event: { state: State; attempts: true | number }) => Promise<void> | void
+  attempts: true | number
 }
 type ExerciseComponent<State, Params, Solution> = Component<
   ExerciseComponentProps<State, Params, Solution>
@@ -110,7 +115,10 @@ export function createExerciseType<
       async () => {
         if (props.params && !props.state && exercise.generator) {
           const newState = await exercise.generator(props.params)
-          props.onGenerate?.({ state: await exercise.schema.parseAsync(newState) })
+          props.onGenerate?.({
+            state: await exercise.schema.parseAsync(newState),
+            attempts: props.attempts,
+          })
           return newState
         }
         return props.state
@@ -134,31 +142,34 @@ export function createExerciseType<
             correct,
             solution: solution || undefined,
           },
+          attempts: typeof props.attempts === 'number' ? props.attempts - 1 : true,
         })
       },
       `exercise-${btoa(JSON.stringify(props.state))}`,
     )
     const submission = useSubmission(formAction)
 
+    const readOnly = () => props.attempts === 0 || props.feedback?.correct
+
     return (
       <>
         <div class="bg-white border rounded-xl p-4 my-8">
           <Show when={state()} fallback={<p>Generating...</p>}>
             <form method="post" action={formAction.with(state())}>
-              <fieldset disabled={props.feedback !== undefined}>
+              <fieldset disabled={readOnly()}>
                 <exercise.Component {...state()} />
               </fieldset>
-              {!props.feedback && (
+              <Show when={!readOnly()}>
                 <button type="submit" disabled={submission.pending}>
                   {submission.pending ? 'Correction en cours' : 'Corriger'}
                 </button>
-              )}
+              </Show>
             </form>
           </Show>
         </div>
         <Show when={props.feedback}>
           {(feedback) => (
-            <Feedback {...feedback()}>
+            <Feedback {...feedback()} attempts={props.attempts}>
               <Show when={feedback().solution}>
                 {(solution) => exercise.Solution && <exercise.Solution {...solution()} />}
               </Show>
@@ -170,6 +181,7 @@ export function createExerciseType<
   }
   let common = z.object({
     type: z.literal(exercise.name),
+    attempts: z.literal(true).or(z.number()).optional(),
     feedback: z
       .object({
         correct: z.boolean(),
@@ -192,7 +204,12 @@ export function createExerciseType<
   }
 }
 
-function Feedback<S>(props: { children: JSXElement; correct: boolean; solution?: S }) {
+function Feedback<S>(props: {
+  children: JSXElement
+  correct: boolean
+  solution?: S
+  attempts: true | number
+}) {
   return (
     <div class="bg-white border rounded-xl p-4 my-8">
       <Show
@@ -208,6 +225,9 @@ function Feedback<S>(props: { children: JSXElement; correct: boolean; solution?:
         </p>
       </Show>
       {props.children}
+      <Show when={!props.correct && props.attempts && props.attempts !== true}>
+        <p>Tentatives restantes: {props.attempts}</p>
+      </Show>
     </div>
   )
 }

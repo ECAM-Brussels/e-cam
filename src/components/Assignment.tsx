@@ -44,18 +44,27 @@ export default function Assignment(
         {function <State, P, Sol>(exercise: Exercise) {
           const exerciseProps = exercise as ExerciseComponentProps<State, P, Sol>
           const component = exercises[exercise.type] as Component<typeof exerciseProps>
+          const attempts = exerciseProps.attempts ?? props.attempts
           async function save(event: {
             state: State
             feedback?: { correct: boolean; solution?: Sol }
+            attempts: true | number
           }) {
             await saveExercise(primary(), props.index, {
               type: exercise.type,
               feedback: event.feedback,
               state: event.state,
+              attempts: event.attempts,
             } as Exercise)
           }
           return (
-            <Dynamic component={component} {...exerciseProps} onGenerate={save} onSubmit={save} />
+            <Dynamic
+              component={component}
+              {...exerciseProps}
+              onGenerate={save}
+              onSubmit={save}
+              attempts={attempts}
+            />
           )
         }}
       </Show>

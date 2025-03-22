@@ -30,6 +30,7 @@ export const fullAssignmentSchema = assignmentSchema.extend({
   streak: z.number().default(0),
   mode: z.literal('static').or(z.literal('dynamic')).default('static'),
   whiteboard: z.boolean().default(true),
+  attempts: z.literal(true).or(z.number()).default(1),
 })
 
 export type Assignment = z.infer<typeof assignmentSchema>
