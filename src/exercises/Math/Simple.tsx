@@ -45,15 +45,17 @@ const { Component, schema, mark } = createExerciseType({
       </label>
     </>
   ),
-  solve: async (state) => {
-    'use server'
-    return { answer: decrypt(state.answer, import.meta.env.VITE_PASSPHRASE) }
-  },
-  Solution: (props) => (
-    <p>
-      La réponse est <Math value={props.answer} />.
-    </p>
-  ),
+  feedback: [
+    async (state) => {
+      'use server'
+      return { answer: decrypt(state.answer, import.meta.env.VITE_PASSPHRASE) }
+    },
+    (props) => (
+      <p>
+        La réponse est <Math value={props.answer} />.
+      </p>
+    ),
+  ],
 })
 
 export { Component as default, schema, mark }

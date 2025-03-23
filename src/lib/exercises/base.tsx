@@ -67,17 +67,11 @@ type ExerciseType<
    * @returns whether the student's answer is correct
    */
   mark: (state: z.infer<Schema>) => Promise<boolean> | boolean
-  /**
-   * Function that solves an exercise
-   * @param state question and student's answer
-   * @returns props for the Solution component
-   */
-  solve?: (state: z.infer<Schema>) => Promise<Solution> | Solution
-  /**
-   * Component for showing a detailed resolution
-   * @param props Output of the 'solve' function
-   */
-  Solution?: (props: Solution) => JSXElement
+
+  feedback?: [
+    (state: z.infer<Schema>) => Promise<Solution> | Solution,
+    (props: Solution) => JSXElement,
+  ]
 
   generator?: {
     params: GeneratorSchema
@@ -121,16 +115,15 @@ export function createExerciseType<
       { initialValue: props.state },
     )
 
+    const [solve, Solution] = exercise.feedback || [undefined, undefined]
+
     const formAction = action(
       async (initialState: z.infer<Schema>, formData: FormData) => {
         const newState: z.infer<Schema> = await exercise.schema.parseAsync({
           ...initialState,
           ...extractFormData(formData),
         })
-        const [correct, solution] = await Promise.all([
-          exercise.mark(newState),
-          exercise.solve?.(newState),
-        ])
+        const [correct, solution] = await Promise.all([exercise.mark(newState), solve?.(newState)])
         await props.onSubmit?.({
           state: newState,
           feedback: {
@@ -155,9 +148,7 @@ export function createExerciseType<
                 <exercise.Component {...state()} />
               </fieldset>
               <Show when={!readOnly() && !submission.pending}>
-                <button type="submit">
-                  Corriger
-                </button>
+                <button type="submit">Corriger</button>
               </Show>
             </form>
           </Show>
@@ -165,8 +156,8 @@ export function createExerciseType<
         <Show when={props.feedback}>
           {(feedback) => (
             <Feedback {...feedback()} attempts={props.attempts}>
-              <Show when={feedback().solution}>
-                {(solution) => exercise.Solution && <exercise.Solution {...solution()} />}
+              <Show when={exercise.feedback && feedback().solution}>
+                {(solution) => Solution && <Solution {...solution()} />}
               </Show>
             </Feedback>
           )}
@@ -236,9 +227,9 @@ function Feedback<S>(
   } else {
     return (
       <div class="bg-white border rounded-xl p-4 my-8">
-      <p class="text-gray-300 font-bold text-2xl mb-4">
-        <Fa icon={faHourglassHalf} /> Correction en cours...
-      </p>
+        <p class="text-gray-300 font-bold text-2xl mb-4">
+          <Fa icon={faHourglassHalf} /> Correction en cours...
+        </p>
       </div>
     )
   }

@@ -70,21 +70,24 @@ const { Component, schema } = createExerciseType({
       </div>
     </>
   ),
-  solve: async (state) => {
-    const { expression } = await request(
-      graphql(`
-        query SolveFactorisation($expr: Math!) {
-          expression(expr: $expr) {
-            factor {
-              expr
+  feedback: [
+    async (state) => {
+      const { expression } = await request(
+        graphql(`
+          query SolveFactorisation($expr: Math!) {
+            expression(expr: $expr) {
+              factor {
+                expr
+              }
             }
           }
-        }
-      `),
-      { expr: state.expr },
-    )
-    return { ...state, attempt: expression.factor.expr }
-  },
+        `),
+        { expr: state.expr },
+      )
+      return { answer: expression.factor.expr }
+    },
+    (props) => <p>La réponse est {props.answer}</p>,
+  ],
   generator: {
     params: z.object({
       A: z.number().array().default([1]),
