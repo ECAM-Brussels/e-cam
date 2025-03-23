@@ -1,5 +1,5 @@
 import { extractFormData } from '../form'
-import { faCheckCircle, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faCheckCircle, faHourglassHalf, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { action, createAsyncStore, useSubmission } from '@solidjs/router'
 import { Component, Show, type JSXElement } from 'solid-js'
 import { z } from 'zod'
@@ -159,9 +159,9 @@ export function createExerciseType<
               <fieldset disabled={readOnly()}>
                 <exercise.Component {...state()} />
               </fieldset>
-              <Show when={!readOnly()}>
-                <button type="submit" disabled={submission.pending}>
-                  {submission.pending ? 'Correction en cours' : 'Corriger'}
+              <Show when={!readOnly() && !submission.pending}>
+                <button type="submit">
+                  Corriger
                 </button>
               </Show>
             </form>
@@ -175,6 +175,9 @@ export function createExerciseType<
               </Show>
             </Feedback>
           )}
+        </Show>
+        <Show when={submission.pending}>
+          <Feedback marking />
         </Show>
       </>
     )
@@ -204,30 +207,44 @@ export function createExerciseType<
   }
 }
 
-function Feedback<S>(props: {
-  children: JSXElement
-  correct: boolean
-  solution?: S
-  attempts: true | number
-}) {
-  return (
-    <div class="bg-white border rounded-xl p-4 my-8">
-      <Show
-        when={props.correct}
-        fallback={
-          <p class="text-red-800 font-bold text-2xl mb-4">
-            <Fa icon={faXmark} /> Pas de chance&nbsp;!
+function Feedback<S>(
+  props:
+    | {
+        children: JSXElement
+        correct: boolean
+        solution?: S
+        attempts: true | number
+      }
+    | { marking: true },
+) {
+  if ('correct' in props) {
+    return (
+      <div class="bg-white border rounded-xl p-4 my-8">
+        <Show
+          when={props.correct}
+          fallback={
+            <p class="text-red-800 font-bold text-2xl mb-4">
+              <Fa icon={faXmark} /> Pas de chance&nbsp;!
+            </p>
+          }
+        >
+          <p class="text-green-800 font-bold text-2xl mb-4">
+            <Fa icon={faCheckCircle} /> Correct&nbsp;!
           </p>
-        }
-      >
-        <p class="text-green-800 font-bold text-2xl mb-4">
-          <Fa icon={faCheckCircle} /> Correct&nbsp;!
-        </p>
-      </Show>
-      {props.children}
-      <Show when={!props.correct && props.attempts && props.attempts !== true}>
-        <p>Tentatives restantes: {props.attempts}</p>
-      </Show>
-    </div>
-  )
+        </Show>
+        {props.children}
+        <Show when={!props.correct && props.attempts && props.attempts !== true}>
+          <p>Tentatives restantes: {props.attempts}</p>
+        </Show>
+      </div>
+    )
+  } else {
+    return (
+      <div class="bg-white border rounded-xl p-4 my-8">
+      <p class="text-gray-300 font-bold text-2xl mb-4">
+        <Fa icon={faHourglassHalf} /> Correction en cours...
+      </p>
+      </div>
+    )
+  }
 }
