@@ -85,31 +85,33 @@ const { Component, schema } = createExerciseType({
     )
     return { ...state, attempt: expression.factor.expr }
   },
-  params: z.object({
-    A: z.number().array().default([1]),
-    roots: z.union([
-      math.array().array(),
-      z.object({ product: math.array().array() }).transform((set) => product(...set.product)),
-    ]),
-  }),
-  generator: async (params) => {
-    let expr: string = `(${sample(params.A)})`
-    sample(params.roots)?.forEach((root) => {
-      expr += `(x - (${root}))`
-    })
-    const { expression } = await request(
-      graphql(`
-        query GenerateFactoring($expr: Math!) {
-          expression(expr: $expr) {
-            normalizeRoots {
-              expr
+  generator: {
+    params: z.object({
+      A: z.number().array().default([1]),
+      roots: z.union([
+        math.array().array(),
+        z.object({ product: math.array().array() }).transform((set) => product(...set.product)),
+      ]),
+    }),
+    async generate(params) {
+      let expr: string = `(${sample(params.A)})`
+      sample(params.roots)?.forEach((root) => {
+        expr += `(x - (${root}))`
+      })
+      const { expression } = await request(
+        graphql(`
+          query GenerateFactoring($expr: Math!) {
+            expression(expr: $expr) {
+              normalizeRoots {
+                expr
+              }
             }
           }
-        }
-      `),
-      { expr },
-    )
-    return { expr: expression.normalizeRoots.expr }
+        `),
+        { expr },
+      )
+      return { expr: expression.normalizeRoots.expr }
+    },
   },
 })
 

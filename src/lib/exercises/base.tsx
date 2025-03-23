@@ -78,16 +78,11 @@ type ExerciseType<
    * @param props Output of the 'solve' function
    */
   Solution?: (props: Solution) => JSXElement
-  /**
-   * Zod Schema to validate the generator parameters
-   */
-  params?: GeneratorSchema
-  /**
-   * Function that generates a new exercise
-   * @param params parameters that satisfy the 'params' schema
-   * @returns state for the main component
-   */
-  generator?: (params: z.infer<GeneratorSchema>) => Promise<z.input<Schema>> | z.input<Schema>
+
+  generator?: {
+    params: GeneratorSchema
+    generate: (params: z.infer<GeneratorSchema>) => Promise<z.input<Schema>> | z.input<Schema>
+  }
 }
 
 /**
@@ -114,7 +109,7 @@ export function createExerciseType<
     const state = createAsyncStore(
       async () => {
         if (props.params && !props.state && exercise.generator) {
-          const newState = await exercise.generator(props.params)
+          const newState = await exercise.generator.generate(props.params)
           props.onGenerate?.({
             state: await exercise.schema.parseAsync(newState),
             attempts: props.attempts,
@@ -197,12 +192,12 @@ export function createExerciseType<
     params: z.never().optional(),
   })
   const params = common.extend({
-    params: exercise.params || z.never(),
+    params: exercise.generator?.params || z.never(),
     state: z.never().optional(),
   })
   return {
     Component,
-    schema: exercise.params ? state.or(params) : state,
+    schema: exercise.generator?.params ? state.or(params) : state,
     mark: exercise.mark,
   }
 }
