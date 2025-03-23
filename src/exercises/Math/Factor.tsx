@@ -16,8 +16,6 @@ export function product<T>(...allEntries: T[][]): T[][] {
 }
 
 const math = z.number().or(z.string())
-const couple = z.tuple([math, math])
-const triplet = z.tuple([math, math, math])
 
 const { Component, schema } = createExerciseType({
   name: 'Factor',
@@ -90,18 +88,14 @@ const { Component, schema } = createExerciseType({
   params: z.object({
     A: z.number().array().default([1]),
     roots: z.union([
-      couple.array(),
-      triplet.array(),
-      z.object({
-        product: math.array().array(),
-      }),
+      math.array().array(),
+      z.object({ product: math.array().array() }).transform((set) => product(...set.product)),
     ]),
   }),
   generator: async (params) => {
-    let expr: string = `${sample(params.A)}`
-    const roots = 'product' in params.roots ? product(...params.roots.product) : params.roots
-    sample(roots)!.forEach((root) => {
-      expr += `(x - ${root})`
+    let expr: string = `(${sample(params.A)})`
+    sample(params.roots)?.forEach((root) => {
+      expr += `(x - (${root}))`
     })
     const { expression } = await request(
       graphql(`
