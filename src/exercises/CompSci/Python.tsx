@@ -43,6 +43,12 @@ function runTests(code: string, tests: string[], hashes?: string[]) {
 
 const { Component, schema } = createExerciseType({
   name: 'Python',
+  Component: (props) => (
+    <>
+      <Markdown value={props.question} />
+      <Code lang="python" name="attempt" value={props.attempt} run />
+    </>
+  ),
   schema: z
     .object({
       question: z.string().describe('Question, entered as markdown'),
@@ -84,12 +90,6 @@ const { Component, schema } = createExerciseType({
       Promise.race(promises.map(async (result) => ((await result) ? never : false))),
     ])
   },
-  Component: (props) => (
-    <>
-      <Markdown value={props.question} />
-      <Code lang="python" name="attempt" value={props.attempt} run />
-    </>
-  ),
 })
 
 export { Component as default, schema }

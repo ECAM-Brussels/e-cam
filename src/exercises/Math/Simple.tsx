@@ -8,6 +8,15 @@ import { request } from '~/lib/graphql'
 
 const { Component, schema, mark } = createExerciseType({
   name: 'Simple',
+  Component: (props) => (
+    <>
+      <Markdown value={props.question} />
+      <label class="inline-flex items-center gap-2">
+        Réponse:
+        <Math name="attempt" class="border w-64" value={props.attempt} editable />
+      </label>
+    </>
+  ),
   schema: z
     .object({
       question: z.string(),
@@ -36,15 +45,6 @@ const { Component, schema, mark } = createExerciseType({
     )
     return attempt.isEqual
   },
-  Component: (props) => (
-    <>
-      <Markdown value={props.question} />
-      <label class="inline-flex items-center gap-2">
-        Réponse:
-        <Math name="attempt" class="border w-64" value={props.attempt} editable />
-      </label>
-    </>
-  ),
   feedback: [
     async (state) => {
       'use server'

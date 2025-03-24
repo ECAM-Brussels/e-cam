@@ -19,6 +19,15 @@ const math = z.number().or(z.string())
 
 const { Component, schema } = createExerciseType({
   name: 'Factor',
+  Component: (props) => (
+    <>
+      <p>Factorisez l'expression.</p>
+      <div class="flex items-center gap-2">
+        <Math value={`${props.expr}=`} />
+        <Math name="attempt" class="border w-64" editable value={props.attempt} />
+      </div>
+    </>
+  ),
   schema: z
     .object({
       expr: z.string(),
@@ -61,15 +70,6 @@ const { Component, schema } = createExerciseType({
     )
     return attempt.isEqual && attempt.isFactored
   },
-  Component: (props) => (
-    <>
-      <p>Factorisez l'expression.</p>
-      <div class="flex items-center gap-2">
-        <Math value={`${props.expr}=`} />
-        <Math name="attempt" class="border w-64" editable value={props.attempt} />
-      </div>
-    </>
-  ),
   feedback: [
     async (state) => {
       const { expression } = await request(
