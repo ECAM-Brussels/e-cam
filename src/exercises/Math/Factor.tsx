@@ -86,7 +86,11 @@ const { Component, schema } = createExerciseType({
       )
       return { answer: expression.factor.expr }
     },
-    (props) => <p>La réponse est {props.answer}</p>,
+    (props) => (
+      <p>
+        La réponse est <Math value={props.answer} />
+      </p>
+    ),
   ],
   generator: {
     params: z.object({
