@@ -10,6 +10,7 @@ export default function Button(rawProps: ButtonProps) {
   return (
     <button
       classList={{
+        'disabled:opacity-50 disabled:cursor-not-allowed': true,
         'rounded-lg py-2 px-4 shadow font-bold': true,
         border: props.variant === 'outlined',
         'bg-white hover:bg-gray-100': props.color === 'white',
