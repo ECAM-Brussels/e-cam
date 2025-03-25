@@ -36,7 +36,7 @@ export default function Math(props: MathProps) {
 
   const [disabled, setDisabled] = createSignal(props.disabled)
   createEffect(() => setDisabled(props.disabled))
-  let field: HTMLInputElement
+  let field!: HTMLInputElement
   onMount(() => {
     if (props.name && field!) {
       const fieldset = field.closest('fieldset')
@@ -71,9 +71,14 @@ export default function Math(props: MathProps) {
           setValue(event.target.value)
         }}
         onblur={extra.onBlur}
+        onkeydown={(event: KeyboardEvent) => {
+          if (props.name && event.key === 'Enter') {
+            field.closest('form')?.requestSubmit()
+          }
+        }}
       />
       <Show when={props.name}>
-        <input type="hidden" name={props.name} value={value()} ref={field!} />
+        <input type="hidden" name={props.name} value={value()} ref={field} />
       </Show>
     </Show>
   )
