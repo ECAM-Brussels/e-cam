@@ -16,8 +16,7 @@ export default function Assignment(
   props: AssignmentProps & { index: number; onIndexChange?: (newIndex: number) => void },
 ) {
   const primary = () => ({ url: props.url, userEmail: props.userEmail, id: props.id })
-  const key = () => [primary(), props.mode, props.streak, props.body] as const
-  const body = createAsync(async () => getAssignmentBody(...key()))
+  const body = createAsync(async () => getAssignmentBody(primary()))
   const classes = () =>
     body()?.map((exercise: Exercise) => {
       if (exercise.feedback?.correct) {

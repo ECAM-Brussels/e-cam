@@ -20,7 +20,7 @@ export type Exercise = z.infer<typeof exerciseSchema>
 export const assignmentSchema = z.object({
   url: z.string(),
   userEmail: z.string().email(),
-  id: z.string().optional().default(''),
+  id: z.string().default(''),
   lastModified: z.string().transform((str) => new Date(str)),
   body: exerciseSchema.array(),
 })
@@ -32,9 +32,10 @@ export const fullAssignmentSchema = assignmentSchema.extend({
   whiteboard: z.boolean().default(true),
   attempts: z.literal(true).or(z.number()).default(1),
 })
+export const original = fullAssignmentSchema.omit({ userEmail: true, lastModified: true })
 
 export type Assignment = z.infer<typeof assignmentSchema>
-export type AssignmentProps = z.infer<typeof fullAssignmentSchema>
+export type AssignmentProps = Omit<z.infer<typeof fullAssignmentSchema>, 'lastModified'>
 type PK = Pick<Assignment, 'url' | 'id' | 'userEmail'>
 
 async function check(key: PK) {
@@ -45,41 +46,40 @@ async function check(key: PK) {
   }
 }
 
-export const getAssignmentBody = query(
-  async (key: PK, mode: 'static' | 'dynamic', streak: number, initialBody: Exercise[]) => {
-    'use server'
-    await check(key)
-    const record = await prisma.assignment.findUnique({
-      where: { url_userEmail_id: key },
-      select: { body: true },
-    })
-    let result: Exercise[] = record ? (record.body as unknown as Exercise[]) : []
-    if (mode === 'static') {
-      result = result.length ? result : initialBody
-    } else if (mode === 'dynamic') {
-      let [dynamicId, currentStreak] = [0, 0]
-      for (const exercise of result) {
-        if (exercise.feedback?.correct === true) {
-          currentStreak++
-          if (currentStreak === streak) {
-            dynamicId++
-            currentStreak = 0
-          }
-        } else {
+export const getAssignmentBody = query(async (key: PK) => {
+  'use server'
+  await check(key)
+  const page = await prisma.page.findUniqueOrThrow({ where: { url: key.url } })
+  const originalAssignment = page.body as unknown as z.infer<typeof original>
+  const record = await prisma.assignment.findUnique({
+    where: { url_userEmail_id: key },
+    select: { body: true },
+  })
+  let result: Exercise[] = record ? (record.body as unknown as Exercise[]) : []
+  if (originalAssignment.mode === 'static') {
+    result = result.length ? result : originalAssignment.body
+  } else if (originalAssignment.mode === 'dynamic') {
+    let [dynamicId, currentStreak] = [0, 0]
+    for (const exercise of result) {
+      if (exercise.feedback?.correct === true) {
+        currentStreak++
+        if (currentStreak === originalAssignment.streak) {
+          dynamicId++
           currentStreak = 0
         }
-      }
-      if (!result || result[result.length - 1].feedback) {
-        result = [...result, initialBody[dynamicId]]
+      } else {
+        currentStreak = 0
       }
     }
-    if (!record) {
-      await saveAssignment(key, result)
+    if (!result || result[result.length - 1].feedback) {
+      result = [...result, originalAssignment.body[dynamicId]]
     }
-    return await exerciseSchema.array().parseAsync(result)
-  },
-  'getAssignmentBody',
-)
+  }
+  if (!record) {
+    await saveAssignment(key, result)
+  }
+  return await exerciseSchema.array().parseAsync(result)
+}, 'getAssignmentBody')
 
 export async function saveAssignment(key: PK, body: Exercise[]) {
   'use server'
@@ -107,9 +107,7 @@ export async function saveExercise(key: PK, pos: number, exercise: Exercise) {
   })
 }
 
-export const original = fullAssignmentSchema.omit({ userEmail: true, lastModified: true })
-
-export const registerAssignment = query(async (assignment: z.input<typeof original>) => {
+export const registerAssignment = async (assignment: z.input<typeof original>) => {
   'use server'
   let page = await prisma.page.findUnique({ where: { url: assignment.url } })
   let hash = CryptoJS.SHA256(JSON.stringify(assignment)).toString()
@@ -129,4 +127,4 @@ export const registerAssignment = query(async (assignment: z.input<typeof origin
     })
   }
   return page.body as unknown as z.infer<typeof original>
-}, 'registerAssignment')
+}
