@@ -142,20 +142,22 @@ export function createExerciseType<
 
     return (
       <>
-        <div class="bg-white border rounded-xl p-4 my-8">
-          <Show when={state()} fallback={<p>Generating...</p>}>
-            <form method="post" action={formAction.with(state())}>
-              <fieldset disabled={readOnly()}>
+        <Show when={state()} fallback={<p>Generating...</p>}>
+          <form method="post" action={formAction.with(state())}>
+            <fieldset disabled={readOnly()}>
+              <div class="bg-white border rounded-xl p-4 my-8">
                 <exercise.Component {...state()} />
-              </fieldset>
+              </div>
               <Show when={!readOnly() && !submission.pending}>
                 <div class="text-center my-4">
-                  <Button type="submit" color="green">Corriger</Button>
+                  <Button type="submit" color="green">
+                    Corriger
+                  </Button>
                 </div>
               </Show>
-            </form>
-          </Show>
-        </div>
+            </fieldset>
+          </form>
+        </Show>
         <Show when={props.feedback}>
           {(feedback) => (
             <Feedback {...feedback()} attempts={props.attempts}>
