@@ -3,6 +3,7 @@ import { faCheckCircle, faHourglassHalf, faXmark } from '@fortawesome/free-solid
 import { action, createAsyncStore, useSubmission } from '@solidjs/router'
 import { Component, Show, type JSXElement } from 'solid-js'
 import { z } from 'zod'
+import Button from '~/components/Button'
 import Fa from '~/components/Fa'
 
 type Feedback<Solution> = {
@@ -148,7 +149,9 @@ export function createExerciseType<
                 <exercise.Component {...state()} />
               </fieldset>
               <Show when={!readOnly() && !submission.pending}>
-                <button type="submit">Corriger</button>
+                <div class="text-center my-4">
+                  <Button type="submit" color="green">Corriger</Button>
+                </div>
               </Show>
             </form>
           </Show>
