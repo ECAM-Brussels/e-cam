@@ -145,7 +145,7 @@ export function createExerciseType<
         <Show when={state()} fallback={<p>Generating...</p>}>
           <form method="post" action={formAction.with(state())}>
             <fieldset disabled={readOnly()}>
-              <div class="bg-white border rounded-xl p-4 my-8">
+              <div class="bg-white border rounded-xl p-4 my-4">
                 <exercise.Component {...state()} />
               </div>
               <Show when={!readOnly() && !submission.pending}>
@@ -210,7 +210,7 @@ function Feedback<S>(
 ) {
   if ('correct' in props) {
     return (
-      <div class="bg-white border rounded-xl p-4 my-8">
+      <div class="bg-white border rounded-xl p-4 my-4">
         <Show
           when={props.correct}
           fallback={
