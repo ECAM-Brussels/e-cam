@@ -11,9 +11,9 @@ const { Component, schema, mark } = createExerciseType({
   Component: (props) => (
     <>
       <Markdown value={props.question} />
-      <label class="inline-flex items-center gap-2">
+      <label class="inline-flex items-center gap-2 mt-4">
         Réponse:
-        <Math name="attempt" class="border w-64" value={props.attempt} editable />
+        <Math name="attempt" class="border p-2 min-w-24" value={props.attempt} editable />
       </label>
     </>
   ),
