@@ -72,23 +72,41 @@ const { Component, schema } = createExerciseType({
     return attempt.isEqual && attempt.isFactored
   },
   feedback: [
-    async (state) => {
-      const { expression } = await request(
-        graphql(`
-          query SolveFactorisation($expr: Math!) {
-            expression(expr: $expr) {
-              factor {
-                expr
+    async (state, attempts) => {
+      if (!attempts) {
+        const { expression } = await request(
+          graphql(`
+            query SolveFactorisation($expr: Math!) {
+              expression(expr: $expr) {
+                factor {
+                  expr
+                }
               }
             }
-          }
-        `),
-        { expr: state.expr },
-      )
-      return { answer: expression.factor.expr }
+          `),
+          { expr: state.expr },
+        )
+        return { answer: expression.factor.expr }
+      } else {
+        const { expression } = await request(
+          graphql(`
+            query GetFirstRoot($expr: Math!) {
+              expression(expr: $expr) {
+                solveset {
+                  index(i: 0) {
+                    expr
+                  }
+                }
+              }
+            }
+          `),
+          { expr: state.expr },
+        )
+        return { root: expression.solveset.index.expr }
+      }
     },
     (props) => (
-      <Show when={!props.attempts}>
+      <Show when={props.answer} fallback={<p>Une des racines est {props.root}</p>}>
         <p>
           La réponse est <Math value={props.answer} />
         </p>

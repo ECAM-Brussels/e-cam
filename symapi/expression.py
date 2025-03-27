@@ -64,6 +64,10 @@ class Expression:
     @strawberry.field(description="Factor")
     def factor(self) -> "Expression":
         return Expression(expr=sympy.factor(self.expr))
+    
+    @strawberry.field(description="Get element with a particular index")
+    def index(self, i: int) -> "Expression":
+        return Expression(expr=list(self.expr)[i])
 
     @strawberry.field
     def is_approximately_equal(self, expr: Math, error: float) -> bool:
