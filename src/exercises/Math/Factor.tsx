@@ -1,4 +1,5 @@
 import { sample } from 'lodash-es'
+import { Show } from 'solid-js'
 import { z } from 'zod'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
@@ -87,9 +88,11 @@ const { Component, schema } = createExerciseType({
       return { answer: expression.factor.expr }
     },
     (props) => (
-      <p>
-        La réponse est <Math value={props.answer} />
-      </p>
+      <Show when={!props.attempts}>
+        <p>
+          La réponse est <Math value={props.answer} />
+        </p>
+      </Show>
     ),
   ],
   generator: {

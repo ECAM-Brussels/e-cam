@@ -1,3 +1,4 @@
+import { Show } from 'solid-js'
 import { z } from 'zod'
 import Markdown from '~/components/Markdown'
 import Math from '~/components/Math'
@@ -51,9 +52,11 @@ const { Component, schema, mark } = createExerciseType({
       return { answer: decrypt(state.answer, import.meta.env.VITE_PASSPHRASE) }
     },
     (props) => (
-      <p>
-        La réponse est <Math value={props.answer} />.
-      </p>
+      <Show when={!props.attempts}>
+        <p>
+          La réponse est <Math value={props.answer} />.
+        </p>
+      </Show>
     ),
   ],
 })

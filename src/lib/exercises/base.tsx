@@ -71,7 +71,7 @@ type ExerciseType<
 
   feedback?: [
     (state: z.infer<Schema>) => Promise<Solution> | Solution,
-    (props: Solution) => JSXElement,
+    (props: Solution & { attempts: true | number }) => JSXElement,
   ]
 
   generator?: {
@@ -162,7 +162,7 @@ export function createExerciseType<
           {(feedback) => (
             <Feedback {...feedback()} attempts={props.attempts}>
               <Show when={exercise.feedback && feedback().solution}>
-                {(solution) => Solution && <Solution {...solution()} />}
+                {(solution) => Solution && <Solution {...solution()} attempts={props.attempts} />}
               </Show>
             </Feedback>
           )}
