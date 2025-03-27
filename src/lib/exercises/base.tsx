@@ -70,8 +70,8 @@ type ExerciseType<
   mark: (state: z.infer<Schema>) => Promise<boolean> | boolean
 
   feedback?: [
-    (state: z.infer<Schema>, attempts?: true | number) => Promise<Solution> | Solution,
-    (props: Solution & { attempts: true | number }) => JSXElement,
+    (state: z.infer<Schema>, attempts: true | number) => Promise<Solution> | Solution,
+    (props: Solution) => JSXElement,
   ]
 
   generator?: {

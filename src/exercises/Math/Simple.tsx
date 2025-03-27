@@ -47,12 +47,15 @@ const { Component, schema, mark } = createExerciseType({
     return attempt.isEqual
   },
   feedback: [
-    async (state) => {
+    async (state, attempts) => {
       'use server'
-      return { answer: decrypt(state.answer, import.meta.env.VITE_PASSPHRASE) }
+      if (attempts) {
+        return { answer: decrypt(state.answer, import.meta.env.VITE_PASSPHRASE) }
+      }
+      return {}
     },
     (props) => (
-      <Show when={!props.attempts}>
+      <Show when={props.answer}>
         <p>
           La réponse est <Math value={props.answer} />.
         </p>
