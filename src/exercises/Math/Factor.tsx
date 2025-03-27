@@ -2,9 +2,14 @@ import { sample } from 'lodash-es'
 import { Show } from 'solid-js'
 import { z } from 'zod'
 import Math from '~/components/Math'
-import { graphql } from '~/gql'
 import { createExerciseType } from '~/lib/exercises/base'
-import { request } from '~/lib/graphql'
+import {
+  checkFactorisation,
+  expand,
+  factor,
+  getFirstRoot,
+  normalizePolynomial,
+} from '~/queries/algebra'
 
 export function product<T>(...allEntries: T[][]): T[][] {
   return allEntries.reduce<T[][]>(
@@ -40,69 +45,17 @@ const { Component, schema } = createExerciseType({
     })
     .transform(async (state) => {
       if (state.expand) {
-        const { expression } = await request(
-          graphql(`
-            query ExpandExpr($expr: Math!) {
-              expression(expr: $expr) {
-                expand {
-                  expr
-                }
-              }
-            }
-          `),
-          state,
-        )
-        state.expr = expression.expand.expr
-        state.expand = false
+        state = { ...state, expr: await expand(state), expand: false }
       }
       return state as typeof state & { expand: false }
     }),
-  mark: async (state) => {
-    const { attempt } = await request(
-      graphql(`
-        query CheckFactorisation($expr: Math!, $attempt: Math!) {
-          attempt: expression(expr: $attempt) {
-            isEqual(expr: $expr)
-            isFactored
-          }
-        }
-      `),
-      state,
-    )
-    return attempt.isEqual && attempt.isFactored
-  },
+  mark: checkFactorisation,
   feedback: [
     async (state, attempts) => {
       if (!attempts) {
-        const { expression } = await request(
-          graphql(`
-            query SolveFactorisation($expr: Math!) {
-              expression(expr: $expr) {
-                factor {
-                  expr
-                }
-              }
-            }
-          `),
-          { expr: state.expr },
-        )
-        return { answer: expression.factor.expr }
+        return { answer: await factor(state) }
       } else {
-        const { expression } = await request(
-          graphql(`
-            query GetFirstRoot($expr: Math!) {
-              expression(expr: $expr) {
-                solveset {
-                  index(i: 0) {
-                    expr
-                  }
-                }
-              }
-            }
-          `),
-          { expr: state.expr },
-        )
-        return { root: expression.solveset.index.expr }
+        return { root: await getFirstRoot(state) }
       }
     },
     (props) => (
@@ -122,23 +75,11 @@ const { Component, schema } = createExerciseType({
       ]),
     }),
     async generate(params) {
-      let expr: string = `(${sample(params.A)})`
+      let expr = `(${sample(params.A)})`
       sample(params.roots)?.forEach((root) => {
         expr += `(x - (${root}))`
       })
-      const { expression } = await request(
-        graphql(`
-          query GenerateFactoring($expr: Math!) {
-            expression(expr: $expr) {
-              normalizeRoots {
-                expr
-              }
-            }
-          }
-        `),
-        { expr },
-      )
-      return { expr: expression.normalizeRoots.expr }
+      return { expr: await normalizePolynomial({ expr }) }
     },
   },
 })

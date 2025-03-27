@@ -14,3 +14,13 @@ export function request<T extends Args[1]>(
 ): Promise<ResultOf<T>> {
   return gRequest(url, query, variables as Args[2]) as Promise<ResultOf<T>>
 }
+
+export function createFunction<T extends Args[1], S>(
+  query: T,
+  fn: (result: ResultOf<T>) => S,
+) {
+  return async function (variables: VariablesOf<T>): Promise<S> {
+    const data = await request<T>(query, variables)
+    return fn(data)
+  }
+}
