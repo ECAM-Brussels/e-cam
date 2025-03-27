@@ -34,7 +34,7 @@ const { Component, schema } = createExerciseType({
       </div>
     </>
   ),
-  schema: z
+  state: z
     .object({
       expr: z.string(),
       expand: z

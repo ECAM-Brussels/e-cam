@@ -54,7 +54,7 @@ type ExerciseType<
    * Zod Schema to validate the state of the exercise,
    * i.e. question and student's answer.
    */
-  schema: Schema
+  state: Schema
   /**
    * Component for the main UI
    * Doesn't need to show the solution or handle the generator.
@@ -106,7 +106,7 @@ export function createExerciseType<
         if (props.params && !props.state && exercise.generator) {
           const newState = await exercise.generator.generate(props.params)
           props.onGenerate?.({
-            state: await exercise.schema.parseAsync(newState),
+            state: await exercise.state.parseAsync(newState),
             attempts: props.attempts,
           })
           return newState
@@ -120,7 +120,7 @@ export function createExerciseType<
 
     const formAction = action(
       async (initialState: z.infer<Schema>, formData: FormData) => {
-        const newState: z.infer<Schema> = await exercise.schema.parseAsync({
+        const newState: z.infer<Schema> = await exercise.state.parseAsync({
           ...initialState,
           ...extractFormData(formData),
         })
@@ -187,7 +187,7 @@ export function createExerciseType<
       .optional(),
   })
   const state = common.extend({
-    state: exercise.schema,
+    state: exercise.state,
     params: z.never().optional(),
   })
   const params = common.extend({

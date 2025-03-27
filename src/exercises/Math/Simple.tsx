@@ -18,7 +18,7 @@ const { Component, schema, mark } = createExerciseType({
       </label>
     </>
   ),
-  schema: z
+  state: z
     .object({
       question: z.string(),
       answer: z.string(),

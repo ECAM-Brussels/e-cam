@@ -49,7 +49,7 @@ const { Component, schema } = createExerciseType({
       <Code lang="python" name="attempt" value={props.attempt} run />
     </>
   ),
-  schema: z
+  state: z
     .object({
       question: z.string().describe('Question, entered as markdown'),
       attempt: z.string().default('').describe("Student's code"),
