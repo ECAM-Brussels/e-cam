@@ -70,7 +70,7 @@ type ExerciseType<
   mark: (state: z.infer<Schema>) => Promise<boolean> | boolean
 
   feedback?: [
-    (state: z.infer<Schema>) => Promise<Solution> | Solution,
+    (state: z.infer<Schema>, attempts?: true | number) => Promise<Solution> | Solution,
     (props: Solution & { attempts: true | number }) => JSXElement,
   ]
 
@@ -124,7 +124,10 @@ export function createExerciseType<
           ...initialState,
           ...extractFormData(formData),
         })
-        const [correct, solution] = await Promise.all([exercise.mark(newState), solve?.(newState)])
+        const [correct, solution] = await Promise.all([
+          exercise.mark(newState),
+          solve?.(newState, props.attempts),
+        ])
         await props.onSubmit?.({
           state: newState,
           feedback: {
