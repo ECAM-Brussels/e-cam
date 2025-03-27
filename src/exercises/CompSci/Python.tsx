@@ -1,7 +1,9 @@
+import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { hash, compare } from 'bcryptjs'
-import { isServer } from 'solid-js/web'
+import { For, isServer } from 'solid-js/web'
 import { z } from 'zod'
 import Code from '~/components/Code'
+import Fa from '~/components/Fa'
 import Markdown from '~/components/Markdown'
 import { createExerciseType } from '~/lib/exercises/base'
 
@@ -90,6 +92,27 @@ const { Component, schema } = createExerciseType({
       Promise.race(promises.map(async (result) => ((await result) ? never : false))),
     ])
   },
+  feedback: [
+    async (state) => {
+      const tests = runTests(state.attempt, state.tests, state.answer)
+      const results = await Promise.all(tests)
+      return { results: state.tests.map((test, i) => [test, results[i]] as const) }
+    },
+    (props) => (
+      <>
+        <h3 class="text-2xl font-semibold my-4">Résultats des tests</h3>
+        <ul class="list-disc px-8">
+          <For each={props.results}>
+            {([test, result]) => (
+              <li classList={{ 'text-green-800': result, 'text-red-800': !result }}>
+                {test} <Fa icon={result ? faCheck : faXmark} />
+              </li>
+            )}
+          </For>
+        </ul>
+      </>
+    ),
+  ],
 })
 
 export { Component as default, schema }
