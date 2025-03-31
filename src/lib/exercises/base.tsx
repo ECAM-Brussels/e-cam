@@ -1,38 +1,9 @@
 import { extractFormData } from '../form'
-import { faCheckCircle, faHourglassHalf, faXmark } from '@fortawesome/free-solid-svg-icons'
+import Feedback from './feedback'
 import { action, createAsyncStore, useSubmission } from '@solidjs/router'
-import { Component, Show, type JSXElement } from 'solid-js'
+import { Show, type JSXElement } from 'solid-js'
 import { z } from 'zod'
 import Button from '~/components/Button'
-import Fa from '~/components/Fa'
-
-type Feedback<Solution> = {
-  correct: boolean
-  solution?: Solution
-}
-
-export type ExerciseComponentProps<State, Params, Solution> = (
-  | {
-      params: Params
-      state?: never
-    }
-  | {
-      params?: never
-      state: State
-    }
-) & {
-  feedback?: Feedback<Solution>
-  onSubmit?: (event: {
-    state: State
-    feedback: Feedback<Solution>
-    attempts: true | number
-  }) => Promise<void> | void
-  onGenerate?: (event: { state: State; attempts: true | number }) => Promise<void> | void
-  attempts: true | number
-}
-type ExerciseComponent<State, Params, Solution> = Component<
-  ExerciseComponentProps<State, Params, Solution>
->
 
 /**
  * Type used to describe how exercises types are created.
@@ -70,7 +41,7 @@ type ExerciseType<
   mark: (state: z.infer<Schema>) => Promise<boolean> | boolean
 
   feedback?: [
-    (state: z.infer<Schema>, attempts: true | number) => Promise<Solution> | Solution,
+    (state: z.infer<Schema>, remaniningAttempts: true | number) => Promise<Solution> | Solution,
     (props: Solution) => JSXElement,
   ]
 
@@ -80,13 +51,23 @@ type ExerciseType<
   }
 }
 
+export type ExerciseProps<Name, State, Params, Feedback> = {
+  type: Name
+  onChange?: (
+    exercise: Omit<ExerciseProps<Name, State, Params, Feedback>, 'onChange' | 'params'> & {
+      state: State
+    },
+  ) => Promise<void> | void
+  maxAttempts: null | number
+  attempts: { correct: boolean; state: State; feedback?: Feedback }[]
+} & ({ state: State } | { params: Params })
+
 /**
  * Create an exercise type from its building blocks
  *
  * - Only show the exercise if props.state is supplied
- * - Generate an exercise otherwise and emit an 'onGenerate' event
- * - Handle basic validation and submission logic and emit an 'onSubmit' event
- * - Show feedback if and only if props.feedback is supplied
+ * - Generate an exercise otherwise and emit an 'onChange' event
+ * - Handle basic validation and submission logic and emit an 'onChange' event
  *
  * @param exercise Exercise data
  * @returns A full-featured exercise component, and a schema for validation
@@ -98,25 +79,22 @@ export function createExerciseType<
   Name extends string,
   Schema extends z.ZodTypeAny,
   G extends z.ZodTypeAny,
-  Sol extends object,
->(exercise: ExerciseType<Name, Schema, G, Sol>) {
-  const Component: ExerciseComponent<z.infer<Schema>, z.infer<G>, Sol> = (props) => {
-    const state = createAsyncStore(
-      async () => {
-        if (props.params && !props.state && exercise.generator) {
-          const newState = await exercise.generator.generate(props.params)
-          props.onGenerate?.({
-            state: await exercise.state.parseAsync(newState),
-            attempts: props.attempts,
-          })
-          return newState
-        }
-        return props.state
-      },
-      { initialValue: props.state },
-    )
+  Feedback extends object,
+>(exercise: ExerciseType<Name, Schema, G, Feedback>) {
+  function Component(props: ExerciseProps<Name, z.infer<Schema>, z.infer<G>, Feedback>) {
+    const state = createAsyncStore(async () => {
+      if ('state' in props) return props.state
+      if (!exercise.generator) throw new Error('Exercise does not accept params.')
+      const { params, onChange, ...data } = props
+      const newState = await exercise.generator.generate(params)
+      await onChange?.({ ...data, state: await exercise.state.parseAsync(newState) })
+      return newState
+    })
 
-    const [solve, Solution] = exercise.feedback || [undefined, undefined]
+    const [getFeedback, ExerciseFeedback] = exercise.feedback || [undefined, undefined]
+    const remaining = () =>
+      props.maxAttempts === null ? true : props.maxAttempts - props.attempts.length
+    const readOnly = () => remaining() === 0 || props.attempts.at(-1)?.correct
 
     const formAction = action(
       async (initialState: z.infer<Schema>, formData: FormData) => {
@@ -124,121 +102,60 @@ export function createExerciseType<
           ...initialState,
           ...extractFormData(formData),
         })
-        const [correct, solution] = await Promise.all([
+        const [correct, feedback] = await Promise.all([
           exercise.mark(newState),
-          solve?.(newState, props.attempts),
+          getFeedback?.(newState, remaining()),
         ])
-        await props.onSubmit?.({
+        const { onChange, ...data } = props
+        await onChange?.({
+          ...data,
           state: newState,
-          feedback: {
-            correct,
-            solution: solution || undefined,
-          },
-          attempts: typeof props.attempts === 'number' ? props.attempts - 1 : true,
+          attempts: [...props.attempts, { correct, state: newState, feedback }],
         })
       },
-      `exercise-${btoa(JSON.stringify(props.state))}`,
+      `exercise-${btoa(JSON.stringify(state()))}`,
     )
     const submission = useSubmission(formAction)
 
-    const readOnly = () => props.attempts === 0 || props.feedback?.correct
-
     return (
-      <>
-        <Show when={state()} fallback={<p>Generating...</p>}>
-          <form method="post" action={formAction.with(state())}>
-            <fieldset disabled={readOnly()}>
-              <div class="bg-white border rounded-xl p-4 my-4">
-                <exercise.Component {...state()} />
-              </div>
-              <Show when={!readOnly() && !submission.pending}>
-                <div class="text-center my-4">
-                  <Button type="submit" color="green">
-                    Corriger
-                  </Button>
-                </div>
-              </Show>
-            </fieldset>
-          </form>
-        </Show>
-        <Show when={props.feedback}>
-          {(feedback) => (
-            <Feedback {...feedback()} attempts={props.attempts}>
-              <Show when={exercise.feedback && feedback().solution}>
-                {(solution) => Solution && <Solution {...solution()} attempts={props.attempts} />}
-              </Show>
-            </Feedback>
-          )}
-        </Show>
-        <Show when={submission.pending}>
-          <Feedback marking />
-        </Show>
-      </>
+      <Show when={state()} fallback={<p>Generating...</p>}>
+        <form method="post" action={formAction.with(state())}>
+          <fieldset disabled={readOnly()} class="bg-white border rounded-xl p-4 my-4">
+            <exercise.Component {...state()} />
+          </fieldset>
+          <Show when={!readOnly() && !submission.pending}>
+            <div class="text-center my-4">
+              <Button type="submit" color="green">
+                Corriger
+              </Button>
+            </div>
+          </Show>
+        </form>
+        <Feedback
+          attempts={props.attempts}
+          maxAttempts={props.maxAttempts}
+          component={ExerciseFeedback}
+          marking={submission.pending}
+        />
+      </Show>
     )
   }
-  let common = z.object({
-    type: z.literal(exercise.name),
-    attempts: z.literal(true).or(z.number()).optional(),
-    feedback: z
-      .object({
-        correct: z.boolean(),
-        solution: z.any(),
-      })
-      .optional(),
-  })
-  const state = common.extend({
-    state: exercise.state,
-    params: z.never().optional(),
-  })
-  const params = common.extend({
-    params: exercise.generator?.params || z.never(),
-    state: z.never().optional(),
-  })
-  return {
-    Component,
-    schema: exercise.generator?.params ? state.or(params) : state,
-    mark: exercise.mark,
-  }
-}
-
-function Feedback<S>(
-  props:
-    | {
-        children: JSXElement
-        correct: boolean
-        solution?: S
-        attempts: true | number
-      }
-    | { marking: true },
-) {
-  if ('correct' in props) {
-    return (
-      <div class="bg-white border rounded-xl p-4 my-4">
-        <Show
-          when={props.correct}
-          fallback={
-            <p class="text-red-800 font-bold text-2xl mb-4">
-              <Fa icon={faXmark} /> Pas de chance&nbsp;!
-            </p>
-          }
-        >
-          <p class="text-green-800 font-bold text-2xl mb-4">
-            <Fa icon={faCheckCircle} /> Correct&nbsp;!
-          </p>
-        </Show>
-        {props.children}
-        <Show when={!props.correct && props.attempts && props.attempts !== true}>
-          <p>Tentatives restantes: {props.attempts}</p>
-        </Show>
-      </div>
+  const schema = z
+    .object({
+      type: z.literal(exercise.name),
+      maxAttempts: z.null().or(z.number()).optional(),
+      attempts: z
+        .object({
+          correct: z.boolean(),
+          state: exercise.state,
+          feedback: z.any(),
+        })
+        .array().default([]),
+    })
+    .and(
+      exercise.generator?.params
+        ? z.object({ state: exercise.state }).or(z.object({ params: exercise.generator.params }))
+        : z.object({ state: exercise.state }),
     )
-  } else {
-    return (
-      <div class="bg-white border rounded-xl p-4 my-8">
-        <p class="text-gray-300 font-bold text-2xl mb-4">
-          <Fa icon={faHourglassHalf} /> Correction en cours...
-        </p>
-      </div>
-    )
-  }
+  return { Component, schema, mark: exercise.mark }
 }

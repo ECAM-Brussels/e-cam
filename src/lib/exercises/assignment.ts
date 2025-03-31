@@ -30,7 +30,7 @@ export const fullAssignmentSchema = assignmentSchema.extend({
   streak: z.number().default(0),
   mode: z.literal('static').or(z.literal('dynamic')).default('static'),
   whiteboard: z.boolean().default(true),
-  attempts: z.literal(true).or(z.number()).default(1),
+  maxAttempts: z.null().or(z.number()).default(1),
 })
 export const original = fullAssignmentSchema.omit({ userEmail: true, lastModified: true })
 
@@ -61,7 +61,7 @@ export const getAssignmentBody = query(async (key: PK) => {
   } else if (originalAssignment.mode === 'dynamic') {
     let [dynamicId, currentStreak] = [0, 0]
     for (const exercise of result) {
-      if (exercise.feedback?.correct === true) {
+      if (exercise.attempts.at(-1)?.correct) {
         currentStreak++
         if (currentStreak === originalAssignment.streak) {
           dynamicId++
@@ -71,7 +71,7 @@ export const getAssignmentBody = query(async (key: PK) => {
         currentStreak = 0
       }
     }
-    if (!result || result[result.length - 1].feedback) {
+    if (!result || result.at(-1)?.attempts.at(-1)?.feedback) {
       result = [...result, originalAssignment.body[dynamicId]]
     }
   }

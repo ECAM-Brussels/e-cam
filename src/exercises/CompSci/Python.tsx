@@ -5,6 +5,7 @@ import { z } from 'zod'
 import Code from '~/components/Code'
 import Fa from '~/components/Fa'
 import Markdown from '~/components/Markdown'
+import { encrypt } from '~/lib/cryptography'
 import { createExerciseType } from '~/lib/exercises/base'
 
 let execPython: (code: string, test: string) => Promise<string>
@@ -57,7 +58,8 @@ const { Component, schema } = createExerciseType({
       attempt: z.string().default('').describe("Student's code"),
       tests: z.string().array().describe('Tests that will be run'),
       wrap: z.boolean().default(false).describe("Wraps student's code with a `main` function"),
-      answer: z.string().describe('Code that passes all the tests').or(z.string().array()),
+      answer: z.string().describe('Code that passes all the tests'),
+      results: z.string().array().default([]),
       constraints: z
         .union([
           z.tuple([
@@ -73,19 +75,20 @@ const { Component, schema } = createExerciseType({
         .default([]),
     })
     .transform(async (state) => {
-      if (typeof state.answer === 'string') {
-        state = {
+      if (!state.results) {
+        return {
           ...state,
-          answer: await Promise.all(runTests(state.answer, state.tests)),
+          answer: encrypt(state.answer, import.meta.env.VITE_PASSPHRASE),
+          results: await Promise.all(runTests(state.answer, state.tests)),
         }
       }
-      return state as typeof state & { answer: string[] }
+      return state
     }),
   mark: (state) => {
     if (state.constraints.some(([regex, val]) => new RegExp(regex).test(state.attempt) !== val)) {
       return false
     }
-    const promises = runTests(state.attempt, state.tests, state.answer)
+    const promises = runTests(state.attempt, state.tests, state.results)
     const never: Promise<never> = new Promise(() => {})
     return Promise.race([
       Promise.all(promises).then((results) => results.every((v) => v)),
@@ -94,7 +97,7 @@ const { Component, schema } = createExerciseType({
   },
   feedback: [
     async (state) => {
-      const tests = runTests(state.attempt, state.tests, state.answer)
+      const tests = runTests(state.attempt, state.tests, state.results)
       const results = await Promise.all(tests)
       return { results: state.tests.map((test, i) => [test, results[i]] as const) }
     },
