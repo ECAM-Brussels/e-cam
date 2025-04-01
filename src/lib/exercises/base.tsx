@@ -92,8 +92,12 @@ export function createExerciseType<
     })
 
     const [getFeedback, ExerciseFeedback] = exercise.feedback || [undefined, undefined]
-    const remaining = () =>
-      props.maxAttempts === null ? true : props.maxAttempts - props.attempts.length
+    const remaining = () => {
+      if (props.attempts.at(-1)?.correct) {
+        return 0
+      }
+      return props.maxAttempts === null ? true : props.maxAttempts - props.attempts.length
+    }
     const readOnly = () => remaining() === 0 || props.attempts.at(-1)?.correct
 
     const formAction = action(
@@ -150,7 +154,8 @@ export function createExerciseType<
           state: exercise.state,
           feedback: z.any(),
         })
-        .array().default([]),
+        .array()
+        .default([]),
     })
     .and(
       exercise.generator?.params

@@ -47,9 +47,9 @@ const { Component, schema, mark } = createExerciseType({
     return attempt.isEqual
   },
   feedback: [
-    async (state, attempts) => {
+    async (state, remainingAttempts) => {
       'use server'
-      if (attempts) {
+      if (!remainingAttempts) {
         return { answer: decrypt(state.answer, import.meta.env.VITE_PASSPHRASE) }
       }
       return {}
