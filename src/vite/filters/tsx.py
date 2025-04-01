@@ -67,7 +67,7 @@ def code(el: pf.Element, doc: pf.Doc):
             + el.classes[0]
             + '" run={'
             + run
-            + "} runImmediately />"
+            + "} />"
         )
 
 
