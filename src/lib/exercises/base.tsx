@@ -1,7 +1,7 @@
 import { extractFormData } from '../form'
 import Feedback from './feedback'
-import { action, createAsyncStore, useSubmission } from '@solidjs/router'
-import { Show, type JSXElement } from 'solid-js'
+import { createAsync } from '@solidjs/router'
+import { createSignal, Show, type JSXElement } from 'solid-js'
 import { z } from 'zod'
 import Button from '~/components/Button'
 
@@ -82,7 +82,7 @@ export function createExerciseType<
   Feedback extends object,
 >(exercise: ExerciseType<Name, Schema, G, Feedback>) {
   function Component(props: ExerciseProps<Name, z.infer<Schema>, z.infer<G>, Feedback>) {
-    const state = createAsyncStore(async () => {
+    const state = createAsync(async () => {
       if ('state' in props) return props.state
       if (!exercise.generator) throw new Error('Exercise does not accept params.')
       const { params, onChange, ...data } = props
@@ -100,32 +100,33 @@ export function createExerciseType<
     }
     const readOnly = () => remaining() === 0 || props.attempts.at(-1)?.correct
 
-    const formAction = action(
-      async (initialState: z.infer<Schema>, formData: FormData) => {
-        const newState: z.infer<Schema> = await exercise.state.parseAsync({
-          ...initialState,
-          ...extractFormData(formData),
-        })
-        const [correct, feedback] = await Promise.all([
-          exercise.mark(newState),
-          getFeedback?.(newState, remaining()),
-        ])
-        const { onChange, ...data } = props
-        const attempt = { correct, state: newState, feedback }
-        const attempts = props.maxAttempts === null ? [attempt] : [...props.attempts, attempt]
-        await onChange?.({ ...data, state: newState, attempts })
-      },
-      `exercise-${btoa(JSON.stringify(state()))}`,
-    )
-    const submission = useSubmission(formAction)
+    const [submitting, setSubmitting] = createSignal(false)
+
+    async function handleSubmit(event: SubmitEvent) {
+      event.preventDefault()
+      setSubmitting(true)
+      const newState: z.infer<Schema> = await exercise.state.parseAsync({
+        ...state(),
+        ...extractFormData(new FormData(event.target as HTMLFormElement)),
+      })
+      const [correct, feedback] = await Promise.all([
+        exercise.mark(newState),
+        getFeedback?.(newState, remaining()),
+      ])
+      const { onChange, ...data } = props
+      const attempt = { correct, state: newState, feedback }
+      const attempts = props.maxAttempts === null ? [attempt] : [...props.attempts, attempt]
+      await onChange?.({ ...data, state: newState, attempts })
+      setSubmitting(false)
+    }
 
     return (
       <Show when={state()} fallback={<p>Generating...</p>}>
-        <form method="post" action={formAction.with(state())}>
+        <form onSubmit={handleSubmit}>
           <fieldset disabled={readOnly()} class="bg-white border rounded-xl p-4 my-4">
             <exercise.Component {...state()} />
           </fieldset>
-          <Show when={!readOnly() && !submission.pending}>
+          <Show when={!readOnly() && !submitting()}>
             <div class="text-center my-4">
               <Button type="submit" color="green">
                 Corriger
@@ -137,7 +138,7 @@ export function createExerciseType<
           attempts={props.attempts}
           maxAttempts={props.maxAttempts}
           component={ExerciseFeedback}
-          marking={submission.pending}
+          marking={submitting()}
         />
       </Show>
     )

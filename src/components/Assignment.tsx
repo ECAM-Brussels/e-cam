@@ -1,7 +1,7 @@
 import ErrorBoundary from './ErrorBoundary'
 import Pagination from './Pagination'
-import { createAsync } from '@solidjs/router'
-import { Component, Show } from 'solid-js'
+import { createAsync, revalidate } from '@solidjs/router'
+import { Component, For, Show } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import {
   type AssignmentProps,
@@ -34,17 +34,22 @@ export default function Assignment(
           max={body()?.length || 0}
           classes={classes()}
         />
-      </Show>
-      <Show when={body()?.[props.index]} keyed>
-        {function <N, S, P, F>(exercise: Exercise) {
-          const exerciseProps = {
-            maxAttempts: props.maxAttempts,
-            ...exercise,
-            onChange: (event) => saveExercise(primary(), props.index, event as Exercise),
-          } as ExerciseProps<N, S, P, F>
-          const component = exercises[exercise.type] as Component<typeof exerciseProps>
-          return <Dynamic component={component} {...exerciseProps} />
-        }}
+        <For each={body()}>
+          {function <N, S, P, F>(exercise: Exercise, index: () => number) {
+            return (
+              <div classList={{ hidden: index() !== props.index }}>
+                <Dynamic
+                  component={exercises[exercise.type] as Component<ExerciseProps<N, S, P, F>>}
+                  {...(exercise as ExerciseProps<N, S, P, F>)}
+                  onChange={async (event) => {
+                    await saveExercise(primary(), index(), event as Exercise)
+                    revalidate(getAssignmentBody.keyFor(primary()))
+                  }}
+                />
+              </div>
+            )
+          }}
+        </For>
       </Show>
     </ErrorBoundary>
   )
