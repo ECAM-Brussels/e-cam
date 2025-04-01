@@ -111,11 +111,9 @@ export function createExerciseType<
           getFeedback?.(newState, remaining()),
         ])
         const { onChange, ...data } = props
-        await onChange?.({
-          ...data,
-          state: newState,
-          attempts: [...props.attempts, { correct, state: newState, feedback }],
-        })
+        const attempt = { correct, state: newState, feedback }
+        const attempts = props.maxAttempts === null ? [attempt] : [...props.attempts, attempt]
+        await onChange?.({ ...data, state: newState, attempts })
       },
       `exercise-${btoa(JSON.stringify(state()))}`,
     )
