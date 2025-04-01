@@ -6,8 +6,10 @@ export default function runPython(
   code: string,
   useWorker: boolean | undefined = undefined,
 ): Promise<Output> {
-  if (code.includes('input(') && useWorker === undefined) {
+  if (code.includes('input(')) {
     useWorker = false
+  } else {
+    useWorker = true
   }
   return new Promise((resolve) => {
     const uid = Date.now().toString(36) + Math.random().toString(36)
