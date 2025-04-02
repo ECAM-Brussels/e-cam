@@ -40,7 +40,7 @@ function runTests(code: string, tests: string[], hashes: string[]): Promise<bool
 function runTests(code: string, tests: string[], hashes?: string[]) {
   return tests.map(async (test, index) => {
     const result = await execPython(code, test)
-    return hashes ? compare(result, hashes[index]) : hash(result, 10)
+    return hashes?.length ? compare(result, hashes[index]) : hash(result, 10)
   })
 }
 
