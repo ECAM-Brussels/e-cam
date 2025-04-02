@@ -88,11 +88,10 @@ const { Component, schema } = createExerciseType({
     if (state.constraints.some(([regex, val]) => new RegExp(regex).test(state.attempt) !== val)) {
       return false
     }
-    const promises = runTests(state.attempt, state.tests, state.results)
-    const never: Promise<never> = new Promise(() => {})
+    const tests = runTests(state.attempt, state.tests, state.results)
     return Promise.race([
-      Promise.all(promises).then((results) => results.every((v) => v)),
-      Promise.race(promises.map(async (result) => ((await result) ? never : false))),
+      Promise.all(tests).then((t) => t.every((v) => v)),
+      Promise.race(tests.map(async (t) => ((await t) ? new Promise<never>(() => {}) : false))),
     ])
   },
   feedback: [
