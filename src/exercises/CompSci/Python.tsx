@@ -56,7 +56,11 @@ const { Component, schema } = createExerciseType({
     .object({
       question: z.string().describe('Question, entered as markdown'),
       attempt: z.string().default('').describe("Student's code"),
-      tests: z.string().array().describe('Tests that will be run'),
+      tests: z
+        .string()
+        .or(z.object({ test: z.string(), desc: z.string() }))
+        .array()
+        .describe('Tests that will be run'),
       wrap: z.boolean().default(false).describe("Wraps student's code with a `main` function"),
       answer: z.string().describe('Code that passes all the tests'),
       results: z.string().array().default([]),
@@ -75,14 +79,17 @@ const { Component, schema } = createExerciseType({
         .default([]),
     })
     .transform(async (state) => {
-      if (!state.results) {
-        return {
-          ...state,
-          answer: encrypt(state.answer, import.meta.env.VITE_PASSPHRASE),
-          results: await Promise.all(runTests(state.answer, state.tests)),
-        }
-      }
-      return state
+      const tests = state.tests.map((t) => (typeof t === 'string' ? t : t.test))
+      const descriptions = state.tests.map((t) =>
+        typeof t === 'string' ? `Running ${t} yields the correct output` : t.desc,
+      )
+      const patch = state.results
+        ? {}
+        : {
+            answer: encrypt(state.answer, import.meta.env.VITE_PASSPHRASE),
+            results: await Promise.all(runTests(state.answer, tests)),
+          }
+      return { ...state, ...patch, tests, descriptions }
     }),
   mark: (state) => {
     if (state.constraints.some(([regex, val]) => new RegExp(regex).test(state.attempt) !== val)) {
@@ -98,16 +105,16 @@ const { Component, schema } = createExerciseType({
     async (state) => {
       const tests = runTests(state.attempt, state.tests, state.results)
       const results = await Promise.all(tests)
-      return { results: state.tests.map((test, i) => [test, results[i]] as const) }
+      return { results: state.descriptions.map((d, i) => [d, results[i]] as const) }
     },
     (props) => (
       <>
         <h3 class="text-2xl font-semibold my-4">Résultats des tests</h3>
         <ul class="list-disc px-8">
           <For each={props.results}>
-            {([test, result]) => (
+            {([desc, result]) => (
               <li classList={{ 'text-green-800': result, 'text-red-800': !result }}>
-                {test} <Fa icon={result ? faCheck : faXmark} />
+                {desc} <Fa icon={result ? faCheck : faXmark} />
               </li>
             )}
           </For>
