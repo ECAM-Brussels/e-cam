@@ -327,3 +327,157 @@ SEO is challenging.
 
 - The more interactive a website is,
   the more vulnerabilities it can have.
+
+# Data fetching with SPA {.w-1--2}
+
+**Server state** is extremely difficult to manage.
+
+- Race conditions (responses can have unpredictable order)
+
+- Deduping multiple requests
+
+- Caching
+
+- Updating out-of-date data
+
+# Isomorphic applications and SSR {.w-1--2}
+
+::: question
+SPAs and MPAs both have their advantages.
+What if we wanted the best of both worlds?
+:::
+
+::: hint
+Write an SPA and an MPA with a **single codebase**.
+This naturally requires the use of JavaScript on both sides.
+Such applications are called **isomorphic**.
+:::
+
+A bundler will then transform that **single codebase** into **two bundles**:
+one for the client and one for the server.
+
+- the **server bundle** will be used
+  to prerender HTML pages (MPA) and handle API requests.
+
+- the **client bundle** will be used to
+  transform the page into a Single Page App (hydration),
+  and handle interactivity.
+
+# Vocabulary {.w-1--2}
+
+Isomorphic/universal application
+: A web app that is written as a single codebase
+  that will be bundled/compiled into two code bases:
+  one for the browser (client bundle) and one for the server.
+
+Server Side Rendering (SSR)
+: Use the browser bundle to generate a noninteractive,
+  purely HTML version of the requested page.
+
+Hydration
+: Process during which the noninteractive page
+  becomes interactive (and even an SPA).
+
+::: remark
+The difference between **isomorphic apps** and **Single-Page applications**
+is that the first page is first **Server Side Rendered** and then **hydrated**.
+Afterwards, it is an SPA.
+:::
+
+# Components {.w-3--5}
+
+In practice, isomorphic apps use a framework that extends a client-only framework/library
+(e.g. SvelteKit is based on Svelte, Next.js is based on React, Nuxt is based on Vue).
+These frameworks often use an HTML-like syntax to create UI components:
+
+Components are a crucial ingredient of isomorphic apps
+and are a good example of
+how a **single codebase** can be interpreted completely differently depending on the runtime.
+
+::: {.grid .grid-cols-2 .text-sm}
+:::: col
+### JSX (React)
+
+```jsx
+function Counter() {
+  const [count, setCount] = useState(0)
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      Count: {count}
+    </button>
+  )
+}
+```
+::::
+:::: col
+### Single File Components (Vue, Svelte)
+
+``` html
+<template>
+  <button @click="count++">Count: {{ count }}</button>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+
+const count = ref(0);
+</script>
+```
+::::
+:::
+
+- In the **browser bundle**,
+  this custom syntax will simply compile to HTML.
+
+- For the **client bundle**,
+  this custom syntax will compile to (virtual) DOM operations.
+
+# Sequence diagram {.columns-2}
+
+```mermaid
+sequenceDiagram
+  participant client as Client
+  participant server as Server
+
+  client ->> server: GET my-website.com/my-page
+  server ->> server: Runs server bundle to render HTML page
+  par
+    server ->> client: Sends HTML page
+    client ->> client: Shows page
+  and
+    server ->> client: Sends client bundle
+    client ->> client: Hydration
+  end
+```
+
+::: {.exercise title="Exam-type question"}
+A visitor goes on website.com and clicks on the link that leads to `/about`.
+Write a sequence diagram of the client-browser interaction if the link click happens
+
+a. before hydration finishes
+b. after hydration finishes
+:::
+
+# Advantages {.w-1--2}
+
+- Fast noninteractive first render (content painted): good for SEO
+
+- Fast navigation after the page becomes interactive
+
+- All the advantages of an SPA
+
+![](/images/ssr.png)
+
+# Drawbacks {.w-1--2}
+
+- Hydration
+
+  - Page painted but doesn't work at the beginning
+  - Content is painted faster, but it's harder to hydrate.
+    Page will take more time to be fully interactive.
+
+- More code
+
+- Forces the use of JavaScript for the server
+
+- Like SPAs, very susceptible to waterfalls.
