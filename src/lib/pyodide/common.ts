@@ -1,5 +1,5 @@
 import dedent from 'dedent-js'
-import { loadPyodide } from "https://cdn.jsdelivr.net/pyodide/v0.27.2/full/pyodide.mjs";
+import { loadPyodide } from "https://cdn.jsdelivr.net/pyodide/v0.27.4/full/pyodide.mjs";
 import type { PyodideInterface } from 'pyodide'
 import type { PyProxy } from 'pyodide/ffi'
 
