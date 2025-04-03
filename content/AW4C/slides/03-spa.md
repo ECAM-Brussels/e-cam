@@ -466,6 +466,8 @@ b. after hydration finishes
 
 - All the advantages of an SPA
 
+- Sharing code between front-end and backend
+
 ![](/images/ssr.png)
 
 # Drawbacks {.w-1--2}
@@ -481,3 +483,5 @@ b. after hydration finishes
 - Forces the use of JavaScript for the server
 
 - Like SPAs, very susceptible to waterfalls.
+
+- Security: blurry network boundary
