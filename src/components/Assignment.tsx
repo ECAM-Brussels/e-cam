@@ -41,6 +41,9 @@ export default function Assignment(
                 <Dynamic
                   component={exercises[exercise.type] as Component<ExerciseProps<N, S, P, F>>}
                   {...(exercise as ExerciseProps<N, S, P, F>)}
+                  maxAttempts={
+                    exercise.maxAttempts === undefined ? props.maxAttempts : exercise.maxAttempts
+                  }
                   onChange={async (event) => {
                     await saveExercise(primary(), index(), event as Exercise)
                     revalidate(getAssignmentBody.keyFor(primary()))

@@ -14,7 +14,7 @@ export default function Feedback<S, F extends object>(props: {
   const remaining = () =>
     props.maxAttempts === null ? true : props.maxAttempts - props.attempts.length
   return (
-    <Show when={props.attempts.length}>
+    <Show when={props.attempts.length || props.marking}>
       <div class="bg-white border rounded-xl p-4 my-4">
         <Show
           when={!props.marking}
@@ -36,9 +36,7 @@ export default function Feedback<S, F extends object>(props: {
               <Fa icon={faCheckCircle} /> Correct&nbsp;!
             </p>
           </Show>
-          <Show when={!correct() && remaining()}>
             <p>Tentatives restantes: {remaining()}</p>
-          </Show>
           <Show when={props.component}>
             {(Component) => (
               <Show when={lastAttempt()?.feedback}>
