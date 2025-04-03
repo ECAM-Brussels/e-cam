@@ -31,7 +31,11 @@ if (isServer) {
 } else {
   const { default: runPython } = await import('~/lib/pyodide/api')
   execPython = async (code: string, test: string) => {
-    return (await runPython(`${code}\n${test}`, true)).output
+    const output = await runPython(`${code}\n${test}`, true)
+    if (output.format === 'error') {
+      throw new Error(`Could not run test ${test}`)
+    }
+    return output.output
   }
 }
 
@@ -39,8 +43,12 @@ function runTests(code: string, tests: string[]): Promise<string>[]
 function runTests(code: string, tests: string[], hashes: string[]): Promise<boolean>[]
 function runTests(code: string, tests: string[], hashes?: string[]) {
   return tests.map(async (test, index) => {
-    const result = await execPython(code, test)
-    return hashes?.length ? compare(result, hashes[index]) : hash(result, 10)
+    try {
+      const result = await execPython(code, test)
+      return (hashes?.length ? compare(result, hashes[index]) : hash(result, 10))
+    } catch (error) {
+      return false
+    }
   })
 }
 
