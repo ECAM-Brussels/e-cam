@@ -1,11 +1,11 @@
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { hash, compare } from 'bcryptjs'
-import { For, isServer } from 'solid-js/web'
+import { For, isServer, Show } from 'solid-js/web'
 import { z } from 'zod'
 import Code from '~/components/Code'
 import Fa from '~/components/Fa'
 import Markdown from '~/components/Markdown'
-import { encrypt } from '~/lib/cryptography'
+import { decrypt, encrypt } from '~/lib/cryptography'
 import { createExerciseType } from '~/lib/exercises/base'
 
 let execPython: (code: string, test: string) => Promise<string>
@@ -61,6 +61,7 @@ const { Component, schema } = createExerciseType({
         .or(z.object({ test: z.string(), desc: z.string() }))
         .array()
         .describe('Tests that will be run'),
+      descriptions: z.string().array().default([]),
       wrap: z.boolean().default(false).describe("Wraps student's code with a `main` function"),
       answer: z.string().describe('Code that passes all the tests'),
       results: z.string().array().default([]),
@@ -79,17 +80,21 @@ const { Component, schema } = createExerciseType({
         .default([]),
     })
     .transform(async (state) => {
-      const tests = state.tests.map((t) => (typeof t === 'string' ? t : t.test))
-      const descriptions = state.tests.map((t) =>
-        typeof t === 'string' ? `Running ${t} yields the correct output` : t.desc,
-      )
+      const tests = state.tests.map((test, i) => {
+        if (typeof test !== 'string') {
+          state.descriptions[i] = test.desc
+          return test.test
+        }
+        state.descriptions[i] = state.descriptions[i] ?? `Running ${test} yields correct result`
+        return test
+      })
       const patch = state.results
         ? {}
         : {
             answer: encrypt(state.answer, import.meta.env.VITE_PASSPHRASE),
             results: await Promise.all(runTests(state.answer, tests)),
           }
-      return { ...state, ...patch, tests, descriptions }
+      return { ...state, ...patch, tests }
     }),
   mark: (state) => {
     if (state.constraints.some(([regex, val]) => new RegExp(regex).test(state.attempt) !== val)) {
@@ -102,10 +107,15 @@ const { Component, schema } = createExerciseType({
     ])
   },
   feedback: [
-    async (state) => {
+    async (state, remainingAttempts) => {
       const tests = runTests(state.attempt, state.tests, state.results)
       const results = await Promise.all(tests)
-      return { results: state.descriptions.map((d, i) => [d, results[i]] as const) }
+      return {
+        results: state.descriptions.map((d, i) => [d, results[i]] as const),
+        answer: remainingAttempts
+          ? undefined
+          : decrypt(state.answer, import.meta.env.VITE_PASSPHRASE),
+      }
     },
     (props) => (
       <>
@@ -119,6 +129,9 @@ const { Component, schema } = createExerciseType({
             )}
           </For>
         </ul>
+        <Show when={props.answer}>
+          {(answer) => <Code value={answer()} lang="python" readOnly />}
+        </Show>
       </>
     ),
   ],
