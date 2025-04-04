@@ -23,7 +23,7 @@ const { Component, schema, mark } = createExerciseType({
       question: z.string(),
       answer: z.string(),
       encrypted: z.boolean().default(false),
-      attempt: z.string().default(''),
+      attempt: z.undefined().or(z.string().min(1)),
     })
     .transform((state) => {
       if (!state.encrypted) {
@@ -42,7 +42,7 @@ const { Component, schema, mark } = createExerciseType({
           }
         }
       `),
-      { ...state, answer: decrypt(state.answer, import.meta.env.VITE_PASSPHRASE) },
+      { attempt: '', ...state, answer: decrypt(state.answer, import.meta.env.VITE_PASSPHRASE) },
     )
     return attempt.isEqual
   },

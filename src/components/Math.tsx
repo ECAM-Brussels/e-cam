@@ -78,7 +78,7 @@ export default function Math(props: MathProps) {
         }}
       />
       <Show when={props.name}>
-        <input type="hidden" name={props.name} value={value()} ref={field} />
+        <input type="hidden" name={props.name} value={value() || ''} ref={field} />
       </Show>
     </Show>
   )

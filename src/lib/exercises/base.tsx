@@ -1,9 +1,11 @@
 import { extractFormData } from '../form'
 import Feedback from './feedback'
 import { createAsync } from '@solidjs/router'
-import { createSignal, Show, type JSXElement } from 'solid-js'
+import { Show, type JSXElement } from 'solid-js'
+import { createStore } from 'solid-js/store'
 import { z } from 'zod'
 import Button from '~/components/Button'
+import ZodError from '~/components/ZodError'
 
 /**
  * Type used to describe how exercises types are created.
@@ -100,24 +102,42 @@ export function createExerciseType<
     }
     const readOnly = () => remaining() === 0 || props.attempts.at(-1)?.correct
 
-    const [submitting, setSubmitting] = createSignal(false)
+    const [submission, setSubmission] = createStore<{ pending: boolean; error?: z.ZodError }>({
+      pending: false,
+    })
+
+    async function mark(state: z.infer<Schema>) {
+      try {
+        return await exercise.mark(state)
+      } catch {
+        return false
+      }
+    }
 
     async function handleSubmit(event: SubmitEvent) {
       event.preventDefault()
-      setSubmitting(true)
-      const newState: z.infer<Schema> = await exercise.state.parseAsync({
-        ...state(),
-        ...extractFormData(new FormData(event.target as HTMLFormElement)),
-      })
-      const [correct, feedback] = await Promise.all([
-        exercise.mark(newState),
-        getFeedback?.(newState, remaining()),
-      ])
-      const { onChange, ...data } = props
-      const attempt = { correct, state: newState, feedback }
-      const attempts = props.maxAttempts === null ? [attempt] : [...props.attempts, attempt]
-      await onChange?.({ ...data, state: newState, attempts })
-      setSubmitting(false)
+      setSubmission('pending', true)
+      setSubmission('error', undefined)
+      try {
+        const newState: z.infer<Schema> = await exercise.state.parseAsync({
+          ...state(),
+          ...extractFormData(new FormData(event.target as HTMLFormElement)),
+        })
+        const [correct, feedback] = await Promise.all([
+          mark(newState),
+          getFeedback?.(newState, remaining()),
+        ])
+        const { onChange, ...data } = props
+        const attempt = { correct, state: newState, feedback }
+        const attempts = props.maxAttempts === null ? [attempt] : [...props.attempts, attempt]
+        await onChange?.({ ...data, state: newState, attempts })
+        setSubmission('pending', false)
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          setSubmission('error', error)
+        }
+        setSubmission('pending', false)
+      }
     }
 
     return (
@@ -125,8 +145,9 @@ export function createExerciseType<
         <form onSubmit={handleSubmit}>
           <fieldset disabled={readOnly()} class="bg-white border rounded-xl p-4 my-4">
             <exercise.Component {...state()} />
+            <ZodError error={submission.error} />
           </fieldset>
-          <Show when={!readOnly() && !submitting()}>
+          <Show when={!readOnly() && !submission.pending}>
             <div class="text-center my-4">
               <Button type="submit" color="green">
                 Corriger
@@ -138,7 +159,7 @@ export function createExerciseType<
           attempts={props.attempts}
           maxAttempts={props.maxAttempts}
           component={ExerciseFeedback}
-          marking={submitting()}
+          marking={submission.pending}
         />
       </Show>
     )
