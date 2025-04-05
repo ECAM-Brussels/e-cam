@@ -71,26 +71,21 @@ export const getAssignmentBody = query(async (key: PK) => {
         currentStreak = 0
       }
     }
-    if (!result || result.at(-1)?.attempts.at(-1)?.feedback) {
+    const lastFullyAttempted = result.at(-1)?.attempts.length === result.at(-1)?.maxAttempts
+    const lastIsCorrect = result.at(-1)?.attempts.at(-1)?.correct
+    if (!result || lastFullyAttempted || lastIsCorrect) {
       result = [...result, originalAssignment.body[dynamicId]]
     }
   }
   if (!record) {
-    await saveAssignment(key, result)
+    await prisma.assignment.upsert({
+      where: { url_userEmail_id: key },
+      create: { ...key, body: result, lastModified: new Date() },
+      update: { body: result, lastModified: new Date() },
+    })
   }
-  return await exerciseSchema.array().parseAsync(result)
+  return result
 }, 'getAssignmentBody')
-
-export async function saveAssignment(key: PK, body: Exercise[]) {
-  'use server'
-  await check(key)
-  body = await assignmentSchema.shape.body.parseAsync(body)
-  await prisma.assignment.upsert({
-    where: { url_userEmail_id: key },
-    create: { ...key, body, lastModified: new Date() },
-    update: { body, lastModified: new Date() },
-  })
-}
 
 export async function saveExercise(key: PK, pos: number, exercise: Exercise) {
   'use server'
