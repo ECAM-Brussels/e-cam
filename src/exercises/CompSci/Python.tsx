@@ -63,7 +63,7 @@ const { Component, schema } = createExerciseType({
   state: z
     .object({
       question: z.string().describe('Question, entered as markdown'),
-      attempt: z.string().default('').describe("Student's code"),
+      attempt: z.undefined().or(z.string().min(1)).describe("Student's code"),
       tests: z
         .string()
         .or(z.object({ test: z.string(), desc: z.string() }))
@@ -102,7 +102,7 @@ const { Component, schema } = createExerciseType({
             answer: encrypt(state.answer, import.meta.env.VITE_PASSPHRASE),
             results: await Promise.all(runTests(state.answer, tests)),
           }
-      return { ...state, ...patch, tests }
+      return { attempt: '', ...state, ...patch, tests }
     }),
   mark: (state) => {
     if (state.constraints.some(([regex, val]) => new RegExp(regex).test(state.attempt) !== val)) {

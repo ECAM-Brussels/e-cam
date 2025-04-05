@@ -30,7 +30,7 @@ const { Component, schema, mark } = createExerciseType({
         state.answer = encrypt(state.answer, import.meta.env.VITE_PASSPHRASE)
         state.encrypted = true
       }
-      return state
+      return { attempt: '', ...state }
     }),
   mark: async (state) => {
     'use server'
@@ -42,7 +42,7 @@ const { Component, schema, mark } = createExerciseType({
           }
         }
       `),
-      { attempt: '', ...state, answer: decrypt(state.answer, import.meta.env.VITE_PASSPHRASE) },
+      { ...state, answer: decrypt(state.answer, import.meta.env.VITE_PASSPHRASE) },
     )
     return attempt.isEqual
   },

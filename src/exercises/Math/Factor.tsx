@@ -41,13 +41,13 @@ const { Component, schema } = createExerciseType({
         .boolean()
         .describe('Whether to expand expr before it is seen by the user')
         .default(false),
-      attempt: z.string().default(''),
+      attempt: z.undefined().or(z.string().min(1)),
     })
     .transform(async (state) => {
       if (state.expand) {
         state = { ...state, expr: await expand(state), expand: false }
       }
-      return state as typeof state & { expand: false }
+      return { attempt: '', ...state } as typeof state & { attempt: string; expand: false }
     }),
   mark: checkFactorisation,
   feedback: [
