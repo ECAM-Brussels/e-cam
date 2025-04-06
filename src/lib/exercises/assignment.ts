@@ -56,11 +56,23 @@ export const getAssignmentBody = query(async (key: PK) => {
     select: { body: true },
   })
   let result: Exercise[] = record ? (record.body as unknown as Exercise[]) : []
+  result = extendAssignment(result, originalAssignment)
+  if (!record) {
+    await prisma.assignment.upsert({
+      where: { url_userEmail_id: key },
+      create: { ...key, body: result, lastModified: new Date() },
+      update: { body: result, lastModified: new Date() },
+    })
+  }
+  return result
+}, 'getAssignmentBody')
+
+function extendAssignment(body: Exercise[], originalAssignment: z.infer<typeof original>) {
   if (originalAssignment.mode === 'static') {
-    result = result.length ? result : originalAssignment.body
+    body = body.length ? body : originalAssignment.body
   } else if (originalAssignment.mode === 'dynamic') {
     let [dynamicId, currentStreak] = [0, 0]
-    for (const exercise of result) {
+    for (const exercise of body) {
       if (exercise.attempts.at(-1)?.correct) {
         currentStreak++
         if (currentStreak === originalAssignment.streak) {
@@ -71,21 +83,14 @@ export const getAssignmentBody = query(async (key: PK) => {
         currentStreak = 0
       }
     }
-    const lastFullyAttempted = result.at(-1)?.attempts.length === result.at(-1)?.maxAttempts
-    const lastIsCorrect = result.at(-1)?.attempts.at(-1)?.correct
-    if (!result || lastFullyAttempted || lastIsCorrect) {
-      result = [...result, originalAssignment.body[dynamicId]]
+    const lastFullyAttempted = body.at(-1)?.attempts.length === body.at(-1)?.maxAttempts
+    const lastIsCorrect = body.at(-1)?.attempts.at(-1)?.correct
+    if (!body || lastFullyAttempted || lastIsCorrect) {
+      body = [...body, originalAssignment.body[dynamicId]]
     }
   }
-  if (!record) {
-    await prisma.assignment.upsert({
-      where: { url_userEmail_id: key },
-      create: { ...key, body: result, lastModified: new Date() },
-      update: { body: result, lastModified: new Date() },
-    })
-  }
-  return result
-}, 'getAssignmentBody')
+  return body
+}
 
 export async function saveExercise(key: PK, pos: number, exercise: Exercise) {
   'use server'
