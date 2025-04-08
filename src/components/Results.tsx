@@ -120,7 +120,7 @@ export default function Results(props: ResultsProps) {
                 <td>{result.lastName}</td>
                 <td>{result.firstName}</td>
                 <td class="text-right pr-4">
-                  {Math.round((countBy(result.questions)['true'] / result.questions.length) * 100)}%
+                  {result.questions.length ? Math.round((countBy(result.questions)['true'] / result.questions.length) * 100) : 0}%
                 </td>
                 <For each={result.questions}>
                   {(q) => (
