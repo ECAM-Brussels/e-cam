@@ -2,10 +2,9 @@ import { Show } from 'solid-js'
 import { z } from 'zod'
 import Markdown from '~/components/Markdown'
 import Math from '~/components/Math'
-import { graphql } from '~/gql'
 import { decrypt, encrypt } from '~/lib/cryptography'
 import { createExerciseType } from '~/lib/exercises/base'
-import { request } from '~/lib/graphql'
+import { checkEqual } from '~/queries/algebra'
 
 const { Component, schema, mark } = createExerciseType({
   name: 'Simple',
@@ -32,19 +31,9 @@ const { Component, schema, mark } = createExerciseType({
       }
       return { attempt: '', ...state }
     }),
-  mark: async (state) => {
+  mark: (state) => {
     'use server'
-    const { attempt } = await request(
-      graphql(`
-        query CheckSimple($answer: Math!, $attempt: Math!) {
-          attempt: expression(expr: $attempt) {
-            isEqual(expr: $answer)
-          }
-        }
-      `),
-      { ...state, answer: decrypt(state.answer, import.meta.env.VITE_PASSPHRASE) },
-    )
-    return attempt.isEqual
+    return checkEqual(state.attempt, decrypt(state.answer, import.meta.env.VITE_PASSPHRASE))
   },
   feedback: [
     async (state, remainingAttempts) => {

@@ -45,17 +45,17 @@ const { Component, schema } = createExerciseType({
     })
     .transform(async (state) => {
       if (state.expand) {
-        state = { ...state, expr: await expand(state), expand: false }
+        state = { ...state, expr: await expand(state.expr), expand: false }
       }
       return { attempt: '', ...state } as typeof state & { attempt: string; expand: false }
     }),
-  mark: checkFactorisation,
+  mark: (state) => checkFactorisation(state.attempt, state.expr),
   feedback: [
     async (state, attempts) => {
       if (!attempts) {
-        return { answer: await factor(state) }
+        return { answer: await factor(state.expr) }
       } else {
-        return { root: await getFirstRoot(state) }
+        return { root: await getFirstRoot(state.expr) }
       }
     },
     (props) => (
@@ -79,7 +79,7 @@ const { Component, schema } = createExerciseType({
       sample(params.roots)?.forEach((root) => {
         expr += `(x - (${root}))`
       })
-      return { expr: await normalizePolynomial({ expr }) }
+      return { expr: await normalizePolynomial(expr) }
     },
   },
 })
