@@ -1,4 +1,5 @@
 import { deleteAssignment, loadAssignment, upsertAssignment } from './ExerciseSequence.server'
+import Youtube from './Youtube'
 import {
   faChevronDown,
   faChevronRight,
@@ -126,6 +127,7 @@ export type ExerciseProps = {
   allowReattempts?: number | boolean
 
   userEmail?: string
+  video?: string
 }
 
 export default function ExerciseSequence(props: ExerciseProps) {
@@ -287,45 +289,52 @@ export default function ExerciseSequence(props: ExerciseProps) {
       <Show when={exercise()}>
         <Suspense>
           <div class="items-start justify-between gap-4" ref={container!}>
-            <div class="w-full">
-              <Dynamic
-                component={components[exercise().type]}
-                initialOptions={{
-                  readOnly: false,
-                  remainingAttempts: props.allowReattempts || 1,
-                  showSolution: false,
-                }}
-                {...exercise()}
-                onGenerate={() => {
-                  save()
-                }}
-                onSubmit={() => {
-                  if (props.mode === 'dynamic' && index() === data.length - 1) {
-                    setData(data.length, cloneDeep(props.data[dynamicIndex()]))
+            <div class="lg:flex lg:justify-between lg:gap-8 my-8">
+              <div class="w-full lg:min-w-3/5 lg:grow">
+                <Dynamic
+                  component={components[exercise().type]}
+                  initialOptions={{
+                    readOnly: false,
+                    remainingAttempts: props.allowReattempts || 1,
+                    showSolution: false,
+                  }}
+                  {...exercise()}
+                  onGenerate={() => {
                     save()
-                  }
-                  if (nextButton) {
-                    setTimeout(() => {
-                      nextButton.focus()
-                    }, 3000)
-                  }
-                }}
-                onMarked={save}
-                setter={(...args: any) => {
-                  // @ts-ignore
-                  setData(index(), ...args)
-                }}
-              />
-              <Show when={exercise().feedback?.correct !== undefined && index() < data.length - 1}>
-                <div class="text-right">
-                  <button
-                    class="bg-green-900 text-white rounded-xl py-2 px-4"
-                    onClick={() => setIndex((prev) => prev + 1)}
-                    ref={nextButton!}
-                  >
-                    Question suivante <Fa icon={faChevronRight} />
-                  </button>
-                </div>
+                  }}
+                  onSubmit={() => {
+                    if (props.mode === 'dynamic' && index() === data.length - 1) {
+                      setData(data.length, cloneDeep(props.data[dynamicIndex()]))
+                      save()
+                    }
+                    if (nextButton) {
+                      setTimeout(() => {
+                        nextButton.focus()
+                      }, 3000)
+                    }
+                  }}
+                  onMarked={save}
+                  setter={(...args: any) => {
+                    // @ts-ignore
+                    setData(index(), ...args)
+                  }}
+                />
+                <Show
+                  when={exercise().feedback?.correct !== undefined && index() < data.length - 1}
+                >
+                  <div class="text-right">
+                    <button
+                      class="bg-green-900 text-white rounded-xl py-2 px-4"
+                      onClick={() => setIndex((prev) => prev + 1)}
+                      ref={nextButton!}
+                    >
+                      Question suivante <Fa icon={faChevronRight} />
+                    </button>
+                  </div>
+                </Show>
+              </div>
+              <Show when={props.video}>
+                {(src) => <Youtube src={src()} class="border rounded-xl flex-none" zoom={1.4} />}
               </Show>
             </div>
             <Show when={props.whiteboard}>
