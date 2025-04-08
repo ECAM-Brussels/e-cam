@@ -13,4 +13,5 @@
       },
     },
   ],
+  video: 'https://youtube.com/embed/dq0scwRp-5s',
 }) satisfies import('~/components/ExerciseSequence').ExerciseProps

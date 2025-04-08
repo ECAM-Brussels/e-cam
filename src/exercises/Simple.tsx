@@ -11,6 +11,7 @@ export const schema = z.object({
   question: z.string(),
   answer: z.string().trim().min(1),
   attempt: z.string().trim().min(1).optional(),
+  error: z.number().optional(),
 })
 export type State = z.infer<typeof schema>
 
@@ -19,15 +20,15 @@ export const mark = query(async (state: State) => {
 
   const { attempt } = await request(
     graphql(`
-      query CheckSimple($answer: Math!, $attempt: Math!) {
+      query CheckSimple($answer: Math!, $attempt: Math!, $error: Float!) {
         attempt: expression(expr: $attempt) {
-          isEqual(expr: $answer)
+          isApproximatelyEqual(expr: $answer, error: $error)
         }
       }
     `),
-    { attempt: '', ...state, answer: decrypt(state.answer, import.meta.env.VITE_PASSPHRASE) },
+    { error: 0, attempt: '', ...state, answer: decrypt(state.answer, import.meta.env.VITE_PASSPHRASE) },
   )
-  return attempt.isEqual
+  return attempt.isApproximatelyEqual
 }, 'checkSimple')
 
 export const solve = query(async (state: State): Promise<State> => {
