@@ -37,21 +37,18 @@ export default function () {
   const original = createAsync(() => getOriginalAssignment(location.pathname))
   const user = createAsync(() => getUser())
   const [searchParams, setSearchParams] = useSearchParams()
+  const userEmail = () => (searchParams.userEmail as string) ?? user()?.email
   return (
     <Show when={original()}>
       {(original) => (
-        <Show when={user()}>
-          {(user) => (
-            <Page title={original().title || ''}>
-              <Assignment
-                {...original()}
-                userEmail={(searchParams.userEmail as string) || user().email}
-                index={parseInt((searchParams.index as string) || '0')}
-                onIndexChange={(newIndex) => setSearchParams({ index: newIndex })}
-              />
-            </Page>
-          )}
-        </Show>
+        <Page title={original().title || ''}>
+          <Assignment
+            {...original()}
+            userEmail={userEmail()}
+            index={parseInt((searchParams.index as string) || '0')}
+            onIndexChange={(newIndex) => setSearchParams({ index: newIndex })}
+          />
+        </Page>
       )}
     </Show>
   )

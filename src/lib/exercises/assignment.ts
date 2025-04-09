@@ -19,7 +19,7 @@ export type Exercise = z.infer<typeof exerciseSchema>
 
 export const assignmentSchema = z.object({
   url: z.string(),
-  userEmail: z.string().email(),
+  userEmail: z.string().email().optional(),
   id: z.string().default(''),
   lastModified: z.string().transform((str) => new Date(str)),
   body: exerciseSchema.array(),
@@ -36,7 +36,7 @@ export const original = fullAssignmentSchema.omit({ userEmail: true, lastModifie
 
 export type Assignment = z.infer<typeof assignmentSchema>
 export type AssignmentProps = Omit<z.infer<typeof fullAssignmentSchema>, 'lastModified'>
-type PK = Pick<Assignment, 'url' | 'id' | 'userEmail'>
+type PK = Pick<Assignment, 'url' | 'id' | 'userEmail'> & { userEmail: string }
 
 async function check(key: PK) {
   'use server'
@@ -67,7 +67,7 @@ export const getAssignmentBody = query(async (key: PK) => {
   return result
 }, 'getAssignmentBody')
 
-function extendAssignment(body: Exercise[], originalAssignment: z.infer<typeof original>) {
+export function extendAssignment(body: Exercise[], originalAssignment: z.infer<typeof original>) {
   if (originalAssignment.mode === 'static') {
     body = body.length ? body : originalAssignment.body
   } else if (originalAssignment.mode === 'dynamic') {
