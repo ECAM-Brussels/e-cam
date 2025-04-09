@@ -94,11 +94,13 @@ export function createExerciseType<
     })
 
     const [getFeedback, ExerciseFeedback] = exercise.feedback || [undefined, undefined]
-    const remaining = () => {
+    const remaining = (offset?: number) => {
       if (props.attempts.at(-1)?.correct) {
         return 0
       }
-      return props.maxAttempts === null ? true : props.maxAttempts - props.attempts.length
+      return props.maxAttempts === null
+        ? true
+        : props.maxAttempts - props.attempts.length + (offset ?? 0)
     }
     const readOnly = () => remaining() === 0 || props.attempts.at(-1)?.correct
 
@@ -125,7 +127,7 @@ export function createExerciseType<
         })
         const [correct, feedback] = await Promise.all([
           mark(newState),
-          getFeedback?.(newState, remaining()),
+          getFeedback?.(newState, remaining(-1)),
         ])
         const { onChange, ...data } = props
         const attempt = { correct, state: newState, feedback }
