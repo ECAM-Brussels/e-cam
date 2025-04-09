@@ -29,7 +29,7 @@ const { Component, schema, mark } = createExerciseType({
         state.answer = encrypt(state.answer, import.meta.env.VITE_PASSPHRASE)
         state.encrypted = true
       }
-      return { attempt: '', ...state }
+      return { attempt: '', ...state } as typeof state & { attempt: string, encrypted: true }
     }),
   mark: (state) => {
     'use server'
