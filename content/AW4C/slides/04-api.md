@@ -9,7 +9,7 @@ slideshow: true
 **Front-end**: code that runs in the browser
 
 - Style
-- UX
+- UI
 
 **Backend**: code that runs on the server
 
