@@ -53,12 +53,12 @@ export const getAssignment = query(async (key: PK) => {
   'use server'
   await check(key)
   const page = await prisma.page.findUniqueOrThrow({ where: { url: key.url } })
-  const originalAssignment = page.body as unknown as z.infer<typeof original>
+  const originalAssignment = page.body as z.infer<typeof original>
   const record = await prisma.assignment.findUnique({
     where: { url_userEmail_id: key },
     select: { body: true, lastModified: true },
   })
-  let body: Exercise[] = record ? (record.body as unknown as Exercise[]) : []
+  let body: Exercise[] = record ? (record.body as Exercise[]) : []
   body = extendAssignment(body, originalAssignment)
   if (!record) {
     await prisma.assignment.upsert({
@@ -133,5 +133,5 @@ export const registerAssignment = async (assignment: z.input<typeof original>) =
       where: { url: assignment.url, id: assignment.id },
     })
   }
-  return page.body as unknown as z.infer<typeof original>
+  return page.body as z.infer<typeof original>
 }
