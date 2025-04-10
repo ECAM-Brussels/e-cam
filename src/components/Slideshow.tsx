@@ -71,7 +71,7 @@ export default function Slideshow(props: SlideshowProps) {
       width: 1920,
     })
     deck.initialize()
-    deck.addKeyBinding('40', async () => {
+    deck.addKeyBinding(40, async () => {
       const { h, v } = deck.getIndices()
       if (v === (count()?.[String(h)] || 1) - 1 && user()?.admin) {
         await addBoard(location.pathname, props.boardName || '', h, v + 1)
