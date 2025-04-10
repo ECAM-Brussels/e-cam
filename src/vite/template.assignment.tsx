@@ -9,7 +9,7 @@ import { Show } from 'solid-js'
 import Assignment from '~/components/Assignment'
 import Page from '~/components/Page'
 import { getUser } from '~/lib/auth/session'
-import { getAssignmentBody, registerAssignment } from '~/lib/exercises/assignment'
+import { getAssignment, registerAssignment } from '~/lib/exercises/assignment'
 
 const getOriginalAssignment = query((url: string) => {
   'use server'
@@ -22,12 +22,12 @@ const getOriginalAssignment = query((url: string) => {
 
 export const route = {
   async preload({ location }) {
-    const [user, original] = await Promise.all([
+    const [user, _original] = await Promise.all([
       getUser(),
       getOriginalAssignment(location.pathname),
     ])
     if (user) {
-      getAssignmentBody({ url: location.pathname, userEmail: user.email, id: '' })
+      getAssignment({ url: location.pathname, userEmail: user.email, id: '' })
     }
   },
 } satisfies RouteDefinition
@@ -43,7 +43,9 @@ export default function () {
       {(original) => (
         <Page title={original().title || ''}>
           <Assignment
-            {...original()}
+            url={location.pathname}
+            id=""
+            original={original()}
             userEmail={userEmail()}
             index={parseInt((searchParams.index as string) || '0')}
             onIndexChange={(newIndex) => setSearchParams({ index: newIndex })}

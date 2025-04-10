@@ -1,6 +1,6 @@
 import ErrorBoundary from './ErrorBoundary'
 import Pagination from './Pagination'
-import { createAsync, revalidate } from '@solidjs/router'
+import { createAsyncStore, revalidate } from '@solidjs/router'
 import { Component, For, Show } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import {
@@ -8,68 +8,87 @@ import {
   exercises,
   Exercise,
   saveExercise,
-  getAssignmentBody,
+  getAssignment,
   extendAssignment,
+  type OriginalAssignment,
 } from '~/lib/exercises/assignment'
 import { ExerciseProps } from '~/lib/exercises/base'
 import useStorage from '~/lib/storage'
 
-export default function Assignment(
-  props: Assignment & { index: number; onIndexChange?: (newIndex: number) => void },
-) {
+type AssignmentProps = {
+  url: string
+  id: string
+  userEmail?: string
+  index: number
+  original: OriginalAssignment
+  onIndexChange?: (newIndex: number) => void
+}
+
+export default function Assignment(props: AssignmentProps) {
   const primary = () => ({ url: props.url, userEmail: props.userEmail || '', id: props.id })
-  const [storage, setStorage] = useStorage<Exercise[]>(
-    () => `assignment.${props.url}.${props.id}`,
-    [],
-  )
-  const body = createAsync(async () => {
-    if (!props.userEmail) {
-      setStorage(extendAssignment(storage(), props))
-      return storage()
-    }
-    return await getAssignmentBody(primary())
+  const initial = () => ({
+    ...props.original,
+    body: [],
+    lastModified: new Date(),
   })
+  const [storage, setStorage] = useStorage<Assignment>(
+    () => `assignment.${props.url}.${props.id}`,
+    initial(),
+  )
+  const data = createAsyncStore(
+    async () => {
+      if (!props.userEmail) {
+        setStorage({ ...storage(), body: extendAssignment(storage().body, props.original) })
+        return storage()
+      }
+      return await getAssignment(primary())
+    },
+    { initialValue: initial() },
+  )
   const classes = () =>
-    body()?.map((exercise) => {
+    data().body.map((exercise) => {
       const correct = exercise.attempts.at(-1)?.correct
       return { true: 'bg-green-100', false: 'bg-red-100' }[String(correct)] ?? 'bg-white'
     })
   return (
     <ErrorBoundary>
-      <Show when={props.title}>
-        <h1 class="text-4xl my-4">{props.title}</h1>
+      <Show when={data().title}>
+        <h1 class="text-4xl my-4">{data().title}</h1>
       </Show>
-      <Show when={body()}>
-        <Pagination
-          current={props.index}
-          onChange={props.onIndexChange}
-          max={body()?.length || 0}
-          classes={classes()}
-        />
-        <For each={body()}>
-          {function <N, S, P, F>(exercise: Exercise, index: () => number) {
-            return (
-              <div classList={{ hidden: index() !== props.index }}>
-                <Dynamic
-                  component={exercises[exercise.type] as Component<ExerciseProps<N, S, P, F>>}
-                  {...(exercise as ExerciseProps<N, S, P, F>)}
-                  maxAttempts={
-                    exercise.maxAttempts === undefined ? props.maxAttempts : exercise.maxAttempts
+      <Pagination
+        current={props.index}
+        onChange={props.onIndexChange}
+        max={data().body.length || 0}
+        classes={classes()}
+      />
+      <For each={data().body}>
+        {function <N, S, P, F>(exercise: Exercise, index: () => number) {
+          return (
+            <div classList={{ hidden: index() !== props.index }}>
+              <Dynamic
+                component={exercises[exercise.type] as Component<ExerciseProps<N, S, P, F>>}
+                {...(exercise as ExerciseProps<N, S, P, F>)}
+                maxAttempts={
+                  exercise.maxAttempts === undefined ? data().maxAttempts : exercise.maxAttempts
+                }
+                onChange={async (event) => {
+                  if (props.userEmail) {
+                    await saveExercise(primary(), index(), event as Exercise)
+                    revalidate(getAssignment.keyFor(primary()))
+                  } else {
+                    setStorage({
+                      ...storage(),
+                      body: storage().body.map((ex, i) =>
+                        i === index() ? (event as Exercise) : ex,
+                      ),
+                    })
                   }
-                  onChange={async (event) => {
-                    if (props.userEmail) {
-                      await saveExercise(primary(), index(), event as Exercise)
-                      revalidate(getAssignmentBody.keyFor(primary()))
-                    } else {
-                      setStorage(body()!.map((ex, i) => (i === index() ? (event as Exercise) : ex)))
-                    }
-                  }}
-                />
-              </div>
-            )
-          }}
-        </For>
-      </Show>
+                }}
+              />
+            </div>
+          )
+        }}
+      </For>
     </ErrorBoundary>
   )
 }

@@ -17,5 +17,5 @@ export default function useStorage<T>(key: string | (() => string), defaultValue
       localStorage.setItem(keySignal(), JSON.stringify(data()))
     }
   })
-  return [data, setData]
+  return [data, setData] as const
 }

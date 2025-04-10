@@ -36,6 +36,7 @@ export const assignmentSchema = z.object({
   maxAttempts: z.null().or(z.number()).default(1),
 })
 export const original = assignmentSchema.omit({ userEmail: true, lastModified: true })
+export type OriginalAssignment = z.infer<typeof original>
 
 export type Assignment = z.infer<typeof assignmentSchema>
 type PK = Pick<Assignment, 'url' | 'id' | 'userEmail'> & { userEmail: string }
@@ -48,26 +49,30 @@ async function check(key: PK) {
   }
 }
 
-export const getAssignmentBody = query(async (key: PK) => {
+export const getAssignment = query(async (key: PK) => {
   'use server'
   await check(key)
   const page = await prisma.page.findUniqueOrThrow({ where: { url: key.url } })
   const originalAssignment = page.body as unknown as z.infer<typeof original>
   const record = await prisma.assignment.findUnique({
     where: { url_userEmail_id: key },
-    select: { body: true },
+    select: { body: true, lastModified: true },
   })
-  let result: Exercise[] = record ? (record.body as unknown as Exercise[]) : []
-  result = extendAssignment(result, originalAssignment)
+  let body: Exercise[] = record ? (record.body as unknown as Exercise[]) : []
+  body = extendAssignment(body, originalAssignment)
   if (!record) {
     await prisma.assignment.upsert({
       where: { url_userEmail_id: key },
-      create: { ...key, body: result, lastModified: new Date() },
-      update: { body: result, lastModified: new Date() },
+      create: { ...key, body, lastModified: new Date() },
+      update: { body, lastModified: new Date() },
     })
   }
-  return result
-}, 'getAssignmentBody')
+  return {
+    ...originalAssignment,
+    lastModified: record?.lastModified ?? new Date(),
+    body,
+  } as Assignment
+}, 'getAssignment')
 
 export function extendAssignment(body: Exercise[], originalAssignment: z.infer<typeof original>) {
   if (originalAssignment.mode === 'static') {
