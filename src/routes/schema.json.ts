@@ -1,10 +1,10 @@
 import { json } from '@solidjs/router'
 import { zodToJsonSchema } from 'zod-to-json-schema'
-import { fullAssignmentSchema } from '~/lib/exercises/assignment'
+import { assignmentSchema } from '~/lib/exercises/assignment'
 
 export function GET() {
   const schema = zodToJsonSchema(
-    fullAssignmentSchema.omit({
+    assignmentSchema.omit({
       userEmail: true,
       url: true,
     }),

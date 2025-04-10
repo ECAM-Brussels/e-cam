@@ -2,9 +2,9 @@ import ErrorBoundary from './ErrorBoundary'
 import Pagination from './Pagination'
 import { createAsync, revalidate } from '@solidjs/router'
 import { Component, For, Show } from 'solid-js'
-import { Dynamic, isServer } from 'solid-js/web'
+import { Dynamic } from 'solid-js/web'
 import {
-  type AssignmentProps,
+  type Assignment,
   exercises,
   Exercise,
   saveExercise,
@@ -15,7 +15,7 @@ import { ExerciseProps } from '~/lib/exercises/base'
 import useStorage from '~/lib/storage'
 
 export default function Assignment(
-  props: AssignmentProps & { index: number; onIndexChange?: (newIndex: number) => void },
+  props: Assignment & { index: number; onIndexChange?: (newIndex: number) => void },
 ) {
   const primary = () => ({ url: props.url, userEmail: props.userEmail || '', id: props.id })
   const [storage, setStorage] = useStorage<Exercise[]>(

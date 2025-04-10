@@ -21,10 +21,13 @@ export const assignmentSchema = z.object({
   url: z.string(),
   userEmail: z.string().email().optional(),
   id: z.string().default(''),
-  lastModified: z.string().transform((str) => new Date(str)),
-  body: exerciseSchema.array(),
-})
-export const fullAssignmentSchema = assignmentSchema.extend({
+  lastModified: z
+    .string()
+    .or(z.date())
+    .default(new Date())
+    .transform((str) => new Date(str)),
+  body: exerciseSchema.array().default([]),
+  next: exerciseSchema.array().default([]),
   title: z.string().default(''),
   description: z.string().optional(),
   streak: z.number().default(0),
@@ -32,10 +35,9 @@ export const fullAssignmentSchema = assignmentSchema.extend({
   whiteboard: z.boolean().default(true),
   maxAttempts: z.null().or(z.number()).default(1),
 })
-export const original = fullAssignmentSchema.omit({ userEmail: true, lastModified: true })
+export const original = assignmentSchema.omit({ userEmail: true, lastModified: true })
 
 export type Assignment = z.infer<typeof assignmentSchema>
-export type AssignmentProps = Omit<z.infer<typeof fullAssignmentSchema>, 'lastModified'>
 type PK = Pick<Assignment, 'url' | 'id' | 'userEmail'> & { userEmail: string }
 
 async function check(key: PK) {
