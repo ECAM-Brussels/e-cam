@@ -16,12 +16,14 @@ export default function Dot(props: DotProps) {
   })
 
   createEffect(() => {
-    if (viz()) {
-      const svg = viz()?.renderSVGElement(props.value)
-      if (svg) {
-        container.appendChild(svg)
+    try {
+      if (viz()) {
+        const svg = viz()?.renderSVGElement(props.value)
+        if (svg) {
+          container!.appendChild(svg)
+        }
       }
-    }
+    } catch {}
   })
 
   return <div ref={container!} />
