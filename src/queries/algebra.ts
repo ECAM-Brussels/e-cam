@@ -1,85 +1,97 @@
 import { graphql } from '~/gql'
-import { createQuery } from '~/lib/graphql'
+import { request } from '~/lib/graphql'
 
-export const checkEqual = createQuery({
-  query: graphql(`
-    query EqualityCheck($expr1: Math!, $expr2: Math!, $error: Float!) {
-      expression(expr: $expr1) {
-        isApproximatelyEqual(expr: $expr2, error: $error)
-      }
-    }
-  `),
-  pre: (expr1: string, expr2: string, error?: number) => ({ expr1, expr2, error: error ?? 0 }),
-  post: ({ expression }) => expression.isApproximatelyEqual,
-})
-
-export const checkFactorisation = createQuery({
-  query: graphql(`
-    query CheckFactorisation($expr: Math!, $attempt: Math!) {
-      attempt: expression(expr: $attempt) {
-        isEqual(expr: $expr)
-        isFactored
-      }
-    }
-  `),
-  pre: (attempt: string, expr: string) => ({ attempt, expr }),
-  post: ({ attempt }) => attempt.isEqual && attempt.isFactored,
-})
-
-export const expand = createQuery({
-  query: graphql(`
-    query ExpandExpr($expr: Math!) {
-      expression(expr: $expr) {
-        expand {
-          expr
+export async function checkEqual(expr1: string, expr2: string, error: number) {
+  const { expression } = await request(
+    graphql(`
+      query EqualityCheck($expr1: Math!, $expr2: Math!, $error: Float!) {
+        expression(expr: $expr1) {
+          isApproximatelyEqual(expr: $expr2, error: $error)
         }
       }
-    }
-  `),
-  pre: (expr: string) => ({ expr }),
-  post: (result) => result.expression.expand.expr,
-})
+    `),
+    { expr1, expr2, error },
+  )
+  return expression.isApproximatelyEqual
+}
 
-export const factor = createQuery({
-  query: graphql(`
-    query Factor($expr: Math!) {
-      expression(expr: $expr) {
-        factor {
-          expr
+export async function checkFactorisation(attempt: string, expr: string) {
+  const { expression } = await request(
+    graphql(`
+      query CheckFactor($expr: Math!, $attempt: Math!) {
+        expression(expr: $attempt) {
+          isEqual(expr: $expr)
+          isFactored
         }
       }
-    }
-  `),
-  pre: (expr: string) => ({ expr }),
-  post: ({ expression }) => expression.factor.expr,
-})
+    `),
+    { attempt, expr },
+  )
+  return expression.isEqual && expression.isFactored
+}
 
-export const getFirstRoot = createQuery({
-  query: graphql(`
-    query GetFirstRoot($expr: Math!) {
-      expression(expr: $expr) {
-        solveset {
-          index(i: 0) {
+export async function expand(expr: string) {
+  const { expression } = await request(
+    graphql(`
+      query ExpandExpr($expr: Math!) {
+        expression(expr: $expr) {
+          expand {
             expr
           }
         }
       }
-    }
-  `),
-  pre: (expr: string) => ({ expr }),
-  post: (res) => res.expression.solveset.index.expr,
-})
+    `),
+    { expr },
+  )
+  return expression.expand.expr
+}
 
-export const normalizePolynomial = createQuery({
-  query: graphql(`
-    query NormalizePolynomial($expr: Math!) {
-      expression(expr: $expr) {
-        normalizeRoots {
-          expr
+export async function factor(expr: string) {
+  const { expression } = await request(
+    graphql(`
+      query Factor($expr: Math!) {
+        expression(expr: $expr) {
+          factor {
+            expr
+          }
         }
       }
-    }
-  `),
-  pre: (expr: string) => ({ expr }),
-  post: ({ expression }) => expression.normalizeRoots.expr,
-})
+    `),
+    { expr },
+  )
+  return expression.factor.expr
+}
+
+export async function getFirstRoot(expr: string) {
+  const { expression } = await request(
+    graphql(`
+      query GetFirstRoot($expr: Math!) {
+        expression(expr: $expr) {
+          solveset {
+            index(i: 0) {
+              expr
+            }
+          }
+        }
+      }
+    `),
+    { expr },
+  )
+  return expression.solveset.index.expr
+}
+
+export async function normalizePolynomial(expr: string) {
+  const { expression } = await request(
+    graphql(`
+      query NormalizePolynomial($expr: Math!) {
+        expression(expr: $expr) {
+          normalizeRoots {
+            expr
+          }
+        }
+      }
+    `),
+    { expr },
+  )
+  return expression.normalizeRoots.expr
+}
