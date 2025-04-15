@@ -122,24 +122,20 @@ export function createExerciseType<
       </Show>
     )
   }
-  const schema = z
-    .object({
-      type: z.literal(exercise.name),
-      maxAttempts: z.null().or(z.number()).optional(),
-      options: optionsSchema,
-      attempts: z
-        .object({
-          correct: z.boolean(),
-          state: exercise.state,
-          feedback: z.any(),
-        })
-        .array()
-        .default([]),
-    })
-    .and(
-      exercise.generator?.params
-        ? z.object({ state: exercise.state }).or(z.object({ params: exercise.generator.params }))
-        : z.object({ state: exercise.state }),
-    )
+  const schema = z.object({
+    type: z.literal(exercise.name),
+    maxAttempts: z.null().or(z.number()).optional(),
+    options: optionsSchema,
+    attempts: z
+      .object({
+        correct: z.boolean(),
+        state: exercise.state,
+        feedback: z.any(),
+      })
+      .array()
+      .default([]),
+    state: exercise.state.optional(),
+    params: exercise.generator?.params.optional() ?? z.null().default(null),
+  })
   return { Component, schema, mark: exercise.mark }
 }
