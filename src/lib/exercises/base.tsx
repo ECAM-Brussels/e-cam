@@ -3,10 +3,10 @@ import { createAsync } from '@solidjs/router'
 import { Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { z } from 'zod'
-import { optionsSchema, type ExerciseType, type Options } from '~/lib/exercises/schemas'
 import Button from '~/components/Button'
-import Feedback from '~/lib/exercises/feedback'
 import ZodError from '~/components/ZodError'
+import Feedback from '~/lib/exercises/feedback'
+import { optionsSchema, type ExerciseType, type Options } from '~/lib/exercises/schemas'
 
 export type ExerciseProps<Name, State, Params, Feedback> = {
   type: Name

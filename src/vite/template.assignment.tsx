@@ -32,7 +32,7 @@ export const route = {
   },
 } satisfies RouteDefinition
 
-export default function() {
+export default function () {
   const location = useLocation()
   const original = createAsync(() => getOriginalAssignment(location.pathname))
   const user = createAsync(() => getUser())

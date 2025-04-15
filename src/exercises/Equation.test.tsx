@@ -13,22 +13,14 @@ test('marks correctly', async () => {
   expect(
     await mark({
       equation: 'x^3 + 1',
-      attempt: [
-        '-1',
-        '\\frac {1 + \\sqrt{3} i}{2}',
-        '\\frac {1 - \\sqrt{3} i}{2}',
-      ],
+      attempt: ['-1', '\\frac {1 + \\sqrt{3} i}{2}', '\\frac {1 - \\sqrt{3} i}{2}'],
       complex: true,
     }),
   ).toBe(true)
   expect(
     await mark({
       equation: 'x^3 + 1',
-      attempt: [
-        'e^{i \\frac{\\pi}{3}}',
-        'e^{-i \\frac{\\pi}{3}}',
-        'e^{i \\pi}',
-      ],
+      attempt: ['e^{i \\frac{\\pi}{3}}', 'e^{-i \\frac{\\pi}{3}}', 'e^{i \\pi}'],
       complex: true,
     }),
   ).toBe(true)

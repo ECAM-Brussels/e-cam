@@ -5,7 +5,5 @@ type SpinnerProps = {
 }
 
 export default function Spinner(props: SpinnerProps) {
-  return (
-    <img class={props.class} src={SpinnerSVG} alt="Loading..." />
-  )
+  return <img class={props.class} src={SpinnerSVG} alt="Loading..." />
 }

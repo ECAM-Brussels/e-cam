@@ -45,7 +45,7 @@ function runTests(code: string, tests: string[], hashes?: string[]) {
   return tests.map(async (test, index) => {
     try {
       const result = await execPython(code, test)
-      return (hashes?.length ? compare(result, hashes[index]) : hash(result, 10))
+      return hashes?.length ? compare(result, hashes[index]) : hash(result, 10)
     } catch (error) {
       return false
     }

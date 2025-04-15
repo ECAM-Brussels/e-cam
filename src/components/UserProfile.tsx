@@ -15,13 +15,15 @@ export default function UserProfile(props: UserProfileProps) {
   const assignments = createAsync(() => getUserAssignments(username()))
   const user = createAsync(() => getUser())
   const userInfo = createAsync(() => getUserInfo(username()))
-  const suffix = () => username() !== user()?.email ? `?userEmail=${username()}` : ''
+  const suffix = () => (username() !== user()?.email ? `?userEmail=${username()}` : '')
   return (
     <div class="bg-white rounded-xl p-8 border shadow">
       <Show when={user()?.admin}>
         <UserSelect onSelect={props.onSelect} />
       </Show>
-      <h1 class="text-4xl font-bold my-8">{userInfo()?.lastName}, {userInfo()?.firstName}</h1>
+      <h1 class="text-4xl font-bold my-8">
+        {userInfo()?.lastName}, {userInfo()?.firstName}
+      </h1>
       <table class="container max-w-5xl mx-auto border shadow mb-8">
         <thead class="border-b">
           <tr>

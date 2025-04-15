@@ -1,7 +1,7 @@
+import Markdown from './Markdown'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import { For } from 'solid-js'
 import Fa from '~/components/Fa'
-import Markdown from './Markdown'
 
 type Message = {
   incoming?: boolean
@@ -38,7 +38,9 @@ export default function Conversation(props: Props) {
         {props.recipient}
       </div>
       <div class="h-[36rem] overflow-y-auto">
-        <For each={props.messages}>{(message) => <Message text={message.text} incoming={message.incoming} />}</For>
+        <For each={props.messages}>
+          {(message) => <Message text={message.text} incoming={message.incoming} />}
+        </For>
       </div>
       <div class="bg-zinc-50 flex py-2 px-4 gap-4 items-center border-t border-zinc-200">
         <input class="border rounded grow z-20" />

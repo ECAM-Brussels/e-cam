@@ -66,21 +66,25 @@ test('marks correctly', async () => {
       variables: ['x', 'y', 'z'],
       attempt: ['', '', ''],
       impossible: true,
-    })
+    }),
   )
 })
 
 test('solves correctly', async () => {
   expect(
-    (await solve({
-      equations: ['x = 1', 'y = 1', '0 = 1'],
-      variables: ['x', 'y', 'z'],
-    })).impossible,
+    (
+      await solve({
+        equations: ['x = 1', 'y = 1', '0 = 1'],
+        variables: ['x', 'y', 'z'],
+      })
+    ).impossible,
   ).toBe(true)
   expect(
-    (await solve({
-      equations: ['x = 1', 'y = 1', '0 = 0'],
-      variables: ['x', 'y', 'z'],
-    })).attempt,
+    (
+      await solve({
+        equations: ['x = 1', 'y = 1', '0 = 0'],
+        variables: ['x', 'y', 'z'],
+      })
+    ).attempt,
   ).toStrictEqual(['1', '1', 'z'])
 })

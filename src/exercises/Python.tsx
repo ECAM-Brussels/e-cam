@@ -22,7 +22,7 @@ export const schema = z.object({
   /**
    * Code that should give the correct solution.
    * It does not need to satisfy the same constraints as the student's code.
-   * 
+   *
    * As an example, if students need to reimplement the factorial function without importing 'math',
    * this code will still be allowed to import it.
    */
@@ -42,7 +42,7 @@ export const schema = z.object({
   /**
    * A list of constraints that the student's code must satisfy to be correct.
    * A constraint is a tuple, with a regex given as a string, and a result given as a boolean.
-   * 
+   *
    * @example
    * ['import\\s+math', false]] // the student's code cannot contain 'import\\s+math'
    * ['import\\s+math', true]] // the student's code must contain 'import\\s+math'

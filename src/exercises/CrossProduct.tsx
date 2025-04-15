@@ -88,7 +88,9 @@ export default function CrossProduct(props: ExerciseProps<State, Params>) {
       solution={
         <>
           La réponse est{' '}
-          <Math value={`\\begin{pmatrix} ${props.feedback?.solution?.attempt?.join('\\\\ ') || ''} \\end{pmatrix}`} />
+          <Math
+            value={`\\begin{pmatrix} ${props.feedback?.solution?.attempt?.join('\\\\ ') || ''} \\end{pmatrix}`}
+          />
         </>
       }
     >

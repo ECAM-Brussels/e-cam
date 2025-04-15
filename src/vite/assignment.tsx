@@ -27,13 +27,15 @@ export default function () {
       <Show when={!user()}>
         <div class="border rounded-xl border-red-900 text-red-900 p-4 mb-4">
           <p class="mb-4">
-            Vous n'êtes pas connecté·e.
-            Votre progrès ne sera pas sauvegardé.
-            Êtes-vous sûr·e de vouloir continuer?
+            Vous n'êtes pas connecté·e. Votre progrès ne sera pas sauvegardé. Êtes-vous sûr·e de
+            vouloir continuer?
           </p>
           <p>
-            <a href="/auth/login" class="underline">Se connecter</a> avec son compte ECAM vous permet aussi de soutenir le projet
-            et nous permettre de voir comment mieux vous aider.
+            <a href="/auth/login" class="underline">
+              Se connecter
+            </a>{' '}
+            avec son compte ECAM vous permet aussi de soutenir le projet et nous permettre de voir
+            comment mieux vous aider.
           </p>
         </div>
       </Show>

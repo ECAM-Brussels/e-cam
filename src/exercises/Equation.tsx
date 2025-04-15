@@ -90,7 +90,8 @@ type Params = { X?: string[] } & (
       R: (number | string)[]
       Theta: (number | string)[]
       raiseToNthPower?: boolean
-    })
+    }
+)
 
 export async function generate(params: Params): Promise<State> {
   'use server'

@@ -13,8 +13,8 @@ import {
   type OriginalAssignment,
 } from '~/lib/exercises/assignment'
 import { ExerciseProps } from '~/lib/exercises/base'
-import useStorage from '~/lib/storage'
 import { optionsSchema } from '~/lib/exercises/schemas'
+import useStorage from '~/lib/storage'
 
 type AssignmentProps = {
   url: string

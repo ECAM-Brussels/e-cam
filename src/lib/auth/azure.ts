@@ -1,5 +1,5 @@
-import { generateCodeVerifier, generateState, MicrosoftEntraId } from "arctic"
-import { saveAuthState } from "./session"
+import { saveAuthState } from './session'
+import { generateCodeVerifier, generateState, MicrosoftEntraId } from 'arctic'
 
 export const entra = new MicrosoftEntraId(
   import.meta.env.VITE_AZURE_TENANT_ID,

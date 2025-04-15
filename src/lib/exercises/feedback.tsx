@@ -36,7 +36,7 @@ export default function Feedback<S, F extends object>(props: {
               <Fa icon={faCheckCircle} /> Correct&nbsp;!
             </p>
           </Show>
-            <p>Tentatives restantes: {remaining()}</p>
+          <p>Tentatives restantes: {remaining()}</p>
           <Show when={props.component}>
             {(Component) => (
               <Show when={lastAttempt()?.feedback}>

@@ -82,7 +82,11 @@ export default function CompleteSquare(
       mark={mark}
       generate={generate}
       solve={solve}
-      solution={<>La réponse est <Math value={`${props.feedback?.solution?.attempt}`} /></>}
+      solution={
+        <>
+          La réponse est <Math value={`${props.feedback?.solution?.attempt}`} />
+        </>
+      }
     >
       <p>Complétez le carré dans l'expression suivante.</p>
       <div class="flex items-center gap-2">

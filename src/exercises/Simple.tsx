@@ -26,7 +26,12 @@ export const mark = query(async (state: State) => {
         }
       }
     `),
-    { error: 0, attempt: '', ...state, answer: decrypt(state.answer, import.meta.env.VITE_PASSPHRASE) },
+    {
+      error: 0,
+      attempt: '',
+      ...state,
+      answer: decrypt(state.answer, import.meta.env.VITE_PASSPHRASE),
+    },
   )
   return attempt.isApproximatelyEqual
 }, 'checkSimple')

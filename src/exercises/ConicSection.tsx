@@ -143,13 +143,19 @@ export default function ConicSection(props: ExerciseProps<State, Params>) {
       mark={mark}
       generate={generate}
       solve={solve}
-      solution={<>
-      <ul>
-        <li>{props.feedback?.solution?.attempt?.type}</li>
-        <li>Translatée de <Math value={props.feedback?.solution?.attempt?.center} /></li>
-        <li>Sommets: <Math value={props.feedback?.solution?.attempt?.vertices.join(',')} /></li>
-        </ul>
-      </>}
+      solution={
+        <>
+          <ul>
+            <li>{props.feedback?.solution?.attempt?.type}</li>
+            <li>
+              Translatée de <Math value={props.feedback?.solution?.attempt?.center} />
+            </li>
+            <li>
+              Sommets: <Math value={props.feedback?.solution?.attempt?.vertices.join(',')} />
+            </li>
+          </ul>
+        </>
+      }
     >
       <p>Caractérisez la conique suivante</p>
       <Math value={`${props.state?.equation} = 0`} displayMode />
