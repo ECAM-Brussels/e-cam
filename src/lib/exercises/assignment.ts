@@ -1,5 +1,6 @@
 import { getUser } from '../auth/session'
 import { prisma } from '../db'
+import { optionsSchema } from './base'
 import { query } from '@solidjs/router'
 import CryptoJS from 'crypto-js'
 import { lazy } from 'solid-js'
@@ -33,7 +34,7 @@ export const assignmentSchema = z.object({
   streak: z.number().default(0),
   mode: z.literal('static').or(z.literal('dynamic')).default('static'),
   whiteboard: z.boolean().default(true),
-  maxAttempts: z.null().or(z.number()).default(1),
+  options: optionsSchema,
 })
 export const original = assignmentSchema.omit({ userEmail: true, lastModified: true })
 export type OriginalAssignment = z.infer<typeof original>

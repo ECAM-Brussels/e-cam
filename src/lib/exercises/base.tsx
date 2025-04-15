@@ -7,6 +7,12 @@ import { z } from 'zod'
 import Button from '~/components/Button'
 import ZodError from '~/components/ZodError'
 
+export const optionsSchema = z.object({
+  maxAttempts: z.null().or(z.number()).default(1),
+  note: z.string().default(''),
+}).default({})
+export type Options = z.infer<typeof optionsSchema>
+
 /**
  * Type used to describe how exercises types are created.
  * This type does not need to be exported,
@@ -60,7 +66,7 @@ export type ExerciseProps<Name, State, Params, Feedback> = {
       state: State
     },
   ) => Promise<void> | void
-  maxAttempts: null | number
+  options: Options
   attempts: { correct: boolean; state: State; feedback?: Feedback }[]
 } & ({ state: State } | { params: Params })
 
@@ -98,9 +104,9 @@ export function createExerciseType<
       if (props.attempts.at(-1)?.correct) {
         return 0
       }
-      return props.maxAttempts === null
+      return props.options.maxAttempts === null
         ? true
-        : props.maxAttempts - props.attempts.length + (offset ?? 0)
+        : props.options.maxAttempts - props.attempts.length + (offset ?? 0)
     }
     const readOnly = () => remaining() === 0 || props.attempts.at(-1)?.correct
 
@@ -131,7 +137,8 @@ export function createExerciseType<
         ])
         const { onChange, ...data } = props
         const attempt = { correct, state: newState, feedback }
-        const attempts = props.maxAttempts === null ? [attempt] : [...props.attempts, attempt]
+        const attempts =
+          props.options.maxAttempts === null ? [attempt] : [...props.attempts, attempt]
         await onChange?.({ ...data, state: newState, attempts })
         setSubmission('pending', false)
       } catch (error) {
@@ -159,7 +166,7 @@ export function createExerciseType<
         </form>
         <Feedback
           attempts={props.attempts}
-          maxAttempts={props.maxAttempts}
+          maxAttempts={props.options.maxAttempts}
           component={ExerciseFeedback}
           marking={submission.pending}
         />
@@ -170,6 +177,7 @@ export function createExerciseType<
     .object({
       type: z.literal(exercise.name),
       maxAttempts: z.null().or(z.number()).optional(),
+      options: optionsSchema,
       attempts: z
         .object({
           correct: z.boolean(),

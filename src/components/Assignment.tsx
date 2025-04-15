@@ -1,3 +1,4 @@
+import { optionsSchema } from '~/lib/exercises/base'
 import ErrorBoundary from './ErrorBoundary'
 import Pagination from './Pagination'
 import { createAsyncStore, revalidate } from '@solidjs/router'
@@ -68,9 +69,10 @@ export default function Assignment(props: AssignmentProps) {
               <Dynamic
                 component={exercises[exercise.type] as Component<ExerciseProps<N, S, P, F>>}
                 {...(exercise as ExerciseProps<N, S, P, F>)}
-                maxAttempts={
-                  exercise.maxAttempts === undefined ? data().maxAttempts : exercise.maxAttempts
-                }
+                options={optionsSchema.parse({
+                  ...data().options,
+                  ...exercise.options,
+                })}
                 onChange={async (event) => {
                   if (props.userEmail) {
                     await saveExercise(primary(), index(), event as Exercise)
