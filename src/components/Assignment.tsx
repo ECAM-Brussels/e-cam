@@ -1,4 +1,3 @@
-import { optionsSchema } from '~/lib/exercises/base'
 import ErrorBoundary from './ErrorBoundary'
 import Pagination from './Pagination'
 import { createAsyncStore, revalidate } from '@solidjs/router'
@@ -15,6 +14,7 @@ import {
 } from '~/lib/exercises/assignment'
 import { ExerciseProps } from '~/lib/exercises/base'
 import useStorage from '~/lib/storage'
+import { optionsSchema } from '~/lib/exercises/schemas'
 
 type AssignmentProps = {
   url: string

@@ -1,6 +1,6 @@
 import { getUser } from '../auth/session'
 import { prisma } from '../db'
-import { optionsSchema } from './base'
+import { optionsSchema } from './schemas'
 import { query } from '@solidjs/router'
 import CryptoJS from 'crypto-js'
 import { lazy } from 'solid-js'
