@@ -1,18 +1,19 @@
 import { graphql } from '~/gql'
 import { request } from '~/lib/graphql'
 
-export async function checkEqual(expr1: string, expr2: string, error: number) {
+export async function checkEqual(expr1: string, expr2: string, error: number = 0) {
   const { expression } = await request(
     graphql(`
-      query EqualityCheck($expr1: Math!, $expr2: Math!, $error: Float!) {
+      query EqualityCheck($expr1: Math!, $expr2: Math!, $error: Float!, $approximately: Boolean!) {
         expression(expr: $expr1) {
-          isApproximatelyEqual(expr: $expr2, error: $error)
+          isApproximatelyEqual(expr: $expr2, error: $error) @include(if: $approximately)
+          isEqual(expr: $expr2) @skip(if: $approximately)
         }
       }
     `),
-    { expr1, expr2, error },
+    { expr1, expr2, error, approximately: error !== 0 },
   )
-  return expression.isApproximatelyEqual
+  return (expression.isEqual ?? expression.isApproximatelyEqual) as boolean
 }
 
 export async function checkFactorisation(attempt: string, expr: string) {

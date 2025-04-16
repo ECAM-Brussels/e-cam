@@ -28,7 +28,6 @@ export const assignmentSchema = z.object({
     .default(new Date())
     .transform((str) => new Date(str)),
   body: exerciseSchema.array().default([]),
-  next: exerciseSchema.array().default([]),
   title: z.string().default(''),
   description: z.string().optional(),
   streak: z.number().default(0),

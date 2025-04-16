@@ -11,7 +11,7 @@ export const schema = z.object({
   question: z.string(),
   answer: z.string().trim().min(1),
   attempt: z.string().trim().min(1).optional(),
-  error: z.number().optional(),
+  error: z.number().default(0),
 })
 export type State = z.infer<typeof schema>
 

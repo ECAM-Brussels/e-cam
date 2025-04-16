@@ -135,7 +135,7 @@ export function createExerciseType<
       .array()
       .default([]),
     state: exercise.state.optional(),
-    params: exercise.generator?.params.optional() ?? z.null().default(null),
+    params: exercise.generator?.params.optional() ?? z.undefined(),
   })
   return { Component, schema, mark: exercise.mark }
 }
