@@ -6,7 +6,10 @@ export default function (props: { children: JSXElement }) {
       fallback={(error) => (
         <div class="rounded-xl border bg-white p-8 shadow">
           <h1 class="font-bold text-3xl mb-8">Something went wrong</h1>
-          <pre>{error.toString()}</pre>
+          <details>
+            <summary>Error message</summary>
+            <pre class="text-sm bg-gray-100 text-gray-700 rounded-xl p-4">{error.toString()}</pre>
+          </details>
         </div>
       )}
     >
