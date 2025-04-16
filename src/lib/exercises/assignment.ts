@@ -106,16 +106,20 @@ export function extendAssignment(body: Exercise[], originalAssignment: z.infer<t
 export async function saveExercise(key: PK, pos: number, exercise: Exercise) {
   'use server'
   await check(key)
-  const record = await prisma.assignment.findUniqueOrThrow({
-    select: { body: true, lastModified: true },
-    where: { url_userEmail_id: key },
-  })
-  const body = record.body as unknown as Exercise[]
-  body[pos] = await exerciseSchema.parseAsync(exercise)
-  await prisma.assignment.update({
-    where: { url_userEmail_id: key, lastModified: record.lastModified },
-    data: { body, lastModified: new Date() },
-  })
+  try {
+    const record = await prisma.assignment.findUniqueOrThrow({
+      select: { body: true, lastModified: true },
+      where: { url_userEmail_id: key },
+    })
+    const body = record.body as unknown as Exercise[]
+    body[pos] = await exerciseSchema.parseAsync(exercise)
+    await prisma.assignment.update({
+      where: { url_userEmail_id: key, lastModified: record.lastModified },
+      data: { body, lastModified: new Date() },
+    })
+  } catch (error) {
+    throw new Error(`Error while saving exercise ${JSON.stringify(exercise)}: ${error}`)
+  }
 }
 
 export const registerAssignment = async (assignment: z.input<typeof original>) => {

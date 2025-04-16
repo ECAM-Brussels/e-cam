@@ -43,9 +43,13 @@ export function createExerciseType<
       if ('state' in props) return props.state
       if (!exercise.generator) throw new Error('Exercise does not accept params.')
       const { params, onChange, ...data } = props
-      const newState = await exercise.generator.generate(params)
-      await onChange?.({ ...data, state: await exercise.state.parseAsync(newState) })
-      return newState
+      try {
+        const newState = await exercise.generator.generate(params)
+        await onChange?.({ ...data, state: await exercise.state.parseAsync(newState) })
+        return newState
+      } catch (error) {
+        throw new Error(`Error while generating exercise ${JSON.stringify(params)}: ${error}`)
+      }
     })
 
     const [getFeedback, ExerciseFeedback] = exercise.feedback || [undefined, undefined]
