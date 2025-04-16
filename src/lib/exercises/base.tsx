@@ -134,8 +134,10 @@ export function createExerciseType<
       })
       .array()
       .default([]),
-    state: exercise.state.optional(),
-    params: exercise.generator?.params.optional() ?? z.undefined(),
+    state: exercise.state.optional().describe('Object containing the exercise information'),
+    params:
+      exercise.generator?.params.optional().describe('Parameters to generate an exercise') ??
+      z.undefined(),
   })
   return { Component, schema, mark: exercise.mark }
 }

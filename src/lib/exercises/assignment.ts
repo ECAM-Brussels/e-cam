@@ -31,9 +31,9 @@ export const assignmentSchema = z.object({
     .or(z.date())
     .default(new Date())
     .transform((str) => new Date(str)),
-  body: exerciseSchema.array().default([]),
-  title: z.string().default(''),
-  description: z.string().optional(),
+  body: exerciseSchema.array().default([]).describe('List of exercises'),
+  title: z.string().default('').describe('Title of the assignment'),
+  description: z.string().optional().describe('Description of the assignment, entered as markdown'),
   streak: z.number().default(0),
   mode: z.literal('static').or(z.literal('dynamic')).default('static'),
   whiteboard: z.boolean().default(true),
