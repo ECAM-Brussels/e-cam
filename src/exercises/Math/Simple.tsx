@@ -11,10 +11,11 @@ const { Component, schema, mark } = createExerciseType({
   Component: (props) => (
     <>
       <Markdown value={props.question} />
-      <label class="inline-flex items-center gap-2 mt-4">
-        Réponse:
+      <div class="flex items-center gap-2 my-4">
+        <Markdown value={props.label} />
         <Math name="attempt" class="border p-2 min-w-24" value={props.attempt} editable />
-      </label>
+        <Markdown value={props.unit} />
+      </div>
     </>
   ),
   state: z
@@ -22,6 +23,8 @@ const { Component, schema, mark } = createExerciseType({
       question: z.string(),
       answer: z.string(),
       encrypted: z.boolean().default(false),
+      label: z.string().default('Réponse:'),
+      unit: z.string().default(''),
       attempt: z.undefined().or(z.string().min(1)),
     })
     .transform((state) => {
