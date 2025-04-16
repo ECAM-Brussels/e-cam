@@ -15,7 +15,11 @@ export const exercises = {
   Simple: lazy(() => import('~/exercises/Math/Simple')),
 } as const
 
-export const exerciseSchema = z.union([PythonSchema, FactorSchema, SimpleSchema])
+export const exerciseSchema = z.discriminatedUnion('type', [
+  PythonSchema,
+  FactorSchema,
+  SimpleSchema,
+])
 export type Exercise = z.infer<typeof exerciseSchema>
 
 export const assignmentSchema = z.object({
