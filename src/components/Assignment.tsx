@@ -66,27 +66,29 @@ export default function Assignment(props: AssignmentProps) {
         {function <N, S, P, F>(exercise: Exercise, index: () => number) {
           return (
             <div classList={{ hidden: index() !== props.index }}>
-              <Dynamic
-                component={exercises[exercise.type] as Component<ExerciseProps<N, S, P, F>>}
-                {...(exercise as ExerciseProps<N, S, P, F>)}
-                options={optionsSchema.parse({
-                  ...data().options,
-                  ...exercise.options,
-                })}
-                onChange={async (event) => {
-                  if (props.userEmail) {
-                    await saveExercise(primary(), index(), event as Exercise)
-                    revalidate(getAssignment.keyFor(primary()))
-                  } else {
-                    setStorage({
-                      ...storage(),
-                      body: storage().body.map((ex, i) =>
-                        i === index() ? (event as Exercise) : ex,
-                      ),
-                    })
-                  }
-                }}
-              />
+              <ErrorBoundary>
+                <Dynamic
+                  component={exercises[exercise.type] as Component<ExerciseProps<N, S, P, F>>}
+                  {...(exercise as ExerciseProps<N, S, P, F>)}
+                  options={optionsSchema.parse({
+                    ...data().options,
+                    ...exercise.options,
+                  })}
+                  onChange={async (event) => {
+                    if (props.userEmail) {
+                      await saveExercise(primary(), index(), event as Exercise)
+                      revalidate(getAssignment.keyFor(primary()))
+                    } else {
+                      setStorage({
+                        ...storage(),
+                        body: storage().body.map((ex, i) =>
+                          i === index() ? (event as Exercise) : ex,
+                        ),
+                      })
+                    }
+                  }}
+                />
+              </ErrorBoundary>
             </div>
           )
         }}
