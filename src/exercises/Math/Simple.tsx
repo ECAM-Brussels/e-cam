@@ -1,3 +1,4 @@
+import dedent from 'dedent-js'
 import { For, Show } from 'solid-js'
 import { z } from 'zod'
 import Markdown from '~/components/Markdown'
@@ -17,10 +18,12 @@ const base = z.object({
 })
 
 const part = {
-  text: z.string(),
-  answer: z.string(),
-  label: z.string().default(''),
-  unit: z.string().default(''),
+  text: z.string().describe('Text of the question or part, written in markdown'),
+  answer: z
+    .string()
+    .describe('Answer as a LaTeX string, will automatically be encrypted before reaching the user'),
+  label: z.string().default('Text right before the answer prompt, written in markdown'),
+  unit: z.string().default('Text right after the answer prompt, written in markdown'),
 }
 
 const { Component, schema, mark } = createExerciseType({
@@ -48,7 +51,10 @@ const { Component, schema, mark } = createExerciseType({
     .union([
       base.extend(part),
       base.extend({
-        parts: z.object(part).array(),
+        parts: z
+          .object(part)
+          .array()
+          .describe('List of question parts, with their own prompts, texts and answers.'),
       }),
     ])
     .transform((state) => {

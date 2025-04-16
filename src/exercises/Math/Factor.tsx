@@ -36,12 +36,12 @@ const { Component, schema } = createExerciseType({
   ),
   state: z
     .object({
-      expr: z.string(),
+      expr: z.string().describe('Expression to factorise'),
       expand: z
         .boolean()
         .describe('Whether to expand expr before it is seen by the user')
         .default(false),
-      attempt: z.undefined().or(z.string().min(1)),
+      attempt: z.undefined().or(z.string().min(1)).describe("Student's answer"),
     })
     .transform(async (state) => {
       if (state.expand) {
@@ -68,11 +68,28 @@ const { Component, schema } = createExerciseType({
   ],
   generator: {
     params: z.object({
-      A: z.number().array().default([1]),
-      roots: z.union([
-        math.array().array(),
-        z.object({ product: math.array().array() }).transform((set) => product(...set.product)),
-      ]),
+      A: z
+        .number()
+        .array()
+        .default([1])
+        .describe('Possibilities for the constant factor in the factorisation'),
+      roots: z
+        .union([
+          math.array().array(),
+          z
+            .object({
+              product: math
+                .array()
+                .array()
+                .describe(
+                  'Generate a list of tuples by taking the cartesian products of the supplied lists',
+                ),
+            })
+            .transform((set) => product(...set.product)),
+        ])
+        .describe(
+          'Possibilities for the roots, either entered as tuples, or a Cartesian product with `product`',
+        ),
     }),
     async generate(params) {
       let expr = `(${sample(params.A)})`
