@@ -118,7 +118,7 @@ export async function saveExercise(key: PK, pos: number, exercise: Exercise) {
       data: { body, lastModified: new Date() },
     })
   } catch (error) {
-    throw new Error(`Error while saving exercise ${JSON.stringify(exercise)}: ${error}`)
+    throw new Error(`Error while saving exercise ${JSON.stringify(exercise, null, 2)}: ${error}`)
   }
 }
 

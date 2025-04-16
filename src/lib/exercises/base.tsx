@@ -48,7 +48,9 @@ export function createExerciseType<
         await onChange?.({ ...data, state: await exercise.state.parseAsync(newState) })
         return newState
       } catch (error) {
-        throw new Error(`Error while generating exercise ${JSON.stringify(params)}: ${error}`)
+        throw new Error(
+          `Error while generating exercise ${JSON.stringify(params, null, 2)}: ${error}`,
+        )
       }
     })
 
