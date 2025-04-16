@@ -4,8 +4,13 @@ lastModified: '2025-03-01'
 body:
   - type: Simple
     state:
-      question: What is my favourite food?
-      answer: \pi
+      parts:
+        - text: What is my favourite number?
+          answer: \pi
+          unit: $\text{cm}^2$
+        - text: What would I like?
+          answer: 2 \pi
+          unit: $\text{cm}^3$
   - type: Factor
     state:
       expr: x^2 - 5x + 6

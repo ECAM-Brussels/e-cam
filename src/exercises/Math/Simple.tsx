@@ -1,4 +1,4 @@
-import { Show } from 'solid-js'
+import { For, Show } from 'solid-js'
 import { z } from 'zod'
 import Markdown from '~/components/Markdown'
 import Math from '~/components/Math'
@@ -6,51 +6,89 @@ import { decrypt, encrypt } from '~/lib/cryptography'
 import { createExerciseType } from '~/lib/exercises/base'
 import { checkEqual } from '~/queries/algebra'
 
+const part = z.object({
+  text: z.string(),
+  answer: z.string(),
+  label: z.string().default(''),
+  unit: z.string().default(''),
+})
+
 const { Component, schema, mark } = createExerciseType({
   name: 'Simple',
   Component: (props) => (
-    <>
-      <Markdown value={props.question} />
-      <div class="flex items-center gap-2 my-4">
-        <Markdown value={props.label} />
-        <Math name="attempt" class="border p-2 min-w-24" value={props.attempt} editable />
-        <Markdown value={props.unit} />
-      </div>
-    </>
+    <For each={props.parts}>
+      {(part, index) => (
+        <>
+          <Markdown value={part.text} />
+          <div class="flex items-center gap-2 my-4">
+            <Markdown value={part.label} />
+            <Math
+              name="attempts"
+              class="border p-2 min-w-24"
+              value={props.attempts?.[index()]}
+              editable
+            />
+            <Markdown value={part.unit} />
+          </div>
+        </>
+      )}
+    </For>
   ),
   state: z
     .object({
-      question: z.string(),
-      answer: z.string(),
+      parts: part.array(),
+      attempts: z.string().min(1).array().optional(),
       encrypted: z.boolean().default(false),
-      label: z.string().default('Réponse:'),
-      unit: z.string().default(''),
-      attempt: z.undefined().or(z.string().min(1)),
     })
     .transform((state) => {
       if (!state.encrypted) {
-        state.answer = encrypt(state.answer, import.meta.env.VITE_PASSPHRASE)
+        state.parts = state.parts.map((q) => ({
+          ...q,
+          answer: encrypt(q.answer, import.meta.env.VITE_PASSPHRASE),
+          attempt: '',
+        }))
         state.encrypted = true
       }
-      return { attempt: '', ...state } as typeof state & { attempt: string; encrypted: true }
+      return state
     }),
   mark: (state) => {
     'use server'
-    return checkEqual(state.attempt, decrypt(state.answer, import.meta.env.VITE_PASSPHRASE))
+    const parts = state.parts.map((q, i) =>
+      state.attempts?.length
+        ? checkEqual(state.attempts[i], decrypt(q.answer, import.meta.env.VITE_PASSPHRASE))
+        : false,
+    )
+    return Promise.race([
+      Promise.all(parts).then((t) => t.every((v) => v)),
+      Promise.race(parts.map(async (t) => ((await t) ? new Promise<never>(() => {}) : false))),
+    ])
   },
   feedback: [
     async (state, remainingAttempts) => {
       'use server'
       if (!remainingAttempts) {
-        return { answer: decrypt(state.answer, import.meta.env.VITE_PASSPHRASE) }
+        return {
+          parts: state.parts.map((q) => ({
+            ...q,
+            answer: decrypt(q.answer, import.meta.env.VITE_PASSPHRASE),
+          })),
+        }
       }
       return {}
     },
     (props) => (
-      <Show when={props.answer}>
-        <p>
-          La réponse est <Math value={props.answer} />.
-        </p>
+      <Show when={props.parts}>
+        <p>La réponses sont:</p>
+        <ul>
+          <For each={props.parts}>
+            {(part) => (
+              <li class="flex items-center">
+                <Math value={part.answer} />
+                <Markdown value={part.unit} />
+              </li>
+            )}
+          </For>
+        </ul>
       </Show>
     ),
   ],
