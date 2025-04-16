@@ -41,7 +41,7 @@ const { Component, schema } = createExerciseType({
         .boolean()
         .describe('Whether to expand expr before it is seen by the user')
         .default(false),
-      attempt: z.undefined().or(z.string().min(1)).describe("Student's answer"),
+      attempt: z.undefined().or(z.string().min(1)).optional().describe("Student's answer"),
     })
     .transform(async (state) => {
       if (state.expand) {

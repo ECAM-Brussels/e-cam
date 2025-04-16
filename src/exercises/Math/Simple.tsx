@@ -56,6 +56,7 @@ const { Component, schema, mark } = createExerciseType({
         parts: z
           .object(part)
           .array()
+          .default([])
           .describe('List of question parts, with their own prompts, texts and answers.'),
       }),
     ])
@@ -87,7 +88,7 @@ const { Component, schema, mark } = createExerciseType({
     )
     return Promise.race([
       Promise.all(parts).then((t) => t.every((v) => v)),
-      Promise.race(parts.map(async (t) => ((await t) ? new Promise<never>(() => {}) : false))),
+      Promise.race(parts.map(async (t) => ((await t) ? new Promise<never>(() => { }) : false))),
     ])
   },
   feedback: [
