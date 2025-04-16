@@ -4,6 +4,11 @@ lastModified: '2025-03-01'
 body:
   - type: Simple
     state:
+      text: What is my favourite number?
+      answer: \pi
+      unit: $\text{cm}^2$
+  - type: Simple
+    state:
       parts:
         - text: What is my favourite number?
           answer: \pi

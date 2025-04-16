@@ -6,12 +6,22 @@ import { decrypt, encrypt } from '~/lib/cryptography'
 import { createExerciseType } from '~/lib/exercises/base'
 import { checkEqual } from '~/queries/algebra'
 
-const part = z.object({
+const base = z.object({
+  attempts: z
+    .string()
+    .min(1)
+    .array()
+    .or(z.string().transform((s) => [s]))
+    .default([]),
+  encrypted: z.boolean().default(false),
+})
+
+const part = {
   text: z.string(),
   answer: z.string(),
   label: z.string().default(''),
   unit: z.string().default(''),
-})
+}
 
 const { Component, schema, mark } = createExerciseType({
   name: 'Simple',
@@ -35,12 +45,21 @@ const { Component, schema, mark } = createExerciseType({
     </For>
   ),
   state: z
-    .object({
-      parts: part.array(),
-      attempts: z.string().min(1).array().optional(),
-      encrypted: z.boolean().default(false),
-    })
+    .union([
+      base.extend(part),
+      base.extend({
+        parts: z.object(part).array(),
+      }),
+    ])
     .transform((state) => {
+      if ('answer' in state) {
+        const { attempts, encrypted, ...part } = state
+        state = {
+          attempts,
+          encrypted,
+          parts: [part],
+        }
+      }
       if (!state.encrypted) {
         state.parts = state.parts.map((q) => ({
           ...q,
