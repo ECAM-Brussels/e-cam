@@ -1,4 +1,3 @@
-import dedent from 'dedent-js'
 import { For, Show } from 'solid-js'
 import { z } from 'zod'
 import Markdown from '~/components/Markdown'
@@ -22,8 +21,11 @@ const part = {
   answer: z
     .string()
     .describe('Answer as a LaTeX string, will automatically be encrypted before reaching the user'),
-  label: z.string().default('Text right before the answer prompt, written in markdown'),
-  unit: z.string().default('Text right after the answer prompt, written in markdown'),
+  label: z
+    .string()
+    .default('')
+    .describe('Text right before the answer prompt, written in markdown'),
+  unit: z.string().default('').describe('Text right after the answer prompt, written in markdown'),
 }
 
 const { Component, schema, mark } = createExerciseType({
