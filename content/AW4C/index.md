@@ -18,4 +18,5 @@ lang: en
 - [Routes and Layouts](/AW4C/slides/lab-01-routes)
 - [Components](/AW4C/slides/lab-02-components)
 - [Data fetching](/AW4C/slides/lab-03-databases)
+- [Form actions](/AW4C/slides/lab-04-actions)
 ::::::::::
