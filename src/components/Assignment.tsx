@@ -1,7 +1,7 @@
 import ErrorBoundary from './ErrorBoundary'
 import Pagination from './Pagination'
 import { createAsyncStore, revalidate } from '@solidjs/router'
-import { Component, For, Show } from 'solid-js'
+import { Component, For, Show, Suspense } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import {
   type Assignment,
@@ -67,27 +67,29 @@ export default function Assignment(props: AssignmentProps) {
           return (
             <div classList={{ hidden: index() !== props.index }}>
               <ErrorBoundary>
-                <Dynamic
-                  component={exercises[exercise.type] as Component<ExerciseProps<N, S, P, F>>}
-                  {...(exercise as ExerciseProps<N, S, P, F>)}
-                  options={optionsSchema.parse({
-                    ...data().options,
-                    ...exercise.options,
-                  })}
-                  onChange={async (event) => {
-                    if (props.userEmail) {
-                      await saveExercise(primary(), index(), event as Exercise)
-                      revalidate(getAssignment.keyFor(primary()))
-                    } else {
-                      setStorage({
-                        ...storage(),
-                        body: storage().body.map((ex, i) =>
-                          i === index() ? (event as Exercise) : ex,
-                        ),
-                      })
-                    }
-                  }}
-                />
+                <Suspense fallback={<p>Loading exercise...</p>}>
+                  <Dynamic
+                    component={exercises[exercise.type] as Component<ExerciseProps<N, S, P, F>>}
+                    {...(exercise as ExerciseProps<N, S, P, F>)}
+                    options={optionsSchema.parse({
+                      ...data().options,
+                      ...exercise.options,
+                    })}
+                    onChange={async (event) => {
+                      if (props.userEmail) {
+                        await saveExercise(primary(), index(), event as Exercise)
+                        revalidate(getAssignment.keyFor(primary()))
+                      } else {
+                        setStorage({
+                          ...storage(),
+                          body: storage().body.map((ex, i) =>
+                            i === index() ? (event as Exercise) : ex,
+                          ),
+                        })
+                      }
+                    }}
+                  />
+                </Suspense>
               </ErrorBoundary>
             </div>
           )
