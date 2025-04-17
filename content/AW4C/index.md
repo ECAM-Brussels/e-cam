@@ -12,6 +12,7 @@ lang: en
 - [MPA and AJAX](/AW4C/slides/02-mpa)
 - [SPA](/AW4C/slides/03-spa)
 - [API Design](/AW4C/slides/04-api)
+- [Authentication](/AW4C/slides/05-auth)
 
 # Labs
 
