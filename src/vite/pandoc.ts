@@ -1,6 +1,6 @@
 import { exec as execWithCallback } from 'child_process'
 import glob from 'fast-glob'
-import { mkdirSync, readFileSync } from 'fs'
+import { existsSync, mkdirSync, readFileSync, statSync } from 'fs'
 import { dirname, relative, resolve } from 'path'
 import { promisify } from 'util'
 import { type Plugin } from 'vite'
@@ -10,6 +10,9 @@ const exec = promisify(execWithCallback)
 async function generatePage(file: string) {
   const relativePath = relative(resolve('content'), file)
   const outputPath = resolve('src/routes/(generated)', relativePath.replace(/\.md$/, '.tsx'))
+  if (existsSync(outputPath) && statSync(outputPath).mtime >= statSync(file).mtime) {
+    return
+  }
   mkdirSync(dirname(outputPath), { recursive: true })
 
   const metaFile = `${outputPath}.json`
