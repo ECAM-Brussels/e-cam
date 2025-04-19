@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
 title: Factorisation
 prerequisites:
-  - /assignment
+  - /skills/algebra/factor-binomial-formulas
 courses:
   - PM1C
 body:

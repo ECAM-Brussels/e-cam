@@ -1,6 +1,6 @@
 import { ErrorBoundary, type JSXElement } from 'solid-js'
 
-export default function (props: { children: JSXElement }) {
+export default function (props: { class?: string; children: JSXElement }) {
   return (
     <ErrorBoundary
       fallback={(error) => (
@@ -13,7 +13,7 @@ export default function (props: { children: JSXElement }) {
         </div>
       )}
     >
-      {props.children}
+      <div class={props.class}>{props.children}</div>
     </ErrorBoundary>
   )
 }

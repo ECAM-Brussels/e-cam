@@ -32,7 +32,14 @@ export const assignmentSchema = z.object({
   body: exerciseSchema.array().default([]).describe('List of exercises'),
   options: optionsSchema,
   lastModified: z.date().default(new Date()),
-  prerequisites: z.string().array().default([]),
+  prerequisites: z
+    .object({
+      url: z.string(),
+      title: z.string(),
+    })
+    .or(z.string().transform((url) => ({ url, title: '' })))
+    .array()
+    .default([]),
   courses: z.string().array().default([]),
 })
 export type Assignment = z.infer<typeof assignmentSchema>
@@ -48,15 +55,17 @@ async function check(email: string) {
 export const getAssignment = query(async (url: string, email: string) => {
   'use server'
   await check(email)
-  const { submissions, prerequisites, ...storedAssignment } =
-    await prisma.assignment.findUniqueOrThrow({
-      where: { url },
-      include: { submissions: { where: { email } }, prerequisites: { select: { url: true } } },
-    })
+  const { submissions, ...storedAssignment } = await prisma.assignment.findUniqueOrThrow({
+    where: { url },
+    include: {
+      submissions: { where: { email } },
+      prerequisites: { select: { url: true, title: true } },
+    },
+  })
   let body = submissions.length ? (submissions[0].body as Exercise[]) : []
   const assignment = {
     ...storedAssignment,
-    prerequisites: prerequisites.map((p) => p.url),
+    courses: [],
     options: optionsSchema.parse(storedAssignment.options),
     body: storedAssignment.body as Exercise[],
   }
@@ -132,13 +141,13 @@ export const registerAssignment = async (data: z.input<typeof assignmentSchema>)
       ...assignment,
       hash,
       prerequisites: {
-        connectOrCreate: prerequisites.map((url) => ({
-          create: { url, body: [], options: {} },
-          where: { url },
+        connectOrCreate: prerequisites.map((p) => ({
+          create: { url: p.url, body: [], options: {} },
+          where: { url: p.url },
         })),
       },
       courses: {
-        connectOrCreate: prerequisites.map((code) => ({
+        connectOrCreate: courses.map((code) => ({
           create: { code },
           where: { code },
         })),
