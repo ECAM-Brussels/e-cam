@@ -139,7 +139,7 @@ export const registerAssignment = async (data: z.input<typeof assignmentSchema>)
       },
       courses: {
         connectOrCreate: prerequisites.map((code) => ({
-          create: { code, title: '' },
+          create: { code },
           where: { code },
         })),
       },
