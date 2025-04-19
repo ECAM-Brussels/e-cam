@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `Course` ADD COLUMN `image` VARCHAR(191) NULL,
+    ADD COLUMN `url` VARCHAR(191) NOT NULL DEFAULT '';

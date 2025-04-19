@@ -25,6 +25,8 @@ model Assignment {
 model Course {
   code String @id
   title String
+  image String?
+  url String @default("")
 
   assignments Assignment[]
 }

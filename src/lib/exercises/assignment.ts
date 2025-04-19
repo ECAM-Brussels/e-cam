@@ -33,6 +33,7 @@ export const assignmentSchema = z.object({
   options: optionsSchema,
   lastModified: z.date().default(new Date()),
   prerequisites: z.string().array().default([]),
+  courses: z.string().array().default([]),
 })
 export type Assignment = z.infer<typeof assignmentSchema>
 
@@ -126,17 +127,23 @@ export const registerAssignment = async (data: z.input<typeof assignmentSchema>)
   let page = await prisma.assignment.findUnique({ where: { url: data.url } })
   let hash = CryptoJS.SHA256(JSON.stringify(data)).toString()
   if (!page || !page.body || page.hash !== hash) {
-    const { prerequisites: prereq, ...assignment } = await assignmentSchema.parseAsync(data)
+    const { prerequisites, courses, ...assignment } = await assignmentSchema.parseAsync(data)
     const payload = {
       ...assignment,
       hash,
       prerequisites: {
-        connectOrCreate: prereq.map((url) => ({
+        connectOrCreate: prerequisites.map((url) => ({
           create: { url, body: [], options: {} },
           where: { url },
         })),
       },
-    }
+      courses: {
+        connectOrCreate: prerequisites.map((code) => ({
+          create: { code, title: '' },
+          where: { code },
+        })),
+      },
+    } satisfies Parameters<typeof prisma.assignment.upsert>[0]['update']
     page = await prisma.assignment.upsert({
       where: { url: data.url },
       create: payload,
