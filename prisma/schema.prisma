@@ -9,11 +9,11 @@ datasource db {
 
 model Assignment {
   url String @id
-  title String
-  description String
+  title String @default("")
+  description String @default("")
   body Json
   options Json
-  hash String
+  hash String @default("")
   lastModified DateTime @default(now())
 
   submissions Submission[]

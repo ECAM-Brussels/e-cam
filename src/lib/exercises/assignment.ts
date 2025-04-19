@@ -32,6 +32,7 @@ export const assignmentSchema = z.object({
   body: exerciseSchema.array().default([]).describe('List of exercises'),
   options: optionsSchema,
   lastModified: z.date().default(new Date()),
+  prerequisites: z.string().array().default([]),
 })
 export type Assignment = z.infer<typeof assignmentSchema>
 
@@ -46,13 +47,15 @@ async function check(email: string) {
 export const getAssignment = query(async (url: string, email: string) => {
   'use server'
   await check(email)
-  const { submissions, ...storedAssignment } = await prisma.assignment.findUniqueOrThrow({
-    where: { url },
-    include: { submissions: { where: { email } } },
-  })
+  const { submissions, prerequisites, ...storedAssignment } =
+    await prisma.assignment.findUniqueOrThrow({
+      where: { url },
+      include: { submissions: { where: { email } }, prerequisites: { select: { url: true } } },
+    })
   let body = submissions.length ? (submissions[0].body as Exercise[]) : []
   const assignment = {
     ...storedAssignment,
+    prerequisites: prerequisites.map((p) => p.url),
     options: optionsSchema.parse(storedAssignment.options),
     body: storedAssignment.body as Exercise[],
   }
@@ -123,11 +126,21 @@ export const registerAssignment = async (data: z.input<typeof assignmentSchema>)
   let page = await prisma.assignment.findUnique({ where: { url: data.url } })
   let hash = CryptoJS.SHA256(JSON.stringify(data)).toString()
   if (!page || !page.body || page.hash !== hash) {
-    const assignment = await assignmentSchema.parseAsync(data)
+    const { prerequisites: prereq, ...assignment } = await assignmentSchema.parseAsync(data)
+    const payload = {
+      ...assignment,
+      hash,
+      prerequisites: {
+        connectOrCreate: prereq.map((url) => ({
+          create: { url, body: [], options: {} },
+          where: { url },
+        })),
+      },
+    }
     page = await prisma.assignment.upsert({
       where: { url: data.url },
-      create: { ...assignment, hash },
-      update: { ...assignment, hash },
+      create: payload,
+      update: payload,
     })
     await prisma.submission.deleteMany({
       where: { url: data.url },

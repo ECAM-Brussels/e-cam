@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: Factorisation
+prerequisites:
+  - /assignment
+body:
+  - type: Factor
+    state:
+      expr: x^2 - 5x + 6
+  - type: Factor
+    params:
+      A: [1]
+      roots:
+        product:
+          - [1, -1]
+          - [2, -2]
