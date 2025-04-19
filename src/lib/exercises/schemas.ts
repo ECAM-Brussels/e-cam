@@ -5,6 +5,8 @@ export const optionsSchema = z
   .object({
     maxAttempts: z.null().or(z.number()).default(1),
     note: z.string().default(''),
+    whiteboard: z.boolean().default(true),
+    streak: z.number().default(0),
   })
   .default({})
 

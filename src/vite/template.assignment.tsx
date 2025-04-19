@@ -27,25 +27,24 @@ export const route = {
       getOriginalAssignment(location.pathname),
     ])
     if (user) {
-      getAssignment({ url: location.pathname, userEmail: user.email, id: '' })
+      getAssignment(location.pathname, user.email)
     }
   },
 } satisfies RouteDefinition
 
 export default function () {
   const location = useLocation()
-  const original = createAsync(() => getOriginalAssignment(location.pathname))
+  const assignment = createAsync(() => getOriginalAssignment(location.pathname))
   const user = createAsync(() => getUser())
   const [searchParams, setSearchParams] = useSearchParams()
   const userEmail = () => (searchParams.userEmail as string) ?? user()?.email
   return (
-    <Show when={original()}>
-      {(original) => (
-        <Page title={original().title || ''}>
+    <Show when={assignment()}>
+      {(assignment) => (
+        <Page title={assignment().title || ''}>
           <Assignment
             url={location.pathname}
-            id=""
-            original={original()}
+            data={assignment()}
             userEmail={userEmail()}
             index={parseInt((searchParams.index as string) || '0')}
             onIndexChange={(newIndex) => setSearchParams({ index: newIndex })}

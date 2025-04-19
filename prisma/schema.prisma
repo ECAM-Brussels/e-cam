@@ -7,25 +7,37 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Page {
-  url String @id @unique
+model Assignment {
+  url String @id
   title String
-  body Json?
-  hash String?
+  description String
+  body Json
+  options Json
+  hash String
+  lastModified DateTime @default(now())
+
+  submissions Submission[]
+  courses Course[]
+  prerequisites Assignment[] @relation("Prerequisites")
+  requiredBy Assignment[] @relation("Prerequisites")
+}
+
+model Course {
+  code String @id
+  title String
+
   assignments Assignment[]
 }
 
-model Assignment {
-  page Page @relation(fields: [url], references: [url])
+model Submission {
   url String
-  user User @relation(fields: [userEmail], references: [email])
-  userEmail String
-  id String
+  email String
   body Json
   lastModified DateTime @default(now())
-  finished Boolean @default(false)
+  @@id([url, email])
 
-  @@id([url, userEmail, id])
+  assignment Assignment @relation(fields: [url], references: [url])
+  user User @relation(fields: [email], references: [email])
 }
 
 model User {
@@ -33,7 +45,8 @@ model User {
   admin Boolean @default(false)
   firstName String
   lastName String
-  assignments Assignment[]
+
+  submissions Submission[]
 }
 
 model Board {

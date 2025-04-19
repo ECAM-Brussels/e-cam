@@ -1,6 +1,6 @@
 import ErrorBoundary from './ErrorBoundary'
 import Pagination from './Pagination'
-import { createAsyncStore, revalidate } from '@solidjs/router'
+import { createAsync, revalidate } from '@solidjs/router'
 import { Component, For, Show, Suspense } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import {
@@ -10,7 +10,6 @@ import {
   saveExercise,
   getAssignment,
   extendAssignment,
-  type OriginalAssignment,
 } from '~/lib/exercises/assignment'
 import { ExerciseProps } from '~/lib/exercises/base'
 import { optionsSchema } from '~/lib/exercises/schemas'
@@ -18,31 +17,26 @@ import useStorage from '~/lib/storage'
 
 type AssignmentProps = {
   url: string
-  id: string
   userEmail?: string
   index: number
-  original: OriginalAssignment
+  data: Assignment
   onIndexChange?: (newIndex: number) => void
 }
 
 export default function Assignment(props: AssignmentProps) {
-  const primary = () => ({ url: props.url, userEmail: props.userEmail || '', id: props.id })
   const initial = () => ({
-    ...props.original,
+    ...props.data,
     body: [],
     lastModified: new Date(),
   })
-  const [storage, setStorage] = useStorage<Assignment>(
-    () => `assignment.${props.url}.${props.id}`,
-    initial(),
-  )
-  const data = createAsyncStore(
+  const [storage, setStorage] = useStorage<Assignment>(() => `assignment.${props.url}`, initial())
+  const data = createAsync(
     async () => {
       if (!props.userEmail) {
-        setStorage({ ...storage(), body: extendAssignment(storage().body, props.original) })
+        setStorage({ ...storage(), body: extendAssignment(storage().body, props.data) })
         return storage()
       }
-      return await getAssignment(primary())
+      return await getAssignment(props.url, props.userEmail)
     },
     { initialValue: initial() },
   )
@@ -77,8 +71,13 @@ export default function Assignment(props: AssignmentProps) {
                     })}
                     onChange={async (event) => {
                       if (props.userEmail) {
-                        await saveExercise(primary(), index(), event as Exercise)
-                        revalidate(getAssignment.keyFor(primary()))
+                        await saveExercise(
+                          location.pathname,
+                          props.userEmail,
+                          index(),
+                          event as Exercise,
+                        )
+                        revalidate(getAssignment.keyFor(props.url, props.userEmail))
                       } else {
                         setStorage({
                           ...storage(),
