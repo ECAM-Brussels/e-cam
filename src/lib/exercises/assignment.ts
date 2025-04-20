@@ -81,7 +81,7 @@ export const getAssignment = query(async (url: string, email: string) => {
 }, 'getAssignment')
 
 export function extendAssignment(body: Exercise[], assignment: Assignment): Exercise[] {
-  const options = (id: number) => ({ ...assignment.options, ...assignment.body[id].options })
+  const options = (id: number) => ({ ...assignment.options, ...assignment.body.at(id)?.options })
   const streak = (id: number) => options(id).streak
   let [dynamicId, currentStreak] = [0, 0]
   for (const exercise of body) {
@@ -97,7 +97,7 @@ export function extendAssignment(body: Exercise[], assignment: Assignment): Exer
   }
   const lastFullyAttempted = body.at(-1)?.attempts.length === body.at(-1)?.maxAttempts
   const lastIsCorrect = body.at(-1)?.attempts.at(-1)?.correct
-  if (lastFullyAttempted || lastIsCorrect) {
+  if (streak(dynamicId) && (lastFullyAttempted || lastIsCorrect)) {
     body = [...body, assignment.body[dynamicId]]
     return body
   }
