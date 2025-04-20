@@ -6,7 +6,7 @@ import { z } from 'zod'
 import Button from '~/components/Button'
 import ZodError from '~/components/ZodError'
 import Feedback from '~/lib/exercises/feedback'
-import { optionsSchema, type ExerciseType, type Options } from '~/lib/exercises/schemas'
+import { optionsSchema, type ExerciseType, type OptionsWithDefault } from '~/lib/exercises/schemas'
 
 export type ExerciseProps<Name, State, Params, Feedback> = {
   type: Name
@@ -15,7 +15,7 @@ export type ExerciseProps<Name, State, Params, Feedback> = {
       state: State
     },
   ) => Promise<void> | void
-  options: Options
+  options: OptionsWithDefault
   attempts: { correct: boolean; state: State; feedback?: Feedback }[]
 } & ({ state: State } | { params: Params })
 

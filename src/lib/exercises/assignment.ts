@@ -1,6 +1,6 @@
 import { getUser } from '../auth/session'
 import { prisma } from '../db'
-import { optionsSchema } from './schemas'
+import { optionsSchemaWithDefault } from './schemas'
 import { query } from '@solidjs/router'
 import CryptoJS from 'crypto-js'
 import { lazy } from 'solid-js'
@@ -30,7 +30,7 @@ export const assignmentSchema = z.object({
     .default('')
     .describe('Description of the assignment, entered as markdown'),
   body: exerciseSchema.array().default([]).describe('List of exercises'),
-  options: optionsSchema,
+  options: optionsSchemaWithDefault,
   lastModified: z.date().default(new Date()),
   prerequisites: z
     .object({
@@ -62,11 +62,11 @@ export const getAssignment = query(async (url: string, email: string) => {
       prerequisites: { select: { url: true, title: true } },
     },
   })
-  let body = submissions.length ? (submissions[0].body as Exercise[]) : []
+  let body = (submissions.at(0)?.body as Exercise[]) ?? []
   const assignment = {
     ...storedAssignment,
     courses: [],
-    options: optionsSchema.parse(storedAssignment.options),
+    options: optionsSchemaWithDefault.parse(storedAssignment.options),
     body: storedAssignment.body as Exercise[],
   }
   body = extendAssignment(body, assignment)
@@ -81,7 +81,7 @@ export const getAssignment = query(async (url: string, email: string) => {
 }, 'getAssignment')
 
 export function extendAssignment(body: Exercise[], assignment: Assignment): Exercise[] {
-  const options = (id: number) => ({ ...options, ...assignment.body[id].options })
+  const options = (id: number) => ({ ...assignment.options, ...assignment.body[id].options })
   const streak = (id: number) => options(id).streak
   let [dynamicId, currentStreak] = [0, 0]
   for (const exercise of body) {
@@ -99,9 +99,7 @@ export function extendAssignment(body: Exercise[], assignment: Assignment): Exer
   const lastIsCorrect = body.at(-1)?.attempts.at(-1)?.correct
   if (lastFullyAttempted || lastIsCorrect) {
     body = [...body, assignment.body[dynamicId]]
-    if (streak(dynamicId) === 0) {
-      dynamicId++
-    }
+    return body
   }
   for (let i = dynamicId; i < assignment.body.length; i++) {
     if (streak(i) === 0) {

@@ -3,6 +3,15 @@ import { z } from 'zod'
 
 export const optionsSchema = z
   .object({
+    maxAttempts: z.null().or(z.number()).optional(),
+    note: z.string().optional(),
+    whiteboard: z.boolean().optional(),
+    streak: z.number().optional(),
+  })
+  .default({})
+
+export const optionsSchemaWithDefault = z
+  .object({
     maxAttempts: z.null().or(z.number()).default(1),
     note: z.string().default(''),
     whiteboard: z.boolean().default(true),
@@ -11,6 +20,7 @@ export const optionsSchema = z
   .default({})
 
 export type Options = z.infer<typeof optionsSchema>
+export type OptionsWithDefault = z.infer<typeof optionsSchemaWithDefault>
 
 /**
  * Type used to describe how exercises types are created.

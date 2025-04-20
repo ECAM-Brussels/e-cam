@@ -12,7 +12,7 @@ import {
   extendAssignment,
 } from '~/lib/exercises/assignment'
 import { ExerciseProps } from '~/lib/exercises/base'
-import { optionsSchema } from '~/lib/exercises/schemas'
+import { optionsSchemaWithDefault } from '~/lib/exercises/schemas'
 import useStorage from '~/lib/storage'
 
 type AssignmentProps = {
@@ -66,7 +66,7 @@ export default function Assignment(props: AssignmentProps) {
                     <Dynamic
                       component={exercises[exercise.type] as Component<ExerciseProps<N, S, P, F>>}
                       {...(exercise as ExerciseProps<N, S, P, F>)}
-                      options={optionsSchema.parse({
+                      options={optionsSchemaWithDefault.parse({
                         ...data().options,
                         ...exercise.options,
                       })}
