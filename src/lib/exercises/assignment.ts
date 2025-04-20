@@ -1,6 +1,6 @@
 import { getUser } from '../auth/session'
 import { prisma } from '../db'
-import { optionsSchemaWithDefault } from './schemas'
+import { type OptionsWithDefault, optionsSchemaWithDefault } from './schemas'
 import { query } from '@solidjs/router'
 import CryptoJS from 'crypto-js'
 import { lazy } from 'solid-js'
@@ -52,24 +52,23 @@ async function check(email: string) {
   }
 }
 
-export const getAssignment = query(async (url: string, email: string) => {
+export const getSubmission = query(async (url: string, email: string) => {
   'use server'
   await check(email)
-  const { submissions, ...storedAssignment } = await prisma.assignment.findUniqueOrThrow({
+  const {
+    submissions,
+    options,
+    body: questions,
+  } = await prisma.assignment.findUniqueOrThrow({
     where: { url },
-    include: {
+    select: {
+      body: true,
+      options: true,
       submissions: { where: { email } },
-      prerequisites: { select: { url: true, title: true } },
     },
   })
   let body = (submissions.at(0)?.body as Exercise[]) ?? []
-  const assignment = {
-    ...storedAssignment,
-    courses: [],
-    options: optionsSchemaWithDefault.parse(storedAssignment.options),
-    body: storedAssignment.body as Exercise[],
-  }
-  body = extendAssignment(body, assignment)
+  body = extendSubmission(body, questions as Exercise[], optionsSchemaWithDefault.parse(options))
   if (!submissions.length) {
     await prisma.submission.upsert({
       where: { url_email: { url, email } },
@@ -77,12 +76,15 @@ export const getAssignment = query(async (url: string, email: string) => {
       update: { body, lastModified: new Date() },
     })
   }
-  return { ...assignment, body }
+  return body
 }, 'getAssignment')
 
-export function extendAssignment(body: Exercise[], assignment: Assignment): Exercise[] {
-  const options = (id: number) => ({ ...assignment.options, ...assignment.body.at(id)?.options })
-  const streak = (id: number) => options(id).streak
+export function extendSubmission(
+  body: Exercise[],
+  questions: Exercise[],
+  options: OptionsWithDefault,
+): Exercise[] {
+  const streak = (id: number) => ({ ...options, ...questions.at(id)?.options }).streak
   let [dynamicId, currentStreak] = [0, 0]
   for (const exercise of body) {
     if (exercise.attempts.at(-1)?.correct) {
@@ -98,12 +100,12 @@ export function extendAssignment(body: Exercise[], assignment: Assignment): Exer
   const lastFullyAttempted = body.at(-1)?.attempts.length === body.at(-1)?.maxAttempts
   const lastIsCorrect = body.at(-1)?.attempts.at(-1)?.correct
   if (streak(dynamicId) && (lastFullyAttempted || lastIsCorrect)) {
-    body = [...body, assignment.body[dynamicId]]
+    body = [...body, questions[dynamicId]]
     return body
   }
-  for (let i = dynamicId; i < assignment.body.length; i++) {
+  for (let i = dynamicId; i < questions.length; i++) {
     if (streak(i) === 0) {
-      body = [...body, assignment.body[i]]
+      body = [...body, questions[i]]
     } else {
       break
     }
@@ -129,9 +131,11 @@ export async function saveExercise(url: string, email: string, pos: number, exer
   }
 }
 
-export const registerAssignment = async (data: z.input<typeof assignmentSchema>) => {
+export const getAssignment = async (data: z.input<typeof assignmentSchema>) => {
   'use server'
-  let page = await prisma.assignment.findUnique({ where: { url: data.url } })
+  const where = { url: data.url }
+  const include = { prerequisites: true, courses: true }
+  let page = await prisma.assignment.findUnique({ where, include })
   let hash = CryptoJS.SHA256(JSON.stringify(data)).toString()
   if (!page || !page.body || page.hash !== hash) {
     const { prerequisites, courses, ...assignment } = await assignmentSchema.parseAsync(data)
@@ -152,13 +156,12 @@ export const registerAssignment = async (data: z.input<typeof assignmentSchema>)
       },
     } satisfies Parameters<typeof prisma.assignment.upsert>[0]['update']
     page = await prisma.assignment.upsert({
-      where: { url: data.url },
+      where,
       create: payload,
       update: payload,
+      include,
     })
-    await prisma.submission.deleteMany({
-      where: { url: data.url },
-    })
+    await prisma.submission.deleteMany({ where })
   }
   return page as unknown as Assignment
 }

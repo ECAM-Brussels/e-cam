@@ -9,11 +9,11 @@ import { Show } from 'solid-js'
 import Assignment from '~/components/Assignment'
 import Page from '~/components/Page'
 import { getUser } from '~/lib/auth/session'
-import { getAssignment, registerAssignment } from '~/lib/exercises/assignment'
+import { getAssignment, getSubmission } from '~/lib/exercises/assignment'
 
 const getOriginalAssignment = query((url: string) => {
   'use server'
-  return registerAssignment({
+  return getAssignment({
     /** @ts-ignore */
     ...$body$,
     url,
@@ -27,7 +27,7 @@ export const route = {
       getOriginalAssignment(location.pathname),
     ])
     if (user) {
-      getAssignment(location.pathname, user.email)
+      getSubmission(location.pathname, user.email)
     }
   },
 } satisfies RouteDefinition

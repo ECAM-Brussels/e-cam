@@ -8,8 +8,9 @@ import {
   exercises,
   Exercise,
   saveExercise,
-  getAssignment,
-  extendAssignment,
+  type getAssignment,
+  extendSubmission,
+  getSubmission,
 } from '~/lib/exercises/assignment'
 import { ExerciseProps } from '~/lib/exercises/base'
 import { optionsSchemaWithDefault } from '~/lib/exercises/schemas'
@@ -19,45 +20,40 @@ type AssignmentProps = {
   url: string
   userEmail?: string
   index: number
-  data: Assignment
+  data: Awaited<ReturnType<typeof getAssignment>>
   onIndexChange?: (newIndex: number) => void
 }
 
 export default function Assignment(props: AssignmentProps) {
-  const initial = () => ({
-    ...props.data,
-    body: [],
-    lastModified: new Date(),
-  })
-  const [storage, setStorage] = useStorage<Assignment>(() => `assignment.${props.url}`, initial())
-  const data = createAsync(
+  const [storage, setStorage] = useStorage<Exercise[]>(() => `assignment.${props.url}`, [])
+  const body = createAsync(
     async () => {
       if (!props.userEmail) {
-        setStorage({ ...storage(), body: extendAssignment(storage().body, props.data) })
+        setStorage(extendSubmission(storage(), props.data.body, props.data.options))
         return storage()
       }
-      return await getAssignment(props.url, props.userEmail)
+      return await getSubmission(props.url, props.userEmail)
     },
-    { initialValue: initial() },
+    { initialValue: [] },
   )
   const classes = () =>
-    data().body.map((exercise) => {
+    body()?.map((exercise) => {
       const correct = exercise.attempts.at(-1)?.correct
       return { true: 'bg-green-100', false: 'bg-red-100' }[String(correct)] ?? 'bg-white'
     })
   return (
     <ErrorBoundary class="lg:flex gap-8">
       <div class="grow">
-        <Show when={data().title}>
-          <h1 class="text-4xl my-4">{data().title}</h1>
+        <Show when={props.data.title}>
+          <h1 class="text-4xl my-4">{props.data.title}</h1>
         </Show>
         <Pagination
           current={props.index}
           onChange={props.onIndexChange}
-          max={data().body.length || 0}
+          max={body().length || 0}
           classes={classes()}
         />
-        <For each={data().body}>
+        <For each={body()}>
           {function <N, S, P, F>(exercise: Exercise, index: () => number) {
             return (
               <div classList={{ hidden: index() !== props.index }}>
@@ -67,7 +63,7 @@ export default function Assignment(props: AssignmentProps) {
                       component={exercises[exercise.type] as Component<ExerciseProps<N, S, P, F>>}
                       {...(exercise as ExerciseProps<N, S, P, F>)}
                       options={optionsSchemaWithDefault.parse({
-                        ...data().options,
+                        ...props.data.options,
                         ...exercise.options,
                       })}
                       onChange={async (event) => {
@@ -78,14 +74,11 @@ export default function Assignment(props: AssignmentProps) {
                             index(),
                             event as Exercise,
                           )
-                          revalidate(getAssignment.keyFor(props.url, props.userEmail))
+                          revalidate(getSubmission.keyFor(props.url, props.userEmail))
                         } else {
-                          setStorage({
-                            ...storage(),
-                            body: storage().body.map((ex, i) =>
-                              i === index() ? (event as Exercise) : ex,
-                            ),
-                          })
+                          setStorage(
+                            storage().map((ex, i) => (i === index() ? (event as Exercise) : ex)),
+                          )
                         }
                       }}
                     />
@@ -98,9 +91,9 @@ export default function Assignment(props: AssignmentProps) {
       </div>
       <div class="py-6 px-6">
         <h2 class="text-2xl my-4">Informations</h2>
-        <Show when={data().prerequisites}>
+        <Show when={props.data.prerequisites}>
           <h3 class="text-xl mb-4">Prérequis</h3>
-          <For each={data().prerequisites}>
+          <For each={props.data.prerequisites}>
             {(prerequisite) => (
               <li>
                 <a class="text-blue-600" href={prerequisite.url}>
