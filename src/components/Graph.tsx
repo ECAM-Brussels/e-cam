@@ -24,15 +24,45 @@ export default function Graph(props: {
           {
             selector: 'node',
             style: {
+              shape: 'round-rectangle',
+              'background-color': '#3498db',
               label: 'data(label)',
+              color: '#ffffff',
+              'text-wrap': 'wrap',
+              'text-max-width': '150px',
+              padding: '10px',
+              'text-valign': 'center',
+              'text-halign': 'center',
+              width: 'label',
+              height: 'label',
+            },
+          },
+          {
+            selector: '.hovered',
+            style: {
+              'background-color': '#2ecc71',
+              'text-outline-color': '#2ecc71',
+            },
+          },
+          {
+            selector: '$node > node',
+            style: {
+              'background-color': '#ecf0f1',
+              'border-color': '#bdc3c7',
+              'border-width': 2,
+              label: 'data(label)',
+              color: '#7f8c8d',
               'text-valign': 'top',
+              'text-halign': 'center',
+              padding: '20px',
             },
           },
           {
             selector: 'edge',
             style: {
-              'line-color': '#ccc',
-              'target-arrow-color': '#ccc',
+              width: 2,
+              'line-color': '#95a5a6',
+              'target-arrow-color': '#95a5a6',
               'target-arrow-shape': 'triangle',
               'curve-style': 'bezier',
             },
@@ -41,14 +71,18 @@ export default function Graph(props: {
       }),
     )
     cy()!.on('tap', 'node', function (event) {
-      navigate(event.target.data('id'))
+      if (event.target.data('id').startsWith('/')) {
+        navigate(event.target.data('id'))
+      }
     })
     cy()!.on('mouseover', 'node', function (event) {
       if (event.target.data('id').startsWith('/')) {
         cy()!.container()!.style.cursor = 'pointer'
+        event.target.addClass('hovered')
       }
     })
-    cy()!.on('mouseout', 'node', function () {
+    cy()!.on('mouseout', 'node', function (event) {
+      event.target.removeClass('hovered')
       cy()!.container()!.style.cursor = 'default'
     })
   })
@@ -57,7 +91,10 @@ export default function Graph(props: {
     if (cy() && elements()) {
       cy()!.json({ elements: elements() })
       cy()!
-        .layout({ name: 'dagre', rankDir: 'BT' } as { name: string })
+        .layout({
+          name: 'dagre',
+          rankDir: 'BT',
+        } as { name: string })
         .run()
     }
   })

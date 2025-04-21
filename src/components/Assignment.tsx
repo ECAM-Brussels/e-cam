@@ -103,7 +103,7 @@ const Info = (props: Awaited<ReturnType<typeof getAssignment>>) => (
         {(prerequisite) => (
           <li>
             <a class="text-blue-600" href={prerequisite.url}>
-              {prerequisite.title}
+              {prerequisite.title || prerequisite.url}
             </a>
           </li>
         )}
@@ -115,7 +115,7 @@ const Info = (props: Awaited<ReturnType<typeof getAssignment>>) => (
         {(skill) => (
           <li>
             <a class="text-blue-600" href={skill.url}>
-              {skill.title}
+              {skill.title || skill.url}
             </a>
           </li>
         )}
