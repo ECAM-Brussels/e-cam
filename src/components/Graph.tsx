@@ -25,9 +25,9 @@ export default function Graph(props: {
             selector: 'node',
             style: {
               shape: 'round-rectangle',
-              'background-color': '#3498db',
+              'background-color': '#bae6fd',
               label: 'data(label)',
-              color: '#ffffff',
+              color: '#082f49',
               'text-wrap': 'wrap',
               'text-max-width': '150px',
               padding: '10px',
@@ -40,16 +40,15 @@ export default function Graph(props: {
           {
             selector: '.hovered',
             style: {
-              'background-color': '#2ecc71',
-              'text-outline-color': '#2ecc71',
+              'background-color': '#38bdf8',
             },
           },
           {
             selector: '$node > node',
             style: {
-              'background-color': '#ecf0f1',
+              'background-color': '#f5f5f5',
               'border-color': '#bdc3c7',
-              'border-width': 2,
+              'border-width': 1,
               label: 'data(label)',
               color: '#7f8c8d',
               'text-valign': 'top',
@@ -93,7 +92,7 @@ export default function Graph(props: {
       cy()!
         .layout({
           name: 'dagre',
-          rankDir: 'BT',
+          rankDir: 'LR',
         } as { name: string })
         .run()
     }
