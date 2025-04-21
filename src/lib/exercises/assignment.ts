@@ -3,6 +3,7 @@ import { prisma } from '../db'
 import { type OptionsWithDefault, optionsSchemaWithDefault } from './schemas'
 import { query } from '@solidjs/router'
 import CryptoJS from 'crypto-js'
+import { ElementDefinition } from 'cytoscape'
 import { lazy } from 'solid-js'
 import { z } from 'zod'
 import { schema as PythonSchema } from '~/exercises/CompSci/Python'
@@ -168,3 +169,32 @@ export const getAssignment = async (data: z.input<typeof assignmentSchema>) => {
     options: OptionsWithDefault
   }
 }
+
+export const getAssignmentGraph = query(
+  async (
+    query: Parameters<typeof prisma.assignment.findMany>[0] = {},
+  ): Promise<ElementDefinition[]> => {
+    'use server'
+    const data = await prisma.assignment.findMany({
+      ...query,
+      select: { url: true, title: true, requiredBy: { select: { url: true } } },
+    })
+    const vertices: ElementDefinition[] = data.map((assignment) => ({
+      data: { id: assignment.url, label: assignment.title, parent: 'algebra' },
+    }))
+    const edges = data.reduce((edges, assignment) => {
+      for (const target of assignment.requiredBy) {
+        edges.push({
+          data: {
+            id: `(${assignment.url}, ${target.url})`,
+            source: assignment.url,
+            target: target.url,
+          },
+        })
+      }
+      return edges
+    }, [] as ElementDefinition[])
+    return [{ data: { id: 'algebra', label: 'Algèbre' } }, ...vertices, ...edges]
+  },
+  'getAssignmentGraph',
+)

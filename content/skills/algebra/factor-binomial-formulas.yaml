@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: Factorisation de binômes remarquables
+title: "Factorisation: produit remarquables"
 courses:
   - PM1C
 options:
