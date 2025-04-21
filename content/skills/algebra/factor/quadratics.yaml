@@ -4,6 +4,8 @@ prerequisites:
   - /skills/algebra/factor/binomial-formulas
 courses:
   - PM1C
+options:
+  streak: 999
 body:
   - type: Factor
     params:
