@@ -89,21 +89,49 @@ export default function Assignment(props: AssignmentProps) {
           }}
         </For>
       </div>
-      <div class="py-6 px-6">
-        <h2 class="text-2xl my-4">Informations</h2>
-        <Show when={props.data.prerequisites}>
-          <h3 class="text-xl mb-4">Prérequis</h3>
-          <For each={props.data.prerequisites}>
-            {(prerequisite) => (
-              <li>
-                <a class="text-blue-600" href={prerequisite.url}>
-                  {prerequisite.title}
-                </a>
-              </li>
-            )}
-          </For>
-        </Show>
-      </div>
+      <Info {...props.data} />
     </ErrorBoundary>
   )
 }
+
+const Info = (props: Awaited<ReturnType<typeof getAssignment>>) => (
+  <div class="py-6 px-6">
+    <h2 class="text-2xl my-4">Informations</h2>
+    <Show when={props.prerequisites.length}>
+      <h3 class="text-xl mb-4">Prérequis</h3>
+      <For each={props.prerequisites}>
+        {(prerequisite) => (
+          <li>
+            <a class="text-blue-600" href={prerequisite.url}>
+              {prerequisite.title}
+            </a>
+          </li>
+        )}
+      </For>
+    </Show>
+    <Show when={props.requiredBy.length}>
+      <h3 class="text-xl mb-4">Compétence nécéssaire pour</h3>
+      <For each={props.requiredBy}>
+        {(skill) => (
+          <li>
+            <a class="text-blue-600" href={skill.url}>
+              {skill.title}
+            </a>
+          </li>
+        )}
+      </For>
+    </Show>
+    <Show when={props.courses.length}>
+      <h3 class="text-xl mb-4">Cours</h3>
+      <For each={props.courses}>
+        {(course) => (
+          <li>
+            <a class="text-blue-600" href={course.url}>
+              {course.title || course.code}
+            </a>
+          </li>
+        )}
+      </For>
+    </Show>
+  </div>
+)

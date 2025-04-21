@@ -134,7 +134,7 @@ export async function saveExercise(url: string, email: string, pos: number, exer
 export const getAssignment = async (data: z.input<typeof assignmentSchema>) => {
   'use server'
   const where = { url: data.url }
-  const include = { prerequisites: true, courses: true }
+  const include = { prerequisites: true, courses: true, requiredBy: true }
   let page = await prisma.assignment.findUnique({ where, include })
   let hash = CryptoJS.SHA256(JSON.stringify(data)).toString()
   if (!page || !page.body || page.hash !== hash) {
@@ -163,5 +163,8 @@ export const getAssignment = async (data: z.input<typeof assignmentSchema>) => {
     })
     await prisma.submission.deleteMany({ where })
   }
-  return page as unknown as Assignment
+  return page as Omit<typeof page, 'options' | 'body'> & {
+    body: Exercise[]
+    options: OptionsWithDefault
+  }
 }
