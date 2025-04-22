@@ -27,7 +27,6 @@ export default function Graph(props: {
               shape: 'round-rectangle',
               'background-color': '#bae6fd',
               label: 'data(label)',
-              color: '#082f49',
               'text-wrap': 'wrap',
               'text-max-width': '150px',
               padding: '10px',
@@ -35,6 +34,12 @@ export default function Graph(props: {
               'text-halign': 'center',
               width: 'label',
               height: 'label',
+            },
+          },
+          {
+            selector: 'node[?color]',
+            style: {
+              'background-color': 'data(color)',
             },
           },
           {
@@ -46,9 +51,8 @@ export default function Graph(props: {
           {
             selector: '$node > node',
             style: {
-              'background-color': '#f5f5f5',
-              'border-color': '#bdc3c7',
-              'border-width': 1,
+              'background-color': '#f0f9ff',
+              'border-width': 0,
               label: 'data(label)',
               color: '#7f8c8d',
               'text-valign': 'top',

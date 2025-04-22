@@ -35,6 +35,7 @@ model Submission {
   url String
   email String
   body Json
+  grade Int @default(0)
   lastModified DateTime @default(now())
   @@id([url, email])
 

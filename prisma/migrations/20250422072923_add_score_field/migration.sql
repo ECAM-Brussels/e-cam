@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `Submission` ADD COLUMN `grade` INTEGER NOT NULL DEFAULT 0;

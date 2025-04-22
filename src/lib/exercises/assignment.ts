@@ -114,6 +114,13 @@ export function extendSubmission(
   return body
 }
 
+function gradeSubmission(body: Exercise[]) {
+  return body.slice(-10).reduce((grade, exercise) => {
+    grade += exercise.attempts.at(-1)?.correct ? 1 : 0
+    return grade
+  }, 0)
+}
+
 export async function saveExercise(url: string, email: string, pos: number, exercise: Exercise) {
   'use server'
   await check(email)
@@ -125,7 +132,7 @@ export async function saveExercise(url: string, email: string, pos: number, exer
     body[pos] = await exerciseSchema.parseAsync(exercise)
     await prisma.submission.update({
       where: { url_email: { url, email }, lastModified: record.lastModified },
-      data: { body, lastModified: new Date() },
+      data: { body, lastModified: new Date(), grade: gradeSubmission(body) },
     })
   } catch (error) {
     throw new Error(`Error while saving exercise ${JSON.stringify(exercise, null, 2)}: ${error}`)
@@ -170,17 +177,36 @@ export const getAssignment = async (data: z.input<typeof assignmentSchema>) => {
   }
 }
 
+function gradeToColor(score: number, start = [231, 229, 228], end = [163, 230, 53], steps = 10) {
+  const rgb = [...Array(3).keys()].reduce((color, i) => {
+    color.push(Math.round(start[i] + (score / steps) * (end[i] - start[i])))
+    return color
+  }, [] as number[])
+  return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`
+}
+
 export const getAssignmentGraph = query(
   async (
     query: Parameters<typeof prisma.assignment.findMany>[0] = {},
   ): Promise<ElementDefinition[]> => {
     'use server'
+    const user = await getUser()
     const data = await prisma.assignment.findMany({
       ...query,
-      select: { url: true, title: true, requiredBy: { select: { url: true } } },
+      select: {
+        url: true,
+        title: true,
+        requiredBy: { select: { url: true } },
+        submissions: user ? { where: { email: user.email }, select: { grade: true } } : false,
+      },
     })
     const vertices: ElementDefinition[] = data.map((assignment) => ({
-      data: { id: assignment.url, label: assignment.title, parent: 'algebra' },
+      data: {
+        id: assignment.url,
+        label: assignment.title,
+        parent: 'algebra',
+        color: gradeToColor(assignment.submissions?.at(0)?.grade ?? 0),
+      },
     }))
     const edges = data.reduce((edges, assignment) => {
       for (const target of assignment.requiredBy) {
