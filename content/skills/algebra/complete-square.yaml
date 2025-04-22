@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: "Complétion du carré"
+courses:
+  - PM1C
+options:
+  streak: 999
+body:
+  - type: CompleteSquare
+    params:
+      A: [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5]
+      Alpha: [-9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      Beta: [-9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9]
