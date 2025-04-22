@@ -5,7 +5,6 @@ import { assignmentSchema } from '~/lib/exercises/assignment'
 export function GET() {
   const schema = zodToJsonSchema(
     assignmentSchema.omit({
-      userEmail: true,
       url: true,
     }),
   )
