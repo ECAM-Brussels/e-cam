@@ -118,10 +118,13 @@ export function extendSubmission(
 }
 
 function gradeSubmission(body: Exercise[]) {
-  return body.slice(-10).reduce((grade, exercise) => {
-    grade += exercise.attempts.at(-1)?.correct ? 1 : 0
-    return grade
-  }, 0)
+  return body
+    .filter((e) => e.attempts.length > 0)
+    .slice(-10)
+    .reduce((grade, exercise) => {
+      grade += exercise.attempts.at(-1)?.correct ? 1 : 0
+      return grade
+    }, 0)
 }
 
 export async function saveExercise(url: string, email: string, pos: number, exercise: Exercise) {
