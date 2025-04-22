@@ -2,6 +2,8 @@
 title: "Complétion du carré"
 courses:
   - PM1C
+prerequisites:
+  - /skills/algebra/factor/binomial-formulas
 options:
   streak: 999
 body:
