@@ -8,6 +8,7 @@ import { getAssignmentGraph } from '~/lib/exercises/assignment'
 export default function Graph(props: {
   class?: string
   query?: Parameters<typeof getAssignmentGraph>[0]
+  rankDir?: string
 }) {
   let container!: HTMLDivElement
   const [cy, setCy] = createSignal<Core | null>(null)
@@ -96,7 +97,7 @@ export default function Graph(props: {
       cy()!
         .layout({
           name: 'dagre',
-          rankDir: 'LR',
+          rankDir: props.rankDir || 'LR',
         } as { name: string })
         .run()
     }

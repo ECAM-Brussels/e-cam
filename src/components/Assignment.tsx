@@ -1,4 +1,5 @@
 import ErrorBoundary from './ErrorBoundary'
+import Graph from './Graph'
 import Pagination from './Pagination'
 import { createAsync, revalidate } from '@solidjs/router'
 import { Component, For, Show, Suspense } from 'solid-js'
@@ -94,44 +95,23 @@ export default function Assignment(props: AssignmentProps) {
   )
 }
 
-const Info = (props: Awaited<ReturnType<typeof getAssignment>>) => (
-  <div class="py-6 px-6">
-    <h2 class="text-2xl my-4">Informations</h2>
-    <Show when={props.prerequisites.length}>
-      <h3 class="text-xl mb-4">Prérequis</h3>
-      <For each={props.prerequisites}>
-        {(prerequisite) => (
-          <li>
-            <a class="text-blue-600" href={prerequisite.url}>
-              {prerequisite.title || prerequisite.url}
-            </a>
-          </li>
-        )}
-      </For>
-    </Show>
-    <Show when={props.requiredBy.length}>
-      <h3 class="text-xl mb-4">Compétence nécéssaire pour</h3>
-      <For each={props.requiredBy}>
-        {(skill) => (
-          <li>
-            <a class="text-blue-600" href={skill.url}>
-              {skill.title || skill.url}
-            </a>
-          </li>
-        )}
-      </For>
-    </Show>
-    <Show when={props.courses.length}>
-      <h3 class="text-xl mb-4">Cours</h3>
-      <For each={props.courses}>
-        {(course) => (
-          <li>
-            <a class="text-blue-600" href={course.url}>
-              {course.title || course.code}
-            </a>
-          </li>
-        )}
-      </For>
-    </Show>
-  </div>
-)
+const Info = (props: Awaited<ReturnType<typeof getAssignment>>) => {
+  return (
+    <div class="py-6 px-6">
+      <h2 class="text-2xl my-4">Compétences voisines</h2>
+      <Graph
+        class="bg-white border rounded-xl min-w-64 min-h-96"
+        rankDir="BT"
+        query={{
+          where: {
+            OR: [
+              { url: props.url },
+              { prerequisites: { some: { url: props.url } } },
+              { requiredBy: { some: { url: props.url } } },
+            ],
+          },
+        }}
+      />
+    </div>
+  )
+}

@@ -206,23 +206,26 @@ export const getAssignmentGraph = query(
         submissions: user ? { where: { email: user.email }, select: { grade: true } } : false,
       },
     })
-    const vertices: ElementDefinition[] = data.map((assignment) => ({
+    const vertices = data.map((assignment) => ({
       data: {
         id: assignment.url,
         label: assignment.title,
         parent: 'algebra',
         color: gradeToColor(assignment.submissions?.at(0)?.grade ?? 0),
       },
-    }))
+    })) satisfies ElementDefinition[]
+    const urls = vertices.map((v) => v.data.id)
     const edges = data.reduce((edges, assignment) => {
       for (const target of assignment.requiredBy) {
-        edges.push({
-          data: {
-            id: `(${assignment.url}, ${target.url})`,
-            source: assignment.url,
-            target: target.url,
-          },
-        })
+        if (urls.includes(target.url)) {
+          edges.push({
+            data: {
+              id: `(${assignment.url}, ${target.url})`,
+              source: assignment.url,
+              target: target.url,
+            },
+          })
+        }
       }
       return edges
     }, [] as ElementDefinition[])
