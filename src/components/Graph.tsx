@@ -9,6 +9,7 @@ export default function Graph(props: {
   class?: string
   query?: Parameters<typeof getAssignmentGraph>[0]
   rankDir?: string
+  currentNode?: string
 }) {
   let container!: HTMLDivElement
   const [cy, setCy] = createSignal<Core | null>(null)
@@ -47,6 +48,12 @@ export default function Graph(props: {
             selector: '.hovered',
             style: {
               'background-color': '#38bdf8',
+            },
+          },
+          {
+            selector: '.current',
+            style: {
+              'border-width': '2px',
             },
           },
           {
@@ -93,7 +100,14 @@ export default function Graph(props: {
 
   createEffect(() => {
     if (cy() && elements()) {
-      cy()!.json({ elements: elements() })
+      cy()!.json({
+        elements: elements()?.map((el) => {
+          if (props.currentNode && el.data.id === props.currentNode) {
+            return { ...el, classes: 'current' }
+          }
+          return el
+        }),
+      })
       cy()!
         .layout({
           name: 'dagre',

@@ -102,6 +102,7 @@ const Info = (props: Awaited<ReturnType<typeof getAssignment>>) => {
       <Graph
         class="bg-white border rounded-xl min-w-64 min-h-96"
         rankDir="BT"
+        currentNode={props.url}
         query={{
           where: {
             OR: [
