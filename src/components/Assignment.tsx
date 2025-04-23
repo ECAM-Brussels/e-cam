@@ -12,6 +12,7 @@ import {
   type getAssignment,
   extendSubmission,
   getSubmission,
+  getAssignmentGraph,
 } from '~/lib/exercises/assignment'
 import { ExerciseProps } from '~/lib/exercises/base'
 import { optionsSchemaWithDefault } from '~/lib/exercises/schemas'
@@ -42,6 +43,15 @@ export default function Assignment(props: AssignmentProps) {
       const correct = exercise.attempts.at(-1)?.correct
       return { true: 'bg-green-100', false: 'bg-red-100' }[String(correct)] ?? 'bg-white'
     })
+  const graphQuery = () => ({
+    where: {
+      OR: [
+        { url: props.url },
+        { prerequisites: { some: { url: props.url } } },
+        { requiredBy: { some: { url: props.url } } },
+      ],
+    },
+  })
   return (
     <ErrorBoundary class="lg:flex gap-8">
       <div class="grow">
@@ -76,6 +86,7 @@ export default function Assignment(props: AssignmentProps) {
                             event as Exercise,
                           )
                           revalidate(getSubmission.keyFor(props.url, props.userEmail))
+                          revalidate(getAssignmentGraph.keyFor(graphQuery()))
                         } else {
                           setStorage(
                             storage().map((ex, i) => (i === index() ? (event as Exercise) : ex)),
@@ -90,29 +101,15 @@ export default function Assignment(props: AssignmentProps) {
           }}
         </For>
       </div>
-      <Info {...props.data} />
+      <div class="py-6 px-6">
+        <h2 class="text-2xl my-4">Compétences voisines</h2>
+        <Graph
+          class="bg-white border rounded-xl min-w-64 min-h-96"
+          rankDir="BT"
+          currentNode={props.url}
+          query={graphQuery()}
+        />
+      </div>
     </ErrorBoundary>
-  )
-}
-
-const Info = (props: Awaited<ReturnType<typeof getAssignment>>) => {
-  return (
-    <div class="py-6 px-6">
-      <h2 class="text-2xl my-4">Compétences voisines</h2>
-      <Graph
-        class="bg-white border rounded-xl min-w-64 min-h-96"
-        rankDir="BT"
-        currentNode={props.url}
-        query={{
-          where: {
-            OR: [
-              { url: props.url },
-              { prerequisites: { some: { url: props.url } } },
-              { requiredBy: { some: { url: props.url } } },
-            ],
-          },
-        }}
-      />
-    </div>
   )
 }
