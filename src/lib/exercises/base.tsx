@@ -130,7 +130,6 @@ export function createExerciseType<
   }
   const schema = z.object({
     type: z.literal(exercise.name),
-    maxAttempts: z.null().or(z.number()).optional(),
     options: optionsSchema,
     attempts: z
       .object({

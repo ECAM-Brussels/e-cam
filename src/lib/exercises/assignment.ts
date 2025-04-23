@@ -88,7 +88,8 @@ export function extendSubmission(
   questions: Exercise[],
   options: OptionsWithDefault,
 ): Exercise[] {
-  const streak = (id: number) => ({ ...options, ...questions.at(id)?.options }).streak
+  const opts = (id: number) => ({ ...options, ...questions.at(id)?.options })
+  const streak = (id: number) => opts(id).streak
   let [dynamicId, currentStreak] = [0, 0]
   for (const exercise of body) {
     if (exercise.attempts.at(-1)?.correct) {
@@ -101,9 +102,9 @@ export function extendSubmission(
       currentStreak = 0
     }
   }
-  const lastFullyAttempted = body.at(-1)?.attempts.length === body.at(-1)?.maxAttempts
+  const lastFullyAttempted = body.at(-1)?.attempts.length === opts(-1).maxAttempts
   const lastIsCorrect = body.at(-1)?.attempts.at(-1)?.correct
-  if (streak(dynamicId) && (lastFullyAttempted || lastIsCorrect)) {
+  if (streak(dynamicId) && (!body.length || lastFullyAttempted || lastIsCorrect)) {
     body = [...body, questions[dynamicId]]
     return body
   }
