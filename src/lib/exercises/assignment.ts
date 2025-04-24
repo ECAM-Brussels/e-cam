@@ -71,8 +71,7 @@ export const getSubmission = query(async (url: string, email: string) => {
       submissions: { where: { email } },
     },
   })
-  let body = (submissions.at(0)?.body as Exercise[]) ?? []
-  body = extendSubmission(body, questions as Exercise[], optionsSchemaWithDefault.parse(options))
+  const body = extendSubmission(submissions.at(0)?.body ?? [], questions, options)
   if (!submissions.length) {
     await prisma.submission.upsert({
       where: { url_email: { url, email } },
@@ -132,13 +131,12 @@ export async function saveExercise(url: string, email: string, pos: number, exer
   'use server'
   await check(email)
   try {
-    const record = await prisma.submission.findUniqueOrThrow({
+    const { body, lastModified } = await prisma.submission.findUniqueOrThrow({
       where: { url_email: { url, email } },
     })
-    const body = record.body as Exercise[]
     body[pos] = await exerciseSchema.parseAsync(exercise)
     await prisma.submission.update({
-      where: { url_email: { url, email }, lastModified: record.lastModified },
+      where: { url_email: { url, email }, lastModified },
       data: { body, lastModified: new Date(), grade: gradeSubmission(body) },
     })
   } catch (error) {
@@ -159,7 +157,7 @@ export const getAssignment = async (data: z.input<typeof assignmentSchema>) => {
       hash,
       prerequisites: {
         connectOrCreate: prerequisites.map((p) => ({
-          create: { url: p.url, body: [], options: {} },
+          create: { url: p.url, body: [], options: optionsSchemaWithDefault.parse({}) },
           where: { url: p.url },
         })),
       },
@@ -178,10 +176,7 @@ export const getAssignment = async (data: z.input<typeof assignmentSchema>) => {
     })
     await prisma.submission.deleteMany({ where })
   }
-  return page as Omit<typeof page, 'options' | 'body'> & {
-    body: Exercise[]
-    options: OptionsWithDefault
-  }
+  return page
 }
 
 function gradeToColor(score: number, start = [231, 229, 228], end = [163, 230, 53], steps = 10) {
