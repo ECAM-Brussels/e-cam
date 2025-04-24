@@ -477,6 +477,83 @@ If the cookie is entirely deterministic,
 then a malicious user will have access to your account forever.
 :::
 
+# Interlude: symmetric cryptography {.w-1--2}
+
+![](https://www.twilio.com/content/dam/twilio-com/global/en/blog/legacy/2018/what-is-public-key-cryptography/z9ws4Rp8VZHoHpnhlh9I3QhAqiIdQZg6aSOlCCu1e5SAFaROINAr3e18te2CGD8wSJXgwxYnI8YloP.png){.w-full}
+
+# Interlude: asymmetric or public key cryptography {.w-1--2}
+
+![](https://www.twilio.com/content/dam/twilio-com/global/en/blog/legacy/2018/what-is-public-key-cryptography/19DfiKodi3T25Xz7g9EDTyvF9di2SzvJo6JebRJaCN-1P_c1fMqGtrAyZzxGGucG0bcmR8UwNes-gS.png){.w-full}
+
+- Share public key, but keep private key's private
+
+- Both keys are **inverse of each other**
+
+- Fast to generate a **key pair**,
+  slow to find one key from another.
+
+# Interlude: signature with symmetric cryptography {.w-1--2}
+
+$$
+\text{signature} = \text{hash}(\text{password} + \text{message})
+$$
+
+```{.js .run tailwind=true framework="solid" runImmediately=true hideEditor=true}
+import { createSignal, createResource } from 'solid-js'
+
+async function sha256(message) {
+  const msgBuffer = new TextEncoder().encode(message)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer)
+  const hashArray = Array.from(new Uint8Array(hashBuffer))
+  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
+  return hashHex
+}
+
+function App() {
+  const [message, setMessage] = createSignal('Hello world')
+  const [hashed] = createResource(message, (str) => sha256('secret' + str))
+  return (
+    <>
+      <textarea class="border w-full min-h-32" onInput={(e) => setMessage(e.target.value)}>{message()}</textarea>
+      <pre>Signature: {hashed()}</pre>
+    </>
+  )
+}
+```
+
+Try to fake the signature:
+
+```{.js .run tailwind=true framework="solid" runImmediately=true hideEditor=true}
+import { createSignal, createResource } from 'solid-js'
+
+async function sha256(message) {
+  const msgBuffer = new TextEncoder().encode(message)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer)
+  const hashArray = Array.from(new Uint8Array(hashBuffer))
+  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
+  return hashHex
+}
+
+function App() {
+  const [message, setMessage] = createSignal('Hello world')
+  const [key, setKey] = createSignal('secretKey')
+  const [hashed] = createResource(() => [message(), key()], ([str, k]) => sha256(k + str))
+  return (
+    <>
+      <textarea class="border w-full min-h-32" onInput={(e) => setMessage(e.target.value)}>{message()}</textarea>
+      <label>Password: <input onInput={e => setKey(e.target.value)} class="border" value={key()} /></label>
+      <pre>Signature: {hashed()}</pre>
+    </>
+  )
+}
+```
+
+**Application**: signing cookies
+
+# Interlude: signature with public key cryptography {.w-1--2}
+
+![](https://blog.mdaemon.com/hs-fs/hubfs/Imported_Blog_Media/OpenPGPSign-1.jpg){.w-full}
+
 # Session ID
 
 ```mermaid
@@ -514,7 +591,6 @@ sequenceDiagram
   server ->> db: Remove session
   server ->> browser: Response + ask to remove sessionId cookie
 ```
-
 
 # Tokens
 
@@ -561,7 +637,7 @@ function App() {
   const [value, setValue] = createSignal('{\n  "alg": "HS256",\n  "typ": "JWT"\n}')
   return (
     <div>
-      <textarea class="border w-4/5 font-mono min-h-32">{value()}</textarea>
+      <textarea class="border w-4/5 font-mono min-h-32" onInput={e => setValue(e.target.value)}>{value()}</textarea>
       <pre>Result: {btoa(value())}</pre>
     </div>
   )
@@ -574,10 +650,10 @@ function App() {
 import { createSignal } from 'solid-js'
 
 function App() {
-  const [value, setValue] = createSignal('{\n  "name": "lily",\n  "breed": "dachsund",\n  "iq": -8000\n}')
+  const [value, setValue] = createSignal('{\n  "name": "lily",\n  "breed": "dachshund",\n  "iq": -8000\n}')
   return (
     <div>
-      <textarea class="border w-4/5 font-mono min-h-32">{value()}</textarea>
+      <textarea class="border w-4/5 font-mono min-h-32" onInput={e => setValue(e.target.value)}>{value()}</textarea>
       <pre>Result: {btoa(value())}</pre>
     </div>
   )
@@ -748,3 +824,4 @@ sequenceDiagram
 
 - `privateKey` is a proof of identity for your application
 - `code` is a proof of user consent for a website associated with `publicKey`
+- Could your ISP get a token?
