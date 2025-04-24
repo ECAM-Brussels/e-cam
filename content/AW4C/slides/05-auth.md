@@ -455,10 +455,296 @@ sequenceDiagram
   server ->> server: Use cookie to identify user
 ```
 
-# ID tokens
+# Inside the cookie {.w-1--2}
 
 ::: question
 What should we put in that authentication cookie?
 :::
 
-Think of the ideas we've talked about so far...
+Two possibilities:
+
+- Session IDs:
+  a random string **unique** to each user,
+  the actual data is obtained through a database look-up.
+
+- Token:
+  the data associated with that user,
+  cryptographically signed.
+
+::: warning
+Remember that cookies can be stolen.
+If the cookie is entirely deterministic,
+then a malicious user will have access to your account forever.
+:::
+
+# Session ID
+
+```mermaid
+sequenceDiagram
+  participant browser as Browser
+  participant server as Server
+  participant db as Database Server
+  Note over browser, server: Authentication
+  browser ->> server: POST /login
+  server ->> db: DB check and create session in the database
+  db ->> server: Give unique sessionId
+  server ->> browser: Set-Cookie: sessionId=...;
+  Note over browser, server: Later...
+  browser ->> server: Request + Cookie
+  server ->> db: Which user is associated with sessionId?
+  db ->> server: User info
+  server ->> browser: Response
+```
+
+- Necessity to store session information
+- Invalidation is easy
+- Scaling also involves the session store (stateful)
+
+Analogy: student number
+
+# Session ID: logging out
+
+```mermaid
+sequenceDiagram
+  participant browser as Browser
+  participant server as Server
+  participant db as Database Server
+  Note over browser, server: Authentication
+  browser ->> server: GET /logout
+  server ->> db: Remove session
+  server ->> browser: Response + ask to remove sessionId cookie
+```
+
+
+# Tokens
+
+- No separate storage needed (self-contained)
+
+- Invalidation is more difficult
+
+- Scaling is easy (stateless)
+
+- More flexible (e.g. scope)
+
+Analogy: student card
+
+# Tokens: sequence diagram {.w-1--2}
+
+```mermaid
+sequenceDiagram
+  participant browser as Browser
+  participant server as Server
+  participant db as Database Server
+  Note over browser, server: Authentication
+  browser ->> server: POST /login
+  server ->> db: Check credentials
+  db ->> server: OK
+  server ->> server: Generate and sign token
+
+  server ->> browser: Set-Cookie: token=...;
+  Note over browser, server: Later...
+  browser ->> server: Request + Cookie
+  server ->> server: Check signature and extract
+  server ->> browser: Response
+```
+
+# The JWT standard {.w-1--2}
+
+Format: `xxxxx.yyyyy.zzzzz`
+
+1. Header: token type and signing algorithm, encoded in base64.
+
+```{.js .run tailwind=true framework="solid" runImmediately=true hideEditor=true}
+import { createSignal } from 'solid-js'
+
+function App() {
+  const [value, setValue] = createSignal('{\n  "alg": "HS256",\n  "typ": "JWT"\n}')
+  return (
+    <div>
+      <textarea class="border w-4/5 font-mono min-h-32">{value()}</textarea>
+      <pre>Result: {btoa(value())}</pre>
+    </div>
+  )
+}
+```
+
+2. Payload: JSON, encoded in base-64
+
+```{.js .run tailwind=true framework="solid" runImmediately=true hideEditor=true}
+import { createSignal } from 'solid-js'
+
+function App() {
+  const [value, setValue] = createSignal('{\n  "name": "lily",\n  "breed": "dachsund",\n  "iq": -8000\n}')
+  return (
+    <div>
+      <textarea class="border w-4/5 font-mono min-h-32">{value()}</textarea>
+      <pre>Result: {btoa(value())}</pre>
+    </div>
+  )
+}
+```
+
+3. Signature = `sign(xxxxx.yyyyy)`
+
+   Ensures that the token cannot be faked by the user.
+
+**Tokens** are URL-safe thanks to the base64 encoding.
+
+# JWT: example
+
+<Iframe src="https://jwt.io/" class="w-full h-full" />
+
+# SSO: Multiple services with JWT {.w-1--2}
+
+Tokens shine when with multiple applications or services.
+
+```mermaid
+sequenceDiagram
+  participant client as Client
+  participant auth as Authentication Server
+  participant service1 as Service
+  client ->> auth: POST /login
+  auth ->> client: JWT
+  client ->> service1: GET /something with JWT token
+  service1 ->> service1: Check token
+  service1 ->> client: Response
+```
+
+::: {.question title="Exam-style question"}
+How would this work with session IDs?
+Give the sequence diagram.
+:::
+
+# Token invalidation {.w-1--2}
+
+::: question
+How does logging out work?
+:::
+
+The only way to invalidate while being stateless,
+is to ensure tokens are **short-lived**.
+But that does require repeated log ins!
+To avid this, we use **two tokens**.
+
+- **Access token** contains an expiry date,
+  and are used to communicate with your services.
+  We will not attempt to invalidate them.
+
+- **Refresh token** is long-lived,
+  and is only used with the authentication server to get access tokens.
+
+# JWT with access/refresh tokens {.w-1--2}
+
+```mermaid
+sequenceDiagram
+  participant client as Client
+  participant auth as Authentication Server
+  participant service as Service
+  client ->> auth: POST /login
+  auth ->> client: accessToken, refreshToken
+  client ->> service: Request with accessToken
+  service ->> client: Response
+  Note over client, service: After access token expiration
+  client ->> auth: GET /access-token with refreshToken
+  auth ->> client: Response with new accessToken
+  client ->> service: Request with new accessToken
+  service ->> client: Response
+```
+
+::: remark
+Note that we haven't explained how logging out works
+:::
+
+# JWT: versioning {.w-1--2}
+
+The **refresh** token often contains a **version** field.
+
+``` json
+{
+  "user": "ngy@ecam.be",
+  "version": 3,
+  "exp": 1713967600
+}
+```
+
+We will invalidate the token
+by asking the **auth server** to refuse refresh tokens
+for which the version is 3 or below (for the above token).
+
+# JWT: logging out {.w-1--2}
+
+```mermaid
+sequenceDiagram
+  participant client as Client
+  participant auth as Authentication Server
+  participant service as Service
+  client ->> auth: POST /login
+  auth ->> auth: n = tokenVersion (from DB)
+  auth ->> client: accessToken, refreshToken(n)
+  client ->> service: Request with accessToken
+  service ->> client: Response
+  Note over client, service: After access token expiration
+  client ->> auth: GET /access-token with refreshToken(n)
+  auth ->> auth: Check that n == tokenVersion (from DB)
+  client ->> service: Request with new accessToken
+  service ->> client: Response
+  Note over client, service: Logging out
+  client ->> auth: GET /logout
+  auth ->> auth: tokenVersion++
+```
+
+# JWT: logging out {.w-1--2}
+
+- At the end, `refreshToken(n)` will not be valid anymore,
+  but the accessToken will still work.
+  Logging out is not instantaneous!
+
+- What happens if you were connected on multiple devices,
+  and log out?
+
+# OAuth: example {.w-1--2}
+
+Authentication is **hard** (rate limiting, password reset, 2FA, etc.).
+Can we delegate it to a third-party?
+
+Yes, via OAuth, an **authorization standard**.
+
+| Step                                 | URL                                             |
+| ------------------------------------ | ----------------------------------------------- |
+| Clicks 'Log in via Service Provider' | `https://my.website.com`                        |
+| Redirection...                       | `https://auth.provider.com/?info=...`   |
+| Log in and consent                   |                                                 |
+| Redirection                          | `https://my.website.com/auth/callback?code=...` |
+| Get token and use it to fetch info   |                                                 |
+
+Note that the two websites only communicate via URLs:
+$$
+\begin{array}{c}
+\text{my.website.com} \ \overset{\text{info=...}}{\longrightarrow} \ \text{auth.provider.com} \\
+\ \underset{\text{code=...}}{\longleftarrow} \
+\end{array}
+$$
+but need to ensure that the user has consented.
+
+# OAuth: sequence diagram {.w-1--2}
+
+```mermaid
+sequenceDiagram
+  participant client as Client
+  participant server as App server
+  participant auth as Auth Provider
+  client ->> server: GET /login-via-oauth
+  server ->> server: Generate (publicKey, privateKey)
+  server ->> client: Request redirect to https://auth.provider.com/?publicKey=...
+  client ->> auth: GET /?publicKey=...
+  auth ->> client: Response: auth page
+  client ->> auth: Log in and consent
+  auth ->> auth: Generate code (authorization code)
+  auth ->> client: Request redirect to https://my.website.com/auth/callback?code=...
+  client ->> server: GET /auth/callback?code=...
+  server ->> auth: POST request with privateKey + code
+  auth ->> server: JWT token(s)
+```
+
+- `privateKey` is a proof of identity for your application
+- `code` is a proof of user consent for a website associated with `publicKey`
