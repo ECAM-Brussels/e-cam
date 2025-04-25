@@ -19,7 +19,6 @@ model Assignment {
   body Json
   /// [Options]
   options Json
-
   hash String @default("")
   lastModified DateTime @default(now())
 

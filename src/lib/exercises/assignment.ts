@@ -81,7 +81,7 @@ export const getSubmission = query(async (url: string, email: string) => {
     })
   }
   return body
-}, 'getAssignment')
+}, 'getSubmission')
 
 export function extendSubmission(
   body: Exercise[],
