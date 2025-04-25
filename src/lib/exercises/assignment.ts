@@ -47,6 +47,7 @@ export const assignmentSchema = z.object({
   courses: z.string().array().default([]),
 })
 export type Assignment = z.infer<typeof assignmentSchema>
+export type AssignmentInput = z.input<typeof assignmentSchema>
 
 async function check(email: string) {
   'use server'
