@@ -28,16 +28,15 @@ type Stroke = {
 export const loadBoard = query(async (url: string, id: string) => {
   'use server'
   const record = await prisma.board.findUnique({ where: { url_id: { url, id } } })
-  return record ? (JSON.parse(String(record.body)) as Stroke[]) : null
+  return record ? (record.body as Stroke[]) : null
 }, 'loadBoards')
 
-const upsertBoard = async (url: string, id: string, data: Stroke[]) => {
+const upsertBoard = async (url: string, id: string, body: Stroke[]) => {
   'use server'
   const user = await getUser()
   if (!user || !user.admin) {
     throw new Error('Error when upserting board: user is not an admin')
   }
-  const body = JSON.stringify(data)
   await prisma.board.upsert({
     where: { url_id: { url, id } },
     update: { body, lastModified: new Date() },
