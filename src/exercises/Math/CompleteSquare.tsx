@@ -1,10 +1,6 @@
-import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { sample } from 'lodash-es'
-import { onMount, Show } from 'solid-js'
-import { For } from 'solid-js'
-import { createStore } from 'solid-js/store'
 import { z } from 'zod'
-import Fa from '~/components/Fa'
+import EquationSteps from '~/components/EquationSteps'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
 import { createExerciseType } from '~/lib/exercises/base'
@@ -12,36 +8,20 @@ import { request } from '~/lib/graphql'
 
 const { Component, schema } = createExerciseType({
   name: 'CompleteSquare',
-  Component: (props) => {
-    const [lines, setLines] = createStore(props.attempt || [''])
-    onMount(() => {})
-    return (
-      <>
-        <p class="my-4">Complétez le carré dans l'expression suivante.</p>
-        <For each={lines}>
-          {(line, i) => (
-            <div class="grid grid-cols-2 justify-center items-center gap-2 my-1">
-              <Math class="justify-self-end" value={`${i() == 0 ? props.expr : ''} =`} />
-              <div class="flex gap-2">
-                <Math class="border min-w-24 p-2" editable name="attempt" value={line} />
-                <button type="button" onClick={() => setLines(lines.length, '')}>
-                  <Fa icon={faPlus} />
-                </button>
-                <Show when={i() > 0}>
-                  <button
-                    type="button"
-                    onClick={() => setLines(lines.filter((_, index) => index !== i()))}
-                  >
-                    <Fa icon={faTrash} />
-                  </button>
-                </Show>
-              </div>
-            </div>
-          )}
-        </For>
-      </>
-    )
-  },
+  Component: (props) => (
+    <>
+      <p class="my-4">Complétez le carré dans l'expression suivante.</p>
+      <EquationSteps
+        lhs={(props) => (
+          <Math class="justify-self-end" value={`${props.i == 0 ? props.value : ''} =`} />
+        )}
+        rhs={(props) => (
+          <Math class="border min-w-24 p-2" editable name="attempt" value={props.value} />
+        )}
+        values={(props.attempt ?? ['']).map((value) => [props.expr, value])}
+      />
+    </>
+  ),
   state: z.object({
     expr: z.string(),
     attempt: z.union([
