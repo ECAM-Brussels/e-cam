@@ -12,7 +12,7 @@ const { Component, schema } = createExerciseType({
       <p class="my-4">Complétez le carré dans l'expression suivante</p>
       <div class="flex justify-center items-center gap-2">
         <Math value={`${props.expr} =`} />
-        <Math class="border w-1/2" editable name="attempt" value={props.attempt} />
+        <Math class="border min-w-24 p-2" editable name="attempt" value={props.attempt} />
       </div>
     </>
   ),
