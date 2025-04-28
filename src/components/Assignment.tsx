@@ -38,11 +38,6 @@ export default function Assignment(props: AssignmentProps) {
     },
     { initialValue: [] },
   )
-  const classes = () =>
-    body()?.map((exercise) => {
-      const correct = exercise.attempts.at(-1)?.correct
-      return { true: 'bg-green-100', false: 'bg-red-100' }[String(correct)] ?? 'bg-white'
-    })
   const graphQuery = () => ({
     where: {
       OR: [
@@ -62,7 +57,11 @@ export default function Assignment(props: AssignmentProps) {
           current={props.index}
           onChange={props.onIndexChange}
           max={body().length || 0}
-          classes={classes()}
+          classList={(i) => ({
+            'bg-green-100': body()?.[i].attempts.at(-1)?.correct,
+            'bg-red-100': body()?.[i].attempts.at(-1)?.correct === false,
+            'bg-white': body()?.[i].attempts.at(-1)?.correct === undefined,
+          })}
         />
         <For each={body()}>
           {function <N, S, P, F>(exercise: Exercise, index: () => number) {

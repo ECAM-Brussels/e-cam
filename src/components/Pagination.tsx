@@ -4,22 +4,12 @@ import { For, type JSXElement } from 'solid-js'
 
 type PaginationProps = {
   current: number
-  classes?: string[]
+  classList: (i: number) => { [key: string]: boolean | undefined }
   max: number
   onChange?: (newValue: number) => void
 }
 
 export default function Pagination(props: PaginationProps) {
-  const classes = (i: number) => {
-    let className: string = ''
-    if (props.classes && props.classes.length > i) {
-      className = props.classes[i]
-    }
-    if (props.current === i) {
-      className += ' font-bold'
-    }
-    return className
-  }
   return (
     <nav class="text-center mb-4">
       <ul class="inline-flex text-gray-500">
@@ -31,7 +21,13 @@ export default function Pagination(props: PaginationProps) {
         </Button>
         <For each={Array.from(Array(props.max).keys())}>
           {(i) => (
-            <Button class={`border-e-0 ${classes(i)}`} onClick={() => props.onChange?.(i)}>
+            <Button
+              classList={{
+                'font-bold border-2 text-black border-black': props.current === i,
+                ...props.classList(i),
+              }}
+              onClick={() => props.onChange?.(i)}
+            >
               {i + 1}
             </Button>
           )}
@@ -49,13 +45,14 @@ export default function Pagination(props: PaginationProps) {
 
 type ButtonProps = {
   class?: string
+  classList?: { [key: string]: boolean | undefined }
   children: JSXElement
   onClick?: () => void
 }
 
 function Button(props: ButtonProps) {
   return (
-    <li class={`border border-gray-300 hover:bg-gray-100 hover:text-gray-700 ${props.class}`}>
+    <li class={`border border-gray-300 ${props.class}`} classList={props.classList}>
       <button class="px-3 py-1" onClick={props.onClick}>
         {props.children}
       </button>
