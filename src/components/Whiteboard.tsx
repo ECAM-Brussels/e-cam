@@ -32,7 +32,7 @@ export const loadBoard = query(async (url: string, id: string) => {
     where: { url_id: { url, id } },
   })
   return record?.body ?? null
-}, 'loadBoards')
+}, 'loadBoard')
 
 const upsertBoard = async (url: string, id: string, body: Stroke[]) => {
   'use server'
