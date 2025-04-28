@@ -62,6 +62,7 @@ model User {
 model Board {
   url String
   id String
+  /// [StrokeList]
   body Json
   lastModified DateTime @default(now())
   @@id([url, id])

@@ -19,7 +19,7 @@ import { prisma } from '~/lib/db'
 type Mode = 'draw' | 'erase' | 'read'
 type Status = 'unsaved' | 'saving' | 'saved'
 
-type Stroke = {
+export type Stroke = {
   color: string
   lineWidth: number
   points: [number, number][]
@@ -27,8 +27,11 @@ type Stroke = {
 
 export const loadBoard = query(async (url: string, id: string) => {
   'use server'
-  const record = await prisma.board.findUnique({ where: { url_id: { url, id } } })
-  return record ? (record.body as Stroke[]) : null
+  const record = await prisma.board.findUnique({
+    select: { body: true },
+    where: { url_id: { url, id } },
+  })
+  return record?.body ?? null
 }, 'loadBoards')
 
 const upsertBoard = async (url: string, id: string, body: Stroke[]) => {
@@ -98,7 +101,7 @@ export default function Whiteboard(props: WhiteboardProps) {
         for (const p of strokes[i].points) {
           const dist = (p[0] - x) ** 2 + (p[1] - y) ** 2
           if (dist <= 5) {
-            setStrokes(strokes.filter((s, j) => j !== i))
+            setStrokes(strokes.filter((_, j) => j !== i))
             setStatus('unsaved')
             return
           }
