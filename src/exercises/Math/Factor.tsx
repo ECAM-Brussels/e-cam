@@ -46,7 +46,7 @@ const { Component, schema } = createExerciseType({
       if (state.expand) {
         state = { ...state, expr: await expand(state.expr), expand: false }
       }
-      return { attempt: '', ...state } as typeof state & { attempt: string; expand: false }
+      return state as typeof state & { expand: false }
     }),
   attempt: z.string().min(1),
   mark: (question, attempt) => checkFactorisation(attempt, question.expr),
