@@ -56,14 +56,13 @@ const { Component, schema } = createExerciseType({
   name: 'Python',
   Component: (props) => (
     <>
-      <Markdown value={props.question} />
+      <Markdown value={props.question.question} />
       <Code lang="python" name="attempt" value={props.attempt} run />
     </>
   ),
-  state: z
+  question: z
     .object({
       question: z.string().describe('Question, entered as markdown'),
-      attempt: z.undefined().or(z.string().min(1)).describe("Student's code"),
       tests: z
         .string()
         .or(z.object({ test: z.string(), desc: z.string() }))
@@ -104,25 +103,26 @@ const { Component, schema } = createExerciseType({
           }
       return { attempt: '', ...state, ...patch, tests }
     }),
-  mark: (state) => {
-    if (state.constraints.some(([regex, val]) => new RegExp(regex).test(state.attempt) !== val)) {
+  attempt: z.string().min(1),
+  mark: (question, attempt) => {
+    if (question.constraints.some(([regex, val]) => new RegExp(regex).test(attempt) !== val)) {
       return false
     }
-    const tests = runTests(state.attempt, state.tests, state.results)
+    const tests = runTests(attempt, question.tests, question.results)
     return Promise.race([
       Promise.all(tests).then((t) => t.every((v) => v)),
       Promise.race(tests.map(async (t) => ((await t) ? new Promise<never>(() => {}) : false))),
     ])
   },
   feedback: [
-    async (state, remainingAttempts) => {
-      const tests = runTests(state.attempt, state.tests, state.results)
+    async (remainingAttempts, question, attempt) => {
+      const tests = runTests(attempt, question.tests, question.results)
       const results = await Promise.all(tests)
       return {
-        results: state.descriptions.map((d, i) => [d, results[i]] as const),
+        results: question.descriptions.map((d, i) => [d, results[i]] as const),
         answer: remainingAttempts
           ? undefined
-          : decrypt(state.answer, import.meta.env.VITE_PASSPHRASE),
+          : decrypt(question.answer, import.meta.env.VITE_PASSPHRASE),
       }
     },
     (props) => (

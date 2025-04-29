@@ -29,19 +29,18 @@ const { Component, schema } = createExerciseType({
     <>
       <p class="my-4">Factorisez au maximum l'expression suivante.</p>
       <div class="flex justify-center items-center gap-2">
-        <Math value={`${props.expr}=`} />
+        <Math value={`${props.question.expr}=`} />
         <Math name="attempt" class="border min-w-24 p-2" editable value={props.attempt} />
       </div>
     </>
   ),
-  state: z
+  question: z
     .object({
       expr: z.string().describe('Expression to factorise'),
       expand: z
         .boolean()
         .describe('Whether to expand expr before it is seen by the user')
         .default(false),
-      attempt: z.undefined().or(z.string().min(1)).describe("Student's answer"),
     })
     .transform(async (state) => {
       if (state.expand) {
@@ -49,13 +48,14 @@ const { Component, schema } = createExerciseType({
       }
       return { attempt: '', ...state } as typeof state & { attempt: string; expand: false }
     }),
-  mark: (state) => checkFactorisation(state.attempt, state.expr),
+  attempt: z.string().min(1),
+  mark: (question, attempt) => checkFactorisation(attempt, question.expr),
   feedback: [
-    async (state, attempts) => {
-      if (!attempts) {
-        return { answer: await factor(state.expr) }
+    async (remaining, question) => {
+      if (!remaining) {
+        return { answer: await factor(question.expr) }
       } else {
-        return { root: await getFirstRoot(state.expr) }
+        return { root: await getFirstRoot(question.expr) }
       }
     },
     (props) => (
@@ -96,7 +96,7 @@ const { Component, schema } = createExerciseType({
       sample(params.roots)?.forEach((root) => {
         expr += `(x - (${root}))`
       })
-      return { expr: await normalizePolynomial(expr), attempt: undefined }
+      return { expr: await normalizePolynomial(expr) }
     },
   },
 })

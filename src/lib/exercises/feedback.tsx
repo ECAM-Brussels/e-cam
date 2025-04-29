@@ -3,8 +3,8 @@ import { Show, type Component } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import Fa from '~/components/Fa'
 
-export default function Feedback<S, F extends object>(props: {
-  attempts: { correct: boolean; state: S; feedback?: F }[]
+export default function Feedback<A, F extends object>(props: {
+  attempts: { correct: boolean; attempt: A; feedback?: F }[]
   component?: Component<F>
   marking?: boolean
   maxAttempts: null | number

@@ -8,16 +8,19 @@ import ZodError from '~/components/ZodError'
 import Feedback from '~/lib/exercises/feedback'
 import { optionsSchema, type ExerciseType, type OptionsWithDefault } from '~/lib/exercises/schemas'
 
-export type ExerciseProps<Name, State, Params, Feedback> = {
+export type ExerciseProps<Name, Question, Attempt, Params, Feedback> = {
   type: Name
   onChange?: (
-    exercise: Omit<ExerciseProps<Name, State, Params, Feedback>, 'onChange' | 'params'> & {
-      state: State
+    exercise: Omit<
+      ExerciseProps<Name, Question, Attempt, Params, Feedback>,
+      'onChange' | 'params'
+    > & {
+      question: Question
     },
   ) => Promise<void> | void
   options: OptionsWithDefault
-  attempts: { correct: boolean; state: State; feedback?: Feedback }[]
-} & ({ state: State } | { params: Params })
+  attempts: { correct: boolean; attempt: Attempt; feedback?: Feedback }[]
+} & ({ question: Question } | { params: Params })
 
 /**
  * Create an exercise type from its building blocks
@@ -34,19 +37,22 @@ export type ExerciseProps<Name, State, Params, Feedback> = {
  */
 export function createExerciseType<
   Name extends string,
-  Schema extends z.ZodTypeAny,
+  Question extends z.ZodTypeAny,
+  Attempt extends z.ZodTypeAny,
   G extends z.ZodTypeAny,
   Feedback extends object,
->(exercise: ExerciseType<Name, Schema, G, Feedback>) {
-  function Component(props: ExerciseProps<Name, z.infer<Schema>, z.infer<G>, Feedback>) {
-    const state = createAsync(async () => {
-      if ('state' in props) return props.state
+>(exercise: ExerciseType<Name, Question, Attempt, G, Feedback>) {
+  function Component(
+    props: ExerciseProps<Name, z.infer<Question>, z.infer<Attempt>, z.infer<G>, Feedback>,
+  ) {
+    const question = createAsync(async () => {
+      if ('question' in props) return props.question
       if (!exercise.generator) throw new Error('Exercise does not accept params.')
       const { params, onChange, ...data } = props
       try {
-        const newState = await exercise.generator.generate(params)
-        await onChange?.({ ...data, state: await exercise.state.parseAsync(newState) })
-        return newState
+        const question = await exercise.generator.generate(params)
+        await onChange?.({ ...data, question: await exercise.question.parseAsync(question) })
+        return question
       } catch (error) {
         throw new Error(
           `Error while generating exercise ${JSON.stringify(params, null, 2)}: ${error}`,
@@ -69,9 +75,9 @@ export function createExerciseType<
       pending: false,
     })
 
-    async function mark(state: z.infer<Schema>) {
+    async function mark(question: z.infer<Question>, attempt: z.infer<Attempt>) {
       try {
-        return await exercise.mark(state)
+        return await exercise.mark(question, attempt)
       } catch {
         return false
       }
@@ -82,19 +88,19 @@ export function createExerciseType<
       setSubmission('pending', true)
       setSubmission('error', undefined)
       try {
-        const newState: z.infer<Schema> = await exercise.state.parseAsync({
-          ...state(),
-          ...extractFormData(new FormData(event.target as HTMLFormElement)),
-        })
+        const attempt: z.infer<Attempt> = await exercise.attempt.parseAsync(
+          extractFormData(new FormData(event.target as HTMLFormElement)).attempt,
+        )
         const [correct, feedback] = await Promise.all([
-          mark(newState),
-          getFeedback?.(newState, remaining(-1)),
+          mark(question(), attempt),
+          getFeedback?.(remaining(-1), question(), attempt),
         ])
         const { onChange, ...data } = props
-        const attempt = { correct, state: newState, feedback }
-        const attempts =
-          props.options.maxAttempts === null ? [attempt] : [...props.attempts, attempt]
-        await onChange?.({ ...data, state: newState, attempts })
+        await onChange?.({
+          ...data,
+          question: question(),
+          attempts: [...props.attempts, { correct, attempt, feedback }],
+        })
         setSubmission('pending', false)
       } catch (error) {
         if (error instanceof z.ZodError) {
@@ -105,10 +111,10 @@ export function createExerciseType<
     }
 
     return (
-      <Show when={state()} fallback={<p>Generating...</p>}>
+      <Show when={question()} fallback={<p>Generating...</p>}>
         <form onSubmit={handleSubmit}>
           <fieldset disabled={readOnly()} class="bg-white border rounded-xl p-4 my-4">
-            <exercise.Component {...state()} />
+            <exercise.Component question={question()} attempt={props.attempts.at(-1)?.attempt} />
             <ZodError error={submission.error} />
           </fieldset>
           <Show when={!readOnly() && !submission.pending}>
@@ -134,12 +140,12 @@ export function createExerciseType<
     attempts: z
       .object({
         correct: z.boolean(),
-        state: exercise.state,
+        attempt: exercise.attempt,
         feedback: z.any(),
       })
       .array()
       .default([]),
-    state: exercise.state.optional().describe('Object containing the exercise information'),
+    question: exercise.question.optional().describe('Object containing the exercise information'),
     params:
       exercise.generator?.params.optional().describe('Parameters to generate an exercise') ??
       z.undefined(),

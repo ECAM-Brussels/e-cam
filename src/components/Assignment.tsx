@@ -64,14 +64,16 @@ export default function Assignment(props: AssignmentProps) {
           })}
         />
         <For each={body()}>
-          {function <N, S, P, F>(exercise: Exercise, index: () => number) {
+          {function <N, Q, A, P, F>(exercise: Exercise, index: () => number) {
             return (
               <div classList={{ hidden: index() !== props.index }}>
                 <ErrorBoundary>
                   <Suspense fallback={<p>Loading exercise...</p>}>
                     <Dynamic
-                      component={exercises[exercise.type] as Component<ExerciseProps<N, S, P, F>>}
-                      {...(exercise as ExerciseProps<N, S, P, F>)}
+                      component={
+                        exercises[exercise.type] as Component<ExerciseProps<N, Q, A, P, F>>
+                      }
+                      {...(exercise as ExerciseProps<N, Q, A, P, F>)}
                       options={optionsSchemaWithDefault.parse({
                         ...props.data.options,
                         ...exercise.options,

@@ -18,23 +18,20 @@ const { Component, schema } = createExerciseType({
         rhs={(props) => (
           <Math class="border min-w-24 p-2" editable name="attempt" value={props.value} />
         )}
-        values={(props.attempt ?? ['']).map((value) => [props.expr, value])}
+        values={(props.attempt ?? ['']).map((value) => [props.question, value])}
       />
     </>
   ),
-  state: z.object({
-    expr: z.string(),
-    attempt: z.union([
-      z.undefined(),
-      z
-        .string()
-        .min(1)
-        .transform((s) => [s]),
-      z.string().min(1).array(),
-    ]),
-  }),
-  mark: async (state) => {
-    const { attempt } = await request(
+  question: z.string(),
+  attempt: z.union([
+    z
+      .string()
+      .min(1)
+      .transform((s) => [s]),
+    z.string().min(1).array(),
+  ]),
+  mark: async (question, attempt) => {
+    const data = await request(
       graphql(`
         query CheckSquare($expr: Math!, $attempt: Math!) {
           attempt: expression(expr: $attempt) {
@@ -43,9 +40,9 @@ const { Component, schema } = createExerciseType({
           }
         }
       `),
-      { ...state, attempt: state.attempt?.at(-1) ?? '' },
+      { expr: question, attempt: attempt.at(-1) ?? '' },
     )
-    return attempt.isEqual && attempt.count == 1
+    return data.attempt.isEqual && data.attempt.count == 1
   },
   generator: {
     params: z.object({
@@ -69,7 +66,7 @@ const { Component, schema } = createExerciseType({
         `),
         { expr: `(${a})(x - ${alpha})^2 + ${beta}` },
       )
-      return { expr: expression.expand.expr }
+      return expression.expand.expr
     },
   },
 })
