@@ -23,6 +23,7 @@ model Assignment {
   lastModified DateTime @default(now())
 
   submissions Submission[]
+  exercises Exercise[]
   courses Course[]
   prerequisites Assignment[] @relation("Prerequisites")
   requiredBy Assignment[] @relation("Prerequisites")
@@ -50,11 +51,21 @@ model Submission {
   user User @relation(fields: [email], references: [email])
 }
 
+model Exercise {
+  hash String @id
+  type String
+  question Json
+  score Int @default(1500)
+
+  assignments Assignment[]
+}
+
 model User {
   email String @id
   admin Boolean @default(false)
   firstName String
   lastName String
+  score Int @default(1500)
 
   submissions Submission[]
 }

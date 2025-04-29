@@ -4,6 +4,7 @@ import Pagination from './Pagination'
 import { createAsync, revalidate } from '@solidjs/router'
 import { Component, For, Show, Suspense } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
+import { adjustElo } from '~/lib/elo'
 import {
   type Assignment,
   exercises,
@@ -86,6 +87,15 @@ export default function Assignment(props: AssignmentProps) {
                             index(),
                             event as Exercise,
                           )
+                          if (event.attempts.length) {
+                            const { correct } = event.attempts.at(-1)!
+                            await adjustElo({
+                              email: props.userEmail,
+                              url: props.url,
+                              exercise: event as Exercise,
+                              correct,
+                            })
+                          }
                           revalidate(getSubmission.keyFor(props.url, props.userEmail))
                           revalidate(getAssignmentGraph.keyFor(graphQuery()))
                         } else {
