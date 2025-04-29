@@ -54,6 +54,7 @@ model Submission {
 model Exercise {
   hash String @id
   type String
+  /// [Question]
   question Json
   score Int @default(1500)
 

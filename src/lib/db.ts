@@ -10,6 +10,7 @@ declare global {
     type ExerciseList = Exercise[]
     type Options = OptionsWithDefault
     type StrokeList = Stroke[]
+    type Question = NonNullable<Exercise['question']>
   }
 }
 
