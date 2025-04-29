@@ -32,14 +32,9 @@ export async function adjustElo({ email, url, exercise, correct }: Info) {
     select: { score: true },
   })
   if (!data) {
-    const assignment = await prisma.assignment.findUniqueOrThrow({
-      where: { url },
-      select: { exercises: { select: { hash: true } } },
-    })
-    const hashes = assignment.exercises.map((e) => e.hash)
     let average = await prisma.exercise.aggregate({
       _avg: { score: true },
-      where: { hash: { in: hashes }, type: exercise.type },
+      where: { type: exercise.type },
     })
     const score = average._avg.score ?? initialElo
     data = await prisma.exercise.create({
