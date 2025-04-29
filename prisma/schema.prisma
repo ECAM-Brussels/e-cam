@@ -23,7 +23,6 @@ model Assignment {
   lastModified DateTime @default(now())
 
   submissions Submission[]
-  exercises Exercise[]
   courses Course[]
   prerequisites Assignment[] @relation("Prerequisites")
   requiredBy Assignment[] @relation("Prerequisites")
@@ -57,8 +56,6 @@ model Exercise {
   /// [Question]
   question Json
   score Int @default(1500)
-
-  assignments Assignment[]
 }
 
 model User {

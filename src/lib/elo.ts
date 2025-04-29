@@ -1,10 +1,10 @@
 import { prisma } from './db'
 import { type Exercise } from './exercises/assignment'
+import { query } from '@solidjs/router'
 import CryptoJS from 'crypto-js'
 
 type Info = {
   email: string
-  url: string
   exercise: Exercise
   correct: boolean
 }
@@ -16,14 +16,11 @@ function logistic(x: number) {
 const K = 32
 const initialElo = 1500
 
-export async function adjustElo({ email, url, exercise, correct }: Info) {
+export const getExerciseElo = query(async (exercise: Exercise) => {
   'use server'
-  const { score: userElo } = await prisma.user.findUniqueOrThrow({
-    where: { email },
-    select: { score: true },
-  })
-
-  // Get exercise's ELO
+  if (!exercise.question) {
+    return null
+  }
   let hash = CryptoJS.SHA256(
     JSON.stringify({ type: exercise.type, question: exercise.question }),
   ).toString()
@@ -43,7 +40,6 @@ export async function adjustElo({ email, url, exercise, correct }: Info) {
         type: exercise.type,
         question: exercise.question,
         score,
-        assignments: { connect: { url } },
       },
       select: { score: true },
     })
@@ -51,8 +47,22 @@ export async function adjustElo({ email, url, exercise, correct }: Info) {
       throw new Error(`Could not get an initial ELO score for ${JSON.stringify(exercise)}`)
     }
   }
-  const exerciseElo = data.score
+  return data.score
+}, 'getExerciseElo')
 
+export async function adjustElo({ email, exercise, correct }: Info) {
+  'use server'
+  let hash = CryptoJS.SHA256(
+    JSON.stringify({ type: exercise.type, question: exercise.question }),
+  ).toString()
+  const { score: userElo } = await prisma.user.findUniqueOrThrow({
+    where: { email },
+    select: { score: true },
+  })
+  const exerciseElo = await getExerciseElo(exercise)
+  if (exerciseElo === null) {
+    return
+  }
   const delta = Math.round(K * ((correct ? 1 : 0) - logistic(userElo - exerciseElo)))
   await Promise.all([
     prisma.user.update({ where: { email }, data: { score: { increment: delta } } }),

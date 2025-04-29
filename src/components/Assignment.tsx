@@ -4,7 +4,7 @@ import Pagination from './Pagination'
 import { createAsync, revalidate } from '@solidjs/router'
 import { Component, For, Show, Suspense } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
-import { adjustElo } from '~/lib/elo'
+import { adjustElo, getExerciseElo } from '~/lib/elo'
 import {
   type Assignment,
   exercises,
@@ -29,7 +29,7 @@ type AssignmentProps = {
 
 export default function Assignment(props: AssignmentProps) {
   const [storage, setStorage] = useStorage<Exercise[]>(() => `assignment.${props.url}`, [])
-  const user = createAsync(() => getUserInfo(props.userEmail))
+  const user = createAsync(async () => (props.userEmail ? getUserInfo(props.userEmail) : null))
   const body = createAsync(
     async () => {
       if (!props.userEmail) {
@@ -40,6 +40,13 @@ export default function Assignment(props: AssignmentProps) {
     },
     { initialValue: [] },
   )
+  const elo = createAsync(async () => {
+    const exercise = body()?.[props.index]
+    if (exercise) {
+      return await getExerciseElo(exercise)
+    }
+    return null
+  })
   const graphQuery = () => ({
     where: {
       OR: [
@@ -92,8 +99,7 @@ export default function Assignment(props: AssignmentProps) {
                             const { correct } = event.attempts.at(-1)!
                             await adjustElo({
                               email: props.userEmail,
-                              url: props.url,
-                              exercise: event as Exercise,
+                              exercise: event as Exercise & { question: NonNullable<any> },
                               correct,
                             })
                           }
@@ -115,9 +121,15 @@ export default function Assignment(props: AssignmentProps) {
       <div class="py-6 px-6">
         <Show when={user()}>
           {(user) => (
-            <div class="flex flex-col items-center">
-              <div class="text-sm">Score:</div>
-              <div class="font-bold text-3xl">{user().score}</div>
+            <div class="text-center">
+              <div>
+                <div class="text-sm">Score:</div>
+                <div class="font-bold text-3xl">{user().score}</div>
+              </div>
+              <div>
+                <div class="text-sm">Difficulté de l'exercice':</div>
+                <div class="font-bold text-3xl">{elo()}</div>
+              </div>
             </div>
           )}
         </Show>
