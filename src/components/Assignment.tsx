@@ -13,11 +13,11 @@ import {
   type getAssignment,
   extendSubmission,
   getSubmission,
-  getAssignmentGraph,
 } from '~/lib/exercises/assignment'
 import { ExerciseProps } from '~/lib/exercises/base'
 import { optionsSchemaWithDefault } from '~/lib/exercises/schemas'
 import useStorage from '~/lib/storage'
+import { getUserInfo } from '~/lib/user'
 
 type AssignmentProps = {
   url: string
@@ -29,6 +29,7 @@ type AssignmentProps = {
 
 export default function Assignment(props: AssignmentProps) {
   const [storage, setStorage] = useStorage<Exercise[]>(() => `assignment.${props.url}`, [])
+  const user = createAsync(() => getUserInfo(props.userEmail))
   const body = createAsync(
     async () => {
       if (!props.userEmail) {
@@ -96,8 +97,7 @@ export default function Assignment(props: AssignmentProps) {
                               correct,
                             })
                           }
-                          revalidate(getSubmission.keyFor(props.url, props.userEmail))
-                          revalidate(getAssignmentGraph.keyFor(graphQuery()))
+                          revalidate()
                         } else {
                           setStorage(
                             storage().map((ex, i) => (i === index() ? (event as Exercise) : ex)),
@@ -113,9 +113,17 @@ export default function Assignment(props: AssignmentProps) {
         </For>
       </div>
       <div class="py-6 px-6">
+        <Show when={user()}>
+          {(user) => (
+            <div class="flex flex-col items-center">
+              <div class="text-sm">Score:</div>
+              <div class="font-bold text-3xl">{user().score}</div>
+            </div>
+          )}
+        </Show>
         <h2 class="text-2xl my-4">Compétences voisines</h2>
         <Graph
-          class="bg-white border rounded-xl min-w-64 min-h-96"
+          class="rounded-xl min-w-64 min-h-96"
           rankDir="BT"
           currentNode={props.url}
           query={graphQuery()}
