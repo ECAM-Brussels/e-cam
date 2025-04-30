@@ -24,6 +24,14 @@ async function createAssignment(file: string, prisma: PrismaClient) {
   content = content.replace('$route$', file)
   writeFileSync(outputPath, content, 'utf-8')
   const url = '/' + relativePath.replace(/\.ya?ml$/, '')
+  await prisma.assignment.createMany({
+    data: (assignment.prerequisites ?? []).map((p) => ({
+      url: typeof p === 'string' ? p : p.url,
+      body: [],
+      options,
+    })),
+    skipDuplicates: true,
+  })
   const payload = {
     title: assignment.title,
     prerequisites: {
@@ -42,6 +50,14 @@ async function createAssignment(file: string, prisma: PrismaClient) {
       })),
     },
   } satisfies Parameters<typeof prisma.assignment.upsert>[0]['update']
+  const update = {
+    ...payload,
+    prerequisites: {
+      set: (assignment.prerequisites ?? []).map((p) => ({
+        url: typeof p === 'string' ? p : p.url,
+      })),
+    },
+  }
   try {
     await prisma.assignment.upsert({
       where: { url },
@@ -51,7 +67,7 @@ async function createAssignment(file: string, prisma: PrismaClient) {
         body: [],
         options,
       },
-      update: payload,
+      update,
     })
   } catch (error) {
     console.log(`Error when writing the metadata of ${file} to the database: ${error}`)

@@ -153,14 +153,19 @@ export const getAssignment = async (data: z.input<typeof assignmentSchema>) => {
   let hash = hashObject(data)
   if (!page || !page.body || page.hash !== hash) {
     const { prerequisites, courses, ...assignment } = await assignmentSchema.parseAsync(data)
-    const payload = {
+    await prisma.assignment.createMany({
+      data: prerequisites.map((p) => ({
+        url: p.url,
+        body: [],
+        options: optionsSchemaWithDefault.parse({}),
+      })),
+      skipDuplicates: true,
+    })
+    const update = {
       ...assignment,
       hash,
       prerequisites: {
-        connectOrCreate: prerequisites.map((p) => ({
-          create: { url: p.url, body: [], options: optionsSchemaWithDefault.parse({}) },
-          where: { url: p.url },
-        })),
+        set: prerequisites.map((p) => ({ url: p.url })),
       },
       courses: {
         connectOrCreate: courses.map((code) => ({
@@ -169,12 +174,16 @@ export const getAssignment = async (data: z.input<typeof assignmentSchema>) => {
         })),
       },
     } satisfies Parameters<typeof prisma.assignment.upsert>[0]['update']
-    page = await prisma.assignment.upsert({
-      where,
-      create: payload,
-      update: payload,
-      include,
-    })
+    const create = {
+      ...update,
+      prerequisites: {
+        connectOrCreate: prerequisites.map((p) => ({
+          create: { url: p.url, body: [], options: optionsSchemaWithDefault.parse({}) },
+          where: { url: p.url },
+        })),
+      },
+    } satisfies Parameters<typeof prisma.assignment.upsert>[0]['create']
+    page = await prisma.assignment.upsert({ where, create, update, include })
     await prisma.submission.deleteMany({ where })
   }
   return page
