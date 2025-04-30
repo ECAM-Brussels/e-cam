@@ -63,12 +63,13 @@ export async function adjustElo({ email, exercise, correct }: Info) {
   if (exerciseElo === null) {
     return
   }
-  const delta = Math.round(K * ((correct ? 1 : 0) - logistic(userElo - exerciseElo)))
+  const gain = Math.round(K * ((correct ? 1 : 0) - logistic(userElo - exerciseElo)))
   await Promise.all([
-    prisma.user.update({ where: { email }, data: { score: { increment: delta } } }),
+    prisma.user.update({ where: { email }, data: { score: { increment: gain } } }),
     prisma.exercise.update({
       where: { hash, type: exercise.type },
-      data: { score: { increment: -delta } },
+      data: { score: { increment: -gain } },
     }),
+    prisma.attempt.create({ data: { email, hash, userElo, exerciseElo, gain } }),
   ])
 }
