@@ -6,6 +6,7 @@ import ErrorBoundary from '~/components/ErrorBoundary'
 import Fa from '~/components/Fa'
 import Graph from '~/components/Graph'
 import Pagination from '~/components/Pagination'
+import Whiteboard from '~/components/Whiteboard'
 import { adjustElo, getEloDiff } from '~/lib/elo'
 import {
   type Assignment,
@@ -75,10 +76,11 @@ export default function Assignment(props: AssignmentProps) {
                 ...props.data.options,
                 ...exercise.options,
               })
+            let boardContainer!: HTMLDivElement
             return (
               <div
                 classList={{ hidden: index() !== props.index }}
-                class="bg-white grow border rounded-xl shadow h-screen"
+                class="bg-white grow border rounded-xl shadow"
               >
                 <ErrorBoundary>
                   <Suspense fallback={<p>Loading exercise...</p>}>
@@ -113,32 +115,37 @@ export default function Assignment(props: AssignmentProps) {
                       }}
                     />
                   </Suspense>
+                  <div class="h-screen" ref={boardContainer}>
+                    <Whiteboard
+                      id={`${index()}`}
+                      class="border-t border-b my-4"
+                      container={boardContainer}
+                    />
+                  </div>
                 </ErrorBoundary>
               </div>
             )
           }}
         </For>
-        <div class="w-80 px-6">
+        <div class="lg:w-80 px-6">
           <Show when={user()}>
             {(user) => (
-              <div class="bg-white border rounded-xl shadow-sm p-4 text-center mb-8">
-                <div>
-                  <div class="text-sm">Score:</div>
-                  <div class="font-bold text-3xl">{user().score} </div>
-                  <Show when={eloDiff()}>
-                    {(eloDiff) => (
-                      <span
-                        classList={{
-                          'text-green-800': eloDiff() > 0,
-                          'text-red-800': eloDiff() < 0,
-                        }}
-                      >
-                        {eloDiff() > 0 && '+'}
-                        {eloDiff()} <Fa icon={eloDiff() > 0 ? faArrowUp : faArrowDown} />
-                      </span>
-                    )}
-                  </Show>
-                </div>
+              <div class="bg-white border rounded-xl shadow-sm p-4 text-center mb-8 flex items-center gap-3">
+                <div class="text-xl">Score:</div>
+                <div class="font-bold text-3xl">{user().score} </div>
+                <Show when={eloDiff()}>
+                  {(eloDiff) => (
+                    <span
+                      classList={{
+                        'text-green-800': eloDiff() > 0,
+                        'text-red-800': eloDiff() < 0,
+                      }}
+                    >
+                      ({eloDiff() > 0 && '+'}
+                      {eloDiff()} <Fa icon={eloDiff() > 0 ? faArrowUp : faArrowDown} />)
+                    </span>
+                  )}
+                </Show>
               </div>
             )}
           </Show>

@@ -4,7 +4,6 @@ import { Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { z } from 'zod'
 import Button from '~/components/Button'
-import Whiteboard from '~/components/Whiteboard'
 import ZodError from '~/components/ZodError'
 import Feedback from '~/lib/exercises/feedback'
 import { optionsSchema, type ExerciseType, type OptionsWithDefault } from '~/lib/exercises/schemas'
@@ -113,8 +112,8 @@ export function createExerciseType<
 
     return (
       <Show when={question()} fallback={<p>Generating...</p>}>
-        <form onSubmit={handleSubmit}>
-          <fieldset disabled={readOnly()} class="p-4 border-b shadow-sm">
+        <form onSubmit={handleSubmit} class="p-4">
+          <fieldset disabled={readOnly()}>
             <exercise.Component question={question()} attempt={props.attempts.at(-1)?.attempt} />
             <ZodError error={submission.error} />
           </fieldset>
@@ -126,9 +125,7 @@ export function createExerciseType<
             </div>
           </Show>
         </form>
-        <Whiteboard width={800} height={600} toolbarPosition="bottom" />
         <Feedback
-          class="border-t p-4"
           attempts={props.attempts}
           maxAttempts={props.options.maxAttempts}
           component={ExerciseFeedback}
