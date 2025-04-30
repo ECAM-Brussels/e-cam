@@ -112,7 +112,7 @@ export function createExerciseType<
 
     return (
       <Show when={question()} fallback={<p>Generating...</p>}>
-        <form onSubmit={handleSubmit} class="p-4">
+        <form onSubmit={handleSubmit} class="p-4 border-b shadow-sm">
           <fieldset disabled={readOnly()}>
             <exercise.Component question={question()} attempt={props.attempts.at(-1)?.attempt} />
             <ZodError error={submission.error} />
@@ -126,6 +126,7 @@ export function createExerciseType<
           </Show>
         </form>
         <Feedback
+          class="p-4 border-b shadow-sm"
           attempts={props.attempts}
           maxAttempts={props.options.maxAttempts}
           component={ExerciseFeedback}
