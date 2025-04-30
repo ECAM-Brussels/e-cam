@@ -1,10 +1,12 @@
-import ErrorBoundary from './ErrorBoundary'
-import Graph from './Graph'
-import Pagination from './Pagination'
+import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons'
 import { createAsync, revalidate } from '@solidjs/router'
 import { Component, For, Show, Suspense } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
-import { adjustElo, getExerciseElo } from '~/lib/elo'
+import ErrorBoundary from '~/components/ErrorBoundary'
+import Fa from '~/components/Fa'
+import Graph from '~/components/Graph'
+import Pagination from '~/components/Pagination'
+import { adjustElo, getEloDiff, getExerciseElo } from '~/lib/elo'
 import {
   type Assignment,
   exercises,
@@ -47,6 +49,7 @@ export default function Assignment(props: AssignmentProps) {
     }
     return null
   })
+  const eloDiff = createAsync(() => getEloDiff())
   const graphQuery = () => ({
     where: {
       OR: [
@@ -126,7 +129,20 @@ export default function Assignment(props: AssignmentProps) {
             <div class="text-center">
               <div>
                 <div class="text-sm">Score:</div>
-                <div class="font-bold text-3xl">{user().score}</div>
+                <div class="font-bold text-3xl">{user().score} </div>
+                <Show when={eloDiff()}>
+                  {(eloDiff) => (
+                    <span
+                      classList={{
+                        'text-green-800': eloDiff() > 0,
+                        'text-red-800': eloDiff() < 0,
+                      }}
+                    >
+                      {eloDiff() > 0 && '+'}
+                      {eloDiff()} <Fa icon={eloDiff() > 0 ? faArrowUp : faArrowDown} />
+                    </span>
+                  )}
+                </Show>
               </div>
               <div>
                 <div class="text-sm">Difficulté de l'exercice':</div>

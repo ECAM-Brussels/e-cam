@@ -1,3 +1,4 @@
+import { getUser } from './auth/session'
 import { prisma } from './db'
 import { type Exercise } from './exercises/assignment'
 import { query } from '@solidjs/router'
@@ -15,6 +16,18 @@ function logistic(x: number) {
 
 const K = 32
 const initialElo = 1500
+
+export const getEloDiff = query(async (email?: string) => {
+  'use server'
+  if (!email) {
+    const user = await getUser()
+    if (!user) {
+      return null
+    }
+  }
+  const data = await prisma.attempt.findFirst({ where: { email }, orderBy: { date: 'desc' } })
+  return data?.gain ?? null
+}, 'getEloDiff')
 
 export const getExerciseElo = query(async (exercise: Exercise) => {
   'use server'
