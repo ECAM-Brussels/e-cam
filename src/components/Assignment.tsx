@@ -6,7 +6,7 @@ import ErrorBoundary from '~/components/ErrorBoundary'
 import Fa from '~/components/Fa'
 import Graph from '~/components/Graph'
 import Pagination from '~/components/Pagination'
-import { adjustElo, getEloDiff, getExerciseElo } from '~/lib/elo'
+import { adjustElo, getEloDiff } from '~/lib/elo'
 import {
   type Assignment,
   exercises,
@@ -42,13 +42,6 @@ export default function Assignment(props: AssignmentProps) {
     },
     { initialValue: [] },
   )
-  const elo = createAsync(async () => {
-    const exercise = body()?.[props.index]
-    if (exercise) {
-      return await getExerciseElo(exercise)
-    }
-    return null
-  })
   const eloDiff = createAsync(() => getEloDiff())
   const graphQuery = () => ({
     where: {
@@ -60,21 +53,21 @@ export default function Assignment(props: AssignmentProps) {
     },
   })
   return (
-    <ErrorBoundary class="lg:flex gap-8">
-      <div class="grow">
-        <Show when={props.data.title}>
-          <h1 class="text-4xl my-4">{props.data.title}</h1>
-        </Show>
-        <Pagination
-          current={props.index}
-          onChange={props.onIndexChange}
-          max={body().length || 0}
-          classList={(i) => ({
-            'bg-green-100': body()?.[i].attempts.at(-1)?.correct,
-            'bg-red-100': body()?.[i].attempts.at(-1)?.correct === false,
-            'bg-white': body()?.[i].attempts.at(-1)?.correct === undefined,
-          })}
-        />
+    <ErrorBoundary>
+      <Show when={props.data.title}>
+        <h1 class="text-4xl my-4">{props.data.title}</h1>
+      </Show>
+      <Pagination
+        current={props.index}
+        onChange={props.onIndexChange}
+        max={body().length || 0}
+        classList={(i) => ({
+          'bg-green-100': body()?.[i].attempts.at(-1)?.correct,
+          'bg-red-100': body()?.[i].attempts.at(-1)?.correct === false,
+          'bg-white': body()?.[i].attempts.at(-1)?.correct === undefined,
+        })}
+      />
+      <div class="lg:flex px-6 py-6">
         <For each={body()}>
           {function <N, Q, A, P, F>(exercise: Exercise, index: () => number) {
             const options = () =>
@@ -83,7 +76,10 @@ export default function Assignment(props: AssignmentProps) {
                 ...exercise.options,
               })
             return (
-              <div classList={{ hidden: index() !== props.index }}>
+              <div
+                classList={{ hidden: index() !== props.index }}
+                class="bg-white grow border rounded-xl shadow h-screen"
+              >
                 <ErrorBoundary>
                   <Suspense fallback={<p>Loading exercise...</p>}>
                     <Dynamic
@@ -122,42 +118,35 @@ export default function Assignment(props: AssignmentProps) {
             )
           }}
         </For>
-      </div>
-      <div class="py-6 px-6">
-        <Show when={user()}>
-          {(user) => (
-            <div class="text-center">
-              <div>
-                <div class="text-sm">Score:</div>
-                <div class="font-bold text-3xl">{user().score} </div>
-                <Show when={eloDiff()}>
-                  {(eloDiff) => (
-                    <span
-                      classList={{
-                        'text-green-800': eloDiff() > 0,
-                        'text-red-800': eloDiff() < 0,
-                      }}
-                    >
-                      {eloDiff() > 0 && '+'}
-                      {eloDiff()} <Fa icon={eloDiff() > 0 ? faArrowUp : faArrowDown} />
-                    </span>
-                  )}
-                </Show>
+        <div class="w-80 px-6">
+          <Show when={user()}>
+            {(user) => (
+              <div class="bg-white border rounded-xl shadow-sm p-4 text-center mb-8">
+                <div>
+                  <div class="text-sm">Score:</div>
+                  <div class="font-bold text-3xl">{user().score} </div>
+                  <Show when={eloDiff()}>
+                    {(eloDiff) => (
+                      <span
+                        classList={{
+                          'text-green-800': eloDiff() > 0,
+                          'text-red-800': eloDiff() < 0,
+                        }}
+                      >
+                        {eloDiff() > 0 && '+'}
+                        {eloDiff()} <Fa icon={eloDiff() > 0 ? faArrowUp : faArrowDown} />
+                      </span>
+                    )}
+                  </Show>
+                </div>
               </div>
-              <div>
-                <div class="text-sm">Difficulté de l'exercice':</div>
-                <div class="font-bold text-3xl">{elo()}</div>
-              </div>
-            </div>
-          )}
-        </Show>
-        <h2 class="text-2xl my-4">Compétences voisines</h2>
-        <Graph
-          class="rounded-xl min-w-64 min-h-96"
-          rankDir="BT"
-          currentNode={props.url}
-          query={graphQuery()}
-        />
+            )}
+          </Show>
+          <div class="bg-white border rounded-xl p-4 shadow-sm">
+            <h2 class="text-2xl mb-2">Exercices similaires</h2>
+            <Graph class="min-h-96" rankDir="BT" currentNode={props.url} query={graphQuery()} />
+          </div>
+        </div>
       </div>
     </ErrorBoundary>
   )

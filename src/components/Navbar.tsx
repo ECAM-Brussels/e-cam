@@ -83,7 +83,7 @@ type NavbarShellProps = {
 
 function NavbarShell(props: NavbarShellProps) {
   return (
-    <div class="bg-white border-b border-b-gray-200 mb-6 shadow-md shadow-teal-900/5 sticky top-0 z-40">
+    <div class="bg-white border-b border-b-gray-200 mb-6 shadow-md shadow-teal-900/5">
       <nav class="container mx-auto flex items-end justify-between">{props.children}</nav>
     </div>
   )

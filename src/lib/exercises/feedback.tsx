@@ -5,6 +5,7 @@ import Fa from '~/components/Fa'
 
 export default function Feedback<A, F extends object>(props: {
   attempts: { correct: boolean; attempt: A; feedback?: F }[]
+  class?: string
   component?: Component<F>
   marking?: boolean
   maxAttempts: null | number
@@ -15,7 +16,7 @@ export default function Feedback<A, F extends object>(props: {
     props.maxAttempts === null ? true : props.maxAttempts - props.attempts.length
   return (
     <Show when={props.attempts.length || props.marking}>
-      <div class="bg-white border rounded-xl p-4 my-4">
+      <div class={props.class}>
         <Show
           when={!props.marking}
           fallback={
