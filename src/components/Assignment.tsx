@@ -74,6 +74,11 @@ export default function Assignment(props: AssignmentProps) {
         />
         <For each={body()}>
           {function <N, Q, A, P, F>(exercise: Exercise, index: () => number) {
+            const options = () =>
+              optionsSchemaWithDefault.parse({
+                ...props.data.options,
+                ...exercise.options,
+              })
             return (
               <div classList={{ hidden: index() !== props.index }}>
                 <ErrorBoundary>
@@ -83,10 +88,7 @@ export default function Assignment(props: AssignmentProps) {
                         exercises[exercise.type] as Component<ExerciseProps<N, Q, A, P, F>>
                       }
                       {...(exercise as ExerciseProps<N, Q, A, P, F>)}
-                      options={optionsSchemaWithDefault.parse({
-                        ...props.data.options,
-                        ...exercise.options,
-                      })}
+                      options={options()}
                       onChange={async (event) => {
                         if (props.userEmail) {
                           await saveExercise(
@@ -95,11 +97,11 @@ export default function Assignment(props: AssignmentProps) {
                             index(),
                             event as Exercise,
                           )
-                          if (event.attempts.length) {
+                          if (event.attempts.length === 1 && options().adjustElo) {
                             const { correct } = event.attempts.at(-1)!
                             await adjustElo({
                               email: props.userEmail,
-                              exercise: event as Exercise & { question: NonNullable<any> },
+                              exercise: event as Exercise,
                               correct,
                             })
                           }

@@ -3,6 +3,7 @@ import { z } from 'zod'
 
 export const optionsSchema = z
   .object({
+    adjustElo: z.boolean().optional(),
     maxAttempts: z.null().or(z.number()).optional(),
     note: z.string().optional(),
     whiteboard: z.boolean().optional(),
@@ -12,6 +13,7 @@ export const optionsSchema = z
 
 export const optionsSchemaWithDefault = z
   .object({
+    adjustElo: z.boolean().default(true),
     maxAttempts: z.null().or(z.number()).default(1),
     note: z.string().default(''),
     whiteboard: z.boolean().default(true),
