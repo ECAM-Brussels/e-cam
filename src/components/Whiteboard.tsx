@@ -50,13 +50,22 @@ const upsertBoard = async (url: string, id: string, body: Stroke[]) => {
 type WhiteboardProps = {
   id?: string
   class?: string
-  height: number
   readOnly?: boolean
-  width: number
   scale?: boolean
   toolbarPosition?: 'top' | 'bottom'
   onAdd?: () => void
-}
+} & (
+  | {
+      container: HTMLDivElement
+      width?: never
+      height?: never
+    }
+  | {
+      container?: never
+      width: number
+      height: number
+    }
+)
 
 export default function Whiteboard(props: WhiteboardProps) {
   const location = useLocation()
@@ -64,6 +73,22 @@ export default function Whiteboard(props: WhiteboardProps) {
   let container!: HTMLDivElement
   const ctx = () => canvasRef?.getContext('2d')
   const [mode, setMode] = createSignal<Mode>('read')
+
+  const [width, setWidth] = createSignal(props.width || 100)
+  const [height, setHeight] = createSignal(props.height || 100)
+  const resize = () => {
+    if (props.container) {
+      const rect = props.container.getBoundingClientRect()
+      setWidth(rect.width)
+      setHeight(rect.height)
+    }
+  }
+  onMount(() => {
+    if (props.container) {
+      const resizeObserver = new ResizeObserver(resize)
+      resizeObserver.observe(props.container)
+    }
+  })
 
   const [strokes, setStrokes] = createStore<Stroke[]>([])
   const savedStrokes = createAsync(() => loadBoard(location.pathname, props.id || ''))
@@ -143,7 +168,7 @@ export default function Whiteboard(props: WhiteboardProps) {
       () => strokes.length,
       () => {
         const context = ctx()!
-        context.clearRect(0, 0, props.width, props.height)
+        context.clearRect(0, 0, width(), height())
         for (const stroke of strokes) {
           context.beginPath()
           context.fillStyle = stroke.color
@@ -224,11 +249,11 @@ export default function Whiteboard(props: WhiteboardProps) {
   const [erasing, setErasing] = createSignal(false)
 
   return (
-    <div class={props.class} style={{ width: `${props.width}px`, height: `${props.height}px` }}>
+    <div class={props.class} style={{ width: `${width()}px`, height: `${height()}px` }}>
       <div
         ref={container!}
         class="relative"
-        style={{ width: `${props.width}px`, height: `${props.height}px` }}
+        style={{ width: `${width()}px`, height: `${height()}px` }}
       >
         <Toolbar
           currentStroke={currentStroke}
@@ -246,8 +271,8 @@ export default function Whiteboard(props: WhiteboardProps) {
           class="z-10 touch-none select-none"
           classList={{ 'cursor-crosshair': !props.readOnly }}
           ref={canvasRef!}
-          height={props.height}
-          width={props.width}
+          height={height()}
+          width={width()}
           onPointerDown={(event) => {
             event.preventDefault()
             if (props.readOnly || event.pointerType === 'touch') {
