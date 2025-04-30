@@ -7,6 +7,7 @@ import { loadEnv, type Plugin } from 'vite'
 import { type AssignmentInput } from '~/lib/exercises/assignment'
 
 const options = {
+  adjustElo: true,
   maxAttempts: 1,
   note: '',
   whiteboard: true,
@@ -67,13 +68,11 @@ export default function (): Plugin {
         datasources: { db: { url: env.VITE_DATABASE_URL } },
       })
       const assignments = await glob.glob('content/**/*.yaml')
-      for (const file of assignments) {
-        createAssignment(file, prisma)
-      }
+      await Promise.all(assignments.map((file) => createAssignment(file, prisma)))
     },
     async handleHotUpdate({ file }) {
       if (file.startsWith(resolve('content')) && file.endsWith('.yaml')) {
-        createAssignment(file, prisma)
+        await createAssignment(file, prisma)
       }
     },
   }
