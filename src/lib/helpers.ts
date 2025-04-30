@@ -1,4 +1,6 @@
+import CryptoJS from 'crypto-js'
 import dedent from 'dedent-js'
+import stringify from 'json-stable-stringify'
 
 function indent(code: string, indent: string) {
   return code
@@ -23,4 +25,8 @@ export function wrapCode(code: string): string {
     '\n' +
     '    return output.getvalue().strip()'
   )
+}
+
+export function hashObject(obj: object) {
+  return CryptoJS.SHA256(stringify(obj)!).toString()
 }

@@ -1,7 +1,7 @@
 import { prisma } from './db'
 import { type Exercise } from './exercises/assignment'
 import { query } from '@solidjs/router'
-import CryptoJS from 'crypto-js'
+import { hashObject } from '~/lib/helpers'
 
 type Info = {
   email: string
@@ -21,9 +21,7 @@ export const getExerciseElo = query(async (exercise: Exercise) => {
   if (!exercise.question) {
     return null
   }
-  let hash = CryptoJS.SHA256(
-    JSON.stringify({ type: exercise.type, question: exercise.question }),
-  ).toString()
+  let hash = hashObject({ type: exercise.type, question: exercise.question })
   let data = await prisma.exercise.findUnique({
     where: { type: exercise.type, hash },
     select: { score: true },
@@ -52,9 +50,7 @@ export const getExerciseElo = query(async (exercise: Exercise) => {
 
 export async function adjustElo({ email, exercise, correct }: Info) {
   'use server'
-  let hash = CryptoJS.SHA256(
-    JSON.stringify({ type: exercise.type, question: exercise.question }),
-  ).toString()
+  let hash = hashObject({ type: exercise.type, question: exercise.question })
   const { score: userElo } = await prisma.user.findUniqueOrThrow({
     where: { email },
     select: { score: true },

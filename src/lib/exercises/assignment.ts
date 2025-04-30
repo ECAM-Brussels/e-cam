@@ -2,7 +2,6 @@ import { getUser } from '../auth/session'
 import { prisma } from '../db'
 import { type OptionsWithDefault, optionsSchemaWithDefault } from './schemas'
 import { query } from '@solidjs/router'
-import CryptoJS from 'crypto-js'
 import { type ElementDefinition } from 'cytoscape'
 import { lazy } from 'solid-js'
 import { z } from 'zod'
@@ -10,6 +9,7 @@ import { schema as PythonSchema } from '~/exercises/CompSci/Python'
 import { schema as CompleteSquareSchema } from '~/exercises/Math/CompleteSquare'
 import { schema as FactorSchema } from '~/exercises/Math/Factor'
 import { schema as SimpleSchema } from '~/exercises/Math/Simple'
+import { hashObject } from '~/lib/helpers'
 
 export const exercises = {
   Python: lazy(() => import('~/exercises/CompSci/Python')),
@@ -150,7 +150,7 @@ export const getAssignment = async (data: z.input<typeof assignmentSchema>) => {
   const where = { url: data.url }
   const include = { prerequisites: true, courses: true, requiredBy: true }
   let page = await prisma.assignment.findUnique({ where, include })
-  let hash = CryptoJS.SHA256(JSON.stringify(data)).toString()
+  let hash = hashObject(data)
   if (!page || !page.body || page.hash !== hash) {
     const { prerequisites, courses, ...assignment } = await assignmentSchema.parseAsync(data)
     const payload = {
