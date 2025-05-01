@@ -13,17 +13,16 @@ const options = {
   whiteboard: true,
   streak: 0,
 }
+let prisma: PrismaClient
+type Update = Parameters<typeof prisma.assignment.upsert>[0]['update']
+type Create = Parameters<typeof prisma.assignment.upsert>[0]['create']
+type Payload = Partial<Update & Create>
 
-async function createAssignment(file: string, prisma: PrismaClient) {
-  const relativePath = relative(resolve('content'), file)
-  const outputPath = resolve('src/routes/(generated)', relativePath.replace(/\.ya?ml$/, '.tsx'))
-  mkdirSync(dirname(outputPath), { recursive: true })
-  const assignment = yaml.load(readFileSync(file, 'utf-8')) as Omit<AssignmentInput, 'url'>
-  const template = readFileSync(resolve('src/vite/template.assignment.tsx'), 'utf-8')
-  let content = template.replace('$body$', JSON.stringify(assignment, null, 2))
-  content = content.replace('$route$', file)
-  writeFileSync(outputPath, content, 'utf-8')
-  const url = '/' + relativePath.replace(/\.ya?ml$/, '')
+export async function registerAssignment(
+  prisma: PrismaClient,
+  assignment: AssignmentInput,
+  extra: Payload,
+) {
   await prisma.assignment.createMany({
     data: (assignment.prerequisites ?? []).map((p) => ({
       url: typeof p === 'string' ? p : p.url,
@@ -34,6 +33,7 @@ async function createAssignment(file: string, prisma: PrismaClient) {
   })
   const payload = {
     title: assignment.title,
+    ...extra,
     prerequisites: {
       connectOrCreate: (assignment.prerequisites ?? []).map((p) => {
         const url = typeof p === 'string' ? p : p.url
@@ -49,7 +49,7 @@ async function createAssignment(file: string, prisma: PrismaClient) {
         where: { code },
       })),
     },
-  } satisfies Parameters<typeof prisma.assignment.upsert>[0]['update']
+  } satisfies Partial<Create>
   const update = {
     ...payload,
     prerequisites: {
@@ -57,18 +57,31 @@ async function createAssignment(file: string, prisma: PrismaClient) {
         url: typeof p === 'string' ? p : p.url,
       })),
     },
-  }
+  } satisfies Update
+  await prisma.assignment.upsert({
+    where: { url: assignment.url },
+    create: {
+      ...payload,
+      url: assignment.url,
+      body: [],
+      options,
+    },
+    update,
+  })
+}
+
+async function createAssignment(file: string, prisma: PrismaClient) {
+  const relativePath = relative(resolve('content'), file)
+  const outputPath = resolve('src/routes/(generated)', relativePath.replace(/\.ya?ml$/, '.tsx'))
+  mkdirSync(dirname(outputPath), { recursive: true })
+  const assignment = yaml.load(readFileSync(file, 'utf-8')) as Omit<AssignmentInput, 'url'>
+  const template = readFileSync(resolve('src/vite/template.assignment.tsx'), 'utf-8')
+  let content = template.replace('$body$', JSON.stringify(assignment, null, 2))
+  content = content.replace('$route$', file)
+  writeFileSync(outputPath, content, 'utf-8')
+  const url = '/' + relativePath.replace(/\.ya?ml$/, '')
   try {
-    await prisma.assignment.upsert({
-      where: { url },
-      create: {
-        ...payload,
-        url,
-        body: [],
-        options,
-      },
-      update,
-    })
+    await registerAssignment(prisma, { ...assignment, url }, {})
   } catch (error) {
     console.log(`Error when writing the metadata of ${file} to the database: ${error}`)
   }
