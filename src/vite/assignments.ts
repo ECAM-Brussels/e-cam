@@ -31,17 +31,17 @@ export async function registerAssignment(
     })),
     skipDuplicates: true,
   })
+  const prerequisites = (assignment.prerequisites ?? []).map((p) =>
+    typeof p === 'string' ? p : p.url,
+  )
   const payload = {
     title: assignment.title,
     ...extra,
     prerequisites: {
-      connectOrCreate: (assignment.prerequisites ?? []).map((p) => {
-        const url = typeof p === 'string' ? p : p.url
-        return {
-          create: { url, body: [], options },
-          where: { url },
-        }
-      }),
+      connectOrCreate: prerequisites.map((url) => ({
+        create: { url, body: [], options },
+        where: { url },
+      })),
     },
     courses: {
       connectOrCreate: (assignment.courses ?? []).map((code) => ({
@@ -53,9 +53,7 @@ export async function registerAssignment(
   const update = {
     ...payload,
     prerequisites: {
-      set: (assignment.prerequisites ?? []).map((p) => ({
-        url: typeof p === 'string' ? p : p.url,
-      })),
+      set: prerequisites.map((url) => ({ url })),
     },
   } satisfies Update
   await prisma.assignment.upsert({
