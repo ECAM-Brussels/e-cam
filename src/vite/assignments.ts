@@ -14,34 +14,33 @@ const options = {
   streak: 0,
 }
 let prisma: PrismaClient
-type Update = Parameters<typeof prisma.assignment.upsert>[0]['update']
-type Create = Parameters<typeof prisma.assignment.upsert>[0]['create']
-type Payload = Partial<Update & Create>
+
+async function createEmptyAssignments(prisma: PrismaClient, assignments: string[]) {
+  await prisma.assignment.createMany({
+    data: assignments.map((path) => {
+      const relativePath = relative(resolve('content'), path)
+      const url = '/' + relativePath.replace(/\.ya?ml$/, '')
+      return { url, body: [], options }
+    }),
+    skipDuplicates: true,
+  })
+}
+
+type Update = Parameters<typeof prisma.assignment.update>[0]['data']
 
 export async function registerAssignment(
   prisma: PrismaClient,
   assignment: AssignmentInput,
-  extra: Payload,
+  extra: Partial<Update>,
 ) {
-  await prisma.assignment.createMany({
-    data: (assignment.prerequisites ?? []).map((p) => ({
-      url: typeof p === 'string' ? p : p.url,
-      body: [],
-      options,
-    })),
-    skipDuplicates: true,
-  })
   const prerequisites = (assignment.prerequisites ?? []).map((p) =>
     typeof p === 'string' ? p : p.url,
   )
-  const payload = {
+  const data = {
     title: assignment.title,
     ...extra,
     prerequisites: {
-      connectOrCreate: prerequisites.map((url) => ({
-        create: { url, body: [], options },
-        where: { url },
-      })),
+      set: prerequisites.map((url) => ({ url })),
     },
     courses: {
       connectOrCreate: (assignment.courses ?? []).map((code) => ({
@@ -49,23 +48,8 @@ export async function registerAssignment(
         where: { code },
       })),
     },
-  } satisfies Partial<Create>
-  const update = {
-    ...payload,
-    prerequisites: {
-      set: prerequisites.map((url) => ({ url })),
-    },
   } satisfies Update
-  await prisma.assignment.upsert({
-    where: { url: assignment.url },
-    create: {
-      ...payload,
-      url: assignment.url,
-      body: [],
-      options,
-    },
-    update,
-  })
+  await prisma.assignment.update({ where: { url: assignment.url }, data })
 }
 
 async function createAssignment(file: string, prisma: PrismaClient) {
@@ -95,6 +79,7 @@ export default function (): Plugin {
         datasources: { db: { url: env.VITE_DATABASE_URL } },
       })
       const assignments = await glob.glob('content/**/*.yaml')
+      await createEmptyAssignments(prisma, assignments)
       await Promise.all(assignments.map((file) => createAssignment(file, prisma)))
     },
     async handleHotUpdate({ file }) {
