@@ -11,6 +11,7 @@ declare global {
     type Options = OptionsWithDefault
     type StrokeList = Stroke[]
     type Question = NonNullable<Exercise['question']>
+    type PointList = [number, number][]
   }
 }
 

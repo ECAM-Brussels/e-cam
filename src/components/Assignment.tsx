@@ -115,7 +115,7 @@ export default function Assignment(props: AssignmentProps) {
                       }}
                     />
                   </Suspense>
-                  <div class="h-screen" ref={boardContainer}>
+                  <div class="h-screen overflow-hidden" ref={boardContainer}>
                     <Whiteboard id={`${index()}`} container={boardContainer} />
                   </div>
                 </ErrorBoundary>

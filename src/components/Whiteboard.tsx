@@ -7,8 +7,16 @@ import {
   faPlus,
   faUpRightAndDownLeftFromCenter,
 } from '@fortawesome/free-solid-svg-icons'
-import { query, createAsync, revalidate, useLocation } from '@solidjs/router'
-import { cloneDeep, debounce, find } from 'lodash-es'
+import {
+  query,
+  createAsync,
+  useLocation,
+  action,
+  useAction,
+  useSubmissions,
+  reload,
+} from '@solidjs/router'
+import { cloneDeep } from 'lodash-es'
 import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
 import { createStore, SetStoreFunction, unwrap } from 'solid-js/store'
 import Fa from '~/components/Fa'
@@ -20,32 +28,59 @@ type Mode = 'draw' | 'erase' | 'read'
 type Status = 'unsaved' | 'saving' | 'saved'
 
 export type Stroke = {
+  id?: string
   color: string
   lineWidth: number
   points: [number, number][]
 }
 
-export const loadBoard = query(async (url: string, id: string) => {
+async function check(url: string, id: string) {
+  const user = await getUser()
+  if (!user) {
+    throw new Error('You do not have the rights to edit that board. Please log in')
+  }
+  const { userEmail: ownerEmail } = await prisma.board.upsert({
+    where: { url_id: { url, id } },
+    create: { url, id, userEmail: user.email },
+    update: {},
+    select: { userEmail: true },
+  })
+  if (!user || user.email !== ownerEmail) {
+    throw new Error('You do not have the rights to edit that board')
+  }
+}
+
+export const loadBoard = query(async (url: string, id: string): Promise<Stroke[]> => {
   'use server'
   const record = await prisma.board.findUnique({
-    select: { body: true },
+    select: { strokes: true },
     where: { url_id: { url, id } },
   })
-  return record?.body ?? null
+  return record?.strokes ?? []
 }, 'loadBoard')
 
-const upsertBoard = async (url: string, id: string, body: Stroke[]) => {
+export const addStroke = action(async (url: string, id: string, stroke: Stroke) => {
   'use server'
-  const user = await getUser()
-  if (!user || !user.admin) {
-    throw new Error('Error when upserting board: user is not an admin')
-  }
-  await prisma.board.upsert({
-    where: { url_id: { url, id } },
-    update: { body, lastModified: new Date() },
-    create: { url, id, body },
+  await check(url, id)
+  await prisma.stroke.create({
+    data: { boardId: id, boardUrl: url, ...stroke, points: stroke.points },
   })
-}
+  return reload({ revalidate: loadBoard.keyFor(url, id) })
+})
+
+export const removeStroke = action(async (boardUrl: string, boardId: string, id: string) => {
+  'use server'
+  await check(boardUrl, boardId)
+  await prisma.stroke.delete({ where: { boardUrl, boardId, id } })
+  return reload({ revalidate: loadBoard.keyFor(boardUrl, boardId) })
+})
+
+export const clearBoard = action(async (boardUrl: string, boardId: string) => {
+  'use server'
+  await check(boardUrl, boardId)
+  await prisma.stroke.deleteMany({ where: { boardUrl, boardId } })
+  return reload({ revalidate: loadBoard.keyFor(boardUrl, boardId) })
+})
 
 type WhiteboardProps = {
   id?: string
@@ -90,44 +125,42 @@ export default function Whiteboard(props: WhiteboardProps) {
     }
   })
 
-  const [strokes, setStrokes] = createStore<Stroke[]>([])
-  const savedStrokes = createAsync(() => loadBoard(location.pathname, props.id || ''))
-  const [status, setStatus] = createSignal<Status>('saved')
-  const save = debounce(async (id: string = props.id || '') => {
-    setStatus('saving')
-    await upsertBoard(location.pathname, id, strokes)
-    revalidate(loadBoard.keyFor(location.pathname, id))
-  }, 3000)
-  createEffect(() => {
-    const saved = savedStrokes()
-    if (saved) {
-      const currentStrokes = unwrap(strokes)
-      if (!saved.every((s) => find(currentStrokes, s))) {
-        setStrokes(saved)
-      }
-      setStatus('saved')
-    } else if (saved === null) {
-      setStrokes([])
-      setStatus('saved')
-    }
+  const strokes = createAsync(() => loadBoard(location.pathname, props.id || ''), {
+    initialValue: [],
   })
-
+  const useAddStroke = useAction(addStroke.with(location.pathname, props.id || ''))
+  const useClear = useAction(clearBoard.with(location.pathname, props.id || ''))
+  const useRemoveStroke = useAction(removeStroke.with(location.pathname, props.id || ''))
   const [currentStroke, setCurrentStroke] = createStore<Stroke>({
     color: '#255994',
     lineWidth: 2,
     points: [],
   })
+  const filter = ([url, id]: [string, string]) => url === location.pathname && id === props.id
+  const adding = useSubmissions(addStroke, filter)
+  const removing = useSubmissions(removeStroke, filter)
+  const allStrokes = () => {
+    const beingAdded = Array.from(adding.entries()).map(([_, data]) => data.input[2])
+    const beingRemoved = Array.from(removing.entries()).map(([_, data]) => data.input[2])
+    return [...strokes(), ...beingAdded].filter((s) => !s.id || !beingRemoved.includes(s.id))
+  }
+  const status = (): Status => {
+    if (Array.from(adding.entries()).length || Array.from(removing.entries()).length) {
+      return adding.pending || removing.pending ? 'saving' : 'unsaved'
+    }
+    return 'saved'
+  }
 
-  const handlePointerMove = (x: number, y: number) => {
+  const handlePointerMove = async (x: number, y: number) => {
     if (mode() === 'draw') {
       setCurrentStroke('points', currentStroke.points.length, [x, y])
     } else if (mode() === 'erase') {
-      for (let i = 0; i < strokes.length; i++) {
-        for (const p of strokes[i].points) {
+      for (let i = 0; i < strokes().length; i++) {
+        for (const p of strokes()[i].points) {
           const dist = (p[0] - x) ** 2 + (p[1] - y) ** 2
-          if (dist <= 5) {
-            setStrokes(strokes.filter((_, j) => j !== i))
-            setStatus('unsaved')
+          const stroke = strokes()[i]
+          if (dist <= 5 && stroke.id) {
+            await useRemoveStroke(stroke.id)
             return
           }
         }
@@ -149,15 +182,11 @@ export default function Whiteboard(props: WhiteboardProps) {
   createEffect(
     on(mode, () => {
       if (mode() === 'read' && currentStroke.points.length) {
-        setStrokes(strokes.length, cloneDeep(unwrap(currentStroke)))
+        useAddStroke(cloneDeep(unwrap(currentStroke)))
         setCurrentStroke('points', [])
         ctx()?.closePath()
-        setStatus('unsaved')
       } else if (mode() === 'draw') {
         ctx()?.beginPath()
-      }
-      if (mode() === 'draw') {
-        save.cancel()
       }
     }),
   )
@@ -165,9 +194,10 @@ export default function Whiteboard(props: WhiteboardProps) {
   // Drawing strokes from scratch
   createEffect(
     on(
-      () => strokes.length,
+      () => [allStrokes().length, width(), height()],
       () => {
         const context = ctx()!
+        const strokes = allStrokes()
         context.clearRect(0, 0, width(), height())
         for (const stroke of strokes) {
           context.beginPath()
@@ -198,35 +228,10 @@ export default function Whiteboard(props: WhiteboardProps) {
     ),
   )
 
-  // Saving
-  createEffect(
-    on(
-      () => strokes.length,
-      () => {
-        save(props.id || '')
-      },
-      { defer: true },
-    ),
-  )
-
-  createEffect(
-    on(
-      () => props.id,
-      async () => {
-        // Wait for save before clearing the strokes
-        await save.flush()
-        setStrokes([])
-        setTimeout(save.cancel)
-        revalidate(loadBoard.keyFor(location.pathname, props.id || ''))
-      },
-      { defer: true },
-    ),
-  )
-
   // Adding points
   createEffect(
     on(
-      () => currentStroke.points.length,
+      () => [currentStroke.points.length],
       () => {
         if (currentStroke.points.length < 4) {
           return
@@ -245,7 +250,6 @@ export default function Whiteboard(props: WhiteboardProps) {
   onMount(() => {
     canvasRef!.oncontextmenu = () => false
   })
-
   const [erasing, setErasing] = createSignal(false)
 
   return (
@@ -261,9 +265,7 @@ export default function Whiteboard(props: WhiteboardProps) {
           status={status()}
           erasing={erasing()}
           setErasing={setErasing}
-          onDelete={() => {
-            setStrokes([])
-          }}
+          onDelete={useClear}
           onAdd={props.onAdd}
           position={props.toolbarPosition || 'top'}
         />
