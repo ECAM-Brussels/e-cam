@@ -150,7 +150,7 @@ export const getAssignment = async (data: z.input<typeof assignmentSchema>) => {
   'use server'
   const where = { url: data.url }
   const include = { prerequisites: true, courses: true, requiredBy: true }
-  let page = await prisma.assignment.findUnique({ where, include })
+  let page = await prisma.assignment.findUniqueOrThrow({ where, include })
   let hash = hashObject(data)
   if (!page || !page.body || page.hash !== hash) {
     const { prerequisites, courses, ...assignment } = await assignmentSchema.parseAsync(data)
