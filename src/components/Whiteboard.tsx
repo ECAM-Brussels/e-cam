@@ -7,9 +7,9 @@ import {
   faPlus,
   faUpRightAndDownLeftFromCenter,
 } from '@fortawesome/free-solid-svg-icons'
-import { createAsync, useLocation, useAction, useSubmissions } from '@solidjs/router'
+import { useLocation, useAction, useSubmissions, createAsyncStore } from '@solidjs/router'
 import { cloneDeep } from 'lodash-es'
-import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, on, onMount, Show } from 'solid-js'
 import { createStore, SetStoreFunction, unwrap } from 'solid-js/store'
 import Fa from '~/components/Fa'
 import Spinner from '~/components/Spinner'
@@ -62,7 +62,7 @@ export default function Whiteboard(props: WhiteboardProps) {
     }
   })
 
-  const strokes = createAsync(() => loadBoard(location.pathname, props.name), {
+  const strokes = createAsyncStore(() => loadBoard(location.pathname, props.name), {
     initialValue: [],
   })
   const useAddStroke = useAction(addStroke.with(location.pathname, props.owner, props.name))
@@ -77,11 +77,23 @@ export default function Whiteboard(props: WhiteboardProps) {
     url === location.pathname && name === props.name && owner === props.owner
   const adding = useSubmissions(addStroke, filter)
   const removing = useSubmissions(removeStroke, filter)
-  const allStrokes = () => {
+  const clearing = useSubmissions(clearBoard, filter)
+  const allStrokes = createMemo(() => {
+    if (clearing.pending) {
+      return []
+    }
     const beingAdded = Array.from(adding.entries()).map(([_, data]) => data.input[3])
     const beingRemoved = Array.from(removing.entries()).map(([_, data]) => data.input[3])
-    return [...strokes(), ...beingAdded].filter((s) => !s.id || !beingRemoved.includes(s.id))
-  }
+    const seen = new Set<string>()
+    return [...strokes(), ...beingAdded].filter((s) => {
+      const key = JSON.stringify(s.points)
+      if (seen.has(key) || (s.id && beingRemoved.includes(s.id))) {
+        return false
+      }
+      seen.add(key)
+      return true
+    })
+  })
   const status = (): Status => {
     if (Array.from(adding.entries()).length || Array.from(removing.entries()).length) {
       return adding.pending || removing.pending ? 'saving' : 'unsaved'
@@ -135,9 +147,8 @@ export default function Whiteboard(props: WhiteboardProps) {
       () => [allStrokes().length, width(), height()],
       () => {
         const context = ctx()!
-        const strokes = allStrokes()
         context.clearRect(0, 0, width(), height())
-        for (const stroke of strokes) {
+        for (const stroke of allStrokes()) {
           context.beginPath()
           context.fillStyle = stroke.color
           context.strokeStyle = stroke.color
