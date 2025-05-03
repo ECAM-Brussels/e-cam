@@ -14,6 +14,7 @@ import { createStore, SetStoreFunction, unwrap } from 'solid-js/store'
 import Fa from '~/components/Fa'
 import Spinner from '~/components/Spinner'
 import { addStroke, clearBoard, loadBoard, removeStroke, type Stroke } from '~/lib/board'
+import { round } from '~/lib/helpers'
 
 type Mode = 'draw' | 'erase' | 'read'
 type Status = 'unsaved' | 'saving' | 'saved'
@@ -103,7 +104,12 @@ export default function Whiteboard(props: WhiteboardProps) {
 
   const handlePointerMove = async (x: number, y: number) => {
     if (mode() === 'draw') {
-      setCurrentStroke('points', currentStroke.points.length, [x, y])
+      x = round(x, 2)
+      y = round(y, 2)
+      const lastPoint = currentStroke.points.at(-1)
+      if (!lastPoint || x !== lastPoint[0] || y !== lastPoint[1]) {
+        setCurrentStroke('points', currentStroke.points.length, [x, y])
+      }
     } else if (mode() === 'erase') {
       for (let i = 0; i < strokes().length; i++) {
         for (const p of strokes()[i].points) {

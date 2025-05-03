@@ -30,3 +30,8 @@ export function wrapCode(code: string): string {
 export function hashObject(obj: object) {
   return CryptoJS.SHA256(stringify(obj)!).toString()
 }
+
+export function round(value: number, decimals = 3) {
+  const factor = Math.pow(10, decimals)
+  return Math.round(value * factor) / factor
+}
