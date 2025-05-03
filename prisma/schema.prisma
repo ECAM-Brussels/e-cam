@@ -68,7 +68,7 @@ model User {
 
   submissions Submission[]
   attempts Attempt[]
-  boards Board[]
+  strokes Stroke[]
 }
 
 model Attempt {
@@ -84,26 +84,16 @@ model Attempt {
   exercise Exercise @relation(fields: [hash], references: [hash])
 }
 
-model Board {
-  url String
-  id String
-  userEmail String
-  lastModified DateTime @default(now())
-
-  author User @relation(fields: [userEmail], references: [email])
-  strokes Stroke[]
-  @@id([url, id])
-}
-
 model Stroke {
   id String @id @default(uuid())
-  boardUrl String
-  boardId String
-  color String
-  lineWidth Int
+  url String
+  ownerEmail String
+  board String
+  color String @default("#255994")
+  lineWidth Int @default(2)
   /// [PointList]
   points Json
   created DateTime @default(now())
 
-  board Board @relation(fields: [boardUrl, boardId], references: [url, id])
+  owner User @relation(fields: [ownerEmail], references: [email])
 }

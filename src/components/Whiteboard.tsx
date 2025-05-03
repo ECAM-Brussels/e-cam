@@ -7,88 +7,25 @@ import {
   faPlus,
   faUpRightAndDownLeftFromCenter,
 } from '@fortawesome/free-solid-svg-icons'
-import {
-  query,
-  createAsync,
-  useLocation,
-  action,
-  useAction,
-  useSubmissions,
-  reload,
-} from '@solidjs/router'
+import { createAsync, useLocation, useAction, useSubmissions } from '@solidjs/router'
 import { cloneDeep } from 'lodash-es'
 import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
 import { createStore, SetStoreFunction, unwrap } from 'solid-js/store'
 import Fa from '~/components/Fa'
 import Spinner from '~/components/Spinner'
-import { getUser } from '~/lib/auth/session'
-import { prisma } from '~/lib/db'
+import { addStroke, clearBoard, loadBoard, removeStroke, type Stroke } from '~/lib/board'
 
 type Mode = 'draw' | 'erase' | 'read'
 type Status = 'unsaved' | 'saving' | 'saved'
 
-export type Stroke = {
-  id?: string
-  color: string
-  lineWidth: number
-  points: [number, number][]
-}
-
-async function check(url: string, id: string) {
-  const user = await getUser()
-  if (!user) {
-    throw new Error('You do not have the rights to edit that board. Please log in')
-  }
-  const { userEmail: ownerEmail } = await prisma.board.upsert({
-    where: { url_id: { url, id } },
-    create: { url, id, userEmail: user.email },
-    update: {},
-    select: { userEmail: true },
-  })
-  if (!user || user.email !== ownerEmail) {
-    throw new Error('You do not have the rights to edit that board')
-  }
-}
-
-export const loadBoard = query(async (url: string, id: string): Promise<Stroke[]> => {
-  'use server'
-  const record = await prisma.board.findUnique({
-    select: { strokes: true },
-    where: { url_id: { url, id } },
-  })
-  return record?.strokes ?? []
-}, 'loadBoard')
-
-export const addStroke = action(async (url: string, id: string, stroke: Stroke) => {
-  'use server'
-  await check(url, id)
-  await prisma.stroke.create({
-    data: { boardId: id, boardUrl: url, ...stroke, points: stroke.points },
-  })
-  return reload({ revalidate: loadBoard.keyFor(url, id) })
-})
-
-export const removeStroke = action(async (boardUrl: string, boardId: string, id: string) => {
-  'use server'
-  await check(boardUrl, boardId)
-  await prisma.stroke.delete({ where: { boardUrl, boardId, id } })
-  return reload({ revalidate: loadBoard.keyFor(boardUrl, boardId) })
-})
-
-export const clearBoard = action(async (boardUrl: string, boardId: string) => {
-  'use server'
-  await check(boardUrl, boardId)
-  await prisma.stroke.deleteMany({ where: { boardUrl, boardId } })
-  return reload({ revalidate: loadBoard.keyFor(boardUrl, boardId) })
-})
-
 type WhiteboardProps = {
-  id?: string
+  name: string
   class?: string
   readOnly?: boolean
   scale?: boolean
   toolbarPosition?: 'top' | 'bottom'
   onAdd?: () => void
+  owner: string
 } & (
   | {
       container: HTMLDivElement
@@ -125,23 +62,24 @@ export default function Whiteboard(props: WhiteboardProps) {
     }
   })
 
-  const strokes = createAsync(() => loadBoard(location.pathname, props.id || ''), {
+  const strokes = createAsync(() => loadBoard(location.pathname, props.name), {
     initialValue: [],
   })
-  const useAddStroke = useAction(addStroke.with(location.pathname, props.id || ''))
-  const useClear = useAction(clearBoard.with(location.pathname, props.id || ''))
-  const useRemoveStroke = useAction(removeStroke.with(location.pathname, props.id || ''))
+  const useAddStroke = useAction(addStroke.with(location.pathname, props.owner, props.name))
+  const useClear = useAction(clearBoard.with(location.pathname, props.owner, props.name))
+  const useRemoveStroke = useAction(removeStroke.with(location.pathname, props.owner, props.name))
   const [currentStroke, setCurrentStroke] = createStore<Stroke>({
     color: '#255994',
     lineWidth: 2,
     points: [],
   })
-  const filter = ([url, id]: [string, string]) => url === location.pathname && id === props.id
+  const filter = ([url, owner, name]: [string, string, string]) =>
+    url === location.pathname && name === props.name && owner === props.owner
   const adding = useSubmissions(addStroke, filter)
   const removing = useSubmissions(removeStroke, filter)
   const allStrokes = () => {
-    const beingAdded = Array.from(adding.entries()).map(([_, data]) => data.input[2])
-    const beingRemoved = Array.from(removing.entries()).map(([_, data]) => data.input[2])
+    const beingAdded = Array.from(adding.entries()).map(([_, data]) => data.input[3])
+    const beingRemoved = Array.from(removing.entries()).map(([_, data]) => data.input[3])
     return [...strokes(), ...beingAdded].filter((s) => !s.id || !beingRemoved.includes(s.id))
   }
   const status = (): Status => {

@@ -115,9 +115,17 @@ export default function Assignment(props: AssignmentProps) {
                       }}
                     />
                   </Suspense>
-                  <div class="h-screen overflow-hidden" ref={boardContainer}>
-                    <Whiteboard id={`${index()}`} container={boardContainer} />
-                  </div>
+                  <Show when={user()}>
+                    {(user) => (
+                      <div class="h-screen overflow-hidden" ref={boardContainer}>
+                        <Whiteboard
+                          owner={user()?.email}
+                          name={`${index()}`}
+                          container={boardContainer}
+                        />
+                      </div>
+                    )}
+                  </Show>
                 </ErrorBoundary>
               </div>
             )

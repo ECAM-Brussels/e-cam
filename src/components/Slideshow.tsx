@@ -13,13 +13,16 @@ type SlideshowProps = {
 
 export const getBoardCount = query(async (url: string, boardName: string) => {
   'use server'
-  const boards = await prisma.board.findMany({
-    where: { url, id: { startsWith: `slide-${boardName}-` } },
-    select: { id: true },
+  const boards = await prisma.stroke.groupBy({
+    by: ['board'],
+    where: { url, board: { startsWith: `slide-${boardName}-` } },
+    _count: {
+      board: true,
+    },
   })
   const result: { [key: string]: number } = {}
   for (const board of boards) {
-    const id = board.id.split('-').at(-2) as string
+    const id = board.board.split('-').at(-2) as string
     result[id] = id in result ? result[id] + 1 : 1
   }
   return result
@@ -27,11 +30,10 @@ export const getBoardCount = query(async (url: string, boardName: string) => {
 
 async function addBoard(url: string, boardName: string, i: number, j: number) {
   'use server'
-  const board = await prisma.board.create({
-    data: { url, id: `slide-${boardName}-${i}-${j}`, body: '[]' },
+  const board = await prisma.stroke.create({
+    data: { url, ownerEmail: 'ngy@ecam.be', board: `slide-${boardName}-${i}-${j}`, points: [] },
   })
 }
-
 function getSlides(props: SlideshowProps) {
   const results = []
   const { children } = props
@@ -71,7 +73,7 @@ export default function Slideshow(props: SlideshowProps) {
       width: 1920,
     })
     deck.initialize()
-    deck.addKeyBinding('40', async () => {
+    deck.addKeyBinding(40, async () => {
       const { h, v } = deck.getIndices()
       if (v === (count()?.[String(h)] || 1) - 1 && user()?.admin) {
         await addBoard(location.pathname, props.boardName || '', h, v + 1)
@@ -99,7 +101,8 @@ export default function Slideshow(props: SlideshowProps) {
                   <section class="relative h-full">
                     {child(j)}
                     <Whiteboard
-                      id={`slide-${props.boardName || ''}-${i()}-${j}`}
+                      name={`slide-${props.boardName || ''}-${i()}-${j}`}
+                      owner="ngy@ecam.be"
                       class="absolute top-0 left-0"
                       onAdd={async () => {
                         const { h, v } = deck.getIndices()
