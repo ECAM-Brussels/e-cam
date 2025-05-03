@@ -95,12 +95,7 @@ export default function Whiteboard(props: WhiteboardProps) {
       return true
     })
   })
-  const status = (): Status => {
-    if (Array.from(adding.entries()).length || Array.from(removing.entries()).length) {
-      return adding.pending || removing.pending ? 'saving' : 'unsaved'
-    }
-    return 'saved'
-  }
+  const status = () => (adding.pending || removing.pending || clearing.pending ? 'saving' : 'saved')
 
   const handlePointerMove = async (x: number, y: number) => {
     if (mode() === 'draw') {
