@@ -9,6 +9,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { useLocation, useAction, useSubmissions, createAsyncStore } from '@solidjs/router'
 import { cloneDeep } from 'lodash-es'
+import { getStroke } from 'perfect-freehand'
 import { createEffect, createMemo, createSignal, For, on, onMount, Show } from 'solid-js'
 import { createStore, SetStoreFunction, unwrap } from 'solid-js/store'
 import Fa from '~/components/Fa'
@@ -40,9 +41,25 @@ type WhiteboardProps = {
     }
 )
 
+function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
+  const points = getStroke(stroke.points, { size: stroke.lineWidth })
+  context.fillStyle = stroke.color
+  context.beginPath()
+  if (!points.length) {
+    return
+  }
+  context.moveTo(points[0][0], points[0][1])
+  for (let i = 1; i < points.length; i++) {
+    context.lineTo(points[i][0], points[i][1])
+  }
+  context.closePath()
+  context.fill()
+}
+
 export default function Whiteboard(props: WhiteboardProps) {
   const location = useLocation()
   let canvasRef!: HTMLCanvasElement
+  let currentStrokeCanvas!: HTMLCanvasElement
   let container!: HTMLDivElement
   const ctx = () => canvasRef?.getContext('2d')
   const [mode, setMode] = createSignal<Mode>('read')
@@ -150,30 +167,8 @@ export default function Whiteboard(props: WhiteboardProps) {
         const context = ctx()!
         context.clearRect(0, 0, width(), height())
         for (const stroke of allStrokes()) {
-          context.beginPath()
-          context.fillStyle = stroke.color
-          context.strokeStyle = stroke.color
-          context.lineWidth = stroke.lineWidth
-          if (stroke.points.length > 3) {
-            context.moveTo(...stroke.points[0])
-            let i
-            for (i = 1; i < stroke.points.length - 2; i++) {
-              const x = (stroke.points[i][0] + stroke.points[i + 1][0]) / 2
-              const y = (stroke.points[i][1] + stroke.points[i + 1][1]) / 2
-              context.quadraticCurveTo(...stroke.points[i], x, y)
-            }
-            context.quadraticCurveTo(...stroke.points[i], ...stroke.points[i + 1])
-          } else {
-            for (const point of stroke.points) {
-              context.lineTo(...point)
-            }
-          }
-          context.stroke()
-          context.closePath()
+          drawStroke(context, stroke)
         }
-        context.fillStyle = currentStroke.color
-        context.strokeStyle = currentStroke.color
-        context.lineWidth = currentStroke.lineWidth
       },
     ),
   )
@@ -181,18 +176,11 @@ export default function Whiteboard(props: WhiteboardProps) {
   // Adding points
   createEffect(
     on(
-      () => [currentStroke.points.length],
+      () => [currentStroke.points.length, width(), height()],
       () => {
-        if (currentStroke.points.length < 4) {
-          return
-        }
-        const context = ctx()!
-        const lastPoint = (i: number) => currentStroke.points[currentStroke.points.length - i]
-        const x = (lastPoint(2)[0] + lastPoint(1)[0]) / 2
-        const y = (lastPoint(2)[1] + lastPoint(1)[1]) / 2
-        context.moveTo(...lastPoint(3))
-        context.quadraticCurveTo(...lastPoint(2), x, y)
-        context.stroke()
+        const context = currentStrokeCanvas.getContext('2d')!
+        context.clearRect(0, 0, width(), height())
+        drawStroke(context, currentStroke)
       },
     ),
   )
@@ -220,7 +208,7 @@ export default function Whiteboard(props: WhiteboardProps) {
           position={props.toolbarPosition || 'top'}
         />
         <canvas
-          class="z-10 touch-none select-none"
+          class="absolute z-20 touch-none select-none"
           classList={{ 'cursor-crosshair': !props.readOnly }}
           ref={canvasRef!}
           height={height()}
@@ -270,6 +258,7 @@ export default function Whiteboard(props: WhiteboardProps) {
             setMode('read')
           }}
         />
+        <canvas ref={currentStrokeCanvas} height={height()} width={width()} class="absolute top-0 left-0 z-10 border" />
       </div>
     </div>
   )

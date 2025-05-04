@@ -38,6 +38,7 @@
     "micromark": "^4.0.0",
     "micromark-extension-math": "^3.1.0",
     "node-env-run": "^4.0.2",
+    "perfect-freehand": "^1.2.2",
     "pyodide": "^0.27.4",
     "reveal.js": "^5.1.0",
     "solid-js": "^1.9.5",
