@@ -285,7 +285,7 @@ function Toolbar(props: ToolbarProps) {
   ]
   return (
     <div
-      class="absolute flex gap-1 p-2"
+      class="absolute flex gap-1 p-2 z-30"
       classList={{ 'top-0': props.position === 'top', 'bottom-0': props.position === 'bottom' }}
     >
       <For each={pens}>
