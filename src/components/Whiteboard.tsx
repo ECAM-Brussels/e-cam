@@ -258,7 +258,12 @@ export default function Whiteboard(props: WhiteboardProps) {
             setMode('read')
           }}
         />
-        <canvas ref={currentStrokeCanvas} height={height()} width={width()} class="absolute top-0 left-0 z-10 border" />
+        <canvas
+          ref={currentStrokeCanvas}
+          height={height()}
+          width={width()}
+          class="absolute top-0 left-0 z-10 border"
+        />
       </div>
     </div>
   )
@@ -359,12 +364,12 @@ function Toolbar(props: ToolbarProps) {
       >
         <Fa icon={faUpRightAndDownLeftFromCenter} />
       </button>
-      <span class="px-2 py-1 text-2xl z-20">
+      <span class="px-2 py-1 text-2xl z-20 flex flex-row items-center">
         <Show when={props.status === 'unsaved'}>
           <Fa icon={faFloppyDisk} />
         </Show>
         <Show when={props.status === 'saving'}>
-          <Spinner /> Saving...
+          <Spinner /> <span class="text-sm pl-2">Saving...</span>
         </Show>
       </span>
     </div>
