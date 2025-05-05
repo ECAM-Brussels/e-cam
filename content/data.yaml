@@ -1,0 +1,15 @@
+courses:
+  - code: PM1C
+    title: Pont mathématique
+    image: /images/PM1C.png
+    url: /PM1C
+  - code: 4MATH5
+    title: 4ème maths 5
+  - code: 5MATH4
+    title: 5ème maths 4
+  - code: 5MATH6
+    title: 5ème maths 6
+  - code: 6MATH4
+    title: 6ème maths 4
+  - code: 6MATH6
+    title: 6ème maths 6

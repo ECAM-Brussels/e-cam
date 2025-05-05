@@ -1,9 +1,10 @@
-import { PrismaClient } from '@prisma/client'
+import { type Prisma, PrismaClient } from '@prisma/client'
 import glob from 'fast-glob'
 import { mkdirSync, readFileSync, writeFileSync } from 'fs'
 import yaml from 'js-yaml'
 import { dirname, relative, resolve } from 'path'
 import { loadEnv, type Plugin } from 'vite'
+import { z } from 'zod'
 import { type AssignmentInput } from '~/lib/exercises/assignment'
 
 const options = {
@@ -69,6 +70,29 @@ async function createAssignment(file: string, prisma: PrismaClient) {
   }
 }
 
+const dataSchema = z.object({
+  courses: z
+    .object({
+      code: z.string(),
+      title: z.string(),
+      image: z.string().optional(),
+      url: z.string().optional(),
+    })
+    .array(),
+})
+
+async function loadData(prisma: PrismaClient) {
+  const data = dataSchema.parse(yaml.load(readFileSync('content/data.yaml', 'utf-8')))
+  try {
+    for (const create of data.courses) {
+      const { code, ...update } = create
+      await prisma.course.upsert({ where: { code }, update, create })
+    }
+  } catch {
+    console.log(`Error when loading data.yaml`)
+  }
+}
+
 export default function (): Plugin {
   let prisma: PrismaClient
   return {
@@ -78,13 +102,20 @@ export default function (): Plugin {
       prisma = new PrismaClient({
         datasources: { db: { url: env.VITE_DATABASE_URL } },
       })
-      const assignments = await glob.glob('content/**/*.yaml')
+      const assignments = await glob.glob('content/**/*.yaml', { ignore: ['content/data.yaml'] })
       await createEmptyAssignments(prisma, assignments)
-      await Promise.all(assignments.map((file) => createAssignment(file, prisma)))
+      await Promise.all([
+        ...assignments.map((file) => createAssignment(file, prisma)),
+        loadData(prisma),
+      ])
     },
     async handleHotUpdate({ file }) {
       if (file.startsWith(resolve('content')) && file.endsWith('.yaml')) {
-        await createAssignment(file, prisma)
+        if (file.endsWith('data.yaml')) {
+          await loadData(prisma)
+        } else {
+          await createAssignment(file, prisma)
+        }
       }
     },
   }
