@@ -2,6 +2,7 @@
 title: "Complétion du carré"
 courses:
   - PM1C
+  - 4MATH5
 prerequisites:
   - /skills/algebra/complete-monic-square
 options:

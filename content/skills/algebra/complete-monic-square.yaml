@@ -2,6 +2,7 @@
 title: "Complétion du carré: cas unitaire"
 courses:
   - PM1C
+- 4MATH5
 prerequisites:
   - /skills/algebra/factor/binomial-formulas
 options:
