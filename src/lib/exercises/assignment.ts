@@ -207,7 +207,7 @@ function gradeToColor(correct: number, incorrect: number, total = 10) {
     const unsolved = 10 - correct - incorrect
     color.push(
       Math.round(
-        (colors.gray[i] * unsolved + colors.red[i] * incorrect + colors.green[i] * correct) / 10,
+        (colors.gray[i] * unsolved + colors.red[i] * incorrect + colors.green[i] * correct) / total,
       ),
     )
     return color
