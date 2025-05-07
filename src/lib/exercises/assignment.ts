@@ -1,6 +1,8 @@
 import { getUser } from '../auth/session'
 import { prisma } from '../db'
+import { getEloGain, getExerciseElo } from '../elo'
 import { type OptionsWithDefault, optionsSchemaWithDefault } from './schemas'
+import { type Prisma } from '@prisma/client'
 import { query } from '@solidjs/router'
 import { type ElementDefinition } from 'cytoscape'
 import { lazy } from 'solid-js'
@@ -62,7 +64,7 @@ export const getSubmission = query(async (url: string, email: string) => {
   'use server'
   await check(email)
   const {
-    submissions,
+    attempts,
     options,
     body: questions,
   } = await prisma.assignment.findUniqueOrThrow({
@@ -70,18 +72,14 @@ export const getSubmission = query(async (url: string, email: string) => {
     select: {
       body: true,
       options: true,
-      submissions: { where: { email } },
+      attempts: { where: { email }, select: { exercise: true }, orderBy: { position: 'asc' } },
     },
   })
-  const body = extendSubmission(submissions.at(0)?.body ?? [], questions, options)
-  if (!submissions.length) {
-    await prisma.submission.upsert({
-      where: { url_email: { url, email } },
-      create: { url, email, body, lastModified: new Date() },
-      update: { body, lastModified: new Date() },
-    })
-  }
-  return body
+  return extendSubmission(
+    attempts.map((a) => a.exercise),
+    questions,
+    options,
+  )
 }, 'getSubmission')
 
 export function extendSubmission(
@@ -119,28 +117,71 @@ export function extendSubmission(
   return body
 }
 
-function gradeSubmission(body: Exercise[]) {
-  return body
-    .filter((e) => e.attempts.length > 0)
-    .slice(-10)
-    .reduce((grade, exercise) => {
-      grade += exercise.attempts.at(-1)?.correct ? 1 : 0
-      return grade
-    }, 0)
+async function upsertExercise(exercise: Exercise) {
+  'use server'
+  if (!exercise.question) {
+    throw new Error('Exercise has not been generated yet.')
+  }
+  const hash = hashObject({ type: exercise.type, question: exercise.question })
+  let data = await prisma.exercise.findUnique({
+    where: { type: exercise.type, hash },
+    select: { score: true },
+  })
+  if (!data) {
+    let average = await prisma.exercise.aggregate({
+      _avg: { score: true },
+      where: { type: exercise.type },
+    })
+    const score = average._avg.score ?? 1500
+    data = await prisma.exercise.create({
+      data: {
+        hash,
+        type: exercise.type,
+        question: exercise.question,
+        score,
+      },
+      select: { score: true },
+    })
+  }
+  return hash
 }
 
-export async function saveExercise(url: string, email: string, pos: number, exercise: Exercise) {
+export async function saveExercise(
+  url: string,
+  email: string,
+  position: number,
+  exercise: Exercise,
+) {
   'use server'
-  await check(email)
   try {
-    const { body, lastModified } = await prisma.submission.findUniqueOrThrow({
-      where: { url_email: { url, email } },
+    await check(email)
+    const key = { url, email, position }
+    const hash = await upsertExercise(exercise)
+    const payload = {
+      hash,
+      exercise,
+      position,
+      ...(exercise.options.adjustElo && exercise.attempts.length === 1
+        ? { gain: await getEloGain(email, hash, exercise.attempts[0].correct) }
+        : {}),
+    } satisfies Prisma.AttemptUpsertArgs['update']
+    await prisma.attempt.upsert({
+      where: { url_email_position: key },
+      update: payload,
+      create: { ...key, gain: 0, ...payload },
     })
-    body[pos] = await exerciseSchema.parseAsync(exercise)
-    await prisma.submission.update({
-      where: { url_email: { url, email }, lastModified },
-      data: { body, lastModified: new Date(), grade: gradeSubmission(body) },
-    })
+    if (payload.gain) {
+      await prisma.$transaction([
+        prisma.user.update({
+          where: { email },
+          data: { score: { increment: payload.gain } },
+        }),
+        prisma.exercise.update({
+          where: { hash },
+          data: { score: { increment: -payload.gain } },
+        }),
+      ])
+    }
   } catch (error) {
     throw new Error(`Error while saving exercise ${JSON.stringify(exercise, null, 2)}: ${error}`)
   }
@@ -155,7 +196,7 @@ export const getAssignment = async (data: z.input<typeof assignmentSchema>) => {
   if (!page || !page.body || page.hash !== hash) {
     const { prerequisites, courses, ...assignment } = await assignmentSchema.parseAsync(data)
     await registerAssignment(prisma, data, { ...assignment, hash })
-    await prisma.submission.deleteMany({ where })
+    await prisma.attempt.deleteMany({ where })
   }
   return page
 }
@@ -169,18 +210,23 @@ function gradeToColor(score: number, start = [231, 229, 228], end = [163, 230, 5
 }
 
 export const getAssignmentGraph = query(
-  async (
-    query: Parameters<typeof prisma.assignment.findMany>[0] = {},
-  ): Promise<ElementDefinition[]> => {
+  async (where: Prisma.AssignmentFindManyArgs['where'] = {}): Promise<ElementDefinition[]> => {
     'use server'
     const user = await getUser()
     const data = await prisma.assignment.findMany({
-      ...query,
+      where,
       select: {
         url: true,
         title: true,
         requiredBy: { select: { url: true } },
-        submissions: user ? { where: { email: user.email }, select: { grade: true } } : false,
+        attempts: user
+          ? {
+              select: { gain: true },
+              where: { email: user.email },
+              orderBy: { position: 'desc' },
+              take: 10,
+            }
+          : false,
       },
     })
     const vertices = data.map((assignment) => ({
@@ -188,7 +234,7 @@ export const getAssignmentGraph = query(
         id: assignment.url,
         label: assignment.title,
         parent: 'algebra',
-        color: gradeToColor(assignment.submissions?.at(0)?.grade ?? 0),
+        color: gradeToColor(assignment.attempts?.filter((a) => a.gain > 0).length ?? 0),
       },
     })) satisfies ElementDefinition[]
     const urls = vertices.map((v) => v.data.id)

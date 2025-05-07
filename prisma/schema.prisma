@@ -22,7 +22,7 @@ model Assignment {
   hash String @default("")
   lastModified DateTime @default(now())
 
-  submissions Submission[]
+  attempts Attempt[]
   courses Course[]
   prerequisites Assignment[] @relation("Prerequisites")
   requiredBy Assignment[] @relation("Prerequisites")
@@ -35,19 +35,6 @@ model Course {
   url String @default("")
 
   assignments Assignment[]
-}
-
-model Submission {
-  url String
-  email String
-  /// [ExerciseList]
-  body Json
-  grade Int @default(0)
-  lastModified DateTime @default(now())
-  @@id([url, email])
-
-  assignment Assignment @relation(fields: [url], references: [url])
-  user User @relation(fields: [email], references: [email])
 }
 
 model Exercise {
@@ -66,22 +53,27 @@ model User {
   lastName String
   score Int @default(1500)
 
-  submissions Submission[]
   attempts Attempt[]
   strokes Stroke[]
 }
 
 model Attempt {
   id String @id @default(uuid())
+  url String
   email String
+  position Int
   hash String
-  userElo Int
-  exerciseElo Int
+  /// [Exercise]
+  exercise Json
   gain Int
   date DateTime @default(now())
+  lastModified DateTime @default(now())
 
+  assignment Assignment @relation(fields: [url], references: [url])
   user User @relation(fields: [email], references: [email])
-  exercise Exercise @relation(fields: [hash], references: [hash])
+  question Exercise @relation(fields: [hash], references: [hash])
+
+  @@unique([url, email, position])
 }
 
 model Stroke {

@@ -2,12 +2,13 @@
 
 import { type OptionsWithDefault } from './exercises/schemas'
 import { PrismaClient } from '@prisma/client'
-import { type Stroke } from '~/components/Whiteboard'
-import { type Exercise } from '~/lib/exercises/assignment'
+import { type Stroke } from '~/lib/board'
+import { type Exercise as FullExercise } from '~/lib/exercises/assignment'
 
 declare global {
   namespace PrismaJson {
-    type ExerciseList = Exercise[]
+    type Exercise = FullExercise
+    type ExerciseList = FullExercise[]
     type Options = OptionsWithDefault
     type StrokeList = Stroke[]
     type Question = NonNullable<Exercise['question']>

@@ -7,51 +7,37 @@ import Fa from '~/components/Fa'
 import Graph from '~/components/Graph'
 import Pagination from '~/components/Pagination'
 import Whiteboard from '~/components/Whiteboard'
-import { adjustElo, getEloDiff } from '~/lib/elo'
+import { getEloDiff } from '~/lib/elo'
 import {
   type Assignment,
   exercises,
   Exercise,
   saveExercise,
   type getAssignment,
-  extendSubmission,
   getSubmission,
 } from '~/lib/exercises/assignment'
 import { ExerciseProps } from '~/lib/exercises/base'
 import { optionsSchemaWithDefault } from '~/lib/exercises/schemas'
-import useStorage from '~/lib/storage'
 import { getUserInfo } from '~/lib/user'
 
 type AssignmentProps = {
   url: string
-  userEmail?: string
+  userEmail: string
   index: number
   data: Awaited<ReturnType<typeof getAssignment>>
   onIndexChange?: (newIndex: number) => void
 }
 
 export default function Assignment(props: AssignmentProps) {
-  const [storage, setStorage] = useStorage<Exercise[]>(() => `assignment.${props.url}`, [])
-  const user = createAsync(async () => (props.userEmail ? getUserInfo(props.userEmail) : null))
-  const body = createAsync(
-    async () => {
-      if (!props.userEmail) {
-        setStorage(extendSubmission(storage(), props.data.body, props.data.options))
-        return storage()
-      }
-      return await getSubmission(props.url, props.userEmail)
-    },
-    { initialValue: [] },
-  )
+  const user = createAsync(() => getUserInfo(props.userEmail))
+  const body = createAsync(() => getSubmission(props.url, props.userEmail), { initialValue: [] })
   const eloDiff = createAsync(() => getEloDiff())
   const graphQuery = () => ({
-    where: {
-      OR: [
-        { url: props.url },
-        { prerequisites: { some: { url: props.url } } },
-        { requiredBy: { some: { url: props.url } } },
-      ],
-    },
+    OR: [
+      { url: props.url },
+      { prerequisites: { some: { url: props.url } } },
+      { requiredBy: { some: { url: props.url } } },
+    ],
   })
   return (
     <ErrorBoundary>
@@ -63,9 +49,9 @@ export default function Assignment(props: AssignmentProps) {
         onChange={props.onIndexChange}
         max={body().length || 0}
         classList={(i) => ({
-          'bg-green-100': body()?.[i].attempts.at(-1)?.correct,
-          'bg-red-100': body()?.[i].attempts.at(-1)?.correct === false,
-          'bg-white': body()?.[i].attempts.at(-1)?.correct === undefined,
+          'bg-green-100': body()?.[i].attempts.at(0)?.correct,
+          'bg-red-100': body()?.[i].attempts.at(0)?.correct === false,
+          'bg-white': body()?.[i].attempts.at(0)?.correct === undefined,
         })}
       />
       <div class="lg:flex px-6 py-6">
@@ -91,27 +77,13 @@ export default function Assignment(props: AssignmentProps) {
                       {...(exercise as ExerciseProps<N, Q, A, P, F>)}
                       options={options()}
                       onChange={async (event) => {
-                        if (props.userEmail) {
-                          await saveExercise(
-                            location.pathname,
-                            props.userEmail,
-                            index(),
-                            event as Exercise,
-                          )
-                          if (event.attempts.length === 1 && options().adjustElo) {
-                            const { correct } = event.attempts.at(-1)!
-                            await adjustElo({
-                              email: props.userEmail,
-                              exercise: event as Exercise,
-                              correct,
-                            })
-                          }
-                          revalidate()
-                        } else {
-                          setStorage(
-                            storage().map((ex, i) => (i === index() ? (event as Exercise) : ex)),
-                          )
-                        }
+                        await saveExercise(
+                          location.pathname,
+                          props.userEmail,
+                          index(),
+                          event as Exercise,
+                        )
+                        revalidate()
                       }}
                     />
                   </Suspense>
