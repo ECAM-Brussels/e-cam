@@ -201,9 +201,15 @@ export const getAssignment = async (data: z.input<typeof assignmentSchema>) => {
   return page
 }
 
-function gradeToColor(score: number, start = [231, 229, 228], end = [163, 230, 53], steps = 10) {
+function gradeToColor(correct: number, incorrect: number, total = 10) {
+  const colors = { gray: [231, 229, 228], green: [163, 230, 53], red: [248, 113, 113] }
   const rgb = [...Array(3).keys()].reduce((color, i) => {
-    color.push(Math.round(start[i] + (score / steps) * (end[i] - start[i])))
+    const unsolved = 10 - correct - incorrect
+    color.push(
+      Math.round(
+        (colors.gray[i] * unsolved + colors.red[i] * incorrect + colors.green[i] * correct) / 10,
+      ),
+    )
     return color
   }, [] as number[])
   return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`
@@ -234,7 +240,10 @@ export const getAssignmentGraph = query(
         id: assignment.url,
         label: assignment.title,
         parent: 'algebra',
-        color: gradeToColor(assignment.attempts?.filter((a) => a.gain > 0).length ?? 0),
+        color: gradeToColor(
+          assignment.attempts?.filter((a) => a.gain > 0).length ?? 0,
+          assignment.attempts?.filter((a) => a.gain < 0).length ?? 0,
+        ),
       },
     })) satisfies ElementDefinition[]
     const urls = vertices.map((v) => v.data.id)
