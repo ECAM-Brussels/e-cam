@@ -128,19 +128,21 @@ async function upsertExercise(exercise: Exercise) {
     select: { score: true },
   })
   if (!data) {
-    let average = await prisma.question.aggregate({
-      _avg: { score: true },
-      where: { type: exercise.type },
-    })
-    const score = average._avg.score ?? 1500
-    data = await prisma.question.create({
-      data: {
-        hash,
-        type: exercise.type,
-        body: exercise.question,
-        score,
-      },
-      select: { score: true },
+    await prisma.$transaction(async (tx) => {
+      let average = await tx.question.aggregate({
+        _avg: { score: true },
+        where: { type: exercise.type },
+      })
+      const score = average._avg.score ?? 1500
+      await tx.question.create({
+        data: {
+          hash,
+          type: exercise.type,
+          body: exercise.question!,
+          score,
+        },
+        select: { score: true },
+      })
     })
   }
   return hash
