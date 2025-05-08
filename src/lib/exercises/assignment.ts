@@ -237,7 +237,7 @@ export const getAssignmentGraph = query(
         attempts: user
           ? {
               select: { gain: true },
-              where: { email: user.email },
+              where: { email: user.email, gain: { not: 0 } },
               orderBy: { position: 'desc' },
               take: 10,
             }
