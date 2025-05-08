@@ -1,5 +1,5 @@
 import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons'
-import { createAsync, revalidate } from '@solidjs/router'
+import { createAsync, createAsyncStore, revalidate } from '@solidjs/router'
 import { Component, For, Show, Suspense } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import ErrorBoundary from '~/components/ErrorBoundary'
@@ -14,7 +14,7 @@ import {
   Exercise,
   saveExercise,
   type getAssignment,
-  getSubmission,
+  getExercises,
 } from '~/lib/exercises/assignment'
 import { ExerciseProps } from '~/lib/exercises/base'
 import { optionsSchemaWithDefault } from '~/lib/exercises/schemas'
@@ -30,7 +30,9 @@ type AssignmentProps = {
 
 export default function Assignment(props: AssignmentProps) {
   const user = createAsync(() => getUserInfo(props.userEmail))
-  const body = createAsync(() => getSubmission(props.url, props.userEmail), { initialValue: [] })
+  const body = createAsyncStore(() => getExercises(props.url, props.userEmail), {
+    initialValue: [],
+  })
   const eloDiff = createAsync(() => getEloDiff())
   const graphQuery = () => ({
     OR: [

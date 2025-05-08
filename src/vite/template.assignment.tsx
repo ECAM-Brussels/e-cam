@@ -9,7 +9,7 @@ import { Show } from 'solid-js'
 import Assignment from '~/components/Assignment'
 import Page from '~/components/Page'
 import { getUser } from '~/lib/auth/session'
-import { getAssignment, getSubmission } from '~/lib/exercises/assignment'
+import { getAssignment, getExercises } from '~/lib/exercises/assignment'
 
 const getOriginalAssignment = query((url: string) => {
   'use server'
@@ -27,7 +27,7 @@ export const route = {
       getOriginalAssignment(location.pathname),
     ])
     if (user) {
-      getSubmission(location.pathname, user.email)
+      getExercises(location.pathname, user.email)
     }
   },
 } satisfies RouteDefinition

@@ -60,7 +60,7 @@ async function check(email: string) {
   }
 }
 
-export const getSubmission = query(async (url: string, email: string) => {
+export const getExercises = query(async (url: string, email: string) => {
   'use server'
   await check(email)
   const {
@@ -75,14 +75,14 @@ export const getSubmission = query(async (url: string, email: string) => {
       attempts: { where: { email }, select: { exercise: true }, orderBy: { position: 'asc' } },
     },
   })
-  return extendSubmission(
+  return addExercises(
     attempts.map((a) => a.exercise),
     questions,
     options,
   )
-}, 'getSubmission')
+}, 'getExercises')
 
-export function extendSubmission(
+export function addExercises(
   body: Exercise[],
   questions: Exercise[],
   options: OptionsWithDefault,

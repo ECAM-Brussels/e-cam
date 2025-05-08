@@ -1,4 +1,4 @@
-import { type Prisma, PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma/client'
 import glob from 'fast-glob'
 import { mkdirSync, readFileSync, writeFileSync } from 'fs'
 import yaml from 'js-yaml'
