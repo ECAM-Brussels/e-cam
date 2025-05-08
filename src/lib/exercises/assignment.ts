@@ -165,23 +165,28 @@ export async function saveExercise(
         ? { gain: await getEloGain(email, hash, exercise.attempts[0].correct) }
         : {}),
     } satisfies Prisma.AttemptUpsertArgs['update']
-    await prisma.attempt.upsert({
-      where: { url_email_position: key },
-      update: payload,
-      create: { ...key, gain: 0, ...payload },
+    await prisma.$transaction(async (tx) => {
+      const queries: Promise<any>[] = [
+        tx.attempt.upsert({
+          where: { url_email_position: key },
+          update: payload,
+          create: { ...key, gain: 0, ...payload },
+        }),
+      ]
+      if (payload.gain) {
+        queries.push(
+          tx.user.update({
+            where: { email },
+            data: { score: { increment: payload.gain } },
+          }),
+          tx.question.update({
+            where: { hash },
+            data: { score: { increment: -payload.gain } },
+          }),
+        )
+      }
+      await Promise.all(queries)
     })
-    if (payload.gain) {
-      await prisma.$transaction([
-        prisma.user.update({
-          where: { email },
-          data: { score: { increment: payload.gain } },
-        }),
-        prisma.question.update({
-          where: { hash },
-          data: { score: { increment: -payload.gain } },
-        }),
-      ])
-    }
   } catch (error) {
     throw new Error(`Error while saving exercise ${JSON.stringify(exercise, null, 2)}: ${error}`)
   }
