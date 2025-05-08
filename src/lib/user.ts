@@ -3,8 +3,10 @@ import { prisma } from './db'
 
 export const getUserInfo = async (email: string) => {
   'use server'
-  const record = await prisma.user.findFirst({ where: { email } })
-  const user = await getUser()
+  const [record, user] = await Promise.all([
+    prisma.user.findUnique({ where: { email } }),
+    getUser(),
+  ])
   if (!user) {
     throw new Error('You need to be logged in')
   }
