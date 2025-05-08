@@ -29,7 +29,7 @@ export async function getEloGain(email: string, hash: string, correct: boolean) 
   'use server'
   const [user, exercise] = await Promise.all([
     prisma.user.findUniqueOrThrow({ where: { email }, select: { score: true } }),
-    prisma.exercise.findUniqueOrThrow({ where: { hash }, select: { score: true } }),
+    prisma.question.findUniqueOrThrow({ where: { hash }, select: { score: true } }),
   ])
   return Math.round(K * ((correct ? 1 : 0) - logistic(user.score - exercise.score)))
 }

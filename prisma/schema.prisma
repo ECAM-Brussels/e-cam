@@ -37,11 +37,11 @@ model Course {
   assignments Assignment[]
 }
 
-model Exercise {
+model Question {
   hash String @id
   type String
   /// [Question]
-  question Json
+  body Json
   score Int @default(1500)
   attempts Attempt[]
 }
@@ -71,7 +71,7 @@ model Attempt {
 
   assignment Assignment @relation(fields: [url], references: [url])
   user User @relation(fields: [email], references: [email])
-  question Exercise @relation(fields: [hash], references: [hash])
+  question Question @relation(fields: [hash], references: [hash])
 
   @@unique([url, email, position])
 }

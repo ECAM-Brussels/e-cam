@@ -1,6 +1,6 @@
 import { getUser } from '../auth/session'
 import { prisma } from '../db'
-import { getEloGain, getExerciseElo } from '../elo'
+import { getEloGain } from '../elo'
 import { type OptionsWithDefault, optionsSchemaWithDefault } from './schemas'
 import { type Prisma } from '@prisma/client'
 import { query } from '@solidjs/router'
@@ -123,21 +123,21 @@ async function upsertExercise(exercise: Exercise) {
     throw new Error('Exercise has not been generated yet.')
   }
   const hash = hashObject({ type: exercise.type, question: exercise.question })
-  let data = await prisma.exercise.findUnique({
+  let data = await prisma.question.findUnique({
     where: { type: exercise.type, hash },
     select: { score: true },
   })
   if (!data) {
-    let average = await prisma.exercise.aggregate({
+    let average = await prisma.question.aggregate({
       _avg: { score: true },
       where: { type: exercise.type },
     })
     const score = average._avg.score ?? 1500
-    data = await prisma.exercise.create({
+    data = await prisma.question.create({
       data: {
         hash,
         type: exercise.type,
-        question: exercise.question,
+        body: exercise.question,
         score,
       },
       select: { score: true },
@@ -176,7 +176,7 @@ export async function saveExercise(
           where: { email },
           data: { score: { increment: payload.gain } },
         }),
-        prisma.exercise.update({
+        prisma.question.update({
           where: { hash },
           data: { score: { increment: -payload.gain } },
         }),
@@ -196,7 +196,9 @@ export const getAssignment = async (data: z.input<typeof assignmentSchema>) => {
   if (!page || !page.body || page.hash !== hash) {
     const { prerequisites, courses, ...assignment } = await assignmentSchema.parseAsync(data)
     await registerAssignment(prisma, data, { ...assignment, hash })
-    await prisma.attempt.deleteMany({ where })
+    if (page && hashObject(page.body) !== hashObject(assignment.body)) {
+      await prisma.attempt.deleteMany({ where })
+    }
   }
   return page
 }
