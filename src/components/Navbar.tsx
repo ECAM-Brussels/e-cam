@@ -57,9 +57,7 @@ function UserInfo() {
       >
         {(user) => (
           <>
-            <NavbarItem href={`/users/${user().email.split('@')[0]}`}>
-              {user().firstName}
-            </NavbarItem>
+            <NavbarItem href={`/users/${user().email}`}>{user().firstName}</NavbarItem>
             <NavbarItem>
               <form action={logout} method="post">
                 <button type="submit">
