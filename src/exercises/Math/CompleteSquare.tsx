@@ -18,11 +18,11 @@ const { Component, schema } = createExerciseType({
         rhs={(props) => (
           <Math class="border min-w-24 p-2" editable name="attempt" value={props.value} />
         )}
-        values={(props.attempt ?? ['']).map((value) => [props.question, value])}
+        values={(props.attempt ?? ['']).map((value) => [props.question.expr, value])}
       />
     </>
   ),
-  question: z.string(),
+  question: z.object({ expr: z.string() }),
   attempt: z.union([
     z
       .string()
@@ -40,7 +40,7 @@ const { Component, schema } = createExerciseType({
           }
         }
       `),
-      { expr: question, attempt: attempt.at(-1) ?? '' },
+      { expr: question.expr, attempt: attempt.at(-1) ?? '' },
     )
     return data.attempt.isEqual && data.attempt.count == 1
   },
@@ -66,7 +66,7 @@ const { Component, schema } = createExerciseType({
         `),
         { expr: `(${a})(x - ${alpha})^2 + ${beta}` },
       )
-      return expression.expand.expr
+      return { expr: expression.expand.expr }
     },
   },
 })
