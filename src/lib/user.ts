@@ -1,8 +1,11 @@
 import { getUser } from './auth/session'
 import { prisma } from './db'
 
-export const getUserInfo = async (email: string) => {
+export const getUserInfo = async (email?: string) => {
   'use server'
+  if (!email) {
+    return getUser()
+  }
   const [record, user] = await Promise.all([
     prisma.user.findUnique({ where: { email } }),
     getUser(),
