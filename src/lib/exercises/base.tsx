@@ -1,8 +1,8 @@
 import { extractFormData } from '../form'
 import { hashObject } from '../helpers'
-import { action, createAsync, useSubmission } from '@solidjs/router'
+import { action, createAsync, reload, useSubmission } from '@solidjs/router'
 import { debounce } from 'lodash-es'
-import { Show } from 'solid-js'
+import { Show, Suspense } from 'solid-js'
 import { z } from 'zod'
 import Button from '~/components/Button'
 import ZodError from '~/components/ZodError'
@@ -101,14 +101,18 @@ export function createExerciseType<
         question: question(),
         attempts: [...props.attempts, { correct, attempt, feedback }],
       })
+      // We leave revalidation to onChange
+      return reload({ revalidate: 'nothing' })
     }, `exercise-${hash()}`)
     const submission = useSubmission(submit)
 
     return (
-      <Show when={question()} fallback={<p>Generating...</p>}>
+      <Suspense fallback={<p>Generating...</p>}>
         <form method="post" action={submit} class="p-4 border-b shadow-sm">
           <fieldset disabled={readOnly()}>
-            <exercise.Component question={question()} attempt={props.attempts.at(-1)?.attempt} />
+            <Show when={question()}>
+              <exercise.Component question={question()} attempt={props.attempts.at(-1)?.attempt} />
+            </Show>
             <ZodError error={submission.error} />
           </fieldset>
           <Show when={!readOnly() && !submission.pending}>
@@ -126,7 +130,7 @@ export function createExerciseType<
           component={ExerciseFeedback}
           marking={submission.pending}
         />
-      </Show>
+      </Suspense>
     )
   }
   const schema = z.object({
