@@ -13,7 +13,7 @@ export const getEloDiff = query(async (email?: string) => {
   if (!email) {
     const user = await getUser()
     if (!user) {
-      return null
+      return 0
     }
     email = user.email
   }
@@ -22,7 +22,7 @@ export const getEloDiff = query(async (email?: string) => {
     select: { gain: true },
     orderBy: { date: 'desc' },
   })
-  return data?.gain ?? null
+  return data?.gain ?? 0
 }, 'getEloDiff')
 
 export async function getEloGain(email: string, hash: string, correct: boolean) {

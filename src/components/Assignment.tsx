@@ -34,7 +34,7 @@ export default function Assignment(props: AssignmentProps) {
   const body = createAsyncStore(() => getExercises(props.url, props.userEmail), {
     initialValue: [],
   })
-  const eloDiff = createAsync(() => getEloDiff())
+  const eloDiff = createAsync(() => getEloDiff(props.userEmail), { initialValue: 0 })
   const graphQuery = () => ({
     OR: [
       { url: props.url },
@@ -94,44 +94,34 @@ export default function Assignment(props: AssignmentProps) {
                       }}
                     />
                   </Suspense>
-                  <Show when={user()}>
-                    {(user) => (
-                      <div class="h-screen overflow-hidden" ref={boardContainer}>
-                        <Whiteboard
-                          owner={user()?.email}
-                          name={`${index()}`}
-                          container={boardContainer}
-                        />
-                      </div>
-                    )}
-                  </Show>
+                  <div class="h-screen overflow-hidden" ref={boardContainer}>
+                    <Whiteboard
+                      owner={props.userEmail}
+                      name={`${index()}`}
+                      container={boardContainer}
+                    />
+                  </div>
                 </ErrorBoundary>
               </div>
             )
           }}
         </For>
         <div class="lg:w-80 px-6">
-          <Show when={user()}>
-            {(user) => (
-              <div class="bg-white border rounded-xl shadow-sm p-4 text-center mb-8 flex items-center gap-3">
-                <div class="text-xl">Score:</div>
-                <div class="font-bold text-3xl">{user().score} </div>
-                <Show when={eloDiff()}>
-                  {(eloDiff) => (
-                    <span
-                      classList={{
-                        'text-green-800': eloDiff() > 0,
-                        'text-red-800': eloDiff() < 0,
-                      }}
-                    >
-                      ({eloDiff() > 0 && '+'}
-                      {eloDiff()} <Fa icon={eloDiff() > 0 ? faArrowUp : faArrowDown} />)
-                    </span>
-                  )}
-                </Show>
-              </div>
-            )}
-          </Show>
+          <div class="bg-white border rounded-xl shadow-sm p-4 text-center mb-8 flex items-center gap-3">
+            <Suspense>
+              <h3 class="text-xl">Score:</h3>
+              <div class="font-bold text-3xl">{user()?.score} </div>
+              <span
+                classList={{
+                  'text-green-800': eloDiff() > 0,
+                  'text-red-800': eloDiff() < 0,
+                }}
+              >
+                ({eloDiff() > 0 && '+'}
+                {eloDiff()} <Fa icon={eloDiff() > 0 ? faArrowUp : faArrowDown} />)
+              </span>
+            </Suspense>
+          </div>
           <div class="bg-white border rounded-xl p-4 shadow-sm">
             <h2 class="text-2xl mb-2">Exercices similaires</h2>
             <Graph class="min-h-96" rankDir="BT" currentNode={props.url} query={graphQuery()} />
