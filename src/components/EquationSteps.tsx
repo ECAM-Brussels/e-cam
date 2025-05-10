@@ -1,5 +1,5 @@
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { For, type JSXElement, Show } from 'solid-js'
+import { createEffect, For, type JSXElement, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web'
 import Fa from '~/components/Fa'
@@ -14,6 +14,11 @@ type EquationStepsProps = {
 
 export default function EquationSteps(props: EquationStepsProps) {
   const [lines, setLines] = createStore(props.values || ['', ''])
+  createEffect(() => {
+    if (props.values) {
+      setLines(props.values)
+    }
+  })
   return (
     <For each={lines}>
       {(line, i) => (
