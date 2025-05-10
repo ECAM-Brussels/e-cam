@@ -1,5 +1,6 @@
 import { extractFormData } from '../form'
 import { createAsync } from '@solidjs/router'
+import { debounce } from 'lodash-es'
 import { Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { z } from 'zod'
@@ -45,13 +46,19 @@ export function createExerciseType<
   function Component(
     props: ExerciseProps<Name, z.infer<Question>, z.infer<Attempt>, z.infer<G>, Feedback>,
   ) {
+    const debouncedOnChange = props.onChange
+      ? debounce(props.onChange, 500, { leading: true, trailing: false })
+      : null
     const question = createAsync(async () => {
       if ('question' in props) return props.question
       if (!exercise.generator) throw new Error('Exercise does not accept params.')
       const { params, onChange, ...data } = props
       try {
         const question = await exercise.generator.generate(params)
-        await onChange?.({ ...data, question: await exercise.question.parseAsync(question) })
+        await debouncedOnChange?.({
+          ...data,
+          question: await exercise.question.parseAsync(question),
+        })
         return question
       } catch (error) {
         throw new Error(
@@ -96,7 +103,7 @@ export function createExerciseType<
           getFeedback?.(remaining(-1), question(), attempt),
         ])
         const { onChange, ...data } = props
-        await onChange?.({
+        await debouncedOnChange?.({
           ...data,
           question: question(),
           attempts: [...props.attempts, { correct, attempt, feedback }],
