@@ -58,13 +58,15 @@ const getInfo = query(async (path: string, url: string) => {
 export const route = {
   async preload({ location, params }) {
     const info = await getInfo(params.path, location.pathname)
-    await Promise.all([
-      getUser(),
-      getUserInfo(info.userEmail),
-      getOriginalAssignment(info.baseUrl),
-      getExercises(info.baseUrl, info.userEmail),
-      getEloDiff(info.userEmail),
-    ])
+    if (info) {
+      await Promise.all([
+        getUser(),
+        getUserInfo(info.userEmail),
+        getOriginalAssignment(info.baseUrl),
+        getExercises(info.baseUrl, info.userEmail),
+        getEloDiff(info.userEmail),
+      ])
+    }
   },
 } satisfies RouteDefinition
 
