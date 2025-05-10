@@ -6,56 +6,53 @@ type PaginationProps = {
   current: number
   classList: (i: number) => { [key: string]: boolean | undefined }
   max: number
-  onChange?: (newValue: number) => void
+  url: (i: number) => string
 }
 
 export default function Pagination(props: PaginationProps) {
   return (
     <nav class="text-center mb-4">
       <ul class="inline-flex text-gray-500">
-        <Button
+        <Link
           class="border-e-0 rounded-l-lg"
-          onClick={() => props.onChange?.((props.current - 1 + props.max) % props.max)}
+          href={props.url((props.current - 1 + props.max) % props.max)}
         >
           <Fa icon={faChevronLeft} />
-        </Button>
+        </Link>
         <For each={Array.from(Array(props.max).keys())}>
           {(i) => (
-            <Button
+            <Link
               classList={{
                 'font-bold border-2 text-black border-black': props.current === i,
                 ...props.classList(i),
               }}
-              onClick={() => props.onChange?.(i)}
+              href={props.url(i)}
             >
               {i + 1}
-            </Button>
+            </Link>
           )}
         </For>
-        <Button
-          class="rounded-r-lg"
-          onClick={() => props.onChange?.((props.current + 1) % props.max)}
-        >
+        <Link class="rounded-r-lg" href={props.url((props.current + 1) % props.max)}>
           <Fa icon={faChevronRight} />
-        </Button>
+        </Link>
       </ul>
     </nav>
   )
 }
 
-type ButtonProps = {
+type LinkProps = {
   class?: string
   classList?: { [key: string]: boolean | undefined }
   children: JSXElement
-  onClick?: () => void
+  href: string
 }
 
-function Button(props: ButtonProps) {
+function Link(props: LinkProps) {
   return (
     <li class={`border border-gray-300 ${props.class}`} classList={props.classList}>
-      <button class="px-3 py-1" onClick={props.onClick}>
+      <a class="px-3 py-1" href={props.href}>
         {props.children}
-      </button>
+      </a>
     </li>
   )
 }

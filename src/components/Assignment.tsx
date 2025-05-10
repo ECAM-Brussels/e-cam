@@ -26,7 +26,6 @@ type AssignmentProps = {
   userEmail: string
   index: number
   data: Awaited<ReturnType<typeof getAssignment>>
-  onIndexChange?: (newIndex: number) => void
 }
 
 export default function Assignment(props: AssignmentProps) {
@@ -49,7 +48,7 @@ export default function Assignment(props: AssignmentProps) {
       </Show>
       <Pagination
         current={props.index}
-        onChange={props.onIndexChange}
+        url={(index) => `${props.url}/${props.userEmail}/${index}`}
         max={body().length || 0}
         classList={(i) => ({
           'bg-green-100': body()?.[i].attempts.at(0)?.correct,
@@ -80,12 +79,7 @@ export default function Assignment(props: AssignmentProps) {
                       {...(exercise as ExerciseProps<N, Q, A, P, F>)}
                       options={options()}
                       onChange={async (event) => {
-                        await saveExercise(
-                          location.pathname,
-                          props.userEmail,
-                          index(),
-                          event as Exercise,
-                        )
+                        await saveExercise(props.url, props.userEmail, index(), event as Exercise)
                         revalidate([
                           getExercises.keyFor(props.url, props.userEmail),
                           getEloDiff.key,

@@ -1,7 +1,8 @@
 import { getUser } from './auth/session'
 import { prisma } from './db'
+import { query } from '@solidjs/router'
 
-export const getUserInfo = async (email?: string) => {
+export const getUserInfo = query(async (email?: string) => {
   'use server'
   if (!email) {
     return getUser()
@@ -17,4 +18,4 @@ export const getUserInfo = async (email?: string) => {
     throw new Error('You do not have the rights to see this')
   }
   return record
-}
+}, 'getUserInfo')

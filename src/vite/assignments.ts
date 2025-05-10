@@ -55,7 +55,10 @@ export async function registerAssignment(
 
 async function createAssignment(file: string, prisma: PrismaClient) {
   const relativePath = relative(resolve('content'), file)
-  const outputPath = resolve('src/routes/(generated)', relativePath.replace(/\.ya?ml$/, '.tsx'))
+  const outputPath = resolve(
+    'src/routes/(generated)',
+    relativePath.replace(/\.ya?ml$/, '/[...path].tsx'),
+  )
   mkdirSync(dirname(outputPath), { recursive: true })
   const assignment = yaml.load(readFileSync(file, 'utf-8')) as Omit<AssignmentInput, 'url'>
   const template = readFileSync(resolve('src/vite/template.assignment.tsx'), 'utf-8')
