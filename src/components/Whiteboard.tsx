@@ -7,7 +7,7 @@ import {
   faPlus,
   faUpRightAndDownLeftFromCenter,
 } from '@fortawesome/free-solid-svg-icons'
-import { useLocation, useAction, useSubmissions, createAsyncStore } from '@solidjs/router'
+import { useAction, useSubmissions, createAsyncStore } from '@solidjs/router'
 import { cloneDeep } from 'lodash-es'
 import { getStroke } from 'perfect-freehand'
 import { createEffect, createMemo, createSignal, For, on, onMount, Show } from 'solid-js'
@@ -28,6 +28,7 @@ type WhiteboardProps = {
   toolbarPosition?: 'top' | 'bottom'
   onAdd?: () => void
   owner: string
+  url: string
 } & (
   | {
       container: HTMLDivElement
@@ -57,7 +58,6 @@ function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
 }
 
 export default function Whiteboard(props: WhiteboardProps) {
-  const location = useLocation()
   let canvasRef!: HTMLCanvasElement
   let currentStrokeCanvas!: HTMLCanvasElement
   let container!: HTMLDivElement
@@ -80,22 +80,24 @@ export default function Whiteboard(props: WhiteboardProps) {
     }
   })
 
-  const strokes = createAsyncStore(() => loadBoard(location.pathname, props.name), {
+  const strokes = createAsyncStore(() => loadBoard(props.url, props.name), {
     initialValue: [],
   })
-  const useAddStroke = useAction(addStroke.with(location.pathname, props.owner, props.name))
-  const useClear = useAction(clearBoard.with(location.pathname, props.owner, props.name))
-  const useRemoveStroke = useAction(removeStroke.with(location.pathname, props.owner, props.name))
+  const useAddStroke = () => useAction(addStroke.with(props.url, props.owner, props.name))
+  const useClear = useAction(clearBoard)
+  const useRemoveStroke = useAction(removeStroke)
   const [currentStroke, setCurrentStroke] = createStore<Stroke>({
     color: '#255994',
     lineWidth: 2,
     points: [],
   })
-  const filter = ([url, owner, name]: [string, string, string]) =>
-    url === location.pathname && name === props.name && owner === props.owner
-  const adding = useSubmissions(addStroke, filter)
-  const removing = useSubmissions(removeStroke, filter)
-  const clearing = useSubmissions(clearBoard, filter)
+  const filter =
+    () =>
+    ([url, owner, name]: [string, string, string]) =>
+      url === props.url && name === props.name && owner === props.owner
+  const adding = useSubmissions(addStroke, filter())
+  const removing = useSubmissions(removeStroke, filter())
+  const clearing = useSubmissions(clearBoard, filter())
   const allStrokes = createMemo(() => {
     if (clearing.pending) {
       return []
@@ -128,7 +130,7 @@ export default function Whiteboard(props: WhiteboardProps) {
           const dist = (p[0] - x) ** 2 + (p[1] - y) ** 2
           const stroke = strokes()[i]
           if (dist <= 5 && stroke.id) {
-            await useRemoveStroke(stroke.id)
+            await useRemoveStroke(props.url, props.owner, props.name, stroke.id)
             return
           }
         }
@@ -150,7 +152,7 @@ export default function Whiteboard(props: WhiteboardProps) {
   createEffect(
     on(mode, () => {
       if (mode() === 'read' && currentStroke.points.length) {
-        useAddStroke(cloneDeep(unwrap(currentStroke)))
+        useAddStroke()(cloneDeep(unwrap(currentStroke)))
         setCurrentStroke('points', [])
         ctx()?.closePath()
       } else if (mode() === 'draw') {
@@ -203,7 +205,7 @@ export default function Whiteboard(props: WhiteboardProps) {
           status={status()}
           erasing={erasing()}
           setErasing={setErasing}
-          onDelete={useClear}
+          onDelete={() => useClear(props.url, props.owner, props.name)}
           onAdd={props.onAdd}
           position={props.toolbarPosition || 'top'}
         />
