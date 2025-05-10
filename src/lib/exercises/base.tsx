@@ -1,5 +1,6 @@
 import { extractFormData } from '../form'
-import { createAsync } from '@solidjs/router'
+import { hashObject } from '../helpers'
+import { action, createAsync, useSubmission, useSubmissions } from '@solidjs/router'
 import { debounce } from 'lodash-es'
 import { Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
@@ -78,10 +79,6 @@ export function createExerciseType<
     }
     const readOnly = () => remaining() === 0 || props.attempts.at(-1)?.correct
 
-    const [submission, setSubmission] = createStore<{ pending: boolean; error?: z.ZodError }>({
-      pending: false,
-    })
-
     async function mark(question: z.infer<Question>, attempt: z.infer<Attempt>) {
       try {
         return await exercise.mark(question, attempt)
@@ -90,36 +87,27 @@ export function createExerciseType<
       }
     }
 
-    async function handleSubmit(event: SubmitEvent) {
-      event.preventDefault()
-      setSubmission('pending', true)
-      setSubmission('error', undefined)
-      try {
-        const attempt: z.infer<Attempt> = await exercise.attempt.parseAsync(
-          extractFormData(new FormData(event.target as HTMLFormElement)).attempt,
-        )
-        const [correct, feedback] = await Promise.all([
-          mark(question(), attempt),
-          getFeedback?.(remaining(-1), question(), attempt),
-        ])
-        const { onChange, ...data } = props
-        await debouncedOnChange?.({
-          ...data,
-          question: question(),
-          attempts: [...props.attempts, { correct, attempt, feedback }],
-        })
-        setSubmission('pending', false)
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          setSubmission('error', error)
-        }
-        setSubmission('pending', false)
-      }
-    }
+    const hash = () => hashObject({ type: props.type, question: question() })
+    const submit = action(async (form: FormData) => {
+      const attempt: z.infer<Attempt> = await exercise.attempt.parseAsync(
+        extractFormData(form).attempt,
+      )
+      const [correct, feedback] = await Promise.all([
+        mark(question(), attempt),
+        getFeedback?.(remaining(-1), question(), attempt),
+      ])
+      const { onChange, ...data } = props
+      await debouncedOnChange?.({
+        ...data,
+        question: question(),
+        attempts: [...props.attempts, { correct, attempt, feedback }],
+      })
+    }, `exercise-${hash()}`)
+    const submission = useSubmission(submit)
 
     return (
       <Show when={question()} fallback={<p>Generating...</p>}>
-        <form onSubmit={handleSubmit} class="p-4 border-b shadow-sm">
+        <form method="post" action={submit} class="p-4 border-b shadow-sm">
           <fieldset disabled={readOnly()}>
             <exercise.Component question={question()} attempt={props.attempts.at(-1)?.attempt} />
             <ZodError error={submission.error} />
