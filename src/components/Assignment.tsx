@@ -15,6 +15,7 @@ import {
   saveExercise,
   type getAssignment,
   getExercises,
+  getAssignmentGraph,
 } from '~/lib/exercises/assignment'
 import { ExerciseProps } from '~/lib/exercises/base'
 import { optionsSchemaWithDefault } from '~/lib/exercises/schemas'
@@ -85,7 +86,11 @@ export default function Assignment(props: AssignmentProps) {
                           index(),
                           event as Exercise,
                         )
-                        revalidate()
+                        revalidate([
+                          getExercises.keyFor(props.url, props.userEmail),
+                          getEloDiff.key,
+                          getAssignmentGraph.keyFor(graphQuery()),
+                        ])
                       }}
                     />
                   </Suspense>
