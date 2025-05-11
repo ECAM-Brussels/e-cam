@@ -16,10 +16,13 @@ async function check(owner: string) {
   }
 }
 
-export const loadBoard = query(async (url: string, name: string): Promise<Stroke[]> => {
-  'use server'
-  return await prisma.stroke.findMany({ where: { url, board: name } })
-}, 'loadBoard')
+export const loadBoard = query(
+  async (url: string, ownerEmail: string, name: string): Promise<Stroke[]> => {
+    'use server'
+    return await prisma.stroke.findMany({ where: { url, ownerEmail, board: name } })
+  },
+  'loadBoard',
+)
 
 export const addStroke = action(
   async (url: string, ownerEmail: string, board: string, stroke: Stroke) => {
@@ -28,7 +31,7 @@ export const addStroke = action(
     await prisma.stroke.create({
       data: { url, ownerEmail, board, ...stroke },
     })
-    return reload({ revalidate: loadBoard.keyFor(url, board) })
+    return reload({ revalidate: loadBoard.keyFor(url, ownerEmail, board) })
   },
 )
 
@@ -37,7 +40,7 @@ export const removeStroke = action(
     'use server'
     await check(ownerEmail)
     await prisma.stroke.delete({ where: { url, board, ownerEmail, id } })
-    return reload({ revalidate: loadBoard.keyFor(url, board) })
+    return reload({ revalidate: loadBoard.keyFor(url, ownerEmail, board) })
   },
 )
 
@@ -45,5 +48,5 @@ export const clearBoard = action(async (url: string, ownerEmail: string, board: 
   'use server'
   await check(ownerEmail)
   await prisma.stroke.deleteMany({ where: { url, ownerEmail, board } })
-  return reload({ revalidate: loadBoard.keyFor(url, board) })
+  return reload({ revalidate: loadBoard.keyFor(url, ownerEmail, board) })
 })

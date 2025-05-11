@@ -80,7 +80,7 @@ export default function Whiteboard(props: WhiteboardProps) {
     }
   })
 
-  const strokes = createAsyncStore(() => loadBoard(props.url, props.name), {
+  const strokes = createAsyncStore(() => loadBoard(props.url, props.owner, props.name), {
     initialValue: [],
   })
   const useAddStroke = () => useAction(addStroke.with(props.url, props.owner, props.name))
