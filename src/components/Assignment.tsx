@@ -1,12 +1,13 @@
 import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons'
 import { createAsync, createAsyncStore, revalidate } from '@solidjs/router'
-import { Component, For, Show, Suspense } from 'solid-js'
+import { Component, Show, Suspense } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import ErrorBoundary from '~/components/ErrorBoundary'
 import Fa from '~/components/Fa'
 import Graph from '~/components/Graph'
 import Pagination from '~/components/Pagination'
 import Whiteboard from '~/components/Whiteboard'
+import { getUser } from '~/lib/auth/session'
 import { getEloDiff } from '~/lib/elo'
 import {
   type Assignment,
@@ -28,11 +29,13 @@ type AssignmentProps = {
   data: Awaited<ReturnType<typeof getAssignment>>
 }
 
-export default function Assignment(props: AssignmentProps) {
+export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
   const user = createAsync(() => getUserInfo(props.userEmail))
+  const realUser = createAsync(() => getUser())
   const body = createAsyncStore(() => getExercises(props.url, props.userEmail), {
     initialValue: [],
   })
+  const exercise = () => body()[props.index]
   const eloDiff = createAsync(() => getEloDiff(props.userEmail), { initialValue: 0 })
   const graphQuery = () => ({
     OR: [
@@ -41,14 +44,27 @@ export default function Assignment(props: AssignmentProps) {
       { requiredBy: { some: { url: props.url } } },
     ],
   })
+  const options = () =>
+    optionsSchemaWithDefault.parse({
+      ...props.data.options,
+      ...(exercise()?.options || {}),
+    })
+  let boardContainer!: HTMLDivElement
   return (
     <ErrorBoundary>
-      <Show when={props.data.title}>
-        <h1 class="text-4xl my-4">{props.data.title}</h1>
-      </Show>
+      <h1 class="text-4xl my-4">{props.data.title}</h1>
       <Pagination
         current={props.index}
-        url={(index) => `${props.url}/${props.userEmail}/${index}`}
+        url={(index) => {
+          const parts: string[] = [props.url]
+          if (props.userEmail !== realUser()?.email) {
+            parts.push(props.userEmail)
+          }
+          if (index > 0) {
+            parts.push(`${index}`)
+          }
+          return parts.join('/')
+        }}
         max={body().length || 0}
         classList={(i) => ({
           'bg-green-100': body()?.[i].attempts.at(0)?.correct,
@@ -57,49 +73,35 @@ export default function Assignment(props: AssignmentProps) {
         })}
       />
       <div class="lg:flex px-6 py-6">
-        <For each={body()}>
-          {function <N, Q, A, P, F>(exercise: Exercise, index: () => number) {
-            const options = () =>
-              optionsSchemaWithDefault.parse({
-                ...props.data.options,
-                ...exercise.options,
-              })
-            let boardContainer!: HTMLDivElement
-            return (
-              <div
-                classList={{ hidden: index() !== props.index }}
-                class="bg-white grow border rounded-xl shadow"
-              >
-                <ErrorBoundary>
-                  <Suspense fallback={<p>Loading exercise...</p>}>
-                    <Dynamic
-                      component={
-                        exercises[exercise.type] as Component<ExerciseProps<N, Q, A, P, F>>
-                      }
-                      {...(exercise as ExerciseProps<N, Q, A, P, F>)}
-                      options={options()}
-                      onChange={async (event) => {
-                        await saveExercise(props.url, props.userEmail, index(), event as Exercise)
-                        revalidate([
-                          getExercises.keyFor(props.url, props.userEmail),
-                          getEloDiff.key,
-                          getAssignmentGraph.keyFor(graphQuery()),
-                        ])
-                      }}
-                    />
-                  </Suspense>
-                  <div class="h-screen overflow-hidden" ref={boardContainer}>
-                    <Whiteboard
-                      owner={props.userEmail}
-                      name={`${index()}`}
-                      container={boardContainer}
-                    />
-                  </div>
-                </ErrorBoundary>
-              </div>
-            )
-          }}
-        </For>
+        <div class="bg-white grow border rounded-xl shadow">
+          <ErrorBoundary>
+            <Show when={exercise()} fallback={<p>Loading exercise...</p>}>
+              {(exercise) => (
+                <Dynamic
+                  component={exercises[exercise().type] as Component<ExerciseProps<N, Q, A, P, F>>}
+                  {...(exercise() as ExerciseProps<N, Q, A, P, F>)}
+                  options={options()}
+                  onChange={async (event) => {
+                    await saveExercise(props.url, props.userEmail, props.index, event as Exercise)
+                    revalidate([
+                      getExercises.keyFor(props.url, props.userEmail),
+                      getEloDiff.key,
+                      getAssignmentGraph.keyFor(graphQuery()),
+                    ])
+                  }}
+                />
+              )}
+            </Show>
+            <div class="h-screen overflow-hidden" ref={boardContainer}>
+              <Whiteboard
+                url={props.url}
+                owner={props.userEmail}
+                name={`${props.index}`}
+                container={boardContainer}
+              />
+            </div>
+          </ErrorBoundary>
+        </div>
         <div class="lg:w-80 px-6">
           <div class="bg-white border rounded-xl shadow-sm p-4 text-center mb-8 flex items-center gap-3">
             <Suspense>
