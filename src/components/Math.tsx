@@ -2,7 +2,7 @@ import katex from 'katex'
 import 'katex/dist/katex.min.css'
 import 'mathlive'
 import type { MathfieldElement } from 'mathlive'
-import { ComponentProps, createEffect, createSignal, on, onMount, Show, splitProps } from 'solid-js'
+import { ComponentProps, createEffect, createSignal, on, Show, splitProps } from 'solid-js'
 
 declare module 'solid-js' {
   namespace JSX {
