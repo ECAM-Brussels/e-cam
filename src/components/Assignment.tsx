@@ -29,6 +29,10 @@ type AssignmentProps = {
   data: Awaited<ReturnType<typeof getAssignment>>
 }
 
+export const getGraphQuery = (url: string) => ({
+  OR: [{ url }, { prerequisites: { some: { url } } }, { requiredBy: { some: { url } } }],
+})
+
 export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
   const user = createAsync(() => getUserInfo(props.userEmail))
   const realUser = createAsync(() => getUser())
@@ -37,13 +41,7 @@ export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
   })
   const exercise = () => body().at(props.index - 1)
   const eloDiff = createAsync(() => getEloDiff(props.userEmail), { initialValue: 0 })
-  const graphQuery = () => ({
-    OR: [
-      { url: props.url },
-      { prerequisites: { some: { url: props.url } } },
-      { requiredBy: { some: { url: props.url } } },
-    ],
-  })
+  const graphQuery = () => getGraphQuery(props.url)
   const options = () =>
     optionsSchemaWithDefault.parse({
       ...props.data.options,
