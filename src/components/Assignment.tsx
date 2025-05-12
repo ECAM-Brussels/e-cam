@@ -1,6 +1,6 @@
 import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons'
 import { createAsync, createAsyncStore, revalidate } from '@solidjs/router'
-import { Component, Show, Suspense } from 'solid-js'
+import { Component, type JSXElement, Show, Suspense } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import ErrorBoundary from '~/components/ErrorBoundary'
 import Fa from '~/components/Fa'
@@ -33,21 +33,14 @@ export const getGraphQuery = (url: string) => ({
   OR: [{ url }, { prerequisites: { some: { url } } }, { requiredBy: { some: { url } } }],
 })
 
-export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
+function Shell(props: AssignmentProps & { children: JSXElement }) {
   const user = createAsync(() => getUserInfo(props.userEmail))
   const realUser = createAsync(() => getUser())
   const body = createAsyncStore(() => getExercises(props.url, props.userEmail), {
     initialValue: [],
   })
-  const exercise = () => body().at(props.index - 1)
   const eloDiff = createAsync(() => getEloDiff(props.userEmail), { initialValue: 0 })
   const graphQuery = () => getGraphQuery(props.url)
-  const options = () =>
-    optionsSchemaWithDefault.parse({
-      ...props.data.options,
-      ...(exercise()?.options || {}),
-    })
-  let boardContainer!: HTMLDivElement
   return (
     <ErrorBoundary>
       <h1 class="text-4xl my-4">{props.data.title}</h1>
@@ -72,33 +65,7 @@ export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
       />
       <div class="lg:flex px-6 py-6">
         <div class="bg-white grow border rounded-xl shadow">
-          <ErrorBoundary>
-            <Show when={exercise()} fallback={<p>Loading exercise...</p>}>
-              {(exercise) => (
-                <Dynamic
-                  component={exercises[exercise().type] as Component<ExerciseProps<N, Q, A, P, F>>}
-                  {...(exercise() as ExerciseProps<N, Q, A, P, F>)}
-                  options={options()}
-                  onChange={async (event) => {
-                    await saveExercise(props.url, props.userEmail, props.index, event as Exercise)
-                    revalidate([
-                      getExercises.keyFor(props.url, props.userEmail),
-                      getEloDiff.key,
-                      getAssignmentGraph.keyFor(graphQuery()),
-                    ])
-                  }}
-                />
-              )}
-            </Show>
-            <div class="h-screen overflow-hidden" ref={boardContainer}>
-              <Whiteboard
-                url={props.url}
-                owner={props.userEmail}
-                name={`${props.index}`}
-                container={boardContainer}
-              />
-            </div>
-          </ErrorBoundary>
+          <ErrorBoundary>{props.children}</ErrorBoundary>
         </div>
         <div class="lg:w-80 px-6">
           <div class="bg-white border rounded-xl shadow-sm p-4 text-center mb-8 flex items-center gap-3">
@@ -123,5 +90,47 @@ export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
         </div>
       </div>
     </ErrorBoundary>
+  )
+}
+
+export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
+  const body = createAsyncStore(() => getExercises(props.url, props.userEmail), {
+    initialValue: [],
+  })
+  const exercise = () => body().at(props.index - 1)
+  const options = () =>
+    optionsSchemaWithDefault.parse({
+      ...props.data.options,
+      ...(exercise()?.options || {}),
+    })
+  let boardContainer!: HTMLDivElement
+  return (
+    <Shell {...props}>
+      <Show when={exercise()} fallback={<p>Loading exercise...</p>}>
+        {(exercise) => (
+          <Dynamic
+            component={exercises[exercise().type] as Component<ExerciseProps<N, Q, A, P, F>>}
+            {...(exercise() as ExerciseProps<N, Q, A, P, F>)}
+            options={options()}
+            onChange={async (event) => {
+              await saveExercise(props.url, props.userEmail, props.index, event as Exercise)
+              revalidate([
+                getExercises.keyFor(props.url, props.userEmail),
+                getEloDiff.key,
+                getAssignmentGraph.keyFor(getGraphQuery(props.url)),
+              ])
+            }}
+          />
+        )}
+      </Show>
+      <div class="h-screen overflow-hidden" ref={boardContainer}>
+        <Whiteboard
+          url={props.url}
+          owner={props.userEmail}
+          name={`${props.index}`}
+          container={boardContainer}
+        />
+      </div>
+    </Shell>
   )
 }
