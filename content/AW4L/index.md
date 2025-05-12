@@ -24,8 +24,6 @@ lang: en
 
 - Why do we use UI frameworks?
 
-- What is JSX?
-
 - Explain how you could implement a basic reactivity system.
 
 - What is an SPA? What are the advantages and the drawbacks of this type of architecture?
@@ -34,15 +32,13 @@ lang: en
 
 - What is a meta-framework?
 
-- What do we need to be careful of when fetching data?
-
-- How do we handle server state?
+- What do we need to be careful of when managing server state?
 
 - What are actions and queries?
   What problems do they solve?
 
 - What are server functions?
-  What are its advantages and drawbacks?
+  What are their advantages and drawbacks?
 
 - Why do we need to salt and hash passwords?
 
