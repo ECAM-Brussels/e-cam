@@ -46,9 +46,7 @@ export function createExerciseType<
   function Component(
     props: ExerciseProps<Name, z.infer<Question>, z.infer<Attempt>, z.infer<G>, Feedback>,
   ) {
-    const debouncedOnChange = props.onChange
-      ? debounce(props.onChange, 500, { leading: true, trailing: false })
-      : null
+    const debouncedOnChange = props.onChange ? debounce(props.onChange, 500) : null
     const question = createAsync(async () => {
       if ('question' in props) return props.question
       if (!exercise.generator) throw new Error('Exercise does not accept params.')
