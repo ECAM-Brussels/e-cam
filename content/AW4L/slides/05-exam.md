@@ -16,7 +16,7 @@ which has the following advantages:
 - **Declarative**:
   we describe the DOM instead of explicitely mutating it.
   For example in `<p>Hello {name()}</p>`,
-  the framework ensures that name has the correct value.
+  the framework ensures that `p` has the correct text.
 
 - **Composition and reusability**:
   components can be reused as many times as necessary,

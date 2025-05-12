@@ -17,6 +17,8 @@ lang: en
 #. [CRUD example](/AW4L/slides/03-crud)
 
 #. [Authentication](/AW4L/slides/04-auth)
+
+#. [Exam questions](/AW4L/slides/05-exam)
 ::::::::::
 
 :::::::::: {.bg-white .rounded-xl .p-4 .shadow}
