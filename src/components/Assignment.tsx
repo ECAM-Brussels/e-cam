@@ -67,17 +67,9 @@ export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
         }}
         max={body().length || 0}
         classList={(i) => ({
-          'bg-green-100': body()
-            .at(i - 1)
-            ?.attempts.at(0)?.correct,
-          'bg-red-100':
-            body()
-              .at(i - 1)
-              ?.attempts.at(0)?.correct === false,
-          'bg-white':
-            body()
-              .at(i - 1)
-              ?.attempts.at(0)?.correct === undefined,
+          'bg-green-100': body()[i - 1].attempts.at(0)?.correct,
+          'bg-red-100': body()[i - 1].attempts.at(0)?.correct === false,
+          'bg-white': body()[i - 1].attempts.at(0)?.correct === undefined,
         })}
       />
       <div class="lg:flex px-6 py-6">
