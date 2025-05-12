@@ -35,7 +35,7 @@ export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
   const body = createAsyncStore(() => getExercises(props.url, props.userEmail), {
     initialValue: [],
   })
-  const exercise = () => body()[props.index]
+  const exercise = () => body().at(props.index - 1)
   const eloDiff = createAsync(() => getEloDiff(props.userEmail), { initialValue: 0 })
   const graphQuery = () => ({
     OR: [
@@ -60,16 +60,24 @@ export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
           if (props.userEmail !== realUser()?.email) {
             parts.push(props.userEmail)
           }
-          if (index > 0) {
+          if (index > 1) {
             parts.push(`${index}`)
           }
           return parts.join('/')
         }}
         max={body().length || 0}
         classList={(i) => ({
-          'bg-green-100': body()?.[i].attempts.at(0)?.correct,
-          'bg-red-100': body()?.[i].attempts.at(0)?.correct === false,
-          'bg-white': body()?.[i].attempts.at(0)?.correct === undefined,
+          'bg-green-100': body()
+            .at(i - 1)
+            ?.attempts.at(0)?.correct,
+          'bg-red-100':
+            body()
+              .at(i - 1)
+              ?.attempts.at(0)?.correct === false,
+          'bg-white':
+            body()
+              .at(i - 1)
+              ?.attempts.at(0)?.correct === undefined,
         })}
       />
       <div class="lg:flex px-6 py-6">

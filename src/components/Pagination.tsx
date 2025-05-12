@@ -19,7 +19,7 @@ export default function Pagination(props: PaginationProps) {
         >
           <Fa icon={faChevronLeft} />
         </Link>
-        <For each={Array.from(Array(props.max).keys())}>
+        <For each={[...Array(props.max).keys()].map((i) => i + 1)}>
           {(i) => (
             <Link
               classList={{
@@ -28,7 +28,7 @@ export default function Pagination(props: PaginationProps) {
               }}
               href={props.url(i)}
             >
-              {i + 1}
+              {i}
             </Link>
           )}
         </For>

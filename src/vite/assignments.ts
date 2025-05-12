@@ -57,7 +57,7 @@ async function createAssignment(file: string, prisma: PrismaClient) {
   const relativePath = relative(resolve('content'), file)
   const outputPath = resolve(
     'src/routes/(generated)',
-    relativePath.replace(/\.ya?ml$/, '/[...path].tsx'),
+    relativePath.replace(/\.ya?ml$/, '/[[index]].tsx'),
   )
   mkdirSync(dirname(outputPath), { recursive: true })
   const assignment = yaml.load(readFileSync(file, 'utf-8')) as Omit<AssignmentInput, 'url'>
