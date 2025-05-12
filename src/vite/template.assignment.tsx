@@ -1,6 +1,5 @@
 import { createAsync, query, useLocation, useParams, type RouteDefinition } from '@solidjs/router'
 import { Show } from 'solid-js'
-import { z } from 'zod'
 import Assignment from '~/components/Assignment'
 import Page from '~/components/Page'
 import { getUser } from '~/lib/auth/session'
