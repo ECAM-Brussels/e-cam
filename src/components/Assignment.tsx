@@ -1,5 +1,5 @@
 import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons'
-import { createAsync, createAsyncStore, revalidate } from '@solidjs/router'
+import { createAsync, createAsyncStore, reload } from '@solidjs/router'
 import { Component, type JSXElement, Show, Suspense } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import ErrorBoundary from '~/components/ErrorBoundary'
@@ -114,11 +114,13 @@ export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
             options={options()}
             onChange={async (event) => {
               await saveExercise(props.url, props.userEmail, props.index, event as Exercise)
-              revalidate([
-                getExercises.keyFor(props.url, props.userEmail),
-                getEloDiff.key,
-                getAssignmentGraph.keyFor(getGraphQuery(props.url)),
-              ])
+              return reload({
+                revalidate: [
+                  getExercises.keyFor(props.url, props.userEmail),
+                  getEloDiff.key,
+                  getAssignmentGraph.keyFor(getGraphQuery(props.url)),
+                ],
+              })
             }}
           />
         )}

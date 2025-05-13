@@ -1,8 +1,7 @@
 import { extractFormData } from '../form'
 import { hashObject } from '../helpers'
-import { action, createAsync, reload, useSubmission } from '@solidjs/router'
-import { debounce } from 'lodash-es'
-import { Show, Suspense } from 'solid-js'
+import { action, createAsync, query, useAction, useSubmission } from '@solidjs/router'
+import { createEffect, Show, Suspense } from 'solid-js'
 import { z } from 'zod'
 import Button from '~/components/Button'
 import ZodError from '~/components/ZodError'
@@ -18,10 +17,10 @@ export type ExerciseProps<Name, Question, Attempt, Params, Feedback> = {
     > & {
       question: Question
     },
-  ) => Promise<void> | void
+  ) => Promise<unknown> | void
   options: OptionsWithDefault
   attempts: { correct: boolean; attempt: Attempt; feedback?: Feedback }[]
-} & ({ question: Question } | { params: Params })
+} & ({ question: Question; params: never } | { params: Params; question: never })
 
 /**
  * Create an exercise type from its building blocks
@@ -43,25 +42,38 @@ export function createExerciseType<
   G extends z.ZodTypeAny,
   Feedback extends object,
 >(exercise: ExerciseType<Name, Question, Attempt, G, Feedback>) {
-  function Component(
-    props: ExerciseProps<Name, z.infer<Question>, z.infer<Attempt>, z.infer<G>, Feedback>,
-  ) {
-    const debouncedOnChange = props.onChange ? debounce(props.onChange, 500) : null
-    const question = createAsync(async () => {
-      if ('question' in props) return props.question
-      if (!exercise.generator) throw new Error('Exercise does not accept params.')
-      const { params, onChange, ...data } = props
+  const getQuestion = query(
+    async (question: z.infer<Question> | undefined, params: z.infer<G> | undefined) => {
+      if (question) return question
+      if (!exercise.generator) throw new Error('Exercise does not accept parameters.')
+      if (!params) throw new Error('Exercise does not have a question or parameters')
       try {
         const question = await exercise.generator.generate(params)
-        await debouncedOnChange?.({
-          ...data,
-          question: await exercise.question.parseAsync(question),
-        })
-        return question
+        const parsed: z.infer<Question> = await exercise.question.parseAsync(question)
+        return parsed
       } catch (error) {
         throw new Error(
           `Error while generating exercise ${JSON.stringify(params, null, 2)}: ${error}`,
         )
+      }
+    },
+    `getQuestion-${exercise.name}`,
+  )
+
+  function Component(
+    props: ExerciseProps<Name, z.infer<Question>, z.infer<Attempt>, z.infer<G>, Feedback>,
+  ) {
+    const question = createAsync(() => getQuestion(props.question, props.params))
+    const save = action(async (data: Omit<Partial<typeof props>, 'params' | 'onChange'>) => {
+      const { params: _params, onChange, ...current } = props
+      return await onChange?.({ ...current, question: question(), ...data })
+    })
+    const useSave = useAction(save)
+    const saving = useSubmission(save)
+
+    createEffect(async () => {
+      if (props.params && question() && !saving.pending) {
+        await useSave({})
       }
     })
 
@@ -93,14 +105,7 @@ export function createExerciseType<
         mark(question(), attempt),
         getFeedback?.(remaining(-1), question(), attempt),
       ])
-      const { onChange, ...data } = props
-      await debouncedOnChange?.({
-        ...data,
-        question: question(),
-        attempts: [...props.attempts, { correct, attempt, feedback }],
-      })
-      // We leave revalidation to onChange
-      return reload({ revalidate: 'nothing' })
+      return useSave({ attempts: [...props.attempts, { correct, attempt, feedback }] })
     }, `exercise-${hash()}`)
     const submission = useSubmission(submit)
 
