@@ -17,6 +17,7 @@ export type ExerciseProps<Name, Question, Attempt, Params, Feedback> = {
     > & {
       question: Question
     },
+    action: 'generate' | 'submit',
   ) => Promise<unknown> | void
   options: OptionsWithDefault
   attempts: { correct: boolean; attempt: Attempt; feedback?: Feedback }[]
@@ -64,16 +65,21 @@ export function createExerciseType<
     props: ExerciseProps<Name, z.infer<Question>, z.infer<Attempt>, z.infer<G>, Feedback>,
   ) {
     const question = createAsync(() => getQuestion(props.question, props.params))
-    const save = action(async (data: Omit<Partial<typeof props>, 'params' | 'onChange'>) => {
-      const { params: _params, onChange, ...current } = props
-      return await onChange?.({ ...current, question: question(), ...data })
-    })
+    const save = action(
+      async (
+        data: Omit<Partial<typeof props>, 'params' | 'onChange'>,
+        action: 'generate' | 'submit',
+      ) => {
+        const { params: _params, onChange, ...current } = props
+        return await onChange?.({ ...current, question: question(), ...data }, action)
+      },
+    )
     const useSave = useAction(save)
     const saving = useSubmission(save)
 
     createEffect(async () => {
       if (props.params && question() && !saving.pending) {
-        await useSave({})
+        await useSave({}, 'generate')
       }
     })
 
@@ -105,7 +111,7 @@ export function createExerciseType<
         mark(question(), attempt),
         getFeedback?.(remaining(-1), question(), attempt),
       ])
-      return useSave({ attempts: [...props.attempts, { correct, attempt, feedback }] })
+      return useSave({ attempts: [...props.attempts, { correct, attempt, feedback }] }, 'submit')
     }, `exercise-${hash()}`)
     const submission = useSubmission(submit)
 

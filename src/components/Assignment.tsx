@@ -112,15 +112,19 @@ export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
             component={exercises[exercise().type] as Component<ExerciseProps<N, Q, A, P, F>>}
             {...(exercise() as ExerciseProps<N, Q, A, P, F>)}
             options={options()}
-            onChange={async (event) => {
+            onChange={async (event, action) => {
               await saveExercise(props.url, props.userEmail, props.index, event as Exercise)
-              return reload({
-                revalidate: [
-                  getExercises.keyFor(props.url, props.userEmail),
-                  getEloDiff.key,
-                  getAssignmentGraph.keyFor(getGraphQuery(props.url)),
-                ],
-              })
+              if (action === 'generate') {
+                return reload({
+                  revalidate: [
+                    getExercises.keyFor(props.url, props.userEmail),
+                    getEloDiff.key,
+                    getAssignmentGraph.keyFor(getGraphQuery(props.url)),
+                  ],
+                })
+              } else {
+                return reload({ revalidate: 'nothing' })
+              }
             }}
           />
         )}
