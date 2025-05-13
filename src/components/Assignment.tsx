@@ -122,7 +122,7 @@ export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
                       getAssignmentGraph.keyFor(getGraphQuery(props.url)),
                     ]
                   : 'nothing'
-              reload({ revalidate })
+              return reload({ revalidate })
             }}
           />
         )}
