@@ -114,17 +114,15 @@ export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
             options={options()}
             onChange={async (event, action) => {
               await saveExercise(props.url, props.userEmail, props.index, event as Exercise)
-              if (action === 'generate') {
-                return reload({
-                  revalidate: [
-                    getExercises.keyFor(props.url, props.userEmail),
-                    getEloDiff.key,
-                    getAssignmentGraph.keyFor(getGraphQuery(props.url)),
-                  ],
-                })
-              } else {
-                return reload({ revalidate: 'nothing' })
-              }
+              const revalidate =
+                action === 'generate'
+                  ? [
+                      getExercises.keyFor(props.url, props.userEmail),
+                      getEloDiff.key,
+                      getAssignmentGraph.keyFor(getGraphQuery(props.url)),
+                    ]
+                  : 'nothing'
+              reload({ revalidate })
             }}
           />
         )}
