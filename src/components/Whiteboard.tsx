@@ -43,7 +43,7 @@ type WhiteboardProps = {
 )
 
 function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
-  const points = getStroke(stroke.points, { size: stroke.lineWidth })
+  const points = getStroke(stroke.points, { size: stroke.lineWidth, simulatePressure: false })
   context.fillStyle = stroke.color
   context.beginPath()
   if (!points.length) {
