@@ -45,7 +45,7 @@ const running = []
 function createEffect(effect) {
   function wrappedEffect() {
     running.push(wrappedEffect)
-    fn()
+    effect()
     running.pop()
   }
   wrappedEffect()
