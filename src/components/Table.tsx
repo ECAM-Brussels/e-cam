@@ -32,7 +32,7 @@ export default function Table<Row extends object>(props: TableProps<Row>) {
             <tr class="px-4 py-4 text-sm">
               <For each={headerGroup.headers}>
                 {(header) => (
-                  <th>
+                  <th class="px-4 py-2">
                     {header.isPlaceholder
                       ? null
                       : flexRender(header.column.columnDef.header, header.getContext())}
