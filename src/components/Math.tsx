@@ -57,6 +57,7 @@ export default function Math(props: MathProps) {
     katex.renderToString(value() || '', {
       displayMode: props.displayMode,
       strict: false,
+      output: 'html',
       macros: {
         '\\placeholder': '',
         '\\dd': '\\mathrm{d}',
