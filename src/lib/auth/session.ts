@@ -1,4 +1,5 @@
-import { action, query } from '@solidjs/router'
+import { getLoginUrl } from './azure'
+import { action, query, redirect } from '@solidjs/router'
 import { useSession } from 'vinxi/http'
 import { prisma } from '~/lib/db'
 
@@ -35,6 +36,11 @@ export const saveAuthState = async (state: string, codeVerifier: string) => {
   const session = await getSession()
   await session.update({ state, codeVerifier })
 }
+
+export const startLogin = action(async () => {
+  'use server'
+  throw redirect(await getLoginUrl())
+})
 
 export const logout = action(async () => {
   'use server'
