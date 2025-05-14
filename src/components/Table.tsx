@@ -1,11 +1,15 @@
+import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons'
 import {
   type ColumnDef,
+  type SortingState,
   createSolidTable,
   flexRender,
   getCoreRowModel,
   getExpandedRowModel,
+  getSortedRowModel,
 } from '@tanstack/solid-table'
-import { For } from 'solid-js'
+import { createSignal, For, Show } from 'solid-js'
+import Fa from '~/components/Fa'
 
 type TableProps<Row> = {
   class?: string
@@ -15,13 +19,21 @@ type TableProps<Row> = {
 }
 
 export default function Table<Row extends object>(props: TableProps<Row>) {
+  const [sorting, setSorting] = createSignal<SortingState>([])
   const table = createSolidTable({
     get data() {
       return props.data
     },
+    state: {
+      get sorting() {
+        return sorting()
+      },
+    },
     columns: props.columns,
     getSubRows: props.subRows,
+    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
   })
   return (
@@ -32,10 +44,26 @@ export default function Table<Row extends object>(props: TableProps<Row>) {
             <tr class="px-4 py-4 text-sm">
               <For each={headerGroup.headers}>
                 {(header) => (
-                  <th class="px-4 py-2">
+                  <th
+                    class="px-4 py-2"
+                    classList={{
+                      'cursor-pointer select-none': header.column.getCanSort(),
+                    }}
+                    onClick={header.column.getToggleSortingHandler()}
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(header.column.columnDef.header, header.getContext())}
+                    <Show
+                      when={header.column.getIsSorted()}
+                      fallback={
+                        <Show when={header.column.getCanSort()}>
+                          <Fa icon={faSort} class="mx-2 text-gray-400" />
+                        </Show>
+                      }
+                    >
+                      {(dir) => <Fa icon={dir() === 'asc' ? faSortUp : faSortDown} class="mx-2" />}
+                    </Show>
                   </th>
                 )}
               </For>
