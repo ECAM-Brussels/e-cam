@@ -37,19 +37,19 @@ export default function () {
             },
             {
               header: 'Feedback',
-              accessorFn: (row) => row.attempts.filter((a) => a.gain > 0).length,
+              accessorFn: (row) => row.attempts.filter((a) => a.correct === true).length,
               cell: (info) => (
                 <For each={info.row.original.attempts}>
                   {(attempt) => (
                     <span
                       class="px-1"
                       classList={{
-                        'text-green-700': attempt.gain > 0,
-                        'text-red-700': attempt.gain < 0,
+                        'text-green-700': attempt.correct === true,
+                        'text-red-700': attempt.correct === false,
                       }}
                     >
-                      {attempt.gain > 0 && <Fa icon={faCheck} />}
-                      {attempt.gain < 0 && <Fa icon={faXmark} />}
+                      {attempt.correct && <Fa icon={faCheck} />}
+                      {attempt.correct === false && <Fa icon={faXmark} />}
                     </span>
                   )}
                 </For>

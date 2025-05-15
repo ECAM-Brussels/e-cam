@@ -32,8 +32,8 @@ const getAssignmentTable = query(async (where: {}): Promise<Row[]> => {
       },
       attempts: user
         ? {
-            select: { gain: true },
-            where: { email: user.email, gain: { not: 0 } },
+            select: { id: true },
+            where: { email: user.email, correct: true },
             orderBy: { position: 'desc' },
             take: 10,
           }

@@ -161,6 +161,7 @@ export async function saveExercise(
       hash,
       exercise,
       position,
+      correct: exercise.attempts.at(0)?.correct ?? null,
       ...(exercise.options.adjustElo && exercise.attempts.length === 1
         ? { gain: await getEloGain(email, hash, exercise.attempts[0].correct) }
         : {}),
@@ -234,8 +235,8 @@ export const getAssignmentGraph = query(
         requiredBy: { select: { url: true } },
         attempts: user
           ? {
-              select: { gain: true },
-              where: { email: user.email, gain: { not: 0 } },
+              select: { correct: true },
+              where: { email: user.email, correct: { not: null } },
               orderBy: { position: 'desc' },
               take: 10,
             }
@@ -248,8 +249,8 @@ export const getAssignmentGraph = query(
         label: assignment.title,
         parent: 'algebra',
         color: gradeToColor(
-          assignment.attempts?.filter((a) => a.gain > 0).length ?? 0,
-          assignment.attempts?.filter((a) => a.gain < 0).length ?? 0,
+          assignment.attempts?.filter((a) => a.correct).length ?? 0,
+          assignment.attempts?.filter((a) => a.correct === false).length ?? 0,
         ),
       },
     })) satisfies ElementDefinition[]
@@ -282,7 +283,7 @@ export const getAssignmentResults = query(async (url: string) => {
       email: true,
       score: true,
       attempts: {
-        select: { gain: true },
+        select: { correct: true },
         where: { url },
         orderBy: { position: 'asc' },
       },

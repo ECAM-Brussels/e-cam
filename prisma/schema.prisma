@@ -65,6 +65,7 @@ model Attempt {
   hash String
   /// [Exercise]
   exercise Json
+  correct Boolean?
   gain Int
   date DateTime @default(now())
   lastModified DateTime @default(now())
