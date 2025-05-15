@@ -272,3 +272,21 @@ export const getAssignmentGraph = query(
   },
   'getAssignmentGraph',
 )
+
+export const getAssignmentResults = query(async (url: string) => {
+  'use server'
+  const data = await prisma.user.findMany({
+    select: {
+      firstName: true,
+      lastName: true,
+      email: true,
+      score: true,
+      attempts: {
+        select: { gain: true },
+        where: { url },
+        orderBy: { position: 'asc' },
+      },
+    },
+  })
+  return data
+}, 'getAssignmentResults')

@@ -43,6 +43,9 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
   const graphQuery = () => getGraphQuery(props.url)
   return (
     <ErrorBoundary>
+      <p class="text-right mx-8 text-sm">
+        <a href={`/results/${props.url}`}>Voir les résultats</a>
+      </p>
       <h1 class="text-4xl my-4">{props.data.title}</h1>
       <Pagination
         current={props.index}
