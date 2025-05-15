@@ -1,4 +1,4 @@
-import { faCheck, faLink, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faFile, faLink, faUser, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { createAsync, useParams } from '@solidjs/router'
 import { For } from 'solid-js'
 import Fa from '~/components/Fa'
@@ -48,23 +48,25 @@ export default function () {
                         'text-red-700': attempt.gain < 0,
                       }}
                     >
-                      <Fa icon={attempt.gain > 0 ? faCheck : faXmark} />
+                      {attempt.gain > 0 && <Fa icon={faCheck} />}
+                      {attempt.gain < 0 && <Fa icon={faXmark} />}
                     </span>
                   )}
                 </For>
               ),
             },
             {
-              header: '',
-              id: 'url',
-              accessorFn: (row) => `/${params.url}/1?userEmail=${row.email}`,
+              header: 'Actions',
               cell: (info) => (
-                <a
-                  href={info.getValue<string>()}
-                  class="absolute top-0 left-0 w-full h-full content-none"
-                ></a>
+                <>
+                  <a href={`/users/${info.row.original.email}`} class="mx-2">
+                    <Fa icon={faUser} />
+                  </a>
+                  <a href={`/${params.url}`} class="mx-2">
+                    <Fa icon={faFile} />
+                  </a>
+                </>
               ),
-              enableSorting: false,
             },
           ]}
         />
