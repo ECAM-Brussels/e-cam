@@ -1,10 +1,9 @@
-import Fa from './Fa'
 import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
-import { createAsync, query } from '@solidjs/router'
+import { createAsync } from '@solidjs/router'
 import { Show } from 'solid-js'
+import Fa from '~/components/Fa'
 import Table from '~/components/Table'
-import { getUser } from '~/lib/auth/session'
-import { prisma } from '~/lib/db'
+import { getAssignmentList } from '~/lib/exercises/assignment'
 
 type Row = {
   url: string
@@ -14,49 +13,11 @@ type Row = {
   grade: number
 }
 
-const getAssignmentTable = query(async (where: {}): Promise<Row[]> => {
-  'use server'
-  const user = await getUser()
-  const data = await prisma.assignment.findMany({
-    where,
-    select: {
-      url: true,
-      title: true,
-      courses: { select: { code: true, url: true, title: true } },
-      prerequisites: {
-        select: {
-          url: true,
-          title: true,
-          courses: { select: { code: true, url: true, title: true } },
-        },
-      },
-      attempts: user
-        ? {
-            select: { id: true },
-            where: { email: user.email, correct: true },
-            orderBy: { position: 'desc' },
-            take: 10,
-          }
-        : false,
-    },
-  })
-  return data.map(({ attempts, ...info }) => {
-    return {
-      ...info,
-      grade: attempts.length || 0,
-      prerequisites: info.prerequisites.map((p) => ({
-        ...p,
-        grade: data.filter((r) => r.url === p.url)[0].attempts.length || 0,
-      })),
-    }
-  })
-}, 'getAssignmentTable')
-
 export default function AssignmentTable() {
-  const data = createAsync(() => getAssignmentTable({}), { initialValue: [] })
+  const data = createAsync(() => getAssignmentList({}), { initialValue: [] })
   return (
     <Table
-      data={data()}
+      data={data() as Row[]}
       subRows={(row) => row.prerequisites}
       columns={[
         {

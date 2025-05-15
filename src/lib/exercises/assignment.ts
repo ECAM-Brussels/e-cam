@@ -60,6 +60,12 @@ async function check(email: string) {
   }
 }
 
+export const getExercise = query(async (url: string, email: string, position: number) => {
+  'use server'
+  const sequence = await getExercises(url, email)
+  return sequence[position]
+}, 'getExercise')
+
 export const getExercises = query(async (url: string, email: string) => {
   'use server'
   await check(email)
@@ -291,3 +297,41 @@ export const getAssignmentResults = query(async (url: string) => {
   })
   return data
 }, 'getAssignmentResults')
+
+export const getAssignmentList = query(async (where: {}) => {
+  'use server'
+  const user = await getUser()
+  const data = await prisma.assignment.findMany({
+    where,
+    select: {
+      url: true,
+      title: true,
+      courses: { select: { code: true, url: true, title: true } },
+      prerequisites: {
+        select: {
+          url: true,
+          title: true,
+          courses: { select: { code: true, url: true, title: true } },
+        },
+      },
+      attempts: user
+        ? {
+            select: { id: true },
+            where: { email: user.email, correct: true },
+            orderBy: { position: 'desc' },
+            take: 10,
+          }
+        : false,
+    },
+  })
+  return data.map(({ attempts, ...info }) => {
+    return {
+      ...info,
+      grade: attempts.length || 0,
+      prerequisites: info.prerequisites.map((p) => ({
+        ...p,
+        grade: data.filter((r) => r.url === p.url)[0].attempts.length || 0,
+      })),
+    }
+  })
+}, 'getAssignmentTable')
