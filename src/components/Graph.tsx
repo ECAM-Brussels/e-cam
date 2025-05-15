@@ -28,6 +28,8 @@ export default function Graph(props: {
             style: {
               shape: 'round-rectangle',
               'background-color': '#bae6fd',
+              'font-family': 'Fira Sans',
+              'font-weight': 'lighter',
               label: 'data(label)',
               'text-wrap': 'wrap',
               'text-max-width': '150px',
