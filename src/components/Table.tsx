@@ -52,7 +52,7 @@ export default function Table<Row extends object>(props: TableProps<Row>) {
         class="block p-2 font-lg shadow border border-block mx-auto my-8 w-96"
         value={globalFilter() ?? ''}
         onInput={(e) => debounceSetGlobalFilter(e.currentTarget.value)}
-        placeholder="Search all columns..."
+        placeholder="Rechercher dans toutes les colonnes..."
       />
       <table class={props.class ?? 'border bg-white text-gray-600 mx-auto my-4'}>
         <thead class="border text-gray-900 uppercase bg-gray-50">
@@ -95,7 +95,7 @@ export default function Table<Row extends object>(props: TableProps<Row>) {
             {(row, i) => {
               return (
                 <tr
-                  class="border-gray-200 hover:bg-slate-100"
+                  class="border-gray-200 hover:bg-slate-100 relative"
                   classList={{
                     'border-t': row.depth === 0,
                     'bg-slate-50': i() % 2 === 1 && row.depth === 0,
