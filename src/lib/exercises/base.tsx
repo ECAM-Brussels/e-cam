@@ -20,7 +20,7 @@ export type ExerciseProps<Name, Question, Attempt, Params, Feedback> = {
     action: 'generate' | 'submit',
   ) => Promise<unknown> | void
   options: OptionsWithDefault
-  attempts: { correct: boolean; attempt: Attempt; feedback?: Feedback }[]
+  attempts: { correct: boolean; attempt: Attempt }[]
 } & ({ question: Question; params: never } | { params: Params; question: never })
 
 /**
@@ -83,7 +83,8 @@ export function createExerciseType<
       }
     })
 
-    const [getFeedback, ExerciseFeedback] = exercise.feedback || [undefined, undefined]
+    const getFeedback = exercise.feedback?.[0]
+    const ExerciseFeedback = exercise.feedback?.[1] ?? undefined
     const remaining = (offset?: number) => {
       if (props.attempts.at(-1)?.correct) {
         return 0
@@ -94,24 +95,19 @@ export function createExerciseType<
     }
     const readOnly = () => remaining() === 0 || props.attempts.at(-1)?.correct
 
-    async function mark(question: z.infer<Question>, attempt: z.infer<Attempt>) {
+    const mark = query(async (question: z.infer<Question>, attempt: z.infer<Attempt>) => {
       try {
         return await exercise.mark(question, attempt)
       } catch {
         return false
       }
-    }
+    }, `mark-${exercise.name}`)
 
     const hash = () => hashObject({ type: props.type, question: question() })
     const submit = action(async (form: FormData) => {
-      const attempt: z.infer<Attempt> = await exercise.attempt.parseAsync(
-        extractFormData(form).attempt,
-      )
-      const [correct, feedback] = await Promise.all([
-        mark(question(), attempt),
-        getFeedback?.(remaining(-1), question(), attempt),
-      ])
-      return useSave({ attempts: [...props.attempts, { correct, attempt, feedback }] }, 'submit')
+      const attempt: z.infer<Attempt> = exercise.attempt.parse(extractFormData(form).attempt)
+      const correct = await mark(question(), attempt)
+      return useSave({ attempts: [...props.attempts, { correct, attempt }] }, 'submit')
     }, `exercise-${hash()}`)
     const submission = useSubmission(submit)
 
@@ -132,13 +128,18 @@ export function createExerciseType<
             </div>
           </Show>
         </form>
-        <Feedback
-          class="p-4 border-b shadow-sm"
-          attempts={props.attempts}
-          maxAttempts={props.options.maxAttempts}
-          component={ExerciseFeedback}
-          marking={submission.pending}
-        />
+        <Show when={props.attempts.length > 0 && question()}>
+          <Feedback
+            class="p-4 border-b shadow-sm"
+            attempt={props.attempts.at(-1)}
+            correct={props.attempts.at(-1)?.correct ?? false}
+            remainingAttempts={remaining()}
+            getFeedback={getFeedback}
+            component={ExerciseFeedback}
+            marking={submission.pending}
+            question={question()}
+          />
+        </Show>
       </Suspense>
     )
   }
