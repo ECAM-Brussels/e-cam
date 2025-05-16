@@ -1,6 +1,7 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
 title: "Complétion du carré: cas unitaire"
 courses:
+  - algebra
   - PM1C
   - 4MATH5
 prerequisites:

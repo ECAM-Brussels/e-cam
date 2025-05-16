@@ -1,6 +1,7 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
 title: "Factorisation: produits remarquables"
 courses:
+  - algebra
   - 4MATH5
   - PM1C
 options:
