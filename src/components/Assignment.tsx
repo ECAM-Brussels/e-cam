@@ -41,6 +41,7 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
   })
   const eloDiff = createAsync(() => getEloDiff(props.userEmail), { initialValue: 0 })
   const graphQuery = () => getGraphQuery(props.url)
+  let boardContainer!: HTMLDivElement
   return (
     <ErrorBoundary>
       <p class="text-right mx-8 text-sm">
@@ -69,6 +70,14 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
       <div class="lg:flex px-6 py-6">
         <div class="bg-white grow border rounded-xl shadow">
           <ErrorBoundary>{props.children}</ErrorBoundary>
+          <div class="h-screen overflow-hidden" ref={boardContainer}>
+            <Whiteboard
+              url={props.url}
+              owner={props.userEmail}
+              name={`${props.index}`}
+              container={boardContainer}
+            />
+          </div>
         </div>
         <div class="lg:w-80 px-6">
           <div class="bg-white border rounded-xl shadow-sm p-4 text-center mb-8 flex items-center gap-3">
@@ -106,7 +115,6 @@ export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
       ...props.data.options,
       ...(exercise()?.options || {}),
     })
-  let boardContainer!: HTMLDivElement
   return (
     <Shell {...props}>
       <Show when={exercise()} fallback={<p>Loading exercise...</p>}>
@@ -130,14 +138,6 @@ export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
           />
         )}
       </Show>
-      <div class="h-screen overflow-hidden" ref={boardContainer}>
-        <Whiteboard
-          url={props.url}
-          owner={props.userEmail}
-          name={`${props.index}`}
-          container={boardContainer}
-        />
-      </div>
     </Shell>
   )
 }
