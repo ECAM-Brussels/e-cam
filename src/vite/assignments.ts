@@ -34,6 +34,15 @@ export async function registerAssignment(
   assignment: AssignmentInput,
   extra: Partial<Update>,
 ) {
+  await Promise.all(
+    (assignment.courses ?? []).map(async (code) => {
+      await prisma.course.upsert({
+        where: { code },
+        create: { code },
+        update: {},
+      })
+    }),
+  )
   const prerequisites = (assignment.prerequisites ?? []).map((p) =>
     typeof p === 'string' ? p : p.url,
   )
@@ -44,10 +53,7 @@ export async function registerAssignment(
       set: prerequisites.map((url) => ({ url })),
     },
     courses: {
-      connectOrCreate: (assignment.courses ?? []).map((code) => ({
-        create: { code },
-        where: { code },
-      })),
+      set: (assignment.courses ?? []).map((code) => ({ code })),
     },
   } satisfies Update
   await prisma.assignment.update({ where: { url: assignment.url }, data })
