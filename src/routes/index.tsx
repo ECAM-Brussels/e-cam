@@ -1,83 +1,41 @@
+import { createAsync, type RouteDefinition } from '@solidjs/router'
 import { For, type JSXElement } from 'solid-js'
 import Page from '~/components/Page'
+import { getUser } from '~/lib/auth/session'
+import { getAssignmentList } from '~/lib/exercises/assignment'
 
-type Course = {
-  href: string
-  src: string
-  title: string
-}
-
-const courses: Course[] = [
-  {
-    href: '/PM1C/',
-    src: '/images/PM1C.png',
-    title: 'Pont vers le supérieur: mathématiques',
+export const route = {
+  preload() {
+    getAssignmentList({ courses: { some: { code: 'algebra' } } })
+    getUser()
   },
-  {
-    href: '/IC1T/',
-    src: '/images/IC1T.png',
-    title: 'Programmation',
-  },
-  {
-    href: '/LW3L/',
-    src: '/images/LW3L.png',
-    title: 'Web Technologies',
-  },
-  {
-    href: '/AW4C/',
-    src: '/images/LW3L.png',
-    title: 'Web Architecture for Business Analysts',
-  },
-  {
-    href: '/SA4T/',
-    src: '/images/SA4T.webp',
-    title: 'Algorithms',
-  },
-  {
-    href: '/AW4L/',
-    src: '/images/AW4L.webp',
-    title: 'Web Architecture',
-  },
-]
+} satisfies RouteDefinition
 
 export default function Home() {
   return (
     <Page title="Accueil">
-      <section>
-        <h2 class="text-3xl text-slate-800 mb-4">Cours</h2>
-        <div class="grid lg:grid-cols-2 gap-8">
-          <For each={courses}>
-            {(course) => (
-              <Card src={course.src} alt={course.title} href={course.href}>
-                <h3>{course.title}</h3>
-              </Card>
-            )}
-          </For>
-        </div>
-      </section>
+      <h2 class="text-4xl font-bold text-slate-800 mb-8">Compétences</h2>
+      <Skills title="Algèbre" code="algebra" />
     </Page>
   )
 }
 
-type CardProps = {
-  alt: string
-  children?: JSXElement
-  src: string
-  href: string
-}
-
-function Card(props: CardProps) {
+function Skills(props: { code: string; title: JSXElement }) {
+  const data = createAsync(() => getAssignmentList({ courses: { some: { code: props.code } } }))
   return (
-    <a href={props.href}>
-      <div class="bg-white rounded-xl shadow transition ease-in-out hover:scale-105">
-        <img
-          src={props.src}
-          alt={props.alt}
-          class="rounded-t opacity-60 h-96 object-cover w-full"
-          loading="lazy"
-        />
-        <div class="px-2 py-4 prose">{props.children}</div>
-      </div>
-    </a>
+    <details open>
+      <summary class="font-semibold text-2xl my-4 cursor-pointer">{props.title}</summary>
+      <ul class="lg:columns-2">
+        <For each={data()}>
+          {(assignment) => (
+            <li class="flex justify-between m-2">
+              <a href={assignment.url} class="hover:text-cyan-700">
+                {assignment.title}
+              </a>
+            </li>
+          )}
+        </For>
+      </ul>
+    </details>
   )
 }
