@@ -113,24 +113,26 @@ export function createExerciseType<
 
     return (
       <Suspense fallback={<p>Generating...</p>}>
-        <form method="post" action={submit} class="p-4 border-b shadow-sm">
-          <fieldset disabled={readOnly()}>
+        <form method="post" action={submit}>
+          <fieldset disabled={readOnly()} class="flex items-center">
             <Show when={question()}>
-              <exercise.Component question={question()} attempt={props.attempts.at(-1)?.attempt} />
+              <div class="grow">
+                <exercise.Component
+                  question={question()}
+                  attempt={props.attempts.at(-1)?.attempt}
+                />
+              </div>
             </Show>
-            <ZodError error={submission.error} />
-          </fieldset>
-          <Show when={!readOnly() && !submission.pending}>
-            <div class="text-center my-4">
+            <Show when={!readOnly() && !submission.pending}>
               <Button type="submit" color="green">
                 Corriger
               </Button>
-            </div>
-          </Show>
+            </Show>
+          </fieldset>
+          <ZodError error={submission.error} />
         </form>
         <Show when={props.attempts.length > 0 && question()}>
           <Feedback
-            class="p-4 border-b shadow-sm"
             attempt={props.attempts.at(-1)}
             correct={props.attempts.at(-1)?.correct ?? false}
             remainingAttempts={remaining()}

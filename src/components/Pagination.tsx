@@ -4,6 +4,7 @@ import { For, type JSXElement } from 'solid-js'
 
 type PaginationProps = {
   current: number
+  class?: string
   classList: (i: number) => { [key: string]: boolean | undefined }
   max: number
   url: (i: number) => string
@@ -11,7 +12,7 @@ type PaginationProps = {
 
 export default function Pagination(props: PaginationProps) {
   return (
-    <nav class="text-center mb-4">
+    <nav class={props.class}>
       <ul class="inline-flex text-gray-500">
         <Link
           class="border-e-0 rounded-l-lg"
@@ -50,7 +51,7 @@ type LinkProps = {
 function Link(props: LinkProps) {
   return (
     <li class={`border border-gray-300 ${props.class}`} classList={props.classList}>
-      <a class="px-3 py-1" href={props.href}>
+      <a class="px-2 py-1" href={props.href}>
         {props.children}
       </a>
     </li>

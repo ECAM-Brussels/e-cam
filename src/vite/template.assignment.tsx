@@ -1,11 +1,11 @@
 import { createAsync, query, useLocation, useParams, type RouteDefinition } from '@solidjs/router'
 import { Show } from 'solid-js'
-import Assignment, { getGraphQuery } from '~/components/Assignment'
+import Assignment from '~/components/Assignment'
 import Page from '~/components/Page'
 import { getUser } from '~/lib/auth/session'
 import { loadBoard } from '~/lib/board'
 import { getEloDiff } from '~/lib/elo'
-import { getAssignment, getAssignmentGraph, getExercises } from '~/lib/exercises/assignment'
+import { getAssignment, getExercises } from '~/lib/exercises/assignment'
 import { getUserInfo } from '~/lib/user'
 
 const getOriginalAssignment = query((url?: string) => {
@@ -37,7 +37,6 @@ export const route = {
         getExercises(info.url, user.email),
         getEloDiff(user.email),
         loadBoard(info.url, user.email, `${info.index}`),
-        getAssignmentGraph(getGraphQuery(info.url)),
       ])
     }
   },

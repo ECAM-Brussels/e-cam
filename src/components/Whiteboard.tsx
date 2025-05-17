@@ -23,6 +23,7 @@ type Status = 'unsaved' | 'saving' | 'saved'
 type WhiteboardProps = {
   name: string
   class?: string
+  fullScreenElement?: HTMLElement
   readOnly?: boolean
   scale?: boolean
   toolbarPosition?: 'top' | 'bottom'
@@ -201,6 +202,7 @@ export default function Whiteboard(props: WhiteboardProps) {
       >
         <Toolbar
           currentStroke={currentStroke}
+          fullScreenElement={props.fullScreenElement}
           setter={setCurrentStroke}
           status={status()}
           erasing={erasing()}
@@ -273,6 +275,7 @@ export default function Whiteboard(props: WhiteboardProps) {
 
 type ToolbarProps = {
   currentStroke: Stroke
+  fullScreenElement?: HTMLElement
   onAdd?: () => void
   onDelete?: () => void
   setter: SetStoreFunction<Stroke>
@@ -358,7 +361,7 @@ function Toolbar(props: ToolbarProps) {
         class="rounded-lg px-2 py-1 text-2xl z-20"
         onClick={() => {
           if (!document.fullscreenElement) {
-            document.body.requestFullscreen()
+            ;(props.fullScreenElement ?? document.body).requestFullscreen()
           } else {
             document.exitFullscreen()
           }
