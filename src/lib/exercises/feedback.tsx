@@ -18,7 +18,10 @@ export default function Feedback<Q, A, F extends object>(props: {
     props.getFeedback?.(props.remainingAttempts, props.question, props.attempt),
   )
   return (
-    <div class={props.class}>
+    <div
+      class={props.class ?? `p-2 px-4 rounded-xl border`}
+      classList={{ 'bg-green-50': props.correct, 'bg-red-50': !props.correct }}
+    >
       <Show
         when={!props.marking}
         fallback={

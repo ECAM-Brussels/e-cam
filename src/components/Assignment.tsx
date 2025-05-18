@@ -68,12 +68,12 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
             eloDiff={eloDiff()}
           />
         </div>
-        <div class="h-full max-w-full lg:flex gap-8">
+        <div class="h-full max-w-full lg:flex flex-row-reverse gap-8">
           <div class="lg:min-w-72 lg:max-w-80" classList={{ hidden: fullScreen() }}>
             <Sidebar {...props} elo={user()?.score} eloDiff={eloDiff()} />
           </div>
           <div class="grow">
-            <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl flex justify-between items-center gap-12">
+            <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl flex items-center gap-12">
               {props.children}
             </ErrorBoundary>
             <div class="h-full border max-w-full" ref={boardContainer}>

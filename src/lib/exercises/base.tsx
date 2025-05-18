@@ -116,7 +116,7 @@ export function createExerciseType<
         <form method="post" action={submit}>
           <fieldset disabled={readOnly()} class="flex items-end gap-8">
             <Show when={question()}>
-              <div class="grow">
+              <div>
                 <exercise.Component
                   question={question()}
                   attempt={props.attempts.at(-1)?.attempt}
