@@ -26,7 +26,7 @@ type WhiteboardProps = {
   requestFullScreen?: () => void
   readOnly?: boolean
   scale?: boolean
-  toolbarPosition?: 'top' | 'bottom'
+  toolbarPosition?: 'top' | 'bottom' | 'left'
   onAdd?: () => void
   owner: string
   url: string
@@ -282,7 +282,7 @@ type ToolbarProps = {
   status: Status
   erasing: boolean
   setErasing: (nextVal: boolean) => void
-  position: 'top' | 'bottom'
+  position: 'top' | 'bottom' | 'left'
 }
 
 function Toolbar(props: ToolbarProps) {
@@ -296,7 +296,11 @@ function Toolbar(props: ToolbarProps) {
   return (
     <div
       class="absolute flex gap-1 p-2 z-30"
-      classList={{ 'top-0': props.position === 'top', 'bottom-0': props.position === 'bottom' }}
+      classList={{
+        'top-0': props.position === 'top',
+        'bottom-0': props.position === 'bottom',
+        'flex-col': props.position === 'left',
+      }}
     >
       <For each={pens}>
         {(color) => (

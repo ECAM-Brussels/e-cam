@@ -83,6 +83,7 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
                 owner={props.userEmail}
                 name={`${props.index}`}
                 container={boardContainer}
+                toolbarPosition="left"
               />
             </div>
           </div>
