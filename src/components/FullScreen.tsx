@@ -34,6 +34,12 @@ export default function FullScreen(props: {
         setFullScreen(false)
       }
     }
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement) {
+        setFullScreen(true)
+        setFullScreen(false)
+      }
+    })
   })
   return (
     <Portal>
