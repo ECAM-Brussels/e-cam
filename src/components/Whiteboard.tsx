@@ -8,7 +8,7 @@ import {
   faUpRightAndDownLeftFromCenter,
 } from '@fortawesome/free-solid-svg-icons'
 import { useAction, useSubmissions, createAsyncStore } from '@solidjs/router'
-import { cloneDeep } from 'lodash-es'
+import { cloneDeep, debounce } from 'lodash-es'
 import { getStroke } from 'perfect-freehand'
 import { createEffect, createMemo, createSignal, For, on, onMount, Show } from 'solid-js'
 import { createStore, SetStoreFunction, unwrap } from 'solid-js/store'
@@ -67,13 +67,13 @@ export default function Whiteboard(props: WhiteboardProps) {
 
   const [width, setWidth] = createSignal(props.width || 100)
   const [height, setHeight] = createSignal(props.height || 100)
-  const resize = () => {
+  const resize = debounce(() => {
     if (props.container) {
       const rect = props.container.getBoundingClientRect()
       setWidth(rect.width)
       setHeight(rect.height)
     }
-  }
+  }, 100)
   onMount(() => {
     if (props.container) {
       const resizeObserver = new ResizeObserver(resize)

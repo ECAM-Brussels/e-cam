@@ -5,6 +5,7 @@ import { Component, createSignal, type JSXElement, Show } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import ErrorBoundary from '~/components/ErrorBoundary'
 import Fa from '~/components/Fa'
+import Graph from '~/components/Graph'
 import Pagination from '~/components/Pagination'
 import Whiteboard from '~/components/Whiteboard'
 import { getUser } from '~/lib/auth/session'
@@ -16,6 +17,7 @@ import {
   saveExercise,
   type getAssignment,
   getExercises,
+  getAssignmentGraph,
 } from '~/lib/exercises/assignment'
 import { ExerciseProps } from '~/lib/exercises/base'
 import { optionsSchemaWithDefault } from '~/lib/exercises/schemas'
@@ -42,8 +44,8 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
       <h1 class="text-4xl my-4" classList={{ hidden: fullScreen() }}>
         {props.data.title}
       </h1>
-      <FullScreen class="bg-slate-50 h-screen overflow-hidden" onChange={setFullScreen}>
-        <div classList={{ 'grid grid-cols-3 p-4': fullScreen() }}>
+      <FullScreen class="bg-slate-50 h-screen overflow-y-hidden" onChange={setFullScreen}>
+        <div classList={{ 'grid grid-cols-3 p-4': fullScreen(), 'mb-8': !fullScreen() }}>
           <h2 class="text-2xl" classList={{ hidden: !fullScreen() }}>
             {props.data.title}
           </h2>
@@ -61,25 +63,42 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
             </span>
           </p>
         </div>
-        <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl lg:grid lg:grid-cols-2 items-center">
-          {props.children}
-        </ErrorBoundary>
-        <div class="h-full" ref={boardContainer}>
-          <Whiteboard
-            class="bg-white"
-            requestFullScreen={() => {
-              setFullScreen(true)
-              const parent = boardContainer.parentNode! as HTMLElement
-              parent.requestFullscreen()
-            }}
-            url={props.url}
-            owner={props.userEmail}
-            name={`${props.index}`}
-            container={boardContainer}
-          />
+        <div class="h-full flex gap-8">
+          <div class="min-w-80" classList={{ hidden: fullScreen() }}>
+            <Sidebar {...props} />
+          </div>
+          <div class="grow">
+            <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl lg:grid lg:grid-cols-2 items-center">
+              {props.children}
+            </ErrorBoundary>
+            <div class="h-full" ref={boardContainer}>
+              <Whiteboard
+                class="bg-white"
+                requestFullScreen={() => {
+                  setFullScreen(true)
+                  const parent = boardContainer.parentNode! as HTMLElement
+                  parent.requestFullscreen()
+                }}
+                url={props.url}
+                owner={props.userEmail}
+                name={`${props.index}`}
+                container={boardContainer}
+              />
+            </div>
+          </div>
         </div>
       </FullScreen>
     </ErrorBoundary>
+  )
+}
+
+function Sidebar(props: AssignmentProps) {
+  const graphQuery = () => getGraphQuery(props.url)
+  return (
+    <div class="border rounded-xl bg-white p-4">
+      <h3 class="text-xl">Exercices similaires</h3>
+      <Graph class="min-h-96 w-full" query={graphQuery()} currentNode={props.url} rankDir="BT" />
+    </div>
   )
 }
 
@@ -135,7 +154,11 @@ export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
               await saveExercise(props.url, props.userEmail, props.index, event as Exercise)
               const revalidate =
                 action === 'generate'
-                  ? [getExercises.keyFor(props.url, props.userEmail), getEloDiff.key]
+                  ? [
+                      getExercises.keyFor(props.url, props.userEmail),
+                      getEloDiff.key,
+                      getAssignmentGraph.keyFor(getGraphQuery(props.url)),
+                    ]
                   : 'nothing'
               return reload({ revalidate })
             }}
