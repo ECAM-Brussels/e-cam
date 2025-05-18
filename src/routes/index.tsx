@@ -35,7 +35,7 @@ function Skills(props: { code: string; title: JSXElement; open?: boolean }) {
                   {assignment.title}
                 </a>
                 <Show when={user()}>
-                  <progress value={assignment.grade} />
+                  <progress value={assignment.grade / 10} />
                 </Show>
               </li>
             )}
