@@ -50,22 +50,16 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
             {props.data.title}
           </h2>
           <Navigation {...props} />
-          <p class="font-semibold text-xl text-right" classList={{ hidden: !fullScreen() }}>
-            ELO: {user()?.score}{' '}
-            <span
-              classList={{
-                'text-green-800': eloDiff() > 0,
-                'text-red-800': eloDiff() < 0,
-              }}
-            >
-              ({eloDiff() > 0 && '+'}
-              {eloDiff()} <Fa icon={eloDiff() > 0 ? faArrowUp : faArrowDown} />)
-            </span>
-          </p>
+          <Elo
+            class="font-semibold text-xl text-right"
+            classList={{ hidden: !fullScreen() }}
+            elo={user()?.score}
+            eloDiff={eloDiff()}
+          />
         </div>
-        <div class="h-full flex gap-8">
-          <div class="min-w-80" classList={{ hidden: fullScreen() }}>
-            <Sidebar {...props} />
+        <div class="h-full lg:flex gap-8">
+          <div class="lg:min-w-72 lg:max-w-80" classList={{ hidden: fullScreen() }}>
+            <Sidebar {...props} elo={user()?.score} eloDiff={eloDiff()} />
           </div>
           <div class="grow">
             <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl lg:grid lg:grid-cols-2 items-center">
@@ -93,13 +87,42 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
   )
 }
 
-function Sidebar(props: AssignmentProps) {
+function Elo(props: {
+  class?: string
+  classList?: { [key: string]: boolean }
+  elo?: number
+  eloDiff: number
+}) {
+  return (
+    <p class={props.class} classList={props.classList}>
+      ELO: {props.elo}{' '}
+      <span
+        classList={{
+          'text-green-800': props.eloDiff > 0,
+          'text-red-800': props.eloDiff < 0,
+        }}
+      >
+        ({props.eloDiff > 0 && '+'}
+        {props.eloDiff} <Fa icon={props.eloDiff > 0 ? faArrowUp : faArrowDown} />)
+      </span>
+    </p>
+  )
+}
+
+function Sidebar(props: AssignmentProps & { eloDiff: number; elo?: number }) {
   const graphQuery = () => getGraphQuery(props.url)
   return (
-    <div class="border rounded-xl bg-white p-4">
-      <h3 class="text-xl">Exercices similaires</h3>
-      <Graph class="min-h-96 w-full" query={graphQuery()} currentNode={props.url} rankDir="BT" />
-    </div>
+    <>
+      <Elo
+        class="bg-white border rounded-xl mb-4 p-4 text-xl font-bold"
+        elo={props.elo}
+        eloDiff={props.eloDiff}
+      />
+      <div class="border rounded-xl bg-white p-4">
+        <h3 class="text-xl font-semibold">Exercices similaires</h3>
+        <Graph class="min-h-96 w-full" query={graphQuery()} currentNode={props.url} rankDir="BT" />
+      </div>
+    </>
   )
 }
 
