@@ -1,7 +1,7 @@
 import FullScreen from './FullScreen'
 import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons'
 import { createAsync, createAsyncStore, reload } from '@solidjs/router'
-import { Component, createSignal, type JSXElement, Show } from 'solid-js'
+import { Component, createEffect, createSignal, type JSXElement, Show } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import ErrorBoundary from '~/components/ErrorBoundary'
 import Fa from '~/components/Fa'
@@ -39,6 +39,17 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
   const eloDiff = createAsync(() => getEloDiff(props.userEmail), { initialValue: 0 })
   const [fullScreen, setFullScreen] = createSignal(false)
   let boardContainer!: HTMLDivElement
+
+  // Whiteboard doesn't shrink properly when leaving full screen
+  createEffect(() => {
+    if (!fullScreen() && boardContainer) {
+      boardContainer.style.width = '0'
+      setTimeout(() => {
+        boardContainer.style.width = '100%'
+      }, 0)
+    }
+  })
+
   return (
     <ErrorBoundary>
       <h1 class="text-4xl my-4" classList={{ hidden: fullScreen() }}>
@@ -57,15 +68,15 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
             eloDiff={eloDiff()}
           />
         </div>
-        <div class="h-full lg:flex gap-8">
+        <div class="h-full max-w-full lg:flex gap-8">
           <div class="lg:min-w-72 lg:max-w-80" classList={{ hidden: fullScreen() }}>
             <Sidebar {...props} elo={user()?.score} eloDiff={eloDiff()} />
           </div>
           <div class="grow">
-            <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl flex items-center gap-12">
+            <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl flex justify-between items-center gap-12">
               {props.children}
             </ErrorBoundary>
-            <div class="h-full border" ref={boardContainer}>
+            <div class="h-full border max-w-full" ref={boardContainer}>
               <Whiteboard
                 class="bg-white"
                 requestFullScreen={() => {
