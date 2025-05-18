@@ -76,7 +76,7 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
                 class="bg-white"
                 requestFullScreen={() => {
                   setFullScreen(true)
-                  const parent = boardContainer.parentNode! as HTMLElement
+                  const parent = boardContainer.parentNode!.parentNode!.parentNode as HTMLElement
                   parent.requestFullscreen()
                 }}
                 url={props.url}
