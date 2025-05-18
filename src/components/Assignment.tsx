@@ -89,7 +89,11 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
         <div class="h-full" ref={boardContainer}>
           <Whiteboard
             class="bg-white"
-            fullScreenElement={boardContainer}
+            requestFullScreen={() => {
+              setFullScreen(true)
+              const parent = boardContainer.parentNode! as HTMLElement
+              parent.requestFullscreen()
+            }}
             url={props.url}
             owner={props.userEmail}
             name={`${props.index}`}

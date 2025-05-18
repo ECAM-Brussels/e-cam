@@ -1,5 +1,6 @@
 import Fa from './Fa'
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { A } from '@solidjs/router'
 import { For, type JSXElement } from 'solid-js'
 
 type PaginationProps = {
@@ -51,9 +52,9 @@ type LinkProps = {
 function Link(props: LinkProps) {
   return (
     <li class={`border border-gray-300 ${props.class}`} classList={props.classList}>
-      <a class="px-2 py-1" href={props.href}>
+      <A class="px-2 py-1" href={props.href} noScroll>
         {props.children}
-      </a>
+      </A>
     </li>
   )
 }
