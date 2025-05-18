@@ -69,9 +69,8 @@ export default function Whiteboard(props: WhiteboardProps) {
   const [height, setHeight] = createSignal(props.height || 100)
   const resize = debounce(() => {
     if (props.container) {
-      const rect = props.container.getBoundingClientRect()
-      setWidth(rect.width)
-      setHeight(rect.height)
+      setWidth(props.container.clientWidth)
+      setHeight(props.container.clientHeight)
     }
   }, 100)
   onMount(() => {
@@ -266,7 +265,7 @@ export default function Whiteboard(props: WhiteboardProps) {
           ref={currentStrokeCanvas}
           height={height()}
           width={width()}
-          class="absolute top-0 left-0 z-10 border"
+          class="absolute top-0 left-0 z-10"
         />
       </div>
     </div>
@@ -275,7 +274,7 @@ export default function Whiteboard(props: WhiteboardProps) {
 
 type ToolbarProps = {
   currentStroke: Stroke
-  requestFullScreen: () => void
+  requestFullScreen?: () => void
   onAdd?: () => void
   onDelete?: () => void
   setter: SetStoreFunction<Stroke>

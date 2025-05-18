@@ -44,7 +44,7 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
       <h1 class="text-4xl my-4" classList={{ hidden: fullScreen() }}>
         {props.data.title}
       </h1>
-      <FullScreen class="bg-slate-50 h-screen overflow-y-hidden" onChange={setFullScreen}>
+      <FullScreen class="bg-slate-50 h-screen w-full overflow-hidden" onChange={setFullScreen}>
         <div classList={{ 'grid grid-cols-3 p-4': fullScreen(), 'mb-8': !fullScreen() }}>
           <h2 class="text-2xl" classList={{ hidden: !fullScreen() }}>
             {props.data.title}
@@ -62,10 +62,10 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
             <Sidebar {...props} elo={user()?.score} eloDiff={eloDiff()} />
           </div>
           <div class="grow">
-            <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl lg:grid lg:grid-cols-2 items-center">
+            <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl flex items-center gap-12">
               {props.children}
             </ErrorBoundary>
-            <div class="h-full" ref={boardContainer}>
+            <div class="h-full border" ref={boardContainer}>
               <Whiteboard
                 class="bg-white"
                 requestFullScreen={() => {

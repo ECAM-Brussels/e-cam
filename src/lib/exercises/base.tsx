@@ -114,7 +114,7 @@ export function createExerciseType<
     return (
       <Suspense fallback={<p>Generating...</p>}>
         <form method="post" action={submit}>
-          <fieldset disabled={readOnly()} class="flex items-center">
+          <fieldset disabled={readOnly()} class="flex items-end gap-8">
             <Show when={question()}>
               <div class="grow">
                 <exercise.Component
@@ -124,9 +124,11 @@ export function createExerciseType<
               </div>
             </Show>
             <Show when={!readOnly() && !submission.pending}>
-              <Button type="submit" color="green">
-                Corriger
-              </Button>
+              <div class="mb-2">
+                <Button type="submit" color="green">
+                  Corriger
+                </Button>
+              </div>
             </Show>
           </fieldset>
           <ZodError error={submission.error} />
