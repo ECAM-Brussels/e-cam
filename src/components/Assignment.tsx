@@ -85,7 +85,9 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
             </span>
           </p>
         </div>
-        <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl">{props.children}</ErrorBoundary>
+        <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl lg:grid lg:grid-cols-2 items-center">
+          {props.children}
+        </ErrorBoundary>
         <div class="h-full" ref={boardContainer}>
           <Whiteboard
             class="bg-white"
