@@ -34,10 +34,6 @@ export const getGraphQuery = (url: string) => ({
 
 function Shell(props: AssignmentProps & { children: JSXElement }) {
   const user = createAsync(() => getUserInfo(props.userEmail))
-  const realUser = createAsync(() => getUser())
-  const body = createAsyncStore(() => getExercises(props.url, props.userEmail), {
-    initialValue: [],
-  })
   const eloDiff = createAsync(() => getEloDiff(props.userEmail), { initialValue: 0 })
   const [fullScreen, setFullScreen] = createSignal(false)
   let boardContainer!: HTMLDivElement
@@ -51,27 +47,7 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
           <h2 class="text-2xl" classList={{ hidden: !fullScreen() }}>
             {props.data.title}
           </h2>
-          <div class="text-center">
-            <Pagination
-              current={props.index}
-              url={(index) => {
-                const parts: string[] = [props.url]
-                if (props.userEmail !== realUser()?.email) {
-                  parts.push(props.userEmail)
-                }
-                if (index > 1) {
-                  parts.push(`${index}`)
-                }
-                return parts.join('/')
-              }}
-              max={body().length || 0}
-              classList={(i) => ({
-                'bg-green-100': body()[i - 1].attempts.at(0)?.correct,
-                'bg-red-100': body()[i - 1].attempts.at(0)?.correct === false,
-                'bg-white': body()[i - 1].attempts.at(0)?.correct === undefined,
-              })}
-            />
-          </div>
+          <Navigation {...props} />
           <p class="font-semibold text-xl text-right" classList={{ hidden: !fullScreen() }}>
             ELO: {user()?.score}{' '}
             <span
@@ -104,6 +80,36 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
         </div>
       </FullScreen>
     </ErrorBoundary>
+  )
+}
+
+function Navigation(props: AssignmentProps) {
+  const body = createAsyncStore(() => getExercises(props.url, props.userEmail), {
+    initialValue: [],
+  })
+  const realUser = createAsync(() => getUser())
+  return (
+    <div class="text-center">
+      <Pagination
+        current={props.index}
+        url={(index) => {
+          const parts: string[] = [props.url]
+          if (props.userEmail !== realUser()?.email) {
+            parts.push(props.userEmail)
+          }
+          if (index > 1) {
+            parts.push(`${index}`)
+          }
+          return parts.join('/')
+        }}
+        max={body().length || 0}
+        classList={(i) => ({
+          'bg-green-100': body()[i - 1].attempts.at(0)?.correct,
+          'bg-red-100': body()[i - 1].attempts.at(0)?.correct === false,
+          'bg-white': body()[i - 1].attempts.at(0)?.correct === undefined,
+        })}
+      />
+    </div>
   )
 }
 
