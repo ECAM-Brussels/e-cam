@@ -1,130 +1,49 @@
-import { query, createAsync, revalidate, useLocation } from '@solidjs/router'
-import 'reveal.js/dist/reveal.css'
-import { createEffect, For, onCleanup, onMount, type JSXElement } from 'solid-js'
-import Breadcrumbs from '~/components/Breadcrumbs'
+import { useNavigate } from '@solidjs/router'
+import { onMount, type JSXElement } from 'solid-js'
 import Whiteboard from '~/components/Whiteboard'
-import { getUser } from '~/lib/auth/session'
-import { prisma } from '~/lib/db'
 
 type SlideshowProps = {
   children: JSXElement
-  boardName?: string
-}
-
-export const getBoardCount = query(async (url: string, boardName: string) => {
-  'use server'
-  const boards = await prisma.stroke.groupBy({
-    by: ['board'],
-    where: { url, board: { startsWith: `slide-${boardName}-` } },
-    _count: {
-      board: true,
-    },
-  })
-  const result: { [key: string]: number } = {}
-  for (const board of boards) {
-    const id = board.board.split('-').at(-2) as string
-    result[id] = id in result ? result[id] + 1 : 1
-  }
-  return result
-}, 'getBoards')
-
-async function addBoard(url: string, boardName: string, i: number, j: number) {
-  'use server'
-  const board = await prisma.stroke.create({
-    data: { url, ownerEmail: 'ngy@ecam.be', board: `slide-${boardName}-${i}-${j}`, points: [] },
-  })
-}
-function getSlides(props: SlideshowProps) {
-  const results = []
-  const { children } = props
-  if (Array.isArray(children)) {
-    for (let i = 0; i < children.length; i++) {
-      results[i] = (j: number) => (j === 0 ? children[i] : (props.children as HTMLElement[])[i])
-    }
-  } else {
-    results[0] = (j: number) => (j === 0 ? children : props.children)
-  }
-  return results
+  board?: string
+  hIndex: number
+  vIndex: number
+  url: string
 }
 
 export default function Slideshow(props: SlideshowProps) {
-  const location = useLocation()
-  const user = createAsync(() => getUser())
-  const slides = getSlides(props)
+  const navigate = useNavigate()
 
-  let deck: InstanceType<typeof import('reveal.js')>
+  const slide = () => {
+    const children = props.children
+    return Array.isArray(children) ? children[props.hIndex - 1] : children
+  }
 
-  const count = createAsync(() => getBoardCount(location.pathname, props.boardName || ''))
-  createEffect(() => {
-    if (count() && deck) {
-      deck.sync()
-    }
-  })
-
-  onMount(async () => {
-    const Reveal = (await import('reveal.js')).default
-    deck = new Reveal({
-      center: false,
-      hash: true,
-      height: 1080,
-      slideNumber: true,
-      touch: false,
-      transition: 'none',
-      width: 1920,
-    })
-    deck.initialize()
-    deck.addKeyBinding(40, async () => {
-      const { h, v } = deck.getIndices()
-      if (v === (count()?.[String(h)] || 1) - 1 && user()?.admin) {
-        await addBoard(location.pathname, props.boardName || '', h, v + 1)
-        revalidate(getBoardCount.keyFor(location.pathname, props.boardName || ''))
-      } else {
-        deck.down()
+  onMount(() => {
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight') {
+        navigate(`${props.url}/${props.hIndex + 1}`)
+      } else if (event.key === 'ArrowLeft' && props.hIndex > 1) {
+        navigate(`${props.url}/${props.hIndex - 1}`)
+      } else if (event.key === 'ArrowUp' && props.vIndex > 1) {
+        navigate(`${props.url}/${props.hIndex}/${props.vIndex - 1}`)
+      } else if (event.key === 'ArrowDown') {
+        navigate(`${props.url}/${props.hIndex}/${props.vIndex + 1}`)
       }
     })
   })
 
-  onCleanup(async () => {
-    if (deck) {
-      deck.destroy()
-    }
-  })
-
   return (
-    <div class="reveal bg-white">
-      <div class="slides">
-        <For each={slides}>
-          {(child, i) => (
-            <section>
-              <For each={[...Array((count() || {})[String(i())] || 1).keys()]}>
-                {(j) => (
-                  <section class="relative h-full">
-                    {child(j)}
-                    <Whiteboard
-                      name={`slide-${props.boardName || ''}-${i()}-${j}`}
-                      owner="ngy@ecam.be"
-                      class="absolute top-0 left-0"
-                      onAdd={async () => {
-                        const { h, v } = deck.getIndices()
-                        if (v === (count()?.[String(h)] || 1) - 1 && user()?.admin) {
-                          await addBoard(location.pathname, props.boardName || '', h, v + 1)
-                          revalidate(getBoardCount.keyFor(location.pathname, props.boardName || ''))
-                        }
-                      }}
-                      width={1920}
-                      height={1080}
-                      readOnly={!user()?.admin}
-                      scale
-                      toolbarPosition="bottom"
-                    />
-                    <Breadcrumbs class="absolute bottom-0 w-full" />
-                  </section>
-                )}
-              </For>
-            </section>
-          )}
-        </For>
-      </div>
+    <div class="bg-white w-[1920px] h-[1080px] mx-auto relative">
+      {slide()}
+      <Whiteboard
+        class="absolute top-0 z-10"
+        width={1920}
+        height={1080}
+        toolbarPosition="bottom"
+        owner="ngy@ecam.be"
+        url={props.url}
+        name={`${props.board}-${props.hIndex}-${props.vIndex}`}
+      />
     </div>
   )
 }

@@ -9,7 +9,7 @@ const exec = promisify(execWithCallback)
 
 async function generatePage(file: string) {
   const relativePath = relative(resolve('content'), file)
-  const outputPath = resolve('src/routes/(generated)', relativePath.replace(/\.md$/, '.tsx'))
+  let outputPath = resolve('src/routes/(generated)', relativePath.replace(/\.md$/, '.tsx'))
   if (existsSync(outputPath) && statSync(outputPath).mtime >= statSync(file).mtime) {
     return
   }
@@ -21,6 +21,10 @@ async function generatePage(file: string) {
     await exec(`pandoc "${file}" -t html5 -o "${metaFile}" --template src/vite/template.json.txt`)
     const meta = JSON.parse(readFileSync(metaFile, 'utf-8'))
     template = meta.slideshow ? 'template.slideshow.tsx' : 'template.tsx'
+    if (meta.slideshow) {
+      outputPath = outputPath.replace('.tsx', '/[[slide]]/[[board]].tsx')
+      mkdirSync(dirname(outputPath), { recursive: true })
+    }
   } catch (error) {
     console.error(`Error when generating metadata file: ${error}`)
   }
