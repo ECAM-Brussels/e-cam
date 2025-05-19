@@ -68,7 +68,7 @@ function Arrow(props: SlideshowProps & { dir: keyof typeof arrows }) {
     const [i, j] = arrows[props.dir][1](props.hIndex, props.vIndex)
     return i >= 1 &&
       j >= 1 &&
-      i <= props.slides.length &&
+      i < props.slides.length &&
       boardCount() !== undefined &&
       j <= boardCount()! + 1
       ? `${props.url}/${i}/${j}`
