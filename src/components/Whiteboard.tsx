@@ -67,12 +67,12 @@ export default function Whiteboard(props: WhiteboardProps) {
 
   const [width, setWidth] = createSignal(props.width || 100)
   const [height, setHeight] = createSignal(props.height || 100)
-  const resize = () => {
+  const resize = debounce(() => {
     if (props.container) {
       setWidth(props.container.clientWidth)
       setHeight(props.container.clientHeight)
     }
-  }
+  }, 10)
   onMount(() => {
     if (props.container) {
       const resizeObserver = new ResizeObserver((_entries) => resize())

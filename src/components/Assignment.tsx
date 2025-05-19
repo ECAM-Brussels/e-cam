@@ -46,7 +46,7 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
       boardContainer.style.width = '0'
       setTimeout(() => {
         boardContainer.style.width = '100%'
-      }, 0)
+      }, 20)
     }
   })
 
