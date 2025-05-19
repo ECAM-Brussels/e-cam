@@ -1,3 +1,4 @@
+import { getBoardCount } from './slideshow'
 import { query, action, reload } from '@solidjs/router'
 import { getUser } from '~/lib/auth/session'
 import { prisma } from '~/lib/db'
@@ -31,7 +32,15 @@ export const addStroke = action(
     await prisma.stroke.create({
       data: { url, ownerEmail, board, ...stroke },
     })
-    return reload({ revalidate: loadBoard.keyFor(url, ownerEmail, board) })
+    const { _count: count } = await prisma.stroke.aggregate({
+      where: { url, ownerEmail, board },
+      _count: { id: true },
+    })
+    const revalidate: string[] = [loadBoard.keyFor(url, ownerEmail, board)]
+    if (count.id === 1) {
+      revalidate.push(getBoardCount.key)
+    }
+    return reload({ revalidate })
   },
 )
 
