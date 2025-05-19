@@ -5,7 +5,7 @@ import {
   faChevronRight,
   faChevronUp,
 } from '@fortawesome/free-solid-svg-icons'
-import { createAsync } from '@solidjs/router'
+import { A, createAsync } from '@solidjs/router'
 import { Show, type JSXElement } from 'solid-js'
 import Fa from '~/components/Fa'
 import Whiteboard from '~/components/Whiteboard'
@@ -84,9 +84,9 @@ function Arrow(props: SlideshowProps & { dir: keyof typeof arrows }) {
     <div>
       <Show when={link()} fallback={<Fa icon={icon()} class="text-gray-200" />}>
         {(link) => (
-          <a href={link()}>
+          <A href={link()} noScroll>
             <Fa icon={icon()} />
-          </a>
+          </A>
         )}
       </Show>
     </div>
