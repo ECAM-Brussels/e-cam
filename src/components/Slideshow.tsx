@@ -12,7 +12,7 @@ import Whiteboard from '~/components/Whiteboard'
 import { getBoardCount } from '~/lib/slideshow'
 
 type SlideshowProps = {
-  children: JSXElement
+  slides: JSXElement[]
   board: string
   hIndex: number
   vIndex: number
@@ -20,14 +20,9 @@ type SlideshowProps = {
 }
 
 export default function Slideshow(props: SlideshowProps) {
-  const slide = () => {
-    const children = props.children
-    return Array.isArray(children) ? children[props.hIndex - 1] : children
-  }
-
   return (
     <div class="bg-white w-[1920px] h-[1080px] mx-auto relative">
-      {slide()}
+      {props.slides[props.hIndex]}
       <Whiteboard
         class="absolute top-0 z-10"
         width={1920}
@@ -68,13 +63,12 @@ function Arrow(props: SlideshowProps & { dir: keyof typeof arrows }) {
   const boardCount = createAsync(() =>
     getBoardCount(props.url, 'ngy@ecam.be', props.board, props.hIndex),
   )
-  const slideCount = () => (Array.isArray(props.children) ? props.children.length : 1)
   const icon = () => arrows[props.dir][0]
   const link = () => {
     const [i, j] = arrows[props.dir][1](props.hIndex, props.vIndex)
     return i >= 1 &&
       j >= 1 &&
-      i <= slideCount() &&
+      i <= props.slides.length &&
       boardCount() !== undefined &&
       j <= boardCount()! + 1
       ? `${props.url}/${i}/${j}`

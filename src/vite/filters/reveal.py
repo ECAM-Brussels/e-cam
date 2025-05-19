@@ -9,7 +9,7 @@ def slideshow(el: pf.Element, doc: pf.Doc):
     if type(el) == pf.Header and el.level == 1:
         elements: list[pf.Element] = []
         if el.prev:
-            elements.append(pf.RawBlock('</Slide>'))
+            elements.append(pf.RawBlock('</Slide>,'))
         classes = list(map(lambda c: c.replace("--", "/"), el.classes))
         el.classes = []
         elements += [
@@ -26,7 +26,7 @@ def slideshow(el: pf.Element, doc: pf.Doc):
 
 def prepare(doc: pf.Doc):
     if doc.get_metadata("slideshow", False):
-        doc.content.append(pf.RawBlock('</Slide>'))
+        doc.content.append(pf.RawBlock('</Slide>,'))
 
 
 pf.run_filter(slideshow, prepare=prepare)

@@ -1,6 +1,6 @@
 import { RouteDefinition, useLocation, useParams, useSearchParams } from '@solidjs/router'
 import { clientOnly } from '@solidjs/start'
-import { lazy } from 'solid-js'
+import { createMemo, lazy } from 'solid-js'
 import { z } from 'zod'
 import MetaProvider from '~/components/MetaProvider'
 import { loadBoard } from '~/lib/board'
@@ -35,6 +35,9 @@ export const route = {
   },
 } satisfies RouteDefinition
 
+// @ts-ignore
+const children = [$body$]
+
 export default function () {
   const params = useParams()
   const location = useLocation()
@@ -46,9 +49,8 @@ export default function () {
         hIndex={index.parse(params.slide)}
         vIndex={index.parse(params.board)}
         url={url(location.pathname, [params.board, params.slide])}
-      >
-        $body$
-      </Slideshow>
+        slides={children}
+      />
     </MetaProvider>
   )
 }
