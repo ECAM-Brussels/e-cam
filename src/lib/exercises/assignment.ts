@@ -48,6 +48,7 @@ export const assignmentSchema = z.object({
     .array()
     .default([]),
   courses: z.string().array().default([]),
+  video: z.string().optional(),
 })
 export type Assignment = z.infer<typeof assignmentSchema>
 export type AssignmentInput = z.input<typeof assignmentSchema>

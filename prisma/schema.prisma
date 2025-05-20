@@ -21,6 +21,7 @@ model Assignment {
   options Json
   hash String @default("")
   lastModified DateTime @default(now())
+  video String?
 
   attempts Attempt[]
   courses Course[]

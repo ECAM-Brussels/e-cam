@@ -1,13 +1,19 @@
-import FullScreen from './FullScreen'
-import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons'
+import {
+  faArrowDown,
+  faArrowUp,
+  faUpRightAndDownLeftFromCenter,
+  faWindowMinimize,
+} from '@fortawesome/free-solid-svg-icons'
 import { createAsync, createAsyncStore, reload } from '@solidjs/router'
 import { Component, createEffect, createSignal, type JSXElement, Show } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import ErrorBoundary from '~/components/ErrorBoundary'
 import Fa from '~/components/Fa'
+import FullScreen from '~/components/FullScreen'
 import Graph from '~/components/Graph'
 import Pagination from '~/components/Pagination'
 import Whiteboard from '~/components/Whiteboard'
+import Youtube from '~/components/Youtube'
 import { getUser } from '~/lib/auth/session'
 import { getEloDiff } from '~/lib/elo'
 import {
@@ -38,6 +44,7 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
   const user = createAsync(() => getUserInfo(props.userEmail))
   const eloDiff = createAsync(() => getEloDiff(props.userEmail), { initialValue: 0 })
   const [fullScreen, setFullScreen] = createSignal(false)
+  const [zoom, setZoom] = createSignal(1)
   let boardContainer!: HTMLDivElement
 
   // Whiteboard doesn't shrink properly when leaving full screen
@@ -73,10 +80,13 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
             <Sidebar {...props} elo={user()?.score} eloDiff={eloDiff()} />
           </div>
           <div class="grow">
-            <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl flex items-center gap-12">
+            <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl lg:flex items-center justify-between">
               {props.children}
+              <Show when={!fullScreen() && props.data.video}>
+                {(src) => <Youtube class="mb-4" src={src()} zoom={0.7} />}
+              </Show>
             </ErrorBoundary>
-            <div class="h-full border max-w-full" ref={boardContainer}>
+            <div class="h-full border max-w-full relative" ref={boardContainer}>
               <Whiteboard
                 class="bg-white"
                 requestFullScreen={() => {
@@ -91,6 +101,31 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
                 toolbarPosition="left"
               />
             </div>
+            <Show when={fullScreen() && props.data.video}>
+              {(src) => (
+                <div class="fixed bottom-5 right-5 mb-4 z-50">
+                  <p class="flex gap-4 mb-2 justify-end">
+                    <Show when={zoom() > 0}>
+                      <button onClick={() => setZoom(0)}>
+                        <Fa icon={faWindowMinimize} />
+                      </button>
+                    </Show>
+                    <button onClick={() => setZoom(zoom() !== 1 ? 1 : 2)}>
+                      <Fa
+                        icon={
+                          zoom() !== 1
+                            ? faUpRightAndDownLeftFromCenter
+                            : faUpRightAndDownLeftFromCenter
+                        }
+                      />
+                    </button>
+                  </p>
+                  <Show when={zoom() > 0}>
+                    <Youtube src={src()} zoom={zoom()} />
+                  </Show>
+                </div>
+              )}
+            </Show>
           </div>
         </div>
       </FullScreen>
