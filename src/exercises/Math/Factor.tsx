@@ -91,7 +91,8 @@ const { Component, schema } = createExerciseType({
           'Possibilities for the roots, either entered as tuples, or a Cartesian product with `product`',
         ),
     }),
-    async generate(params) {
+    generate: async (params) => {
+      'use server'
       let expr = `(${sample(params.A)})`
       sample(params.roots)?.forEach((root) => {
         expr += `(x - (${root}))`
