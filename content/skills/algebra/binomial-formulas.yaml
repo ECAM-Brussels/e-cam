@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: "Distributivité: produits remarquables"
+courses:
+  - algebra
+  - 2MATH5
+  - PM1C
+options:
+  streak: 999
+body:
+  - type: Expand
+    params:
+      multiply:
+        - term:
+            sum:
+              - [a, b, c, x, y, z, -a, -b, -c, -x, -y, -z, 2a, 2b, 2c, 2x, 2y, 2z, -2a, -2b, -2c, -2x, -2y, -2z]
+              - [a, b, c, x, y, z, -a, -b, -c, -x, -y, -z, 2a, 2b, 2c, 2x, 2y, 2z, -2a, -2b, -2c, -2x, -2y, -2z]
+          power: [2]

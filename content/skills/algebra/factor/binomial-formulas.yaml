@@ -1,5 +1,7 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
 title: "Factorisation: produits remarquables"
+prerequisites:
+  - /skills/algebra/binomial-formulas
 courses:
   - algebra
   - 4MATH5

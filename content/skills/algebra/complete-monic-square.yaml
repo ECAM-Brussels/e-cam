@@ -5,6 +5,7 @@ courses:
   - PM1C
   - 4MATH5
 prerequisites:
+  - /skills/algebra/binomial-formulas
   - /skills/algebra/factor/binomial-formulas
 options:
   streak: 999
