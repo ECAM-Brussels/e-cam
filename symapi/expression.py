@@ -125,6 +125,24 @@ class Expression:
             == sympy.S.EmptySet
         )
 
+    @strawberry.field(description="Check if fully expanded")
+    def is_expanded(self) -> bool:
+        expr = self.expr
+        if expr.func != sympy.Add:
+            expr = sympy.Add(0, expr, evaluate=False)
+
+        terms = []
+        for term in expr.args:
+            if term.func == sympy.Add:
+                terms += term.args
+            else:
+                terms.append(term)
+
+        for term in terms:
+            if sympy.expand(term).func == sympy.Add:
+                return False
+        return True
+
     @strawberry.field(description="Check if fully factored")
     def is_factored(self) -> bool:
         expr = self.expr
