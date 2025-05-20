@@ -11,6 +11,7 @@ import { schema as PythonSchema } from '~/exercises/CompSci/Python'
 import { schema as CompleteSquareSchema } from '~/exercises/Math/CompleteSquare'
 import { schema as FactorSchema } from '~/exercises/Math/Factor'
 import { schema as SimpleSchema } from '~/exercises/Math/Simple'
+import { schema as MultipleChoiceSchema } from '~/exercises/MultipleChoice'
 import { hashObject } from '~/lib/helpers'
 import { registerAssignment } from '~/vite/assignments'
 
@@ -19,6 +20,7 @@ export const exercises = {
   CompleteSquare: lazy(() => import('~/exercises/Math/CompleteSquare')),
   Factor: lazy(() => import('~/exercises/Math/Factor')),
   Simple: lazy(() => import('~/exercises/Math/Simple')),
+  MultipleChoice: lazy(() => import('~/exercises/MultipleChoice')),
 } as const
 
 export const exerciseSchema = z.discriminatedUnion('type', [
@@ -26,6 +28,7 @@ export const exerciseSchema = z.discriminatedUnion('type', [
   CompleteSquareSchema,
   FactorSchema,
   SimpleSchema,
+  MultipleChoiceSchema,
 ])
 export type Exercise = z.infer<typeof exerciseSchema>
 
