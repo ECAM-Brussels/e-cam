@@ -39,22 +39,18 @@ const { Component, schema } = createExerciseType({
                   editable
                   value={sol}
                   name="attempt"
-                  onInput={(e) => setAttempt(i(), e.target.value)}
+                  onBlur={(e) => setAttempt(i(), e.target.value)}
                 />
               </label>
             )}
           </For>
-          <Show when={attempt.length === 0 || attempt.at(-1) !== ''}>
-            <button
-              type="button"
-              class="inline-flex gap-2 items-center opacity-25 hover:opacity-100"
-              onMouseOver={() => setAttempt(attempt.length, '')}
-              onFocus={() => setAttempt(attempt.length, '')}
-            >
-              <Math value={`${props.question.x} =`} />
-              <Math class="border min-w-24 p-2" editable />
-            </button>
-          </Show>
+          <label
+            class="inline-flex gap-2 items-center opacity-25 hover:opacity-100"
+            onMouseOver={() => setAttempt(attempt.length, '')}
+          >
+            <Math value={`${props.question.x} =`} />
+            <Math class="border min-w-24 p-2" editable />
+          </label>
         </div>
       </>
     )
