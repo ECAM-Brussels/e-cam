@@ -240,14 +240,24 @@ function gradeToColor(correct: number, incorrect: number, total = 10) {
 }
 
 export const getAssignmentGraph = query(
-  async (where: Prisma.AssignmentFindManyArgs['where'] = {}): Promise<ElementDefinition[]> => {
+  async (
+    where: Prisma.AssignmentFindManyArgs['where'] = {},
+    courses: string[] = [],
+  ): Promise<ElementDefinition[]> => {
     'use server'
     const user = await getUser()
+    const groups = (
+      await prisma.course.findMany({
+        select: { code: true, title: true },
+        where: { code: { in: courses } },
+      })
+    ).map((course) => ({ data: { id: course.code, label: course.title } }))
     const data = await prisma.assignment.findMany({
       where,
       select: {
         url: true,
         title: true,
+        courses: { select: { code: true } },
         requiredBy: { select: { url: true } },
         attempts: user
           ? {
@@ -263,7 +273,7 @@ export const getAssignmentGraph = query(
       data: {
         id: assignment.url,
         label: assignment.title,
-        parent: 'algebra',
+        parent: assignment.courses.filter((c) => courses.includes(c.code)).at(0)?.code ?? undefined,
         color: gradeToColor(
           assignment.attempts?.filter((a) => a.correct).length ?? 0,
           assignment.attempts?.filter((a) => a.correct === false).length ?? 0,
@@ -285,7 +295,7 @@ export const getAssignmentGraph = query(
       }
       return edges
     }, [] as ElementDefinition[])
-    return [{ data: { id: 'algebra', label: 'Algèbre' } }, ...vertices, ...edges]
+    return [...groups, ...vertices, ...edges]
   },
   'getAssignmentGraph',
 )
