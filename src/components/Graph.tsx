@@ -1,4 +1,4 @@
-import { createAsync, useNavigate } from '@solidjs/router'
+import { createAsync, useNavigate, usePreloadRoute } from '@solidjs/router'
 import { type Core } from 'cytoscape'
 import cytoscape from 'cytoscape'
 import dagre from 'cytoscape-dagre'
@@ -14,6 +14,7 @@ export default function Graph(props: {
   let container!: HTMLDivElement
   const [cy, setCy] = createSignal<Core | null>(null)
   const navigate = useNavigate()
+  const preload = usePreloadRoute()
   const elements = createAsync(() => getAssignmentGraph(props.query))
 
   onMount(async () => {
@@ -90,6 +91,7 @@ export default function Graph(props: {
     })
     cy()!.on('mouseover', 'node', function (event) {
       if (event.target.data('id').startsWith('/')) {
+        preload(event.target.data('id'), { preloadData: true })
         cy()!.container()!.style.cursor = 'pointer'
         event.target.addClass('hovered')
       }
