@@ -26,8 +26,8 @@ const { Component, schema } = createExerciseType({
           <For each={attempt}>
             {(sol, i) => (
               <label
-                class="inline-flex gap-2 items-center"
-                onMouseOut={() => {
+                class="flex gap-2 items-center"
+                onMouseLeave={() => {
                   if (!sol) {
                     setAttempt(attempt.filter((_, j) => j !== i()))
                   }
@@ -39,14 +39,19 @@ const { Component, schema } = createExerciseType({
                   editable
                   value={sol}
                   name="attempt"
-                  onBlur={(e) => setAttempt(i(), e.target.value)}
+                  onBlur={(e) => {
+                    setAttempt(i(), e.target.value)
+                    if (!e.target.value) {
+                      setAttempt(attempt.filter((_, j) => j !== i()))
+                    }
+                  }}
                 />
               </label>
             )}
           </For>
           <label
             class="inline-flex gap-2 items-center opacity-25 hover:opacity-100"
-            onMouseOver={() => setAttempt(attempt.length, '')}
+            onMouseEnter={() => setAttempt(attempt.length, '')}
           >
             <Math value={`${props.question.x} =`} />
             <Math class="border min-w-24 p-2" editable />
