@@ -165,7 +165,7 @@ function Sidebar(props: AssignmentProps & { eloDiff: number; elo?: number }) {
         eloDiff={props.eloDiff}
       />
       <div class="border rounded-xl bg-white p-4">
-        <h3 class="text-xl font-semibold">Exercices similaires</h3>
+        <h3 class="text-xl font-semibold">Exercices voisins</h3>
         <Graph class="min-h-96 w-full" query={graphQuery()} currentNode={props.url} rankDir="BT" />
       </div>
     </>
