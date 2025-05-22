@@ -14,6 +14,10 @@ class Expression:
     def abs(self) -> "Expression":
         return Expression(expr=sympy.Abs(self.expr))
 
+    @strawberry.field(description="Add `expr` to the current expression")
+    def add(self, expr: Math) -> "Expression":
+        return Expression(expr=sympy.Add(self.expr, expr))
+
     @strawberry.field(description="Argument for a complex number")
     def arg(self) -> "Expression":
         a, b = self.expr.as_real_imag()
@@ -26,6 +30,10 @@ class Expression:
         elif a < 0 and b < 0:
             theta -= sympy.pi
         return Expression(expr=theta)
+
+    @strawberry.field(description="Coefficient of `x`^`n`")
+    def coeff(self, x: Math = sympy.Symbol("x"), n: int = 1) -> "Expression":
+        return Expression(expr=self.expr.coeff(x, n))
 
     @strawberry.field(description="Express a quadratic equation as a perfect square")
     def complete_square(self, x: Optional[Math] = sympy.Symbol("x")) -> "Expression":
@@ -204,6 +212,10 @@ class Expression:
         if a is not None and b is not None:
             solset = solset.intersect(sympy.Interval(a, b))
         return Expression(expr=solset)
+
+    @strawberry.field(description="Subtract `expr` from the current expression")
+    def subtract(self, expr: Math) -> "Expression":
+        return Expression(expr=sympy.Add(self.expr, sympy.Mul(-1, expr)))
 
     @strawberry.field
     def str(self) -> str:
