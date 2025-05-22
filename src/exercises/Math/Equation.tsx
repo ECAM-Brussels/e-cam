@@ -1,6 +1,6 @@
 import { product } from './Factor'
 import { sample } from 'lodash-es'
-import { createEffect, For, Show } from 'solid-js'
+import { createEffect, createSignal, For, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { z } from 'zod'
 import Math from '~/components/Math'
@@ -12,6 +12,7 @@ const { Component, schema } = createExerciseType({
   name: 'Equation',
   Component: (props) => {
     const [attempt, setAttempt] = createStore<string[]>([])
+    const [focused, setFocused] = createSignal(false)
     createEffect(() => setAttempt(props.attempt ?? []))
     return (
       <>
@@ -30,7 +31,7 @@ const { Component, schema } = createExerciseType({
               <label
                 class="flex gap-2 items-center"
                 onMouseLeave={() => {
-                  if (!sol) {
+                  if (!sol && !focused()) {
                     setAttempt(attempt.filter((_, j) => j !== i()))
                   }
                 }}
@@ -41,7 +42,9 @@ const { Component, schema } = createExerciseType({
                   editable
                   value={sol}
                   name="attempt"
+                  onfocus={() => setFocused(true)}
                   onBlur={(e) => {
+                    setFocused(false)
                     setAttempt(i(), e.target.value)
                     if (!e.target.value) {
                       setAttempt(attempt.filter((_, j) => j !== i()))
@@ -53,7 +56,11 @@ const { Component, schema } = createExerciseType({
           </For>
           <label
             class="inline-flex gap-2 items-center opacity-25 hover:opacity-100"
-            onMouseEnter={() => setAttempt(attempt.length, '')}
+            onMouseEnter={() => {
+              if (!focused()) {
+                setAttempt(attempt.length, '')
+              }
+            }}
           >
             <Math value={`${props.question.x} =`} />
             <Math class="border min-w-24 p-2" editable />
@@ -68,7 +75,7 @@ const { Component, schema } = createExerciseType({
     interval: z.tuple([z.string(), z.string()]).optional(),
     complex: z.boolean().default(false).describe('Solve over C or R'),
   }),
-  attempt: z.string().min(1).array(),
+  attempt: z.union([z.string().min(1).array(), z.string().transform((val) => [val])]),
   mark: async (question, attempt) => {
     'use server'
     const { interval, ...info } = question
