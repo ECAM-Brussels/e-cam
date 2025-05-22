@@ -1,3 +1,5 @@
+import { product } from './Factor'
+import { sample } from 'lodash-es'
 import { createEffect, For, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { z } from 'zod'
@@ -90,6 +92,52 @@ const { Component, schema } = createExerciseType({
       { ...info, a: interval?.[0], b: interval?.[1], attempt },
     )
     return equation.solveset.isSetEqual
+  },
+  generator: {
+    params: z.discriminatedUnion('type', [
+      z.object({
+        type: z.literal('polynomial'),
+        A: z.number().or(z.string()).array().default([1]),
+        roots: z.union([
+          z.string().or(z.number()).array().array(),
+          z
+            .object({
+              product: z.string().or(z.number()).array().array(),
+            })
+            .transform((set) => product(...set.product)),
+        ]),
+        X: z.string().array().default(['x']),
+        extra: z.string().or(z.number()).array().array(),
+      }),
+    ]),
+    generate: async (params) => {
+      'use server'
+      if (params.type === 'polynomial') {
+        let lhs = `(${sample(params.A)})`
+        sample(params.roots)?.forEach((root) => {
+          lhs += `(x - (${root}))`
+        })
+        let rhs = `0`
+        const data = await request(
+          graphql(`
+            query CalculateQuadraticEquation($lhs: Math!, $rhs: Math!) {
+              lhs: expression(expr: $lhs) {
+                normalizeRoots {
+                  expr
+                }
+              }
+              rhs: expression(expr: $rhs) {
+                simplify {
+                  expr
+                }
+              }
+            }
+          `),
+          { lhs, rhs },
+        )
+        return { equation: `${data.lhs.normalizeRoots.expr} = ${data.rhs.simplify.expr}` }
+      }
+    },
   },
 })
 

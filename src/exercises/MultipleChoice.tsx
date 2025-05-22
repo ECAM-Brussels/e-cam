@@ -35,7 +35,7 @@ const { Component, schema } = createExerciseType({
         return {
           encrypted: true,
           ...info,
-          answer: encrypt(answer, import.meta.env.VITE_PASSPHRASE),
+          answer: encrypt(answer),
         }
       }
       return question
@@ -43,13 +43,13 @@ const { Component, schema } = createExerciseType({
   attempt: z.string().min(1),
   mark: (question, attempt) => {
     'use server'
-    return attempt === decrypt(question.answer, import.meta.env.VITE_PASSPHRASE)
+    return attempt === decrypt(question.answer)
   },
   feedback: [
     async (remaining, question) => {
       'use server'
       if (!remaining) {
-        return { answer: decrypt(question.answer, import.meta.env.VITE_PASSPHRASE) }
+        return { answer: decrypt(question.answer) }
       }
       return {}
     },

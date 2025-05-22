@@ -63,7 +63,7 @@ const { Component, schema, mark } = createExerciseType({
       if (!state.encrypted) {
         state.parts = state.parts.map((q) => ({
           ...q,
-          answer: encrypt(q.answer, import.meta.env.VITE_PASSPHRASE),
+          answer: encrypt(q.answer),
         }))
         state.encrypted = true
       }
@@ -78,9 +78,7 @@ const { Component, schema, mark } = createExerciseType({
   mark: (question, attempt) => {
     'use server'
     const parts = question.parts.map((q, i) =>
-      attempt.length
-        ? checkEqual(attempt[i], decrypt(q.answer, import.meta.env.VITE_PASSPHRASE))
-        : false,
+      attempt.length ? checkEqual(attempt[i], decrypt(q.answer)) : false,
     )
     return Promise.race([
       Promise.all(parts).then((t) => t.every((v) => v)),
@@ -94,7 +92,7 @@ const { Component, schema, mark } = createExerciseType({
         return {
           parts: question.parts.map((q) => ({
             ...q,
-            answer: decrypt(q.answer, import.meta.env.VITE_PASSPHRASE),
+            answer: decrypt(q.answer),
           })),
         }
       }

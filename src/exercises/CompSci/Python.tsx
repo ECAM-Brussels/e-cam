@@ -98,7 +98,7 @@ const { Component, schema } = createExerciseType({
       const patch = state.results
         ? {}
         : {
-            answer: encrypt(state.answer, import.meta.env.VITE_PASSPHRASE),
+            answer: encrypt(state.answer),
             results: await Promise.all(runTests(state.answer, tests)),
           }
       return { attempt: '', ...state, ...patch, tests }
@@ -120,9 +120,7 @@ const { Component, schema } = createExerciseType({
       const results = await Promise.all(tests)
       return {
         results: question.descriptions.map((d, i) => [d, results[i]] as const),
-        answer: remainingAttempts
-          ? undefined
-          : decrypt(question.answer, import.meta.env.VITE_PASSPHRASE),
+        answer: remainingAttempts ? undefined : decrypt(question.answer),
       }
     },
     (props) => (
