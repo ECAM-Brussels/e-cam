@@ -350,10 +350,10 @@ export const getAssignmentList = query(
     return data.map(({ attempts, ...info }) => {
       return {
         ...info,
-        grade: attempts.length || 0,
+        grade: attempts?.length || 0,
         prerequisites: info.prerequisites.map((p) => ({
           ...p,
-          grade: data.filter((r) => r.url === p.url)[0].attempts.length || 0,
+          grade: data.filter((r) => r.url === p.url)[0].attempts?.length ?? 0,
         })),
       }
     })
