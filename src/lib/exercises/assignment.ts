@@ -252,28 +252,30 @@ export const getAssignmentGraph = query(
         where: { code: { in: courses } },
       })
     ).map((course) => ({ data: { id: course.code, label: course.title } }))
-    const data = await prisma.assignment.findMany({
-      where,
-      select: {
-        url: true,
-        title: true,
-        courses: { select: { code: true } },
-        requiredBy: { select: { url: true } },
-        attempts: user
-          ? {
-              select: { correct: true },
-              where: { email: user.email, correct: { not: null } },
-              orderBy: { position: 'desc' },
-              take: 10,
-            }
-          : false,
-      },
-    })
+    const data = (
+      await prisma.assignment.findMany({
+        where,
+        select: {
+          url: true,
+          title: true,
+          courses: { select: { code: true } },
+          requiredBy: { select: { url: true } },
+          attempts: user
+            ? {
+                select: { correct: true },
+                where: { email: user.email, correct: { not: null } },
+                orderBy: { position: 'desc' },
+                take: 10,
+              }
+            : false,
+        },
+      })
+    ).map(({ courses, ...info }) => ({ ...info, courses: courses.map((r) => r.code) }))
     const vertices = data.map((assignment) => ({
       data: {
         id: assignment.url,
         label: assignment.title,
-        parent: assignment.courses.filter((c) => courses.includes(c.code)).at(0)?.code ?? undefined,
+        parent: courses.filter((c) => assignment.courses.includes(c)).at(0),
         color: gradeToColor(
           assignment.attempts?.filter((a) => a.correct).length ?? 0,
           assignment.attempts?.filter((a) => a.correct === false).length ?? 0,
