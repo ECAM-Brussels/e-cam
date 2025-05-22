@@ -1,5 +1,6 @@
 import strawberry
 import sympy
+import textwrap
 from typing import Optional
 
 from symapi.core import Math
@@ -9,11 +10,11 @@ from symapi.core import Math
 class Expression:
     expr: Math = strawberry.field(description="Current mathematical expression")
 
-    @strawberry.field
+    @strawberry.field(description="Absolute value (or modulus for a complex number)")
     def abs(self) -> "Expression":
         return Expression(expr=sympy.Abs(self.expr))
 
-    @strawberry.field
+    @strawberry.field(description="Argument for a complex number")
     def arg(self) -> "Expression":
         a, b = self.expr.as_real_imag()
         if a == 0:
@@ -26,7 +27,7 @@ class Expression:
             theta -= sympy.pi
         return Expression(expr=theta)
 
-    @strawberry.field
+    @strawberry.field(description="Express a quadratic equation as a perfect square")
     def complete_square(self, x: Optional[Math] = sympy.Symbol("x")) -> "Expression":
         a, alpha, beta = sympy.symbols("a alpha beta")
         answer = a * (x - alpha) ** 2 + beta
@@ -35,11 +36,11 @@ class Expression:
         subs = sympy.solve(system)[0]
         return Expression(expr=answer.subs(subs))
 
-    @strawberry.field
+    @strawberry.field(description="Count how many times an expression appears")
     def count(self, expr: Math) -> int:
         return self.expr.count(expr)
 
-    @strawberry.field
+    @strawberry.field(description="Differentiate n times with respect to a given variable")
     def diff(self, x: Math = sympy.Symbol("x"), n: int = 1) -> "Expression":
         expr = self.expr.replace(
             lambda expr: expr.is_Function
@@ -49,11 +50,11 @@ class Expression:
         )
         return Expression(expr=sympy.diff(expr, x, n))
 
-    @strawberry.field(description="Expand")
+    @strawberry.field(description="Expand an expression")
     def expand(self) -> "Expression":
         return Expression(expr=sympy.expand(self.expr))
 
-    @strawberry.field
+    @strawberry.field(description="Write a complex number under the a + bi form")
     def expand_complex(self) -> "Expression":
         return Expression(expr=sympy.expand_complex(self.expr))
 
@@ -61,15 +62,15 @@ class Expression:
     def evalf(self, precision: int = 15) -> "Expression":
         return Expression(expr=sympy.N(self.expr, precision))
 
-    @strawberry.field(description="Factor")
+    @strawberry.field(description="Factor an expression")
     def factor(self) -> "Expression":
         return Expression(expr=sympy.factor(self.expr))
     
-    @strawberry.field(description="Get element with a particular index")
+    @strawberry.field(description="Get element with a particular index from a list")
     def index(self, i: int) -> "Expression":
         return Expression(expr=list(self.expr)[i])
 
-    @strawberry.field
+    @strawberry.field(description="Check whether the difference between the current expression and `expr` is sufficiently small")
     def is_approximately_equal(self, expr: Math, error: float) -> bool:
         return bool(sympy.N(sympy.Abs(self.expr - expr)) <= error)
 
@@ -110,7 +111,10 @@ class Expression:
             return False
         return True
 
-    @strawberry.field
+    @strawberry.field(description=textwrap.dedent("""
+        Check if the current expression (a mathematical set, as given by `solveset` for example)
+        is equal to a given list after it is converted to a set.
+    """))
     def is_set_equal(self, items: list[Math]) -> bool:
         def sanitize(expr):
             if isinstance(expr, sympy.Tuple):
@@ -125,7 +129,7 @@ class Expression:
             == sympy.S.EmptySet
         )
 
-    @strawberry.field(description="Check if fully expanded")
+    @strawberry.field(description="Check if the current expression is fully expanded")
     def is_expanded(self) -> bool:
         expr = self.expr
         if expr.func != sympy.Add:
@@ -143,7 +147,7 @@ class Expression:
                 return False
         return True
 
-    @strawberry.field(description="Check if fully factored")
+    @strawberry.field(description="Check if the current expression is fully factored")
     def is_factored(self) -> bool:
         expr = self.expr
         if expr.func != sympy.Mul:
@@ -162,19 +166,19 @@ class Expression:
                 return False
         return True
 
-    @strawberry.field(description="Check if numeric")
+    @strawberry.field(description="Check if the current expression is a float or an int")
     def is_numeric(self) -> bool:
         return isinstance(self.expr, (sympy.Float, sympy.Integer))
 
-    @strawberry.field
+    @strawberry.field(description="Evaluate the limit of the current expression at `x` = `x0`")
     def limit(self, x0: Math, x: Optional[Math] = sympy.Symbol("x")) -> "Expression":
         return Expression(expr=sympy.limit(self.expr, x, x0))
 
-    @strawberry.field
+    @strawberry.field(description="Transform the current expression into a list of expressions.")
     def list(self) -> list["Expression"]:
         return [Expression(expr=item) for item in list(self.expr)]
 
-    @strawberry.field
+    @strawberry.field(description="Multiply a polynomial so that it could be factored without fractions if all its roots are rational.")
     def normalize_roots(self) -> "Expression":
         multiple = 1
         for root in sympy.roots(self.expr, multiple=True):
@@ -185,7 +189,7 @@ class Expression:
     def simplify(self) -> "Expression":
         return Expression(expr=sympy.simplify(self.expr))
 
-    @strawberry.field
+    @strawberry.field(description="Get the solution set of an equation, which can be intersected with [`a`, `b`] if necessary")
     def solveset(
         self,
         a: Optional[Math] = None,
