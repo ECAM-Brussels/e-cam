@@ -107,35 +107,47 @@ const { Component, schema } = createExerciseType({
             .transform((set) => product(...set.product)),
         ]),
         X: z.string().array().default(['x']),
-        extra: z.string().or(z.number()).array().array(),
+        extra: z
+          .string()
+          .or(z.number())
+          .array()
+          .array()
+          .transform((coeff) => product(...coeff)),
       }),
     ]),
     generate: async (params) => {
-      'use server'
-      if (params.type === 'polynomial') {
-        let lhs = `(${sample(params.A)})`
-        sample(params.roots)?.forEach((root) => {
-          lhs += `(x - (${root}))`
-        })
-        let rhs = `0`
-        const data = await request(
-          graphql(`
-            query CalculateQuadraticEquation($lhs: Math!, $rhs: Math!) {
-              lhs: expression(expr: $lhs) {
-                normalizeRoots {
-                  expr
-                }
-              }
-              rhs: expression(expr: $rhs) {
-                simplify {
-                  expr
+      const x = sample(params.X)!
+      let [lhs, rhs] = [`(${sample(params.A)})`, '']
+      sample(params.roots)?.forEach((root) => {
+        lhs += `((${x}) - (${root}))`
+      })
+      sample(params.extra)?.forEach((coeff, index) => {
+        rhs += `+ (${coeff})` + (index > 0 ? `(${x})^{${index}}` : '')
+      })
+      const data = await request(
+        graphql(`
+          query CalculateQuadraticEquation($lhs: Math!, $rhs: Math!) {
+            lhs: expression(expr: $lhs) {
+              normalizeRoots {
+                add(expr: $rhs) {
+                  simplify {
+                    expr
+                  }
                 }
               }
             }
-          `),
-          { lhs, rhs },
-        )
-        return { equation: `${data.lhs.normalizeRoots.expr} = ${data.rhs.simplify.expr}` }
+            rhs: expression(expr: $rhs) {
+              simplify {
+                expr
+              }
+            }
+          }
+        `),
+        { lhs, rhs },
+      )
+      return {
+        equation: `${data.lhs.normalizeRoots.add.simplify.expr} = ${data.rhs.simplify.expr}`,
+        x,
       }
     },
   },
