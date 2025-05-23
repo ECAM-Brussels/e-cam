@@ -33,8 +33,9 @@ export const route = {
     if (user) {
       await Promise.all([
         getUserInfo(user.email),
-        getOriginalAssignment(info.url),
-        getExercises(info.url, user.email),
+        getOriginalAssignment(info.url).then(() => {
+          getExercises(info.url, user.email)
+        }),
         getEloDiff(user.email),
         loadBoard(info.url, user.email, `${info.index}`),
         getAssignmentGraph(getGraphQuery(info.url)),
