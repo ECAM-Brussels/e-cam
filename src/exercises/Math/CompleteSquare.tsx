@@ -42,7 +42,7 @@ const { Component, schema } = createExerciseType({
       `),
       { expr: question.expr, attempt: attempt.at(-1) ?? '' },
     )
-    return data.attempt.isEqual && data.attempt.count == 1
+    return data.attempt.isEqual && data.attempt.count === 1
   },
   generator: {
     params: z.object({
