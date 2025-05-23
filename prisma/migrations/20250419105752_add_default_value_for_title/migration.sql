@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE `Course` MODIFY `title` VARCHAR(191) NOT NULL DEFAULT '';
