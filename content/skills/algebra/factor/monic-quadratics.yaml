@@ -8,6 +8,7 @@ courses:
   - PM1C
   - 4MATH5
 options:
+  maxAttempts: 3
   streak: 999
 body:
   - type: Factor
