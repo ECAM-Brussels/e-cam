@@ -33,7 +33,7 @@ class Expression:
 
     @strawberry.field(description="Coefficient of `x`^`n`")
     def coeff(self, x: Math = sympy.Symbol("x"), n: int = 1) -> "Expression":
-        return Expression(expr=self.expr.coeff(x, n))
+        return Expression(expr=sympy.expand(self.expr).coeff(x, n))
 
     @strawberry.field(description="Express a quadratic equation as a perfect square")
     def complete_square(self, x: Optional[Math] = sympy.Symbol("x")) -> "Expression":
@@ -178,6 +178,10 @@ class Expression:
     def is_numeric(self) -> bool:
         return isinstance(self.expr, (sympy.Float, sympy.Integer))
 
+    @strawberry.field(description="")
+    def is_polynomial(self, symbols: list[Math] = []) -> bool:
+        return self.expr.is_polynomial(*symbols)
+
     @strawberry.field(description="Evaluate the limit of the current expression at `x` = `x0`")
     def limit(self, x0: Math, x: Optional[Math] = sympy.Symbol("x")) -> "Expression":
         return Expression(expr=sympy.limit(self.expr, x, x0))
@@ -220,6 +224,14 @@ class Expression:
     @strawberry.field
     def str(self) -> str:
         return str(self.expr)
+
+    @strawberry.field
+    def subs(self, expr: Math, val: Math) -> "Expression":
+        return Expression(expr=self.expr.subs(expr, val))
+
+    @strawberry.field
+    def subs_in(self, expr: Math, var: Math) -> "Expression":
+        return Expression(expr=expr.subs(var, self.expr))
 
     @strawberry.field
     def tangent(
