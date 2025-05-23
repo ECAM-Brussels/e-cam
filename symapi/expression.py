@@ -198,6 +198,10 @@ class Expression:
         return Expression(expr=sympy.expand(multiple * self.expr))
 
     @strawberry.field
+    def opposite(self) -> "Expression":
+        return Expression(expr=sympy.Mul(-1, self.expr))
+
+    @strawberry.field
     def simplify(self) -> "Expression":
         return Expression(expr=sympy.simplify(self.expr))
 
