@@ -77,15 +77,10 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
         </div>
         <div class="h-full max-w-full lg:flex flex-row-reverse gap-8">
           <div class="lg:min-w-72 lg:max-w-80" classList={{ hidden: fullScreen() }}>
-            <Sidebar {...props} elo={user()?.score} eloDiff={eloDiff()} />
+            <Sidebar fullScreen={fullScreen()} {...props} elo={user()?.score} eloDiff={eloDiff()} />
           </div>
           <div class="grow">
-            <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl lg:flex items-center justify-between">
-              {props.children}
-              <Show when={!fullScreen() && props.data.video}>
-                {(src) => <Youtube class="mb-4" src={src()} zoom={0.7} />}
-              </Show>
-            </ErrorBoundary>
+            <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl">{props.children}</ErrorBoundary>
             <div class="h-full border max-w-full relative" ref={boardContainer}>
               <Whiteboard
                 class="bg-white"
@@ -155,10 +150,13 @@ function Elo(props: {
   )
 }
 
-function Sidebar(props: AssignmentProps & { eloDiff: number; elo?: number }) {
+function Sidebar(props: AssignmentProps & { eloDiff: number; elo?: number; fullScreen: boolean }) {
   const graphQuery = () => getGraphQuery(props.url)
   return (
     <>
+      <Show when={!props.fullScreen && props.data.video}>
+        {(src) => <Youtube class="mb-4" src={src()} zoom={0.7} />}
+      </Show>
       <Elo
         class="bg-white border rounded-xl mb-4 p-4 text-xl font-bold"
         elo={props.elo}

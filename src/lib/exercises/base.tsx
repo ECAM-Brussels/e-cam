@@ -135,9 +135,8 @@ export function createExerciseType<
         </form>
         <Show when={props.attempts.length > 0 && question()}>
           <Feedback
-            attempt={props.attempts.at(-1)}
-            correct={props.attempts.at(-1)?.correct ?? false}
-            remainingAttempts={remaining()}
+            attempts={props.attempts}
+            maxAttempts={props.options.maxAttempts}
             getFeedback={getFeedback}
             component={ExerciseFeedback}
             marking={submission.pending}

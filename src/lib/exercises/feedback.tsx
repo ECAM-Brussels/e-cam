@@ -5,23 +5,36 @@ import { Dynamic } from 'solid-js/web'
 import Fa from '~/components/Fa'
 
 export default function Feedback<Q, A, F extends object>(props: {
-  attempt: A
-  correct: boolean
+  attempts: { correct: boolean; attempt: A }[]
+  maxAttempts: number | null
   class?: string
   component?: Component<F>
   marking?: boolean
-  remainingAttempts: true | number
   getFeedback?: (attempts: true | number, question: Q, attempt: A) => Promise<F> | F
   question: Q
 }) {
+  const attempt = () => props.attempts.at(-1)!.attempt
+  const correct = () => props.attempts.at(-1)!.correct
+  const remaining = (offset?: number) => {
+    if (props.attempts.at(-1)?.correct) {
+      return 0
+    }
+    return props.maxAttempts === null
+      ? true
+      : props.maxAttempts - props.attempts.length + (offset ?? 0)
+  }
   const feedback = createAsync(async () =>
-    props.getFeedback?.(props.remainingAttempts, props.question, props.attempt),
+    props.getFeedback?.(remaining(), props.question, attempt()),
   )
   return (
     <div
-      class={props.class ?? `p-2 px-4 rounded-xl border`}
-      classList={{ 'bg-green-50': props.correct, 'bg-red-50': !props.correct }}
+      class={props.class ?? `m-4 p-2 px-4 rounded-xl border`}
+      classList={{ 'bg-green-50': correct(), 'bg-red-50': !correct() }}
     >
+      <p class="text-gray-500">
+        Tentative {props.attempts.length}
+        <Show when={props.maxAttempts !== null}>/{props.maxAttempts}</Show>
+      </p>
       <Show
         when={!props.marking}
         fallback={
@@ -30,19 +43,11 @@ export default function Feedback<Q, A, F extends object>(props: {
           </p>
         }
       >
-        <Show
-          when={props.correct}
-          fallback={
-            <p class="text-red-800 font-bold text-2xl mb-4">
-              <Fa icon={faXmark} /> Pas de chance&nbsp;!
-            </p>
-          }
-        >
+        <Show when={correct()}>
           <p class="text-green-800 font-bold text-2xl mb-4">
             <Fa icon={faCheckCircle} /> Correct&nbsp;!
           </p>
         </Show>
-        <p>Tentatives restantes: {props.remainingAttempts}</p>
         <Show when={props.component}>
           {(Component) => (
             <Show when={feedback()}>
