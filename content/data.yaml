@@ -3,6 +3,12 @@ courses:
     title: Pont mathématique
     image: /images/PM1C.png
     url: /PM1C
+  - code: algebra
+    title: Algèbre
+  - code: calculus
+    title: Analyse
+  - code: geometry
+    title: Géométrie
   - code: 4MATH5
     title: 4ème maths 5
   - code: 5MATH4
