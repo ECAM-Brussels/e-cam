@@ -1,5 +1,6 @@
 import { createAsync, type RouteDefinition } from '@solidjs/router'
 import { For, Show, type JSXElement } from 'solid-js'
+import Graph from '~/components/Graph'
 import Page from '~/components/Page'
 import { getUser } from '~/lib/auth/session'
 import { getAssignmentList } from '~/lib/exercises/assignment'
@@ -14,8 +15,12 @@ export const route = {
 export default function Home() {
   return (
     <Page title="Accueil" class="">
+      <div class="bg-white">
+        <Graph class="container mx-auto h-[600px]" groups={['algebra', 'calculus']} />
+      </div>
       <h2 class="text-4xl font-bold text-slate-800 my-8 container mx-auto">Compétences</h2>
       <Skills title="Algèbre" code="algebra" open />
+      <Skills title="Analyse" code="calculus" open />
     </Page>
   )
 }
