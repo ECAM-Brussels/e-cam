@@ -72,7 +72,7 @@ export default function Math(props: MathProps) {
       fallback={<span innerHTML={html()} class={props.class} />}
     >
       <math-field
-        className={props.class}
+        className={props.class ?? 'border min-w-24 p-2'}
         {...others}
         oninput={(event: MathInputEvent) => {
           extra.onInput?.(event)

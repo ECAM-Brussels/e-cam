@@ -15,9 +15,7 @@ const { Component, schema } = createExerciseType({
         lhs={(props) => (
           <Math class="justify-self-end" value={`${props.i == 0 ? props.value : ''} =`} />
         )}
-        rhs={(props) => (
-          <Math class="border min-w-24 p-2" editable name="attempt" value={props.value} />
-        )}
+        rhs={(props) => <Math editable name="attempt" value={props.value} />}
         values={(props.attempt ?? ['']).map((value) => [props.question.expr, value])}
       />
     </>

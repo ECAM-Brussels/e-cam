@@ -38,7 +38,6 @@ const { Component, schema } = createExerciseType({
               >
                 <Math value={`${props.question.x} =`} />
                 <Math
-                  class="border min-w-24 p-2"
                   editable
                   value={sol}
                   name="attempt"
