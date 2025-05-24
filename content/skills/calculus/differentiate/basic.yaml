@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: "Dérivées directes"
+courses:
+  - calculus
+  - 5MATH4
+  - PM1C
+options:
+  streak: 999
+body:
+  - type: Differentiate
+    params:
+      questions:
+        - x
+        - x^2
+        - x^3
+        - x^4
+        - x^5
+        - x^6
+        - x^7
+        - x^8
+        - x^9
+        - x^{10}
+        - \sqrt{x}
+        - \sqrt{x}
+        - \sqrt{x}
+        - \frac{1}{x}
+        - \frac{1}{x^{2}}
+        - \frac{1}{x^{3}}
+        - \frac{1}{x^{4}}
+        - \frac{1}{x^{5}}
+        - \frac{1}{x^{6}}
+        - \sin{x}
+        - \sin{x}
+        - \sin{x}
+        - \cos{x}
+        - \cos{x}
+        - \cos{x}
+        - e^x
+        - e^x
+        - e^x
+        - 2^x
+        - 3^x
+        - 4^x
+        - \ln{x}
+        - \ln{x}
+        - \ln{x}
+        - \ln{x}
