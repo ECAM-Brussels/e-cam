@@ -1,9 +1,15 @@
+from enum import Enum
 import strawberry
 import sympy
 import textwrap
 from typing import Optional
 
 from symapi.core import Math
+
+@strawberry.enum
+class SortOptions(Enum):
+    abs = sympy.Abs
+    nosort = False
 
 
 @strawberry.type
@@ -187,10 +193,10 @@ class Expression:
         return Expression(expr=sympy.limit(self.expr, x, x0))
 
     @strawberry.field(description="Transform the current expression into a list of expressions.")
-    def list(self, sort: Optional[str] = "") -> list["Expression"]:
+    def list(self, sort: Optional[SortOptions] = SortOptions.nosort) -> list["Expression"]:
         res = list(self.expr)
-        if sort == "abs":
-            res.sort(key=sympy.Abs)
+        if sort != SortOptions.nosort:
+            res.sort(key=sort.value)
         return [Expression(expr=item) for item in res]
 
     @strawberry.field(description="Multiply a polynomial so that it could be factored without fractions if all its roots are rational.")

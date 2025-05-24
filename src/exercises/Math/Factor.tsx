@@ -53,8 +53,6 @@ const { Component, schema } = createExerciseType({
         graphql(`
           query FactorisationFeedback($expr: Math!, $x: Math!, $attempt: Math!) {
             attempt: expression(expr: $attempt) {
-              isFactored
-              isEqual(expr: $expr)
               solveset {
                 list {
                   expr
@@ -74,7 +72,7 @@ const { Component, schema } = createExerciseType({
                 expr
               }
               solveset {
-                list(sort: "abs") {
+                list(sort: abs) {
                   expr
                   opposite {
                     add(expr: $x) {
