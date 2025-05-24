@@ -9,6 +9,7 @@ import { lazy } from 'solid-js'
 import { z } from 'zod'
 import { schema as PythonSchema } from '~/exercises/CompSci/Python'
 import { schema as CompleteSquareSchema } from '~/exercises/Math/CompleteSquare'
+import { schema as DifferentiateSchema } from '~/exercises/Math/Differentiate'
 import { schema as EquationSchema } from '~/exercises/Math/Equation'
 import { schema as ExpandSchema } from '~/exercises/Math/Expand'
 import { schema as FactorSchema } from '~/exercises/Math/Factor'
@@ -20,6 +21,7 @@ import { registerAssignment } from '~/vite/assignments'
 export const exercises = {
   Python: lazy(() => import('~/exercises/CompSci/Python')),
   CompleteSquare: lazy(() => import('~/exercises/Math/CompleteSquare')),
+  Differentiate: lazy(() => import('~/exercises/Math/Differentiate')),
   Equation: lazy(() => import('~/exercises/Math/Equation')),
   Expand: lazy(() => import('~/exercises/Math/Expand')),
   Factor: lazy(() => import('~/exercises/Math/Factor')),
@@ -30,6 +32,7 @@ export const exercises = {
 export const exerciseSchema = z.discriminatedUnion('type', [
   PythonSchema,
   CompleteSquareSchema,
+  DifferentiateSchema,
   EquationSchema,
   ExpandSchema,
   FactorSchema,
