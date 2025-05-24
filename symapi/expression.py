@@ -187,8 +187,11 @@ class Expression:
         return Expression(expr=sympy.limit(self.expr, x, x0))
 
     @strawberry.field(description="Transform the current expression into a list of expressions.")
-    def list(self) -> list["Expression"]:
-        return [Expression(expr=item) for item in list(self.expr)]
+    def list(self, sort: Optional[str] = "") -> list["Expression"]:
+        res = list(self.expr)
+        if sort == "abs":
+            res.sort(key=sympy.Abs)
+        return [Expression(expr=item) for item in res]
 
     @strawberry.field(description="Multiply a polynomial so that it could be factored without fractions if all its roots are rational.")
     def normalize_roots(self) -> "Expression":

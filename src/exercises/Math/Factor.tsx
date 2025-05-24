@@ -74,7 +74,7 @@ const { Component, schema } = createExerciseType({
                 expr
               }
               solveset {
-                list {
+                list(sort: "abs") {
                   expr
                   opposite {
                     add(expr: $x) {
