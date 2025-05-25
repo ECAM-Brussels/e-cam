@@ -23,11 +23,16 @@ export default function Slideshow(props: SlideshowProps) {
   let container!: HTMLDivElement
 
   const [scale, setScale] = createSignal(1)
+  const [translation, setTranslation] = createSignal('0, 0')
   onMount(() => {
     const observer = new ResizeObserver((_entries) => {
       const scaleX = container.clientWidth / 1920
       const scaleY = container.clientHeight / 1080
-      setScale(Math.min(scaleX, scaleY))
+      const scale = Math.min(scaleX, scaleY)
+      setScale(scale)
+      const x = (container.clientWidth - 1920 * scale) / 2
+      const y = (container.clientHeight - 1080 * scale) / 2
+      setTranslation(`${x}px, ${y}px`)
     })
     observer.observe(container)
   })
@@ -35,8 +40,8 @@ export default function Slideshow(props: SlideshowProps) {
   return (
     <div class="w-screen h-screen" ref={container!}>
       <div
-        class="bg-white w-[1920px] h-[1080px] relative origin-top-left"
-        style={{ scale: scale() }}
+        class="bg-white w-[1920px] h-[1080px] relative origin-top-left overflow-hidden"
+        style={{ transform: `scale(${scale()}) translate(${translation()})` }}
       >
         {props.slides[props.hIndex]}
         <Whiteboard
