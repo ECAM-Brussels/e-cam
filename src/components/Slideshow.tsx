@@ -6,7 +6,7 @@ import {
   faChevronUp,
 } from '@fortawesome/free-solid-svg-icons'
 import { A, createAsync } from '@solidjs/router'
-import { Show, type JSXElement } from 'solid-js'
+import { createSignal, onMount, Show, type JSXElement } from 'solid-js'
 import Fa from '~/components/Fa'
 import Whiteboard from '~/components/Whiteboard'
 import { getBoardCount } from '~/lib/slideshow'
@@ -20,19 +20,37 @@ type SlideshowProps = {
 }
 
 export default function Slideshow(props: SlideshowProps) {
+  let container!: HTMLDivElement
+
+  const [scale, setScale] = createSignal(1)
+  onMount(() => {
+    const observer = new ResizeObserver((_entries) => {
+      const scaleX = container.clientWidth / 1920
+      const scaleY = container.clientHeight / 1080
+      setScale(Math.min(scaleX, scaleY))
+    })
+    observer.observe(container)
+  })
+
   return (
-    <div class="bg-white w-[1920px] h-[1080px] mx-auto relative">
-      {props.slides[props.hIndex]}
-      <Whiteboard
-        class="absolute top-0 z-10"
-        width={1920}
-        height={1080}
-        toolbarPosition="bottom"
-        owner="ngy@ecam.be"
-        url={props.url}
-        name={`${props.board}-${props.hIndex}-${props.vIndex}`}
-      />
-      <Remote {...props} />
+    <div class="w-screen h-screen" ref={container!}>
+      <div
+        class="bg-white w-[1920px] h-[1080px] relative origin-top-left"
+        style={{ scale: scale() }}
+      >
+        {props.slides[props.hIndex]}
+        <Whiteboard
+          class="absolute top-0 z-10"
+          width={1920}
+          height={1080}
+          toolbarPosition="bottom"
+          owner="ngy@ecam.be"
+          url={props.url}
+          name={`${props.board}-${props.hIndex}-${props.vIndex}`}
+          scale
+        />
+        <Remote {...props} />
+      </div>
     </div>
   )
 }
