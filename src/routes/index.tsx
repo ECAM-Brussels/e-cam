@@ -2,7 +2,7 @@ import { createAsync, type RouteDefinition } from '@solidjs/router'
 import { createSignal, For, Show, type JSXElement } from 'solid-js'
 import Graph from '~/components/Graph'
 import Page from '~/components/Page'
-import { getSession, getUser } from '~/lib/auth/session'
+import { getUser } from '~/lib/auth/session'
 import { getAssignmentList } from '~/lib/exercises/assignment'
 
 export const route = {
