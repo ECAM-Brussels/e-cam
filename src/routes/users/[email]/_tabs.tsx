@@ -6,7 +6,8 @@ export default function UserTabs() {
   return (
     <Tabs
       links={[
-        { href: `/users/${params.email}`, children: 'Profil' },
+        { href: `/users/${params.email}`, children: '???' },
+        { href: `/users/${params.email}/profile`, children: 'Profil' },
         { href: `/users/${params.email}/graph`, children: 'Graphe' },
         { href: `/users/${params.email}/elo`, children: 'ELO' },
       ]}
