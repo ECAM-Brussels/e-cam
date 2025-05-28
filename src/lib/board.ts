@@ -1,61 +1,64 @@
 import { getBoardCount } from './slideshow'
 import { query, action, reload } from '@solidjs/router'
+import { z } from 'zod'
 import { getUser } from '~/lib/auth/session'
 import { prisma } from '~/lib/db'
 
-export type Stroke = {
-  id?: string
-  color: string
-  lineWidth: number
-  points: [number, number][]
-}
-
-async function check(owner: string) {
-  const user = await getUser()
-  if (!user || (user.email !== owner && user.role !== 'ADMIN')) {
-    throw new Error('You do not have the rights to edit that board')
-  }
-}
-
-export const loadBoard = query(
-  async (url: string, ownerEmail: string, name: string): Promise<Stroke[]> => {
-    'use server'
-    return await prisma.stroke.findMany({ where: { url, ownerEmail, board: name } })
-  },
-  'loadBoard',
-)
-
-export const addStroke = action(
-  async (url: string, ownerEmail: string, board: string, stroke: Stroke) => {
-    'use server'
-    await check(ownerEmail)
-    await prisma.stroke.create({
-      data: { url, ownerEmail, board, ...stroke },
-    })
-    const { _count: count } = await prisma.stroke.aggregate({
-      where: { url, ownerEmail, board },
-      _count: { id: true },
-    })
-    const revalidate: string[] = [loadBoard.keyFor(url, ownerEmail, board)]
-    if (count.id === 1) {
-      revalidate.push(getBoardCount.key)
+const owner = z
+  .string()
+  .email()
+  .transform(async (owner) => {
+    const user = await getUser()
+    if (!user || (user.email !== owner && user.role !== 'ADMIN')) {
+      throw new Error('You do not have the rights to edit that board')
     }
-    return reload({ revalidate })
-  },
-)
+    return owner
+  })
+const stroke = z.object({
+  id: z.string().optional(),
+  color: z.string(),
+  lineWidth: z.number(),
+  points: z.tuple([z.number(), z.number()]).array(),
+})
+export type Stroke = z.infer<typeof stroke>
 
-export const removeStroke = action(
-  async (url: string, ownerEmail: string, board: string, id: string) => {
-    'use server'
-    await check(ownerEmail)
-    await prisma.stroke.delete({ where: { url, board, ownerEmail, id } })
-    return reload({ revalidate: loadBoard.keyFor(url, ownerEmail, board) })
-  },
-)
-
-export const clearBoard = action(async (url: string, ownerEmail: string, board: string) => {
+const loadBoardInput = z.tuple([z.string(), z.string().email(), z.string()])
+export const loadBoard = query(async (...params: z.input<typeof loadBoardInput>) => {
   'use server'
-  await check(ownerEmail)
+  const [url, ownerEmail, board] = loadBoardInput.parse(params)
+  return await prisma.stroke.findMany({ where: { url, ownerEmail, board } })
+}, 'loadBoard')
+
+const addStrokeInput = z.tuple([z.string(), owner, z.string(), stroke])
+export const addStroke = action(async (...params: z.input<typeof addStrokeInput>) => {
+  'use server'
+  const [url, ownerEmail, board, stroke] = await addStrokeInput.parseAsync(params)
+  await prisma.stroke.create({
+    data: { url, ownerEmail, board, ...stroke },
+  })
+  const { _count: count } = await prisma.stroke.aggregate({
+    where: { url, ownerEmail, board },
+    _count: { id: true },
+  })
+  const revalidate: string[] = [loadBoard.keyFor(url, ownerEmail, board)]
+  if (count.id === 1) {
+    revalidate.push(getBoardCount.key)
+  }
+  return reload({ revalidate })
+})
+
+const removeStrokeInput = z.tuple([z.string(), owner, z.string(), z.string()])
+export const removeStroke = action(async (...params: z.input<typeof removeStrokeInput>) => {
+  'use server'
+  const [url, ownerEmail, board, id] = await removeStrokeInput.parseAsync(params)
+  await prisma.stroke.delete({ where: { url, board, ownerEmail, id } })
+  return reload({ revalidate: loadBoard.keyFor(url, ownerEmail, board) })
+})
+
+const clearBoardInput = z.tuple([z.string(), owner, z.string()])
+export const clearBoard = action(async (...params: z.input<typeof clearBoardInput>) => {
+  'use server'
+  const [url, ownerEmail, board] = await clearBoardInput.parseAsync(params)
   await prisma.stroke.deleteMany({ where: { url, ownerEmail, board } })
   return reload({ revalidate: loadBoard.keyFor(url, ownerEmail, board) })
 })
