@@ -68,7 +68,7 @@ export type AssignmentInput = z.input<typeof assignmentSchema>
 async function check(email: string) {
   'use server'
   const user = await getUser()
-  if (!user || (!user.admin && user.email !== email)) {
+  if (!user || (user.role !== 'ADMIN' && user.email !== email)) {
     throw new Error('Not Authorized')
   }
 }

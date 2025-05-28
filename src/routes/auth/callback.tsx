@@ -32,7 +32,7 @@ export async function GET(event: APIEvent) {
     where: { email: userInfo.email },
     update: {},
     create: {
-      admin: /^[a-zA-Z][a-zA-Z0-9]{2}@/.test(userInfo.email),
+      role: /^[a-zA-Z][a-zA-Z0-9]{2}@/.test(userInfo.email) ? 'TEACHER' : 'STUDENT',
       email: userInfo.email,
       firstName: userInfo.given_name,
       lastName: userInfo.family_name,

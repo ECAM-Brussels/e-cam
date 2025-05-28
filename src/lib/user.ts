@@ -14,7 +14,7 @@ export const getUserInfo = query(async (email?: string) => {
   if (!user) {
     throw new Error('You need to be logged in')
   }
-  if (!user.admin && user.email != email) {
+  if (user.role !== 'ADMIN' && user.email != email) {
     throw new Error('You do not have the rights to see this')
   }
   return record

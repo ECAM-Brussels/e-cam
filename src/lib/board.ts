@@ -12,7 +12,7 @@ export type Stroke = {
 
 async function check(owner: string) {
   const user = await getUser()
-  if (!user || (user.email !== owner && !user.admin)) {
+  if (!user || (user.email !== owner && user.role !== 'ADMIN')) {
     throw new Error('You do not have the rights to edit that board')
   }
 }

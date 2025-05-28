@@ -111,7 +111,9 @@ export default function Code(props: CodeProps) {
       </Show>
       <Show when={fragments().length > 1}>
         <Show
-          when={user()?.admin || !props.hideUntil || now() >= new Date(props.hideUntil)}
+          when={
+            user()?.role === 'TEACHER' || !props.hideUntil || now() >= new Date(props.hideUntil)
+          }
           fallback={
             <p class="text-sm">
               Solution available in {formatDistance(now(), new Date(props.hideUntil!))}
