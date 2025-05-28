@@ -1,16 +1,19 @@
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
-import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import { createAsync, useLocation } from '@solidjs/router'
-import { Show, type JSXElement } from 'solid-js'
+import { createSignal, Show, type JSXElement } from 'solid-js'
+import { Portal } from 'solid-js/web'
 import Fa from '~/components/Fa'
 import { getUser, logout, startLogin } from '~/lib/auth/session'
 
 export default function Navbar() {
+  const [showSidebar, setShowSidebar] = createSignal(false)
   return (
     <NavbarShell>
       <Logo />
       <Links />
-      <UserInfo />
+      <UserInfo onBurgerClick={() => setShowSidebar(!showSidebar())} />
+      <Drawer visible={showSidebar()} onOutsideClick={() => setShowSidebar(false)} />
     </NavbarShell>
   )
 }
@@ -35,7 +38,7 @@ const Links = () => (
   </ul>
 )
 
-function UserInfo() {
+function UserInfo(props: { onBurgerClick: () => void }) {
   const user = createAsync(() => getUser())
   return (
     <ul class="flex items-center">
@@ -65,6 +68,9 @@ function UserInfo() {
       <NavbarItem href="https://github.com/ECAM-Brussels/e-cam" class="text-xl text-gray-400">
         <Fa icon={faGithub} />
       </NavbarItem>
+      <button onclick={props.onBurgerClick}>
+        <Fa icon={faBars} />
+      </button>
     </ul>
   )
 }
@@ -97,9 +103,9 @@ function NavbarItem(props: NavbarItemProps) {
         <a
           class={classes()}
           classList={{
-            'hover:text-blue-700': props.href ? true : false,
+            'hover:text-blue-800': props.href ? true : false,
             'hover:border-b-4': props.underline,
-            'hover:border-blue-700': props.underline,
+            'hover:border-blue-800': props.underline,
             'border-b-4': props.underline,
             'border-slate-400': props.underline && location.pathname.startsWith(props.href || ''),
             'border-white': props.underline && !location.pathname.startsWith(props.href || ''),
@@ -110,5 +116,20 @@ function NavbarItem(props: NavbarItemProps) {
         </a>
       </Show>
     </li>
+  )
+}
+
+function Drawer(props: { visible?: boolean; onOutsideClick?: () => void }) {
+  return (
+    <Portal>
+      <div
+        class="absolute left-0 top-0 z-10 h-screen w-full flex"
+        classList={{ hidden: !props.visible }}
+        onClick={props.onOutsideClick}
+      >
+        <div class="h-full w-96 bg-white shadow-xl opacity-100"></div>
+        <div class="bg-black h-screen w-full opacity-20" />
+      </div>
+    </Portal>
   )
 }
