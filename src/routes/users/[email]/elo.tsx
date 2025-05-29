@@ -2,11 +2,13 @@ import UserTabs from './_tabs'
 import { createAsyncStore, type RouteDefinition, useParams } from '@solidjs/router'
 import Page from '~/components/Page'
 import Table from '~/components/Table'
+import { getUser } from '~/lib/auth/session'
 import { getUserAttempts } from '~/lib/exercises/attempt'
 import { getUserInfo } from '~/lib/user'
 
 export const route = {
   preload({ params }) {
+    getUser()
     getUserInfo(params.email)
     getUserAttempts(params.email)
   },

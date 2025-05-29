@@ -1,8 +1,16 @@
 import UserTabs from './_tabs'
-import { createAsyncStore, useParams } from '@solidjs/router'
+import { createAsyncStore, type RouteDefinition, useParams } from '@solidjs/router'
 import { type JSX } from 'solid-js'
 import Page from '~/components/Page'
+import { getUser } from '~/lib/auth/session'
 import { getUserInfo } from '~/lib/user'
+
+export const route = {
+  preload({ params }) {
+    getUser()
+    getUserInfo(params.email)
+  },
+} satisfies RouteDefinition
 
 export default function () {
   const params = useParams()

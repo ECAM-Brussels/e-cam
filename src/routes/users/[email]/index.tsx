@@ -1,9 +1,19 @@
 import UserTabs from './_tabs'
-import { createAsyncStore, useParams } from '@solidjs/router'
+import { createAsyncStore, type RouteDefinition, useParams } from '@solidjs/router'
 import { Suspense } from 'solid-js'
 import AssignmentTable from '~/components/AssignmentTable'
 import Page from '~/components/Page'
+import { getUser } from '~/lib/auth/session'
+import { getAssignmentList } from '~/lib/exercises/assignment'
 import { getUserInfo } from '~/lib/user'
+
+export const route = {
+  preload({ params }) {
+    getUser()
+    getUserInfo(params.email)
+    getAssignmentList()
+  },
+} satisfies RouteDefinition
 
 export default function () {
   const params = useParams()

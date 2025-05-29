@@ -1,8 +1,17 @@
 import UserTabs from './_tabs'
-import { action } from '@solidjs/router'
+import { action, RouteDefinition } from '@solidjs/router'
 import { createSignal, For } from 'solid-js'
 import Graph from '~/components/Graph'
 import Page from '~/components/Page'
+import { getUser } from '~/lib/auth/session'
+import { getAssignmentGraph } from '~/lib/exercises/assignment'
+
+export const route = {
+  preload() {
+    getUser()
+    getAssignmentGraph(undefined, [])
+  },
+} satisfies RouteDefinition
 
 const grouping = [
   { label: 'Ne pas grouper', groups: [] },
