@@ -92,7 +92,10 @@ export default function Whiteboard(props: WhiteboardProps) {
     lineWidth: 2,
     points: [],
   })
-  const filter = () => (b: Board) => hashObject(b) === hashObject(board())
+  const filter =
+    () =>
+    ([b]: [Board]) =>
+      hashObject(b) === hashObject(board())
   const adding = useSubmissions(addStroke, filter())
   const removing = useSubmissions(removeStroke, filter())
   const clearing = useSubmissions(clearBoard, filter())
