@@ -62,7 +62,7 @@ export default function Slideshow(props: SlideshowProps) {
 
 function Remote(props: SlideshowProps) {
   return (
-    <div class="absolute bottom-4 right-4 text-4xl z-20 flex gap-4 items-center">
+    <div class="absolute bottom-4 right-4 text-4xl z-20 flex gap-4 items-center print:hidden">
       <Arrow {...props} dir="left" />
       <div class="flex flex-col">
         <Arrow {...props} dir="up" />

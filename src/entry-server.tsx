@@ -10,7 +10,7 @@ export default createHandler(() => (
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           {assets}
         </head>
-        <body id="app" class="bg-slate-50">
+        <body id="app" class="bg-slate-50 print:bg-white">
           {children}
           {scripts}
         </body>
