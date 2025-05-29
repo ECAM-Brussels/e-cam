@@ -15,13 +15,11 @@ async function generatePage(file: string) {
   }
   mkdirSync(dirname(outputPath), { recursive: true })
 
-  const metaFile = `${outputPath}.json`
   let template
   try {
-    await exec(`pandoc "${file}" -t html5 -o "${metaFile}" --template src/vite/template.json.txt`)
-    const meta = JSON.parse(readFileSync(metaFile, 'utf-8'))
-    template = meta.slideshow ? 'template.slideshow.tsx' : 'template.tsx'
-    if (meta.slideshow) {
+    const slideshow = readFileSync(file, 'utf-8').includes('slideshow: true')
+    template = slideshow ? 'template.slideshow.tsx' : 'template.tsx'
+    if (slideshow) {
       outputPath = outputPath.replace('.tsx', '/[[slide]]/[[board]].tsx')
       mkdirSync(dirname(outputPath), { recursive: true })
     }
