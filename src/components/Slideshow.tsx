@@ -74,12 +74,12 @@ function Remote(props: SlideshowProps) {
 }
 
 const arrows = {
-  up: [faChevronUp, (i, j) => [i, j - 1]],
-  down: [faChevronDown, (i, j) => [i, j + 1]],
-  left: [faChevronLeft, (i, _j) => [i - 1, 1]],
-  right: [faChevronRight, (i, _j) => [i + 1, 1]],
+  up: [faChevronUp, (i, j) => [i, j - 1], 'ArrowUp'],
+  down: [faChevronDown, (i, j) => [i, j + 1], 'ArrowDown'],
+  left: [faChevronLeft, (i, _j) => [i - 1, 1], 'ArrowLeft'],
+  right: [faChevronRight, (i, _j) => [i + 1, 1], 'ArrowRight'],
 } as const satisfies {
-  [dir: string]: [IconDefinition, (i: number, j: number) => [number, number]]
+  [dir: string]: [IconDefinition, (i: number, j: number) => [number, number], string]
 }
 
 function Arrow(props: SlideshowProps & { dir: keyof typeof arrows }) {
@@ -97,11 +97,21 @@ function Arrow(props: SlideshowProps & { dir: keyof typeof arrows }) {
       ? `${props.url}/${i}/${j}`
       : null
   }
+
+  let arrow!: HTMLAnchorElement
+  onMount(() => {
+    window.addEventListener('keydown', (event) => {
+      if (event.key === arrows[props.dir][2]) {
+        arrow.click()
+      }
+    })
+  })
+
   return (
     <div>
       <Show when={link()} fallback={<Fa icon={icon()} class="text-gray-200" />}>
         {(link) => (
-          <A href={link()} noScroll>
+          <A href={link()} noScroll ref={arrow}>
             <Fa icon={icon()} />
           </A>
         )}
