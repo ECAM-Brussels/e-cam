@@ -1,5 +1,6 @@
 import UserTabs from './_tabs'
 import { createAsyncStore, type RouteDefinition, useParams } from '@solidjs/router'
+import { Show } from 'solid-js'
 import Page from '~/components/Page'
 import Table from '~/components/Table'
 import { getUser } from '~/lib/auth/session'
@@ -17,7 +18,7 @@ export const route = {
 export default function () {
   const params = useParams()
   const user = createAsyncStore(() => getUserInfo(params.email))
-  const attempts = createAsyncStore(() => getUserAttempts(params.email), { initialValue: [] })
+  const attempts = createAsyncStore(() => getUserAttempts(params.email))
   return (
     <Page title={`ELO score`}>
       <UserTabs />
@@ -25,14 +26,18 @@ export default function () {
         <h1 class="font-bold text-3xl my-8">
           {user()?.lastName}, {user()?.firstName}
         </h1>
-        <Table
-          columns={[
-            { header: "Type d'exercice", accessorFn: (row) => row.exercise.type },
-            { header: 'Date', accessorFn: (row) => row.lastModified },
-            { header: 'Gain', accessorKey: 'gain' },
-          ]}
-          data={attempts()}
-        />
+        <Show when={attempts()}>
+          {(attempts) => (
+            <Table
+              columns={[
+                { header: "Type d'exercice", accessorFn: (row) => row.exercise.type },
+                { header: 'Date', accessorFn: (row) => row.lastModified },
+                { header: 'Gain', accessorKey: 'gain' },
+              ]}
+              data={attempts()}
+            />
+          )}
+        </Show>
       </section>
     </Page>
   )
