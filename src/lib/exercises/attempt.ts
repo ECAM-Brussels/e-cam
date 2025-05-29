@@ -4,9 +4,9 @@ import { prisma } from '~/lib/db'
 export const getUserAttempts = query(async (email: string) => {
   'use server'
   const data = await prisma.attempt.findMany({
-    where: { email },
+    where: { email, correct: { not: null } },
     orderBy: { date: 'desc' },
-    include: { question: true },
+    include: { question: true, assignment: true },
   })
   return data
 }, 'getUserAttempts')

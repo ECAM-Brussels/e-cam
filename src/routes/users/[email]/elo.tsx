@@ -1,5 +1,7 @@
 import UserTabs from './_tabs'
 import { createAsyncStore, type RouteDefinition, useParams } from '@solidjs/router'
+import { formatDistance } from 'date-fns'
+import { fr } from 'date-fns/locale'
 import { Show } from 'solid-js'
 import Page from '~/components/Page'
 import Table from '~/components/Table'
@@ -30,9 +32,40 @@ export default function () {
           {(attempts) => (
             <Table
               columns={[
-                { header: "Type d'exercice", accessorFn: (row) => row.exercise.type },
-                { header: 'Date', accessorFn: (row) => row.lastModified },
-                { header: 'Gain', accessorKey: 'gain' },
+                {
+                  header: 'Page',
+                  accessorFn: (row) => row.assignment.title,
+                  cell: (info) => (
+                    <a href={info.row.original.url}>{info.row.original.assignment.title}</a>
+                  ),
+                },
+                {
+                  header: 'Date',
+                  accessorFn: (row) => row.lastModified,
+                  cell: (info) => (
+                    <>
+                      {formatDistance(info.row.original.lastModified, new Date(), {
+                        addSuffix: true,
+                        locale: fr,
+                      })}
+                    </>
+                  ),
+                },
+                {
+                  header: 'Gain',
+                  accessorKey: 'gain',
+                  cell: (info) => (
+                    <div
+                      class="text-center rounded font-bold"
+                      classList={{
+                        'bg-green-800 text-green-50': info.row.original.gain > 0,
+                        'bg-red-800 text-red-50': info.row.original.gain < 0,
+                      }}
+                    >
+                      {info.row.original.gain}
+                    </div>
+                  ),
+                },
               ]}
               data={attempts()}
             />
