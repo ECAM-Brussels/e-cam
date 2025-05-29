@@ -37,7 +37,7 @@ export const route = {
           getExercises(info.url, user.email)
         }),
         getEloDiff(user.email),
-        loadBoard(info.url, user.email, `${info.index}`),
+        loadBoard({ url: info.url, ownerEmail: user.email, board: `${info.index}` }),
         getAssignmentGraph(getGraphQuery(info.url)),
       ])
     }

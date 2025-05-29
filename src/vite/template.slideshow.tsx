@@ -26,11 +26,11 @@ export const route = {
     const u = url(location.pathname, [params.board, params.slide])
     await Promise.all([
       getBoardCount(u, 'ngy@ecam.be', '', index.parse(params.slide)),
-      loadBoard(
-        u,
-        'ngy@ecam.be',
-        '-' + index.parse(params.slide) + '-' + index.parse(params.board),
-      ),
+      loadBoard({
+        url: u,
+        ownerEmail: 'ngy@ecam.be',
+        board: '-' + index.parse(params.slide) + '-' + index.parse(params.board),
+      }),
     ])
   },
 } satisfies RouteDefinition

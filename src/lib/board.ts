@@ -4,61 +4,61 @@ import { z } from 'zod'
 import { getUser } from '~/lib/auth/session'
 import { prisma } from '~/lib/db'
 
-const owner = z
-  .string()
-  .email()
-  .transform(async (owner) => {
-    const user = await getUser()
-    if (!user || (user.email !== owner && user.role !== 'ADMIN')) {
-      throw new Error('You do not have the rights to edit that board')
-    }
-    return owner
-  })
-const stroke = z.object({
+async function check<T extends { ownerEmail: string }>(data: T) {
+  'use server'
+  const user = await getUser()
+  if (!user || (user.email !== data.ownerEmail && user.role !== 'ADMIN')) {
+    throw new Error('You do not have the rights to edit that board')
+  }
+  return data
+}
+
+const strokeSchema = z.object({
   id: z.string().optional(),
   color: z.string(),
   lineWidth: z.number(),
   points: z.tuple([z.number(), z.number()]).array(),
 })
-export type Stroke = z.infer<typeof stroke>
+const boardSchema = z.object({
+  url: z.string(),
+  ownerEmail: z.string().email(),
+  board: z.string(),
+})
+const writeBoard = boardSchema.transform(check)
 
-const loadBoardInput = z.tuple([z.string(), z.string().email(), z.string()])
-export const loadBoard = query(async (...params: z.input<typeof loadBoardInput>) => {
+export type Stroke = z.infer<typeof strokeSchema>
+export type Board = z.input<typeof boardSchema>
+
+export const loadBoard = query(async (board: Board) => {
   'use server'
-  const [url, ownerEmail, board] = loadBoardInput.parse(params)
-  return await prisma.stroke.findMany({ where: { url, ownerEmail, board } })
+  const where = await boardSchema.parseAsync(board)
+  const data = await prisma.stroke.findMany({ where })
+  return data
 }, 'loadBoard')
 
-const addStrokeInput = z.tuple([z.string(), owner, z.string(), stroke])
-export const addStroke = action(async (...params: z.input<typeof addStrokeInput>) => {
+export const addStroke = action(async (board: Board, stroke: Stroke) => {
   'use server'
-  const [url, ownerEmail, board, stroke] = await addStrokeInput.parseAsync(params)
-  await prisma.stroke.create({
-    data: { url, ownerEmail, board, ...stroke },
-  })
-  const { _count: count } = await prisma.stroke.aggregate({
-    where: { url, ownerEmail, board },
-    _count: { id: true },
-  })
-  const revalidate: string[] = [loadBoard.keyFor(url, ownerEmail, board)]
+  const where = await writeBoard.parseAsync(board)
+  stroke = strokeSchema.parse(stroke)
+  await prisma.stroke.create({ data: { ...where, ...stroke } })
+  const { _count: count } = await prisma.stroke.aggregate({ where, _count: { id: true } })
+  const revalidate: string[] = [loadBoard.keyFor(where)]
   if (count.id === 1) {
     revalidate.push(getBoardCount.key)
   }
   return reload({ revalidate })
 })
 
-const removeStrokeInput = z.tuple([z.string(), owner, z.string(), z.string()])
-export const removeStroke = action(async (...params: z.input<typeof removeStrokeInput>) => {
+export const removeStroke = action(async (board: Board, id: string) => {
   'use server'
-  const [url, ownerEmail, board, id] = await removeStrokeInput.parseAsync(params)
-  await prisma.stroke.delete({ where: { url, board, ownerEmail, id } })
-  return reload({ revalidate: loadBoard.keyFor(url, ownerEmail, board) })
+  board = await writeBoard.parseAsync(board)
+  await prisma.stroke.delete({ where: { ...board, id: String(id) } })
+  return reload({ revalidate: loadBoard.keyFor(board) })
 })
 
-const clearBoardInput = z.tuple([z.string(), owner, z.string()])
-export const clearBoard = action(async (...params: z.input<typeof clearBoardInput>) => {
+export const clearBoard = action(async (board: Board) => {
   'use server'
-  const [url, ownerEmail, board] = await clearBoardInput.parseAsync(params)
-  await prisma.stroke.deleteMany({ where: { url, ownerEmail, board } })
-  return reload({ revalidate: loadBoard.keyFor(url, ownerEmail, board) })
+  const where = await writeBoard.parseAsync(board)
+  await prisma.stroke.deleteMany({ where })
+  return reload({ revalidate: loadBoard.keyFor(where) })
 })
