@@ -15,10 +15,10 @@ export default function () {
           {user()?.lastName}, {user()?.firstName}
         </h1>
         <form method="post">
-          <Field label="Prénom" name="firstName" value={user()?.firstName} disabled />
-          <Field label="Nom" name="lastName" value={user()?.lastName} disabled />
-          <Field label="E-mail" name="email" value={user()?.email} disabled />
-          <Field label="Rôle" name="role" value={user()?.role} disabled />
+          <Field label="Prénom" value={user()?.firstName} disabled />
+          <Field label="Nom" value={user()?.lastName} disabled />
+          <Field label="E-mail" value={user()?.email} disabled />
+          <Field label="Rôle" value={user()?.role} disabled />
         </form>
       </section>
     </Page>
