@@ -25,9 +25,10 @@ export default function () {
     <Page title={`ELO score`}>
       <UserTabs />
       <section class="bg-white rounded-xl p-4 py-8 border">
-        <h1 class="font-bold text-3xl my-8">
+        <h1 class="font-bold text-3xl">
           {user()?.lastName}, {user()?.firstName}
         </h1>
+        <h2 class="text-xl">ELO: {user()?.score}</h2>
         <Show when={attempts()}>
           {(attempts) => (
             <Table
