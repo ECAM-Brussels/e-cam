@@ -112,7 +112,7 @@ function Drawer(props: { visible?: boolean; onOutsideClick?: () => void }) {
   return (
     <Portal>
       <div
-        class="absolute left-0 top-0 z-10 h-screen w-full flex flex-row-reverse"
+        class="fixed left-0 top-0 z-10 h-screen w-full flex flex-row-reverse"
         classList={{ hidden: !props.visible }}
       >
         <div class="h-full w-96 bg-white shadow-xl opacity-100 transition-transform duration-700">
@@ -126,8 +126,10 @@ function Drawer(props: { visible?: boolean; onOutsideClick?: () => void }) {
           <ul class="text-slate-600 font-semibold">
             <For each={courses()}>
               {(course) => (
-                <li class="py-4 px-8 hover:bg-slate-50">
-                  <a href={course.url}>{course.title}</a>
+                <li>
+                  <a class="block py-4 px-8 hover:bg-slate-50" href={course.url} noScroll>
+                    {course.title}
+                  </a>
                 </li>
               )}
             </For>
