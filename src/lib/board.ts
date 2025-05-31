@@ -1,5 +1,5 @@
 import { getBoardCount } from './slideshow'
-import { query, action, reload } from '@solidjs/router'
+import { query, action, reload, redirect } from '@solidjs/router'
 import { z } from 'zod'
 import { getUser } from '~/lib/auth/session'
 import { prisma } from '~/lib/db'
@@ -8,7 +8,7 @@ async function check<T extends { ownerEmail: string }>(data: T) {
   'use server'
   const user = await getUser()
   if (!user || (user.email !== data.ownerEmail && user.role !== 'ADMIN')) {
-    throw new Error('You do not have the rights to edit that board')
+    throw redirect('/auth/login')
   }
   return data
 }

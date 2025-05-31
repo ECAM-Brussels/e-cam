@@ -3,7 +3,7 @@ import { prisma } from '../db'
 import { getEloGain } from '../elo'
 import { type OptionsWithDefault, optionsSchemaWithDefault } from './schemas'
 import { type Prisma } from '@prisma/client'
-import { query } from '@solidjs/router'
+import { query, redirect } from '@solidjs/router'
 import { type ElementDefinition } from 'cytoscape'
 import { lazy } from 'solid-js'
 import { z } from 'zod'
@@ -69,7 +69,7 @@ async function check(email: string) {
   'use server'
   const user = await getUser()
   if (!user || (user.role !== 'ADMIN' && user.email !== email)) {
-    throw new Error('Not Authorized')
+    throw redirect('/auth/login')
   }
 }
 

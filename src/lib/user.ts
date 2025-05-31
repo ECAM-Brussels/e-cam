@@ -1,6 +1,6 @@
 import { getUser } from './auth/session'
 import { prisma } from './db'
-import { query } from '@solidjs/router'
+import { query, redirect } from '@solidjs/router'
 
 export const getUserInfo = query(async (email?: string) => {
   'use server'
@@ -12,7 +12,7 @@ export const getUserInfo = query(async (email?: string) => {
     getUser(),
   ])
   if (!user) {
-    throw new Error('You need to be logged in')
+    throw redirect('/auth/login')
   }
   if (user.role !== 'ADMIN' && user.email != email) {
     throw new Error('You do not have the rights to see this')
