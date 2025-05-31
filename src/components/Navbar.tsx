@@ -1,4 +1,4 @@
-import { faBars, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faCircleXmark, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import { createAsync, useLocation } from '@solidjs/router'
 import { createSignal, For, Show, type JSXElement } from 'solid-js'
 import { Portal } from 'solid-js/web'
@@ -116,7 +116,13 @@ function Drawer(props: { visible?: boolean; onOutsideClick?: () => void }) {
         classList={{ hidden: !props.visible }}
       >
         <div class="h-full w-96 bg-white shadow-xl opacity-100 transition-transform duration-700">
-          <h3 class="px-4 my-4 font-bold text-lg [font-variant:small-caps]">Cours</h3>
+          <button
+            onClick={props.onOutsideClick}
+            class="my-4 mx-4 font-xl text-slate-300 hover:text-slate-500"
+          >
+            <Fa icon={faCircleXmark} />
+          </button>
+          <h3 class="px-4 mb-4 font-bold text-lg [font-variant:small-caps]">Cours</h3>
           <ul class="text-slate-600 font-semibold">
             <For each={courses()}>
               {(course) => (
