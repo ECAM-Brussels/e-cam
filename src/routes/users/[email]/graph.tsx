@@ -1,5 +1,5 @@
 import UserTabs from './_tabs'
-import { action, RouteDefinition } from '@solidjs/router'
+import { action, type RouteDefinition } from '@solidjs/router'
 import { createSignal, For } from 'solid-js'
 import Graph from '~/components/Graph'
 import Page from '~/components/Page'
@@ -22,14 +22,12 @@ const grouping = [
 export default function () {
   const [groups, setGroups] = createSignal<string[]>([])
   const groupAssignments = action(async (form: FormData) => {
-    const i = Number(form.get('groupBy'))
-    setGroups(grouping[i].groups)
+    setGroups(grouping[Number(form.get('groupBy'))].groups)
   }, 'groupAssignments')
   return (
     <Page title="Progrès">
       <UserTabs />
       <section class="bg-white rounded-xl p-4 py-8 border">
-        <Graph class="min-h-96 w-full h-screen" groups={groups()} />
         <form method="post" action={groupAssignments} class="flex gap-4">
           <For each={grouping}>
             {(group, i) => (
@@ -41,6 +39,7 @@ export default function () {
             )}
           </For>
         </form>
+        <Graph class="min-h-96 w-full h-screen" groups={groups()} />
       </section>
     </Page>
   )
