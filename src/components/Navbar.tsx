@@ -11,7 +11,6 @@ export default function Navbar() {
   return (
     <NavbarShell>
       <Logo />
-      <Links />
       <UserInfo onBurgerClick={() => setShowSidebar(!showSidebar())} />
       <Drawer visible={showSidebar()} onOutsideClick={() => setShowSidebar(false)} />
     </NavbarShell>
@@ -27,24 +26,13 @@ const Logo = () => (
   </ul>
 )
 
-const Links = () => (
-  <ul class="flex items-center">
-    <NavbarItem href="/PM1C" underline>
-      Pont maths
-    </NavbarItem>
-    <NavbarItem href="/IC1T" underline>
-      Programmation
-    </NavbarItem>
-  </ul>
-)
-
 function UserInfo(props: { onBurgerClick: () => void }) {
   const user = createAsync(() => getUser())
   return (
     <ul class="flex items-center">
       <Show when={user()} fallback={<NavbarItem href="/auth/login">Se connecter</NavbarItem>}>
         {(user) => (
-          <>
+          <div class="items-center hidden md:flex">
             <NavbarItem href={`/users/${user().email}`}>{user().firstName}</NavbarItem>
             <NavbarItem>
               <form action={logout} method="post">
@@ -53,7 +41,7 @@ function UserInfo(props: { onBurgerClick: () => void }) {
                 </button>
               </form>
             </NavbarItem>
-          </>
+          </div>
         )}
       </Show>
       <button onclick={props.onBurgerClick} class="text-xl px-2 py-1">
@@ -108,6 +96,7 @@ function NavbarItem(props: NavbarItemProps) {
 }
 
 function Drawer(props: { visible?: boolean; onOutsideClick?: () => void }) {
+  const user = createAsync(() => getUser())
   const courses = createAsync(() => getCourses())
   return (
     <Portal>
@@ -133,6 +122,13 @@ function Drawer(props: { visible?: boolean; onOutsideClick?: () => void }) {
                 </li>
               )}
             </For>
+            <Show when={user()}>
+              <li class="hover:bg-slate-50 py-4 px-4">
+                <form action={logout} method="post">
+                  <button>Se déconnecter</button>
+                </form>
+              </li>
+            </Show>
           </ul>
         </div>
         <div class="bg-black h-screen w-full opacity-20" onClick={props.onOutsideClick} />
