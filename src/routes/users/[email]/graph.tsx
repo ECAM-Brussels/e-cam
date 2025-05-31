@@ -29,7 +29,7 @@ export default function () {
     <Page title="Progrès">
       <UserTabs />
       <section class="bg-white rounded-xl p-4 py-8 border">
-        <Graph class="min-h-96 w-full" groups={groups()} />
+        <Graph class="min-h-96 w-full h-screen" groups={groups()} />
         <form method="post" action={groupAssignments} class="flex gap-4">
           <For each={grouping}>
             {(group, i) => (
