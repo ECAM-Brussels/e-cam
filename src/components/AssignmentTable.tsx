@@ -14,12 +14,14 @@ type Row = {
 }
 
 export default function AssignmentTable(props: {
-  query: Parameters<typeof getAssignmentList>[0] | string
+  query?: Parameters<typeof getAssignmentList>[0] | string
+  search?: boolean
 }) {
   const query = () => (typeof props.query === 'string' ? JSON.parse(props.query) : props.query)
   const data = createAsync(() => getAssignmentList(query() ?? {}), { initialValue: [] })
   return (
     <Table
+      search={props.search}
       data={data() as Row[]}
       subRows={(row) => row.prerequisites}
       columns={[

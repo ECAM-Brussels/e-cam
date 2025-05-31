@@ -18,6 +18,7 @@ type TableProps<Row> = {
   data: Row[]
   columns: ColumnDef<Row>[]
   subRows?: (row: Row) => Row[] | undefined
+  search?: boolean
 }
 
 export default function Table<Row extends object>(props: TableProps<Row>) {
@@ -48,12 +49,14 @@ export default function Table<Row extends object>(props: TableProps<Row>) {
   })
   return (
     <div class="my-4">
-      <input
-        class="block p-2 font-lg shadow border border-block mx-auto my-8 w-96"
-        value={globalFilter() ?? ''}
-        onInput={(e) => debounceSetGlobalFilter(e.currentTarget.value)}
-        placeholder="Rechercher dans toutes les colonnes..."
-      />
+      <Show when={props.search}>
+        <input
+          class="block p-2 font-lg shadow border border-block mx-auto my-8 w-96"
+          value={globalFilter() ?? ''}
+          onInput={(e) => debounceSetGlobalFilter(e.currentTarget.value)}
+          placeholder="Rechercher dans toutes les colonnes..."
+        />
+      </Show>
       <table class={props.class ?? 'border bg-white text-gray-600 mx-auto my-4'}>
         <thead class="border text-gray-900 uppercase bg-gray-50">
           <For each={table.getHeaderGroups()}>

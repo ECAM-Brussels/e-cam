@@ -26,7 +26,7 @@ export default function () {
           <h1 class="font-bold text-3xl my-8">
             {user()?.lastName}, {user()?.firstName}
           </h1>
-          <AssignmentTable />
+          <AssignmentTable search />
         </section>
       </Page>
     </Suspense>
