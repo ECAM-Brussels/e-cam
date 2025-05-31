@@ -89,13 +89,16 @@ function Arrow(props: SlideshowProps & { dir: keyof typeof arrows }) {
   const icon = () => arrows[props.dir][0]
   const link = () => {
     const [i, j] = arrows[props.dir][1](props.hIndex, props.vIndex)
-    return i >= 1 &&
+    const pathname =
+      i >= 1 &&
       j >= 1 &&
       i < props.slides.length &&
       boardCount() !== undefined &&
       j <= boardCount()! + 1
-      ? `${props.url}/${i}/${j}`
-      : null
+        ? `${props.url}/${i}/${j}`
+        : null
+    if (pathname === null) return null
+    return `${pathname}${props.board ? `?boardName=${props.board}` : ''}`
   }
 
   let arrow!: HTMLAnchorElement
