@@ -1,10 +1,10 @@
-import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import { faBars, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import { createAsync, useLocation } from '@solidjs/router'
-import { createSignal, Show, type JSXElement } from 'solid-js'
+import { createSignal, For, Show, type JSXElement } from 'solid-js'
 import { Portal } from 'solid-js/web'
 import Fa from '~/components/Fa'
 import { getUser, logout } from '~/lib/auth/session'
+import { getCourses } from '~/lib/course'
 
 export default function Navbar() {
   const [showSidebar, setShowSidebar] = createSignal(false)
@@ -56,10 +56,7 @@ function UserInfo(props: { onBurgerClick: () => void }) {
           </>
         )}
       </Show>
-      <NavbarItem href="https://github.com/ECAM-Brussels/e-cam" class="text-xl text-gray-400">
-        <Fa icon={faGithub} />
-      </NavbarItem>
-      <button onclick={props.onBurgerClick}>
+      <button onclick={props.onBurgerClick} class="text-xl px-2 py-1">
         <Fa icon={faBars} />
       </button>
     </ul>
@@ -111,15 +108,26 @@ function NavbarItem(props: NavbarItemProps) {
 }
 
 function Drawer(props: { visible?: boolean; onOutsideClick?: () => void }) {
+  const courses = createAsync(() => getCourses())
   return (
     <Portal>
       <div
-        class="absolute left-0 top-0 z-10 h-screen w-full flex"
+        class="absolute left-0 top-0 z-10 h-screen w-full flex flex-row-reverse"
         classList={{ hidden: !props.visible }}
-        onClick={props.onOutsideClick}
       >
-        <div class="h-full w-96 bg-white shadow-xl opacity-100"></div>
-        <div class="bg-black h-screen w-full opacity-20" />
+        <div class="h-full w-96 bg-white shadow-xl opacity-100 transition-transform duration-700">
+          <h3 class="px-4 my-4 font-bold text-lg [font-variant:small-caps]">Cours</h3>
+          <ul class="text-slate-600 font-semibold">
+            <For each={courses()}>
+              {(course) => (
+                <li class="py-4 px-8 hover:bg-slate-50">
+                  <a href={course.url}>{course.title}</a>
+                </li>
+              )}
+            </For>
+          </ul>
+        </div>
+        <div class="bg-black h-screen w-full opacity-20" onClick={props.onOutsideClick} />
       </div>
     </Portal>
   )
