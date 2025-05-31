@@ -4,6 +4,17 @@ title: 'Pont vers le supérieur: mathématiques'
 
 # Pont vers le supérieur : mathématiques
 
+::::: {.grid .grid-cols-2 .gap-4}
+<details open class="bg-white border rounded-xl shadow p-4 py-2">
+<summary class="font-bold">Algèbre</summary>
+
+
+- **Cours Théorique**: [A](/PM1C/slides/01-trigonometry?boardName=A) [B](/PM1C/slides/01-trigonometry?boardName=B)
+
+<AssignmentTable query='{ "courses": { "some": { "code": "algebra" } } }' />
+</details>
+:::::
+
 ![Pont mathématiques](/images/PM1C.png){.w-full .lg:max-h-96 .max-h-84 .object-cover .rounded-xl .opacity-70}
 
 ::::: {.grid .lg:grid-cols-2 .gap-4}

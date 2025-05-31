@@ -3,6 +3,10 @@ courses:
     title: Pont mathématique
     image: /images/PM1C.png
     url: /PM1C
+  - code: IC1T
+    title: Programmation
+    image: /images/IC1T.png
+    url: /IC1T
   - code: algebra
     title: Algèbre
   - code: calculus

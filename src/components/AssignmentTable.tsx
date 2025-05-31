@@ -13,8 +13,11 @@ type Row = {
   grade: number
 }
 
-export default function AssignmentTable() {
-  const data = createAsync(() => getAssignmentList({}), { initialValue: [] })
+export default function AssignmentTable(props: {
+  query: Parameters<typeof getAssignmentList>[0] | string
+}) {
+  const query = () => (typeof props.query === 'string' ? JSON.parse(props.query) : props.query)
+  const data = createAsync(() => getAssignmentList(query() ?? {}), { initialValue: [] })
   return (
     <Table
       data={data() as Row[]}
