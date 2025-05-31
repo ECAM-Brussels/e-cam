@@ -65,7 +65,7 @@ async function generateImports() {
     ) {
       continue
     }
-    const type = ['Math', 'Plot', 'PrismEditor'].includes(name) ? 'clientOnly' : 'lazy'
+    const type = ['Graph', 'Math', 'Plot', 'PrismEditor'].includes(name) ? 'clientOnly' : 'lazy'
     imports += `const ${name} = ${type}(() => import('~/components/${name}'))\n`
   }
   return imports
