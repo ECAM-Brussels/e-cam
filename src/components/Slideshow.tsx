@@ -6,7 +6,7 @@ import {
   faChevronUp,
 } from '@fortawesome/free-solid-svg-icons'
 import { A, createAsync } from '@solidjs/router'
-import { createSignal, onMount, Show, type JSXElement } from 'solid-js'
+import { createEffect, createSignal, onMount, Show, type JSXElement } from 'solid-js'
 import Fa from '~/components/Fa'
 import Whiteboard from '~/components/Whiteboard'
 import { getBoardCount } from '~/lib/slideshow'
@@ -101,11 +101,12 @@ function Arrow(props: SlideshowProps & { dir: keyof typeof arrows }) {
     return `${pathname}${props.board ? `?boardName=${props.board}` : ''}`
   }
 
-  let arrow!: HTMLAnchorElement
+  const [arrow, setArrow] = createSignal<HTMLAnchorElement | undefined>(undefined)
   onMount(() => {
     window.addEventListener('keydown', (event) => {
-      if (event.key === arrows[props.dir][2]) {
-        arrow.click()
+      const arr = arrow()
+      if (event.key === arrows[props.dir][2] && arr && link()) {
+        arr.click()
       }
     })
   })
@@ -114,7 +115,7 @@ function Arrow(props: SlideshowProps & { dir: keyof typeof arrows }) {
     <div>
       <Show when={link()} fallback={<Fa icon={icon()} class="text-gray-200" />}>
         {(link) => (
-          <A href={link()} noScroll ref={arrow}>
+          <A href={link()} noScroll ref={setArrow}>
             <Fa icon={icon()} />
           </A>
         )}
