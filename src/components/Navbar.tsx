@@ -4,7 +4,7 @@ import { createAsync, useLocation } from '@solidjs/router'
 import { createSignal, Show, type JSXElement } from 'solid-js'
 import { Portal } from 'solid-js/web'
 import Fa from '~/components/Fa'
-import { getUser, logout, startLogin } from '~/lib/auth/session'
+import { getUser, logout } from '~/lib/auth/session'
 
 export default function Navbar() {
   const [showSidebar, setShowSidebar] = createSignal(false)
@@ -42,16 +42,7 @@ function UserInfo(props: { onBurgerClick: () => void }) {
   const user = createAsync(() => getUser())
   return (
     <ul class="flex items-center">
-      <Show
-        when={user()}
-        fallback={
-          <NavbarItem>
-            <form method="post" action={startLogin}>
-              <button type="submit">Se connecter</button>
-            </form>
-          </NavbarItem>
-        }
-      >
+      <Show when={user()} fallback={<NavbarItem href="/auth/login">Se connecter</NavbarItem>}>
         {(user) => (
           <>
             <NavbarItem href={`/users/${user().email}`}>{user().firstName}</NavbarItem>
