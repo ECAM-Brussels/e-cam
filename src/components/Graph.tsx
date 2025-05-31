@@ -7,7 +7,7 @@ import { getAssignmentGraph } from '~/lib/exercises/assignment'
 
 export default function Graph(props: {
   class?: string
-  query?: Parameters<typeof getAssignmentGraph>[0]
+  query?: Parameters<typeof getAssignmentGraph>[0] | string
   groups?: string[]
   rankDir?: string
   currentNode?: string
@@ -16,7 +16,8 @@ export default function Graph(props: {
   const [cy, setCy] = createSignal<Core | null>(null)
   const navigate = useNavigate()
   const preload = usePreloadRoute()
-  const elements = createAsync(() => getAssignmentGraph(props.query, props.groups))
+  const query = () => (typeof props.query === 'string' ? JSON.parse(props.query) : props.query)
+  const elements = createAsync(() => getAssignmentGraph(query(), props.groups))
 
   onMount(async () => {
     cytoscape.use(dagre)
