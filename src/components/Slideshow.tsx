@@ -6,7 +6,7 @@ import {
   faChevronUp,
 } from '@fortawesome/free-solid-svg-icons'
 import { A, createAsync } from '@solidjs/router'
-import { createEffect, createSignal, onMount, Show, type JSXElement } from 'solid-js'
+import { createSignal, onMount, Show, type JSXElement } from 'solid-js'
 import Fa from '~/components/Fa'
 import Whiteboard from '~/components/Whiteboard'
 import { getBoardCount } from '~/lib/slideshow'
