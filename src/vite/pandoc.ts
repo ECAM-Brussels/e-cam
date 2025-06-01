@@ -1,13 +1,35 @@
+import { PrismaClient } from '@prisma/client'
 import { exec as execWithCallback } from 'child_process'
 import glob from 'fast-glob'
 import { existsSync, mkdirSync, readFileSync, statSync } from 'fs'
+import yaml from 'js-yaml'
 import { dirname, relative, resolve } from 'path'
 import { promisify } from 'util'
-import { type Plugin } from 'vite'
+import { loadEnv, type Plugin } from 'vite'
+import { z } from 'zod'
 
 const exec = promisify(execWithCallback)
 
-async function generatePage(file: string) {
+const metadataSchema = z.object({
+  title: z.string().or(z.null()).default(null),
+  description: z.string().or(z.null()).default(null),
+  slideshow: z.boolean().default(false),
+})
+
+function extractMetadata(file: string) {
+  const content = readFileSync(file, 'utf-8')
+  const match = content.match(/^---\s*\n([\s\S]*?)\n---\s*\n/)
+  if (!match) return null
+  try {
+    const metadata = metadataSchema.parse(yaml.load(match[1]))
+    return metadata
+  } catch (err) {
+    console.error('Failed to parse YAML:', err)
+    return null
+  }
+}
+
+async function generatePage(file: string, prisma: PrismaClient) {
   const relativePath = relative(resolve('content'), file)
   let outputPath = resolve('src/routes/(generated)', relativePath.replace(/\.md$/, '.tsx'))
   if (existsSync(outputPath) && statSync(outputPath).mtime >= statSync(file).mtime) {
@@ -17,14 +39,23 @@ async function generatePage(file: string) {
 
   let template
   try {
-    const slideshow = readFileSync(file, 'utf-8').includes('slideshow: true')
-    template = slideshow ? 'template.slideshow.tsx' : 'template.tsx'
-    if (slideshow) {
+    const meta = extractMetadata(file)
+    template = meta?.slideshow ? 'template.slideshow.tsx' : 'template.tsx'
+    if (meta?.slideshow) {
       outputPath = outputPath.replace('.tsx', '/[[slide]]/[[board]].tsx')
       mkdirSync(dirname(outputPath), { recursive: true })
     }
+    if (meta) {
+      const url = '/' + relativePath.replace(/(index)?\.md/, '')
+      const payload = { title: meta.title, description: meta.description }
+      await prisma.page.upsert({
+        where: { url },
+        create: { ...payload, url },
+        update: payload,
+      })
+    }
   } catch (error) {
-    console.error(`Error when generating metadata file: ${error}`)
+    console.error(`Error when upserting metadata: ${error}`)
   }
 
   let cmd = [
@@ -71,22 +102,28 @@ async function generateImports() {
   return imports
 }
 
-async function buildAll() {
+async function buildAll(prisma: PrismaClient) {
   const pages = await glob.glob('content/**/*.md')
   for (const file of pages) {
-    generatePage(file)
+    generatePage(file, prisma)
   }
 }
 
 const pandocPlugin = (): Plugin => {
+  let prisma: PrismaClient
   return {
     name: 'pandoc-plugin',
-    buildStart() {
-      buildAll()
+    buildStart() {},
+    async configResolved(config) {
+      const env = loadEnv(config.mode, process.cwd(), 'VITE')
+      prisma = new PrismaClient({
+        datasources: { db: { url: env.VITE_DATABASE_URL } },
+      })
+      buildAll(prisma)
     },
     async handleHotUpdate({ file }) {
       if (file.endsWith('.md') && file.startsWith(resolve('content'))) {
-        generatePage(file)
+        generatePage(file, prisma)
       }
     },
   }
