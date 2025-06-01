@@ -335,13 +335,6 @@ export const getAssignmentList = query(
         url: true,
         page: { select: { title: true } },
         courses: { select: { code: true, url: true, title: true } },
-        prerequisites: {
-          select: {
-            url: true,
-            page: { select: { title: true } },
-            courses: { select: { code: true, url: true, title: true } },
-          },
-        },
         attempts: user
           ? {
               select: { id: true },
@@ -356,10 +349,6 @@ export const getAssignmentList = query(
       return {
         ...info,
         grade: attempts?.length || 0,
-        prerequisites: info.prerequisites.map((p) => ({
-          ...p,
-          grade: data.filter((r) => r.url === p.url)[0].attempts?.length ?? 0,
-        })),
       }
     })
   },
