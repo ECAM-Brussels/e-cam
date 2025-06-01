@@ -1,4 +1,5 @@
 import { sample } from 'lodash-es'
+import { Show } from 'solid-js'
 import { z } from 'zod'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
@@ -43,6 +44,35 @@ const { Component, schema } = createExerciseType({
     )
     return expression.diff.isEqual
   },
+  feedback: [
+    async (remaining, question, attempt) => {
+      const data = await request(
+        graphql(`
+          query DifferentiationFeedback($expr: Math!, $x: Math!) {
+            expression(expr: $expr) {
+              diff(x: $x) {
+                expr
+              }
+            }
+          }
+        `),
+        question,
+      )
+      return { remaining, question, attempt, data }
+    },
+    (props) => (
+      <Show
+        when={props.remaining}
+        fallback={
+          <p>
+            La réponse est <Math value={props.data.expression.diff.expr} />
+          </p>
+        }
+      >
+        Hello
+      </Show>
+    ),
+  ],
   generator: {
     params: z.object({
       questions: z
