@@ -31,7 +31,7 @@ export default function Feedback<Q, A, F extends object>(props: {
       class={props.class ?? `m-4 p-2 px-4 rounded-xl border`}
       classList={{ 'bg-green-50': correct(), 'bg-red-50': !correct() }}
     >
-      <p class="text-gray-500">
+      <p class="float-end text-gray-500 mx-4 my-2">
         Tentative {props.attempts.length}
         <Show when={props.maxAttempts !== null}>/{props.maxAttempts}</Show>
       </p>
@@ -43,18 +43,20 @@ export default function Feedback<Q, A, F extends object>(props: {
           </p>
         }
       >
-        <Show when={correct()}>
-          <p class="text-green-800 font-bold text-2xl mb-4">
-            <Fa icon={faCheckCircle} /> Correct&nbsp;!
-          </p>
-        </Show>
-        <Show when={props.component}>
-          {(Component) => (
-            <Show when={feedback()}>
-              {(feedback) => <Dynamic component={Component()} {...feedback()} />}
-            </Show>
-          )}
-        </Show>
+        <details open>
+          <Show when={correct()}>
+            <summary class="text-green-800 font-bold text-2xl mb-4">
+              <Fa icon={faCheckCircle} /> Correct&nbsp;!
+            </summary>
+          </Show>
+          <Show when={props.component}>
+            {(Component) => (
+              <Show when={feedback()}>
+                {(feedback) => <Dynamic component={Component()} {...feedback()} />}
+              </Show>
+            )}
+          </Show>
+        </details>
       </Show>
     </div>
   )
