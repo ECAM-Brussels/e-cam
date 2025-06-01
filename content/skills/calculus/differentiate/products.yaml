@@ -11,24 +11,24 @@ body:
   - type: Differentiate
     params:
       questions:
-        - x^2 \sin{x}
-        - x^3 \sin{x}
-        - x^2 \cos{x}
-        - x^3 \cos{x}
-        - x^2 \tan{x}
-        - x^3 \tan{x}
-        - e^x \sin{x}
-        - e^x \cos{x}
-        - 2^x \sin{x}
-        - 2^x \cos{x}
-        - x^2 \ln{x}
-        - x^3 \ln{x}
-        - x^2 e^x
-        - x^3 e^x
-        - x^2 2^x
-        - x^3 2^x
-        - x^2 3^x
-        - x^3 3^x
+        - x^{2} \sin{x}
+        - x^{3} \sin{x}
+        - x^{2} \cos{x}
+        - x^{3} \cos{x}
+        - x^{2} \tan{x}
+        - x^{3} \tan{x}
+        - e^{x} \sin{x}
+        - e^{x} \cos{x}
+        - 2^{x} \sin{x}
+        - 2^{x} \cos{x}
+        - x^{2} \ln{x}
+        - x^{3} \ln{x}
+        - x^{2} e^{x}
+        - x^{3} e^{x}
+        - x^{2} 2^{x}
+        - x^{3} 2^{x}
+        - x^{2} 3^{x}
+        - x^{3} 3^{x}
         - \sqrt{x} \sin{x}
         - \sqrt{x} \cos{x}
         - \sqrt{x} \ln{x}
@@ -37,12 +37,12 @@ body:
         - \sqrt{x} 3^{x}
         - \sin{x} \tan{x}
         - \sin{x} \cos{x}
-        - x^2 \sin{x} e^{x}
-        - x^3 \sin{x} e^{x}
-        - x^4 \sin{x} e^{x}
-        - x^2 \cos{x} e^{x}
-        - x^3 \cos{x} e^{x}
-        - x^4 \cos{x} e^{x}
-        - x^2 \sin{x} 2^{x}
-        - x^3 \sin{x} 2^{x}
-        - x^4 \sin{x} 2^{x}
+        - x^{2} \sin{x} e^{x}
+        - x^{3} \sin{x} e^{x}
+        - x^{4} \sin{x} e^{x}
+        - x^{2} \cos{x} e^{x}
+        - x^{3} \cos{x} e^{x}
+        - x^{4} \cos{x} e^{x}
+        - x^{2} \sin{x} 2^{x}
+        - x^{3} \sin{x} 2^{x}
+        - x^{4} \sin{x} 2^{x}
