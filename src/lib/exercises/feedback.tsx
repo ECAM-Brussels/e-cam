@@ -44,7 +44,14 @@ export default function Feedback<Q, A, F extends object>(props: {
         }
       >
         <details open>
-          <Show when={correct()}>
+          <Show
+            when={correct()}
+            fallback={
+              <summary class="text-red-800 font-bold text-2xl mb-4">
+                <Fa icon={faXmark} /> Réponse inconnecte
+              </summary>
+            }
+          >
             <summary class="text-green-800 font-bold text-2xl mb-4">
               <Fa icon={faCheckCircle} /> Correct&nbsp;!
             </summary>
