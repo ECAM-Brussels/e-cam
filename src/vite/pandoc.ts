@@ -38,24 +38,20 @@ async function generatePage(file: string, prisma: PrismaClient) {
   mkdirSync(dirname(outputPath), { recursive: true })
 
   let template
-  try {
-    const meta = extractMetadata(file)
-    template = meta?.slideshow ? 'template.slideshow.tsx' : 'template.tsx'
-    if (meta?.slideshow) {
-      outputPath = outputPath.replace('.tsx', '/[[slide]]/[[board]].tsx')
-      mkdirSync(dirname(outputPath), { recursive: true })
-    }
-    if (meta) {
-      const url = '/' + relativePath.replace(/(\/index)?\.md/, '')
-      const payload = { title: meta.title, description: meta.description }
-      await prisma.page.upsert({
-        where: { url },
-        create: { ...payload, url },
-        update: payload,
-      })
-    }
-  } catch (error) {
-    console.error(`Error when upserting metadata: ${error}`)
+  const meta = extractMetadata(file)
+  template = meta?.slideshow ? 'template.slideshow.tsx' : 'template.tsx'
+  if (meta?.slideshow) {
+    outputPath = outputPath.replace('.tsx', '/[[slide]]/[[board]].tsx')
+    mkdirSync(dirname(outputPath), { recursive: true })
+  }
+  if (meta) {
+    const url = '/' + relativePath.replace(/(\/index)?\.md/, '')
+    const payload = { title: meta.title, description: meta.description }
+    await prisma.page.upsert({
+      where: { url },
+      create: { ...payload, url },
+      update: payload,
+    })
   }
 
   let cmd = [
@@ -64,6 +60,7 @@ async function generatePage(file: string, prisma: PrismaClient) {
     '-t html5',
     `--template src/vite/${template}`,
     '--wrap=preserve',
+    `-V title="${meta?.title}"`,
     `-V imports="${await generateImports()}"`,
   ]
 
