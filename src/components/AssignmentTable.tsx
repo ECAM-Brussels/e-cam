@@ -1,7 +1,4 @@
-import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { createAsync } from '@solidjs/router'
-import { Show } from 'solid-js'
-import Fa from '~/components/Fa'
 import Table from '~/components/Table'
 import { getAssignmentList } from '~/lib/exercises/assignment'
 
@@ -9,7 +6,6 @@ type Row = {
   url: string
   page: { title: string }
   courses: { url: string; title: string; code: string }[]
-  prerequisites?: Row[]
   grade: number
 }
 
@@ -23,18 +19,7 @@ export default function AssignmentTable(props: {
     <Table
       search={props.search}
       data={data() as Row[]}
-      subRows={(row) => row.prerequisites}
       columns={[
-        {
-          id: 'expand',
-          cell: (info) => (
-            <Show when={info.row.original.prerequisites?.length}>
-              <button onClick={info.row.getToggleExpandedHandler()} title="Montrer les prérequis">
-                <Fa icon={info.row.getIsExpanded() ? faChevronRight : faChevronDown} />
-              </button>{' '}
-            </Show>
-          ),
-        },
         {
           accessorFn: (row) => row.page.title,
           header: 'Title',
