@@ -11,19 +11,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Page {
+  url String @id
+  title String?
+  description String?
+  assignment Assignment?
+}
+
 model Assignment {
   url String @id
-  title String @default("")
-  description String @default("")
   /// [ExerciseList]
   body Json
   /// [Options]
-  options Json
-  hash String @default("")
+  options Json?
+  hash String?
   lastModified DateTime @default(now())
   video String?
 
   attempts Attempt[]
+  page Page @relation(fields: [url], references: [url])
   courses Course[]
   prerequisites Assignment[] @relation("Prerequisites")
   requiredBy Assignment[] @relation("Prerequisites")
@@ -31,9 +37,9 @@ model Assignment {
 
 model Course {
   code String @id
-  title String @default("")
+  title String?
   image String?
-  url String @default("")
+  url String?
 
   assignments Assignment[]
 }

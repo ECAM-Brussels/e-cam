@@ -34,20 +34,24 @@ export async function registerAssignment(
   assignment: AssignmentInput,
   extra: Partial<Update>,
 ) {
-  await Promise.all(
-    (assignment.courses ?? []).map(async (code) => {
+  await Promise.all([
+    ...(assignment.courses ?? []).map(async (code) => {
       await prisma.course.upsert({
         where: { code },
         create: { code },
         update: {},
       })
     }),
-  )
+    prisma.page.upsert({
+      where: { url: assignment.url },
+      create: { url: assignment.url, title: assignment.title, description: assignment.description },
+      update: { title: assignment.title, description: assignment.description },
+    }),
+  ])
   const prerequisites = (assignment.prerequisites ?? []).map((p) =>
     typeof p === 'string' ? p : p.url,
   )
   const data = {
-    title: assignment.title,
     ...extra,
     prerequisites: {
       set: prerequisites.map((url) => ({ url })),

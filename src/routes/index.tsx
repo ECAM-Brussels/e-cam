@@ -67,7 +67,7 @@ function Skills(props: { code: string; title: JSXElement; open?: boolean }) {
             {(assignment) => (
               <li class="flex justify-between m-2">
                 <a href={assignment.url} class="hover:text-cyan-700">
-                  {assignment.title}
+                  {assignment.page.title}
                 </a>
                 <Show when={user()}>
                   <progress value={assignment.grade / 10} />

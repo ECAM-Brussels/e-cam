@@ -104,9 +104,10 @@ export const getExercises = query(async (url: string, email: string) => {
 export function addExercises(
   body: Exercise[],
   questions: Exercise[],
-  options: OptionsWithDefault,
+  options: Partial<OptionsWithDefault> | null,
 ): Exercise[] {
-  const opts = (id: number) => ({ ...options, ...questions.at(id)?.options })
+  const opts = (id: number) =>
+    optionsSchemaWithDefault.parse({ ...options, ...questions.at(id)?.options })
   const streak = (id: number) => opts(id).streak
   let [dynamicId, currentStreak] = [0, 0]
   for (const exercise of body) {
@@ -215,7 +216,7 @@ export async function saveExercise(
 export const getAssignment = async (data: z.input<typeof assignmentSchema>) => {
   'use server'
   const where = { url: data.url }
-  const include = { prerequisites: true, courses: true, requiredBy: true }
+  const include = { prerequisites: true, courses: true, requiredBy: true, page: true }
   let page = await prisma.assignment.findUniqueOrThrow({ where, include })
   let hash = hashObject(data)
   if (!page || !page.body || page.hash !== hash) {
@@ -260,7 +261,7 @@ export const getAssignmentGraph = query(
         where,
         select: {
           url: true,
-          title: true,
+          page: { select: { title: true } },
           courses: { select: { code: true } },
           requiredBy: { select: { url: true } },
           attempts: user
@@ -277,7 +278,7 @@ export const getAssignmentGraph = query(
     const vertices = data.map((assignment) => ({
       data: {
         id: assignment.url,
-        label: assignment.title,
+        label: assignment.page.title,
         parent: courses.filter((c) => assignment.courses.includes(c)).at(0),
         color: gradeToColor(
           assignment.attempts?.filter((a) => a.correct).length ?? 0,
@@ -331,12 +332,12 @@ export const getAssignmentList = query(
       where,
       select: {
         url: true,
-        title: true,
+        page: { select: { title: true } },
         courses: { select: { code: true, url: true, title: true } },
         prerequisites: {
           select: {
             url: true,
-            title: true,
+            page: { select: { title: true } },
             courses: { select: { code: true, url: true, title: true } },
           },
         },

@@ -7,7 +7,7 @@ import { getAssignmentList } from '~/lib/exercises/assignment'
 
 type Row = {
   url: string
-  title: string
+  page: { title: string }
   courses: { url: string; title: string; code: string }[]
   prerequisites?: Row[]
   grade: number
@@ -36,7 +36,7 @@ export default function AssignmentTable(props: {
           ),
         },
         {
-          accessorKey: 'title',
+          accessorFn: (row) => row.page.title,
           header: 'Title',
           cell: (info) => (
             <a href={info.row.original.url} style={{ 'margin-left': `${info.row.depth ?? 0}em` }}>

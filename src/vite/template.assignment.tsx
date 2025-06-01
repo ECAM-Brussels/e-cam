@@ -53,7 +53,7 @@ export default function () {
   return (
     <Show when={user()}>
       {(user) => (
-        <Page title={assignment()?.title ?? ''}>
+        <Page title={assignment()?.page.title ?? ''}>
           <Show when={assignment()}>
             {(assignment) => (
               <Assignment

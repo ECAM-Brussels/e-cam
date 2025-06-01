@@ -60,12 +60,12 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
   return (
     <ErrorBoundary>
       <h1 class="text-4xl my-4" classList={{ hidden: fullScreen() }}>
-        {props.data.title}
+        {props.data.page.title}
       </h1>
       <FullScreen class="bg-slate-50 h-screen w-full overflow-hidden" onChange={setFullScreen}>
         <div classList={{ 'grid grid-cols-3 p-4': fullScreen(), 'mb-8': !fullScreen() }}>
           <h2 class="text-2xl" classList={{ hidden: !fullScreen() }}>
-            {props.data.title}
+            {props.data.page.title}
           </h2>
           <Navigation {...props} />
           <Elo
