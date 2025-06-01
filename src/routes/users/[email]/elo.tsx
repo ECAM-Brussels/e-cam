@@ -35,9 +35,9 @@ export default function () {
               columns={[
                 {
                   header: 'Page',
-                  accessorFn: (row) => row.assignment.title,
+                  accessorFn: (row) => row.assignment.page.title,
                   cell: (info) => (
-                    <a href={info.row.original.url}>{info.row.original.assignment.title}</a>
+                    <a href={info.row.original.url}>{info.row.original.assignment.page.title}</a>
                   ),
                 },
                 {

@@ -46,7 +46,7 @@ async function generatePage(file: string, prisma: PrismaClient) {
       mkdirSync(dirname(outputPath), { recursive: true })
     }
     if (meta) {
-      const url = '/' + relativePath.replace(/(index)?\.md/, '')
+      const url = '/' + relativePath.replace(/(\/index)?\.md/, '')
       const payload = { title: meta.title, description: meta.description }
       await prisma.page.upsert({
         where: { url },

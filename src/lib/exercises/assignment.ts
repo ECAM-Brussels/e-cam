@@ -220,7 +220,8 @@ export const getAssignment = async (data: z.input<typeof assignmentSchema>) => {
   let page = await prisma.assignment.findUniqueOrThrow({ where, include })
   let hash = hashObject(data)
   if (!page || !page.body || page.hash !== hash) {
-    const { prerequisites, courses, ...assignment } = await assignmentSchema.parseAsync(data)
+    const { prerequisites, courses, url, title, description, ...assignment } =
+      await assignmentSchema.parseAsync(data)
     await registerAssignment(prisma, data, { ...assignment, hash })
     if (page && hashObject(page.body) !== hashObject(assignment.body)) {
       await prisma.attempt.deleteMany({ where })
