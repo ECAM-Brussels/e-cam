@@ -7,6 +7,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { A, createAsync } from '@solidjs/router'
 import { createSignal, onMount, Show, type JSXElement } from 'solid-js'
+import Breadcrumbs from '~/components/Breadcrumbs'
 import Fa from '~/components/Fa'
 import Whiteboard from '~/components/Whiteboard'
 import { getBoardCount } from '~/lib/slideshow'
@@ -63,6 +64,7 @@ export default function Slideshow(props: SlideshowProps) {
 function Remote(props: SlideshowProps) {
   return (
     <div class="absolute bottom-4 right-4 text-4xl z-20 flex gap-4 items-center print:hidden">
+      <Breadcrumbs class="text-sm mr-8" />
       <Arrow {...props} dir="left" />
       <div class="flex flex-col">
         <Arrow {...props} dir="up" />

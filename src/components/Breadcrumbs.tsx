@@ -20,7 +20,7 @@ export default function Breadcrumbs(props: BreadcrumbsProps) {
   const location = useLocation()
   const crumbs = createAsyncStore(() => getBreadCrumbs(location.pathname))
   return (
-    <nav class="container mx-auto my-4 text-slate-500">
+    <nav class={props.class ?? 'container mx-auto my-4 text-slate-500'}>
       <ol class="inline-flex">
         <li>
           <a href="/" class="hover:text-blue-600">
