@@ -33,10 +33,6 @@ export const route = {
       }),
     ])
   },
-  matchFilters: {
-    slide: /^\d+$/,
-    board: /^\d+$/,
-  },
 } satisfies RouteDefinition
 
 // @ts-ignore
