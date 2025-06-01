@@ -37,12 +37,12 @@ body:
         - \sqrt{x} 3^{x}
         - \sin{x} \tan{x}
         - \sin{x} \cos{x}
-        - x^{2} \sin{x} e^{x}
-        - x^{3} \sin{x} e^{x}
-        - x^{4} \sin{x} e^{x}
-        - x^{2} \cos{x} e^{x}
-        - x^{3} \cos{x} e^{x}
-        - x^{4} \cos{x} e^{x}
-        - x^{2} \sin{x} 2^{x}
-        - x^{3} \sin{x} 2^{x}
-        - x^{4} \sin{x} 2^{x}
+        - x^{2} {\sin{x}} e^{x}
+        - x^{3} {\sin{x}} e^{x}
+        - x^{4} {\sin{x}} e^{x}
+        - x^{2} {\cos{x}} e^{x}
+        - x^{3} {\cos{x}} e^{x}
+        - x^{4} {\cos{x}} e^{x}
+        - x^{2} {\sin{x}} 2^{x}
+        - x^{3} {\sin{x}} 2^{x}
+        - x^{4} {\sin{x}} 2^{x}
