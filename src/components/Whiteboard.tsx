@@ -14,6 +14,7 @@ import { createEffect, createMemo, createSignal, For, on, onMount, Show } from '
 import { createStore, SetStoreFunction, unwrap } from 'solid-js/store'
 import Fa from '~/components/Fa'
 import Spinner from '~/components/Spinner'
+import { getUser } from '~/lib/auth/session'
 import { addStroke, Board, clearBoard, loadBoard, removeStroke, type Stroke } from '~/lib/board'
 import { hashObject, round } from '~/lib/helpers'
 
@@ -79,6 +80,12 @@ export default function Whiteboard(props: WhiteboardProps) {
       resizeObserver.observe(props.container)
     }
   })
+
+  const user = createAsyncStore(() => getUser())
+  const readOnly = () => {
+    if (props.readOnly) return true
+    return user()?.email !== props.owner && user()?.role !== 'ADMIN'
+  }
 
   const board = () => ({ url: props.url, ownerEmail: props.owner, board: props.name })
   const strokes = createAsyncStore(() => loadBoard(board()), {
@@ -213,13 +220,13 @@ export default function Whiteboard(props: WhiteboardProps) {
         />
         <canvas
           class="absolute z-20 touch-none select-none"
-          classList={{ 'cursor-crosshair': !props.readOnly }}
+          classList={{ 'cursor-crosshair': !readOnly() }}
           ref={canvasRef!}
           height={height()}
           width={width()}
           onPointerDown={(event) => {
             event.preventDefault()
-            if (props.readOnly || event.pointerType === 'touch') {
+            if (readOnly() || event.pointerType === 'touch') {
               return
             }
             if (erasing()) {
