@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: "Limites: fonctions rationnelles"
+courses:
+  - calculus
+  - 5MATH4
+  - PM1C
+prerequisites:
+  - /skills/algebra/factor/trinomials
+options:
+  streak: 999
+body:
+  - type: Limit
+    params:
+      type: finiteRational
+      A: [1, -1]
+      X0: [-3, -2, -1, 0, 1, 2, 3]
+      shifts: [-3, -2, -1, 0, 1, 2, 3]

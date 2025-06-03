@@ -13,6 +13,7 @@ import { schema as DifferentiateSchema } from '~/exercises/Math/Differentiate'
 import { schema as EquationSchema } from '~/exercises/Math/Equation'
 import { schema as ExpandSchema } from '~/exercises/Math/Expand'
 import { schema as FactorSchema } from '~/exercises/Math/Factor'
+import { schema as LimitSchema } from '~/exercises/Math/Limit'
 import { schema as SimpleSchema } from '~/exercises/Math/Simple'
 import { schema as MultipleChoiceSchema } from '~/exercises/MultipleChoice'
 import { hashObject } from '~/lib/helpers'
@@ -25,6 +26,7 @@ export const exercises = {
   Equation: lazy(() => import('~/exercises/Math/Equation')),
   Expand: lazy(() => import('~/exercises/Math/Expand')),
   Factor: lazy(() => import('~/exercises/Math/Factor')),
+  Limit: lazy(() => import('~/exercises/Math/Limit')),
   Simple: lazy(() => import('~/exercises/Math/Simple')),
   MultipleChoice: lazy(() => import('~/exercises/MultipleChoice')),
 } as const
@@ -36,6 +38,7 @@ export const exerciseSchema = z.discriminatedUnion('type', [
   EquationSchema,
   ExpandSchema,
   FactorSchema,
+  LimitSchema,
   SimpleSchema,
   MultipleChoiceSchema,
 ])
