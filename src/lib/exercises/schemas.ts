@@ -52,7 +52,7 @@ export type ExerciseType<
    * Doesn't need to show the solution or handle the generator.
    * @param props state of the exercise
    */
-  Component: (props: { question: z.infer<Question>; attempt: z.infer<Attempt> }) => JSXElement
+  Component: (props: { question: z.infer<Question>; attempt?: z.infer<Attempt> }) => JSXElement
   /**
    * Marking/grading function.
    * Can be asynchronous but needs to run on the server

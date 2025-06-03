@@ -29,7 +29,7 @@ const { Component, schema, mark } = createExerciseType({
           <Markdown value={part.text} />
           <div class="flex items-center gap-2 my-4">
             <Markdown value={part.label} />
-            <Math name="attempts" value={props.attempt[index()]} editable />
+            <Math name="attempts" value={props.attempt?.[index()]} editable />
             <Markdown value={part.unit} />
           </div>
         </>
