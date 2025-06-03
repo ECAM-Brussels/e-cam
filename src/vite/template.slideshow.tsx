@@ -41,7 +41,8 @@ const children = [$body$]
 export default function () {
   const params = useParams()
   const location = useLocation()
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const showBoard = () => z.coerce.number().parse(searchParams.showBoard ?? 1) === 1
   return (
     <MetaProvider title="$title$" lang={'$if(lang)$$lang$$else$fr$endif$' as 'fr' | 'en'}>
       <Slideshow
@@ -50,6 +51,10 @@ export default function () {
         vIndex={index.parse(params.board)}
         url={url(location.pathname, [params.board, params.slide])}
         slides={children}
+        showBoard={showBoard()}
+        onShowBoardChange={(value) => {
+          setSearchParams({ showBoard: value ? 1 : 0 })
+        }}
       />
     </MetaProvider>
   )

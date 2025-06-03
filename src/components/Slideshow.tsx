@@ -1,9 +1,11 @@
 import type { IconDefinition } from '@fortawesome/fontawesome-common-types'
 import {
+  faBlackboard,
   faChevronDown,
   faChevronLeft,
   faChevronRight,
   faChevronUp,
+  faEyeSlash,
 } from '@fortawesome/free-solid-svg-icons'
 import { A, createAsync } from '@solidjs/router'
 import { createSignal, onMount, Show, type JSXElement } from 'solid-js'
@@ -18,6 +20,8 @@ type SlideshowProps = {
   hIndex: number
   vIndex: number
   url: string
+  showBoard?: boolean
+  onShowBoardChange?: (newVal: boolean) => void
 }
 
 export default function Slideshow(props: SlideshowProps) {
@@ -45,16 +49,18 @@ export default function Slideshow(props: SlideshowProps) {
         style={{ transform: `scale(${scale()}) translate(${translation()})` }}
       >
         {props.slides[props.hIndex]}
-        <Whiteboard
-          class="absolute top-0 z-10"
-          width={1920}
-          height={1080}
-          toolbarPosition="bottom"
-          owner="ngy@ecam.be"
-          url={props.url}
-          name={`${props.board}-${props.hIndex}-${props.vIndex}`}
-          scale
-        />
+        <Show when={props.showBoard}>
+          <Whiteboard
+            class="absolute top-0 z-10"
+            width={1920}
+            height={1080}
+            toolbarPosition="bottom"
+            owner="ngy@ecam.be"
+            url={props.url}
+            name={`${props.board}-${props.hIndex}-${props.vIndex}`}
+            scale
+          />
+        </Show>
         <Remote {...props} />
       </div>
     </div>
@@ -68,6 +74,12 @@ function Remote(props: SlideshowProps) {
       <Arrow {...props} dir="left" />
       <div class="flex flex-col">
         <Arrow {...props} dir="up" />
+        <button
+          onClick={() => props.onShowBoardChange?.(!props.showBoard)}
+          title={props.showBoard ? 'Hide board' : 'Show board'}
+        >
+          <Fa icon={props.showBoard ? faEyeSlash : faBlackboard} />
+        </button>
         <Arrow {...props} dir="down" />
       </div>
       <Arrow {...props} dir="right" />
