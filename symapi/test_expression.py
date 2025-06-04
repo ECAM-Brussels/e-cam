@@ -118,7 +118,8 @@ def test_is_polar(expr: str, expected: bool):
         ("2x + 2", False),
         ("(2x + 4)(x + 1)", False),
         ("x^2 + 1", True),
-        ('-x (x + 1)', True)
+        ('-x (x + 1)', True),
+        ('x^2 - 14x + 49', False),
     ],
 )
 def test_is_factored(expr: str, expected: bool):

@@ -178,6 +178,8 @@ class Expression:
         for term in factors:
             if sympy.factor(term).func == sympy.Mul:
                 return False
+            if term.func != sympy.Pow and sympy.factor(term).func == sympy.Pow:
+                return False
         return True
 
     @strawberry.field(description="Check if the current expression is a float or an int")
