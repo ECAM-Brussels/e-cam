@@ -125,6 +125,10 @@ class Expression:
             return False
         return True
 
+    @strawberry.field(description="")
+    def is_symmetric_set(self) -> bool:
+        return self.is_set_equal([-e for e in list(self.expr)])
+
     @strawberry.field(description=textwrap.dedent("""
         Check if the current expression (a mathematical set, as given by `solveset` for example)
         is equal to a given list after it is converted to a set.
