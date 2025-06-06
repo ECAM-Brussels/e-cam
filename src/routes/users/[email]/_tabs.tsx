@@ -9,7 +9,7 @@ export default function UserTabs() {
         { href: `/users/${params.email}`, children: 'Avancement' },
         { href: `/users/${params.email}/profile`, children: 'Profil' },
         { href: `/users/${params.email}/graph`, children: 'Graphe' },
-        { href: `/users/${params.email}/elo`, children: 'ELO' },
+        { href: `/users/${params.email}/history`, children: 'Historique' },
       ]}
     />
   )

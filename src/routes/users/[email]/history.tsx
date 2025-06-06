@@ -2,7 +2,7 @@ import UserTabs from './_tabs'
 import { createAsyncStore, type RouteDefinition, useParams } from '@solidjs/router'
 import { formatDistance } from 'date-fns'
 import { fr } from 'date-fns/locale'
-import { Show } from 'solid-js'
+import { Show, Suspense } from 'solid-js'
 import { ExerciseUI } from '~/components/Assignment'
 import Page from '~/components/Page'
 import Table from '~/components/Table'
@@ -77,10 +77,12 @@ export default function () {
               subComponent={(row) => (
                 <Show when={row.exercise}>
                   {(exercise) => (
-                    <ExerciseUI
-                      {...row.exercise}
-                      options={optionsSchemaWithDefault.parse(exercise().options)}
-                    />
+                    <Suspense>
+                      <ExerciseUI
+                        {...row.exercise}
+                        options={optionsSchemaWithDefault.parse(exercise().options)}
+                      />
+                    </Suspense>
                   )}
                 </Show>
               )}
