@@ -1,4 +1,10 @@
-import { faSort, faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons'
+import {
+  faChevronDown,
+  faChevronUp,
+  faSort,
+  faSortDown,
+  faSortUp,
+} from '@fortawesome/free-solid-svg-icons'
 import {
   type ColumnDef,
   type SortingState,
@@ -10,13 +16,15 @@ import {
   getSortedRowModel,
 } from '@tanstack/solid-table'
 import { debounce } from 'lodash-es'
-import { createSignal, For, Show } from 'solid-js'
+import { createSignal, For, type JSXElement, Show } from 'solid-js'
+import { Dynamic } from 'solid-js/web'
 import Fa from '~/components/Fa'
 
 type TableProps<Row> = {
   class?: string
   data: Row[]
   columns: ColumnDef<Row>[]
+  subComponent?: (row: Row) => JSXElement
   subRows?: (row: Row) => Row[] | undefined
   search?: boolean
 }
@@ -37,7 +45,28 @@ export default function Table<Row extends object>(props: TableProps<Row>) {
         return globalFilter()
       },
     },
-    columns: props.columns,
+    get columns() {
+      return [
+        ...(props.subRows || props.subComponent
+          ? [
+              {
+                id: 'expander',
+                header: () => null,
+                cell: (info) => {
+                  return (
+                    <Show when={props.subComponent || info.row.getCanExpand()}>
+                      <button onClick={() => info.row.toggleExpanded()}>
+                        <Fa icon={info.row.getIsExpanded() ? faChevronUp : faChevronDown} />
+                      </button>
+                    </Show>
+                  )
+                },
+              } satisfies ColumnDef<Row>,
+            ]
+          : []),
+        ...props.columns,
+      ]
+    },
     getSubRows: props.subRows,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
@@ -97,21 +126,34 @@ export default function Table<Row extends object>(props: TableProps<Row>) {
           <For each={table.getRowModel().rows}>
             {(row, i) => {
               return (
-                <tr
-                  class="border-gray-200 hover:bg-slate-100 relative"
-                  classList={{
-                    'border-t': row.depth === 0,
-                    'bg-slate-50': i() % 2 === 1 && row.depth === 0,
-                  }}
-                >
-                  <For each={row.getVisibleCells()}>
-                    {(cell) => (
-                      <td class="px-4 py-2">
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                <>
+                  <tr
+                    class="border-gray-200 hover:bg-slate-100 relative"
+                    classList={{
+                      'border-t': row.depth === 0,
+                      'bg-slate-50': i() % 2 === 1 && row.depth === 0,
+                    }}
+                  >
+                    <For each={row.getVisibleCells()}>
+                      {(cell) => (
+                        <td class="px-4 py-2">
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </td>
+                      )}
+                    </For>
+                  </tr>
+                  <Show when={row.getIsExpanded() && props.subComponent}>
+                    <tr
+                      classList={{
+                        'bg-slate-50': i() % 2 === 1 && row.depth === 0,
+                      }}
+                    >
+                      <td colSpan={row.getVisibleCells().length}>
+                        <Dynamic component={props.subComponent} {...row.original} />
                       </td>
-                    )}
-                  </For>
-                </tr>
+                    </tr>
+                  </Show>
+                </>
               )
             }}
           </For>
