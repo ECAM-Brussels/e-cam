@@ -69,7 +69,13 @@ export default function Math(props: MathProps) {
   return (
     <Show
       when={props.editable && !disabled()}
-      fallback={<span innerHTML={html()} class={props.class} />}
+      fallback={
+        <span
+          innerHTML={html()}
+          class={props.class}
+          classList={{ 'border px-2': !props.class && props.name !== undefined }}
+        />
+      }
     >
       <math-field
         className={props.class ?? 'border min-w-24 p-2'}
