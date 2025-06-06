@@ -3,10 +3,12 @@ import { createAsyncStore, type RouteDefinition, useParams } from '@solidjs/rout
 import { formatDistance } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { Show } from 'solid-js'
+import { ExerciseUI } from '~/components/Assignment'
 import Page from '~/components/Page'
 import Table from '~/components/Table'
 import { getUser } from '~/lib/auth/session'
 import { getUserAttempts } from '~/lib/exercises/attempt'
+import { optionsSchemaWithDefault } from '~/lib/exercises/schemas'
 import { getUserInfo } from '~/lib/user'
 
 export const route = {
@@ -22,7 +24,7 @@ export default function () {
   const user = createAsyncStore(() => getUserInfo(params.email))
   const attempts = createAsyncStore(() => getUserAttempts(params.email))
   return (
-    <Page title={`ELO score`}>
+    <Page title={`Historique`}>
       <UserTabs />
       <section class="bg-white rounded-xl p-4 py-8 border">
         <h1 class="font-bold text-3xl">
@@ -37,7 +39,9 @@ export default function () {
                   header: 'Page',
                   accessorFn: (row) => row.assignment.page.title,
                   cell: (info) => (
-                    <a href={info.row.original.url}>{info.row.original.assignment.page.title}</a>
+                    <a href={`${info.row.original.url}/${info.row.original.position}`}>
+                      {info.row.original.assignment.page.title}
+                    </a>
                   ),
                 },
                 {
@@ -70,6 +74,16 @@ export default function () {
                 },
               ]}
               data={attempts()}
+              subComponent={(row) => (
+                <Show when={row.exercise}>
+                  {(exercise) => (
+                    <ExerciseUI
+                      {...row.exercise}
+                      options={optionsSchemaWithDefault.parse(exercise().options)}
+                    />
+                  )}
+                </Show>
+              )}
             />
           )}
         </Show>

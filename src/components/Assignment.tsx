@@ -200,6 +200,17 @@ function Navigation(props: AssignmentProps) {
   )
 }
 
+export function ExerciseUI<N, Q, A, P, F>(props: Exercise) {
+  return (
+    <Dynamic
+      component={
+        exercises[props.type as keyof typeof exercises] as Component<ExerciseProps<N, Q, A, P, F>>
+      }
+      {...(props as ExerciseProps<N, Q, A, P, F>)}
+    />
+  )
+}
+
 export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
   const body = createAsyncStore(() => getExercises(props.url, props.userEmail), {
     initialValue: [],
