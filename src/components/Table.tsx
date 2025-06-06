@@ -144,11 +144,12 @@ export default function Table<Row extends object>(props: TableProps<Row>) {
                   </tr>
                   <Show when={row.getIsExpanded() && props.subComponent}>
                     <tr
+                      class="border-t border-dashed"
                       classList={{
                         'bg-slate-50': i() % 2 === 1 && row.depth === 0,
                       }}
                     >
-                      <td colSpan={row.getVisibleCells().length}>
+                      <td colSpan={row.getVisibleCells().length} class="px-4">
                         <Dynamic component={props.subComponent} {...row.original} />
                       </td>
                     </tr>
