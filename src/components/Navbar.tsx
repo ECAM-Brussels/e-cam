@@ -116,7 +116,11 @@ function Drawer(props: { visible?: boolean; onOutsideClick?: () => void }) {
             <For each={courses()}>
               {(course) => (
                 <li>
-                  <a class="block py-4 px-8 hover:bg-slate-50" href={course.url} noScroll>
+                  <a
+                    class="block py-4 px-8 hover:bg-slate-50"
+                    href={course.url ?? undefined}
+                    noScroll
+                  >
                     {course.title}
                   </a>
                 </li>
@@ -131,7 +135,7 @@ function Drawer(props: { visible?: boolean; onOutsideClick?: () => void }) {
             </Show>
           </ul>
         </div>
-        <div class="bg-black h-screen w-full opacity-20" onClick={props.onOutsideClick} />
+        <div class="bg-black h-screen w-full opacity-50" onClick={props.onOutsideClick} />
       </div>
     </Portal>
   )
