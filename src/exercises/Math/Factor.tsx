@@ -1,5 +1,5 @@
 import { sample } from 'lodash-es'
-import { Show } from 'solid-js'
+import { Match, Show, Switch } from 'solid-js'
 import { z } from 'zod'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
@@ -56,6 +56,7 @@ const { Component, schema } = createExerciseType({
               solveset {
                 list {
                   expr
+                  # to check if the student made a sign mistake
                   opposite {
                     subsIn(expr: $expr, var: $x) {
                       isEqual(expr: "0")
@@ -80,6 +81,7 @@ const { Component, schema } = createExerciseType({
                     }
                   }
                 }
+                isSymmetricSet
               }
             }
           }
@@ -91,6 +93,9 @@ const { Component, schema } = createExerciseType({
         opposite: info.opposite.subsIn.isEqual === true,
         correct: info.subsIn.isEqual === true,
       }))
+      const roots = data.expr.solveset
+      const squaredSum = roots.list.length === 1
+      const squareDiff = roots.list.length === 2 && roots.isSymmetricSet
       return {
         remaining,
         answer: data.expr.factor.expr,
@@ -99,27 +104,22 @@ const { Component, schema } = createExerciseType({
         correctRoots: studentRoots.filter((r) => r.correct),
         wrongSign: studentRoots.filter((r) => r.opposite),
         incorrectRoots: studentRoots.filter((r) => !r.correct),
+        numberofRoots: data.expr.solveset.list.length,
+        squaredSum,
+        squareDiff,
         question,
       }
     },
     (props) => (
-      <Show
-        when={props.remaining}
-        fallback={
-          <div>
-            <p>
-              On commence par trouver la racine{' '}
-              <Math value={`${props.question.x} = ${props.firstCorrectRoot}`} /> par essais et
-              erreurs, donc <Math value={props.factors[0]} /> est un facteur.
-            </p>
-            <p>
-              Via la distributivité, on atteint la réponse finale <Math value={props.answer} />.
-            </p>
-          </div>
-        }
-      >
-        <Show when={props.correctRoots.length === 0}>
-          <Show
+      <Switch>
+        <Match when={props.squaredSum || props.squareDiff}>
+          <Show when={props.remaining} fallback={<p>C'est bien un produit remarquable: <Math value={props.answer} /></p>}>
+            <p>Peux-tu vérifier si c'est un produit remarquable?</p>
+          </Show>
+        </Match>
+        <Match when={props.correctRoots.length === 0}>
+          <Show when={props.remaining} fallback={<p>hello</p>}>
+            <Show
             when={props.wrongSign.length}
             fallback={<p>Est-ce que tu peux trouver une racine à vue?</p>}
           >
@@ -129,14 +129,15 @@ const { Component, schema } = createExerciseType({
             Rappelle-toi que si <Math value={`${props.question.x} = a`} /> est une racine, alors{' '}
             <Math value={`${props.question.x} - a`} /> est un facteur.
           </p>
-        </Show>
-        <Show when={props.correctRoots.length === 1 && props.incorrectRoots}>
+          </Show>
+        </Match>
+        <Match when={props.correctRoots.length === 1 && props.incorrectRoots}>
           <p>
             La racine <Math value={`${props.question.x} = ${props.correctRoots[0].root}`} /> est
             correcte. Peux-tu vérifier ta distributivité?
           </p>
-        </Show>
-      </Show>
+        </Match>
+      </Switch>
     ),
   ],
   generator: {
