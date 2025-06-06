@@ -63,6 +63,7 @@ export default function () {
                         'bg-red-800 text-red-50': info.row.original.gain < 0,
                       }}
                     >
+                      {info.row.original.gain > 0 && '+'}
                       {info.row.original.gain}
                     </div>
                   ),
