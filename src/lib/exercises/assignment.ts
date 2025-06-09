@@ -142,6 +142,7 @@ export function addExercises(
 
 async function upsertExercise(exercise: Exercise) {
   'use server'
+  exercise = await exerciseSchema.parseAsync(exercise)
   if (!exercise.question) {
     throw new Error('Exercise has not been generated yet.')
   }
@@ -194,7 +195,7 @@ export async function saveExercise(
         tx.attempt.upsert({
           where: { url_email_position: key },
           update: payload,
-          create: { ...key, gain: 0, ...payload },
+          create: { ...key, ...payload },
         }),
       ]
       if (payload.gain) {

@@ -79,7 +79,7 @@ model Attempt {
   /// [Exercise]
   exercise Json
   correct Boolean?
-  gain Int
+  gain Int?
   date DateTime @default(now())
   lastModified DateTime @default(now())
 
