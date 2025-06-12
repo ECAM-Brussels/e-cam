@@ -79,10 +79,16 @@ async function check(email: string) {
 export const getExercise = query(async (url: string, email: string, position: number) => {
   'use server'
   const sequence = await getExercises(url, email)
-  return sequence[position]
+  return sequence[position - 1]
 }, 'getExercise')
 
-export const getExercises = query(async (url: string, email: string) => {
+export const getPaginationInfo = query(async (url: string, email: string) => {
+  'use server'
+  const exercises = await getExercises(url, email)
+  return exercises.map((exercise) => exercise.attempts.at(0)?.correct ?? null)
+}, 'getPaginationInfo')
+
+const getExercises = query(async (url: string, email: string) => {
   'use server'
   await check(email)
   const {
@@ -104,7 +110,7 @@ export const getExercises = query(async (url: string, email: string) => {
   )
 }, 'getExercises')
 
-export function addExercises(
+function addExercises(
   body: Exercise[],
   questions: Exercise[],
   options: Partial<OptionsWithDefault> | null,

@@ -5,7 +5,12 @@ import Page from '~/components/Page'
 import { getUser } from '~/lib/auth/session'
 import { loadBoard } from '~/lib/board'
 import { getEloDiff } from '~/lib/elo'
-import { getAssignment, getAssignmentGraph, getExercises } from '~/lib/exercises/assignment'
+import {
+  getAssignment,
+  getAssignmentGraph,
+  getExercise,
+  getPaginationInfo,
+} from '~/lib/exercises/assignment'
 import { getUserInfo } from '~/lib/user'
 
 const getOriginalAssignment = query((url?: string) => {
@@ -34,7 +39,8 @@ export const route = {
       await Promise.all([
         getUserInfo(user.email),
         getOriginalAssignment(info.url).then(() => {
-          getExercises(info.url, user.email)
+          getExercise(info.url, user.email, info.index)
+          getPaginationInfo(info.url, user.email)
         }),
         getEloDiff(user.email),
         loadBoard({ url: info.url, ownerEmail: user.email, board: `${info.index}` }),

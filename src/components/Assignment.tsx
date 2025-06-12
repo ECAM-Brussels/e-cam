@@ -22,8 +22,9 @@ import {
   Exercise,
   saveExercise,
   type getAssignment,
-  getExercises,
+  getExercise,
   getAssignmentGraph,
+  getPaginationInfo,
 } from '~/lib/exercises/assignment'
 import { ExerciseProps } from '~/lib/exercises/base'
 import { optionsSchemaWithDefault } from '~/lib/exercises/schemas'
@@ -171,7 +172,7 @@ function Sidebar(props: AssignmentProps & { eloDiff: number; elo?: number; fullS
 }
 
 function Navigation(props: AssignmentProps) {
-  const body = createAsyncStore(() => getExercises(props.url, props.userEmail), {
+  const pagination = createAsyncStore(() => getPaginationInfo(props.url, props.userEmail), {
     initialValue: [],
   })
   const realUser = createAsync(() => getUser())
@@ -189,11 +190,11 @@ function Navigation(props: AssignmentProps) {
           }
           return parts.join('/')
         }}
-        max={body().length || 0}
+        max={pagination().length || 0}
         classList={(i) => ({
-          'bg-green-100': body()[i - 1].attempts.at(0)?.correct,
-          'bg-red-100': body()[i - 1].attempts.at(0)?.correct === false,
-          'bg-white': body()[i - 1].attempts.at(0)?.correct === undefined,
+          'bg-green-100': pagination()[i - 1] === true,
+          'bg-red-100': pagination()[i - 1] === false,
+          'bg-white': pagination()[i - 1] === null,
         })}
       />
     </div>
@@ -212,10 +213,7 @@ export function ExerciseUI<N, Q, A, P, F>(props: Exercise) {
 }
 
 export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
-  const body = createAsyncStore(() => getExercises(props.url, props.userEmail), {
-    initialValue: [],
-  })
-  const exercise = () => body().at(props.index - 1)
+  const exercise = createAsyncStore(() => getExercise(props.url, props.userEmail, props.index))
   const options = () =>
     optionsSchemaWithDefault.parse({
       ...props.data.options,
@@ -234,9 +232,8 @@ export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
               const revalidate =
                 action === 'generate'
                   ? [
-                      getExercises.keyFor(props.url, props.userEmail),
-                      getEloDiff.key,
-                      getAssignmentGraph.keyFor(getGraphQuery(props.url)),
+                      getExercise.keyFor(props.url, props.userEmail, props.index),
+                      getPaginationInfo.keyFor(props.url, props.userEmail),
                     ]
                   : 'nothing'
               return reload({ revalidate })
