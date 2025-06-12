@@ -23,7 +23,6 @@ import {
   saveExercise,
   type getAssignment,
   getExercise,
-  getAssignmentGraph,
   getPaginationInfo,
 } from '~/lib/exercises/assignment'
 import { ExerciseProps } from '~/lib/exercises/base'
