@@ -76,7 +76,7 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
           />
         </div>
         <div class="h-full max-w-full lg:flex flex-row-reverse gap-8">
-          <div class="lg:min-w-72 lg:max-w-80" classList={{ hidden: fullScreen() }}>
+          <div class="lg:w-[392px]" classList={{ hidden: fullScreen() }}>
             <Sidebar fullScreen={fullScreen()} {...props} elo={user()?.score} eloDiff={eloDiff()} />
           </div>
           <div class="grow">
