@@ -3,12 +3,14 @@ import { createAsyncStore, type RouteDefinition, useParams } from '@solidjs/rout
 import { formatDistance } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { Show, Suspense } from 'solid-js'
+import { z } from 'zod'
 import { ExerciseUI } from '~/components/Assignment'
 import Page from '~/components/Page'
 import Table from '~/components/Table'
 import { getUser } from '~/lib/auth/session'
 import { getUserAttempts } from '~/lib/exercises/attempt'
 import { optionsSchemaWithDefault } from '~/lib/exercises/schemas'
+import { createSearchParam } from '~/lib/params'
 import { getUserInfo } from '~/lib/user'
 
 export const route = {
@@ -23,6 +25,7 @@ export default function () {
   const params = useParams()
   const user = createAsyncStore(() => getUserInfo(params.email))
   const attempts = createAsyncStore(() => getUserAttempts(params.email))
+  const [page, setPage] = createSearchParam('page', z.coerce.number().default(1))
   return (
     <Page title={`Historique`}>
       <UserTabs />
@@ -34,6 +37,8 @@ export default function () {
         <Show when={attempts()}>
           {(attempts) => (
             <Table
+              page={page()}
+              setPage={setPage}
               columns={[
                 {
                   header: 'Page',

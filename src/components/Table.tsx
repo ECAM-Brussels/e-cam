@@ -5,6 +5,7 @@ import {
   faSortDown,
   faSortUp,
 } from '@fortawesome/free-solid-svg-icons'
+import { action, json } from '@solidjs/router'
 import {
   type ColumnDef,
   type SortingState,
@@ -13,12 +14,14 @@ import {
   getCoreRowModel,
   getExpandedRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
 } from '@tanstack/solid-table'
 import { debounce } from 'lodash-es'
 import { createSignal, For, type JSXElement, Show } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import Fa from '~/components/Fa'
+import { hashObject } from '~/lib/helpers'
 
 type TableProps<Row> = {
   class?: string
@@ -27,6 +30,9 @@ type TableProps<Row> = {
   subComponent?: (row: Row) => JSXElement
   subRows?: (row: Row) => Row[] | undefined
   search?: boolean
+  page?: number
+  pageSize?: number
+  setPage?: (page: number) => void
 }
 
 export default function Table<Row extends object>(props: TableProps<Row>) {
@@ -43,6 +49,9 @@ export default function Table<Row extends object>(props: TableProps<Row>) {
       },
       get globalFilter() {
         return globalFilter()
+      },
+      get pagination() {
+        return { pageIndex: (props.page ?? 1) - 1, pageSize: props.pageSize ?? 30 }
       },
     },
     get columns() {
@@ -75,6 +84,7 @@ export default function Table<Row extends object>(props: TableProps<Row>) {
     globalFilterFn: 'includesString',
     getSortedRowModel: getSortedRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
   })
   return (
     <div class="my-4">
@@ -159,6 +169,36 @@ export default function Table<Row extends object>(props: TableProps<Row>) {
             }}
           </For>
         </tbody>
+        <tfoot>
+          <Show when={table.getPageCount() > 1}>
+            <tr class="text-center text-sm">
+              <td colspan={table.getVisibleLeafColumns().length} class="py-2">
+                <form
+                  method="post"
+                  action={action(
+                    async (form: FormData) => {
+                      props.setPage?.(Number(form.get('page')))
+                      return json(null, { revalidate: 'nothing' })
+                    },
+                    `change-page-${hashObject(props.data)}`,
+                  )}
+                >
+                  Page{' '}
+                  <input
+                    class="border field-sizing-content text-center"
+                    type="number"
+                    name="page"
+                    min="1"
+                    max={table.getPageCount().toLocaleString()}
+                    value={table.getState().pagination.pageIndex + 1}
+                    onChange={(e) => e.target.closest('form')?.requestSubmit()}
+                  />{' '}
+                  sur {table.getPageCount().toLocaleString()}
+                </form>
+              </td>
+            </tr>
+          </Show>
+        </tfoot>
       </table>
     </div>
   )
