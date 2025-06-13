@@ -1,9 +1,10 @@
 import { extractFormData } from '../form'
 import { hashObject } from '../helpers'
 import { action, createAsync, query, useAction, useSubmission } from '@solidjs/router'
-import { createEffect, Show, Suspense } from 'solid-js'
+import { createEffect, Show } from 'solid-js'
 import { z } from 'zod'
 import Button from '~/components/Button'
+import Suspense from '~/components/Suspense'
 import ZodError from '~/components/ZodError'
 import Feedback from '~/lib/exercises/feedback'
 import { optionsSchema, type ExerciseType, type OptionsWithDefault } from '~/lib/exercises/schemas'
@@ -112,7 +113,7 @@ export function createExerciseType<
     const submission = useSubmission(submit)
 
     return (
-      <Suspense fallback={<p>Generating...</p>}>
+      <Suspense fallback="Génération d'un exercice...">
         <form method="post" action={submit}>
           <fieldset disabled={readOnly()} class="flex items-end gap-8">
             <Show when={question()}>
@@ -134,14 +135,16 @@ export function createExerciseType<
           <ZodError error={submission.error} />
         </form>
         <Show when={props.attempts.length > 0 && question()}>
-          <Feedback
-            attempts={props.attempts}
-            maxAttempts={props.options.maxAttempts}
-            getFeedback={getFeedback}
-            component={ExerciseFeedback}
-            marking={submission.pending}
-            question={question()}
-          />
+          <Suspense fallback="Calcul du feedback...">
+            <Feedback
+              attempts={props.attempts}
+              maxAttempts={props.options.maxAttempts}
+              getFeedback={getFeedback}
+              component={ExerciseFeedback}
+              marking={submission.pending}
+              question={question()}
+            />
+          </Suspense>
         </Show>
       </Suspense>
     )
