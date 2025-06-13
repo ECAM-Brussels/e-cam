@@ -60,16 +60,20 @@ export default function () {
                   header: 'Gain',
                   accessorKey: 'gain',
                   cell: (info) => (
-                    <div
-                      class="text-center rounded font-bold"
-                      classList={{
-                        'bg-green-800 text-green-50': info.row.original.gain > 0,
-                        'bg-red-800 text-red-50': info.row.original.gain < 0,
-                      }}
-                    >
-                      {info.row.original.gain > 0 && '+'}
-                      {info.row.original.gain}
-                    </div>
+                    <Show when={info.row.original.gain}>
+                      {(gain) => (
+                        <div
+                          class="text-center rounded font-bold"
+                          classList={{
+                            'bg-green-800 text-green-50': gain() > 0,
+                            'bg-red-800 text-red-50': gain() < 0,
+                          }}
+                        >
+                          {gain() > 0 && '+'}
+                          {gain()}
+                        </div>
+                      )}
+                    </Show>
                   ),
                 },
               ]}
