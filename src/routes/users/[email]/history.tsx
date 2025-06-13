@@ -43,11 +43,6 @@ export default function () {
                 {
                   header: 'Page',
                   accessorFn: (row) => row.assignment.page.title,
-                  cell: (info) => (
-                    <a href={`${info.row.original.url}/${info.row.original.position}`}>
-                      {info.row.original.assignment.page.title}
-                    </a>
-                  ),
                 },
                 {
                   header: 'Date',
@@ -91,6 +86,9 @@ export default function () {
                         {...row.exercise}
                         options={optionsSchemaWithDefault.parse(exercise().options)}
                       />
+                      <a class="text-sm" href={`${row.url}/${row.position}`}>
+                        Plus de détails
+                      </a>
                     </Suspense>
                   )}
                 </Show>
