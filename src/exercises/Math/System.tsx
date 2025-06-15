@@ -10,10 +10,19 @@ const { Component, schema } = createExerciseType({
   name: 'System',
   Component: (props) => {
     const [impossible, setImpossible] = createSignal(false)
+    const hyperplanes = () => {
+      if (props.question.variables.length === 2) return 'droites suivantes'
+      if (props.question.variables.length === 3) return 'plans suivants'
+      return 'hyperplans suivants'
+    }
     createEffect(() => setImpossible(props.attempt === 'impossible'))
     return (
       <>
-        <p>Résolvez le système suivant:</p>
+        <p>
+          {props.question.geometric
+            ? `Trouvez l'intersection entre les ${hyperplanes()}:`
+            : 'Résolvez le système suivant:'}
+        </p>
         <Math
           value={`
             \\begin{cases}
@@ -29,7 +38,9 @@ const { Component, schema } = createExerciseType({
             value="impossible"
             onChange={(e) => setImpossible(e.target.checked)}
           />{' '}
-          Ce système d'équations n'a pas de solution.
+          {props.question.geometric
+            ? `Il n'y a pas d'intensection`
+            : `Ce système d'équations n'a pas de solution.`}
         </label>
         <ul class="flex gap-8">
           <Show when={!impossible()}>
@@ -47,6 +58,7 @@ const { Component, schema } = createExerciseType({
     )
   },
   question: z.object({
+    geometric: z.boolean().default(false),
     equations: z.string().array().nonempty(),
     variables: z.string().array().nonempty(),
   }),
@@ -96,11 +108,13 @@ const { Component, schema } = createExerciseType({
       X: z.number().transform(String).or(z.string().min(1)).array().nonempty(),
       impossibleProbabiliy: z.number().min(0).max(1).default(0),
       EmptyRows: z.number().array().nonempty().default([0]),
+      geometricProbability: z.number().min(0).max(1).default(0),
     }),
     generate: async (params) => {
       'use server'
       const variables = sample(params.Variables)
       const impossible = random(0, 1, true) <= params.impossibleProbabiliy
+      const geometric = random(0, 1, true) <= params.geometricProbability
       let emptyRows = sample(params.EmptyRows)
       if (emptyRows === 0 && impossible) {
         emptyRows += 1
@@ -130,7 +144,7 @@ const { Component, schema } = createExerciseType({
         `),
         { variables, zeroRows: emptyRows, impossible, ...params },
       )
-      return { equations: system.generate as [string, ...string[]], variables }
+      return { equations: system.generate as [string, ...string[]], variables, geometric }
     },
   },
 })
