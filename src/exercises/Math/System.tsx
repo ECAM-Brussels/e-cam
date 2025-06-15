@@ -1,4 +1,4 @@
-import { random, sample } from 'lodash-es'
+import { random, sample, shuffle } from 'lodash-es'
 import { createEffect, createSignal, For, Show } from 'solid-js'
 import { z } from 'zod'
 import Math from '~/components/Math'
@@ -109,12 +109,14 @@ const { Component, schema } = createExerciseType({
       impossibleProbabiliy: z.number().min(0).max(1).default(0),
       EmptyRows: z.number().array().nonempty().default([0]),
       geometricProbability: z.number().min(0).max(1).default(0),
+      shuffleProbability: z.number().min(0).max(1).default(1),
     }),
     generate: async (params) => {
       'use server'
       const variables = sample(params.Variables)
       const impossible = random(0, 1, true) <= params.impossibleProbabiliy
       const geometric = random(0, 1, true) <= params.geometricProbability
+      const shuffleEq = random(0, 1, true) <= params.shuffleProbability
       let emptyRows = sample(params.EmptyRows)
       if (emptyRows === 0 && impossible) {
         emptyRows += 1
@@ -144,7 +146,9 @@ const { Component, schema } = createExerciseType({
         `),
         { variables, zeroRows: emptyRows, impossible, ...params },
       )
-      return { equations: system.generate as [string, ...string[]], variables, geometric }
+      let equations = system.generate as [string, ...string[]]
+      if (shuffleEq) equations = shuffle(equations) as [string, ...string[]]
+      return { equations, variables, geometric }
     },
   },
 })
