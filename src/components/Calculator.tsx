@@ -1,24 +1,18 @@
-import Fa from './Fa'
+import Spinner from './Spinner'
 import { faCalculator } from '@fortawesome/free-solid-svg-icons'
-import { query } from '@solidjs/router'
-import { createResource, createSignal, Show, Suspense } from 'solid-js'
+import { action, useSubmission } from '@solidjs/router'
+import { Show } from 'solid-js'
+import Fa from '~/components/Fa'
 import Math from '~/components/Math'
-import Spinner from '~/components/Spinner'
+import Suspense from '~/components/Suspense'
 import { graphql } from '~/gql'
 import { request } from '~/lib/graphql'
 
-type CalculatorResponse = {
-  symbolic: string
-  numeric: string
-  isNumeric: boolean
-}
-
-const calculate = query(async (expr: string): Promise<CalculatorResponse> => {
+const calculate = action(async (form: FormData) => {
   'use server'
-  let response = { symbolic: '', numeric: '', isNumeric: false }
-  if (!expr) {
-    return response
-  }
+  const expr = form.get('expr') as string
+  let response = { symbolic: '', numeric: '' }
+  if (!expr) return response
   try {
     const { expression } = await request(
       graphql(`
@@ -27,7 +21,6 @@ const calculate = query(async (expr: string): Promise<CalculatorResponse> => {
             simplify {
               expr
             }
-            isNumeric
             evalf {
               expr
             }
@@ -39,44 +32,37 @@ const calculate = query(async (expr: string): Promise<CalculatorResponse> => {
     return {
       symbolic: expression.simplify.expr,
       numeric: expression.evalf.expr,
-      isNumeric: expression.isNumeric,
     }
   } catch {
     return response
   }
 }, 'calculate')
 
-type CalculatorProps = {
-  class?: string
-  value?: string
-}
-
-export default function Calculator(props: CalculatorProps) {
-  const [prompt, setPrompt] = createSignal(props.value || '')
-  const [answer] = createResource(prompt, calculate)
+export default function Calculator(props: { class?: string; value?: string }) {
+  const submission = useSubmission(calculate)
   return (
-    <div class={props.class} classList={{ 'my-8': true }}>
-      <div class="flex items-center gap-4 mx-8">
-        <button class="border border-sky-800 text-sky-800 px-4 py-1 rounded-xl relative z-20">
-          <Fa icon={faCalculator} />
-        </button>
+    <div class={props.class ?? 'my-8 mx-8 relative z-20'}>
+      <form class="flex items-center gap-4" method="post" action={calculate}>
+        <Show when={!submission.pending} fallback={<Spinner />}>
+          <button class="bg-sky-800 text-sky-100 px-4 py-2 rounded-xl" type="submit">
+            <Fa icon={faCalculator} />
+          </button>
+        </Show>
         <Math
-          class="border rounded-xl w-full relative z-20 shadow px-4 py-2"
-          value={prompt()}
-          onBlur={(e) => setPrompt(e.target.value)}
-          onkeydown={(e: KeyboardEvent) => {
-            if (e.key === 'Enter') {
-              ;(e.target as HTMLInputElement).blur()
-            }
-          }}
+          class="border rounded-xl w-full shadow px-4 py-2"
+          name="expr"
           editable
+          value={(submission.input?.[0].get('name') as string) ?? props.value}
         />
-      </div>
-      <Suspense fallback={<Spinner />}>
+      </form>
+      <Suspense>
         <div class="text-center my-4">
-          <Math value={answer()?.symbolic} />
-          <Show when={!answer()?.isNumeric && answer()?.numeric}>
-            <Math class="text-xs text-slate-500" value={'\\approx' + answer()?.numeric} />
+          <Math value={submission.result?.symbolic} />
+          <Show when={submission.result?.numeric}>
+            <Math
+              class="text-xs text-slate-500 mx-2"
+              value={'\\approx' + submission.result?.numeric}
+            />
           </Show>
         </div>
       </Suspense>
