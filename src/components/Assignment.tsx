@@ -4,7 +4,7 @@ import {
   faUpRightAndDownLeftFromCenter,
   faWindowMinimize,
 } from '@fortawesome/free-solid-svg-icons'
-import { createAsync, createAsyncStore, reload } from '@solidjs/router'
+import { createAsync, createAsyncStore, json, reload } from '@solidjs/router'
 import { Component, createEffect, createSignal, type JSXElement, Show } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import ErrorBoundary from '~/components/ErrorBoundary'
@@ -213,6 +213,7 @@ export function ExerciseUI<N, Q, A, P, F>(props: Exercise) {
 
 export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
   const exercise = createAsyncStore(() => getExercise(props.url, props.userEmail, props.index))
+  const key = () => [props.url, props.userEmail, props.index] as const
   const options = () =>
     optionsSchema.parse({
       ...props.data.options,
@@ -227,15 +228,9 @@ export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
             {...(exercise() as ExerciseProps<N, Q, A, P, F>)}
             options={options()}
             onChange={async (event, action) => {
-              await saveExercise(props.url, props.userEmail, props.index, event as Exercise)
-              const revalidate =
-                action === 'generate'
-                  ? [
-                      getExercise.keyFor(props.url, props.userEmail, props.index),
-                      getPaginationInfo.keyFor(props.url, props.userEmail),
-                    ]
-                  : 'nothing'
-              return reload({ revalidate })
+              await saveExercise(...key(), event as Exercise)
+              if (action === 'submit') reload({ revalidate: 'nothing' })
+              return json(null, { revalidate: getExercise.keyFor(...key()) })
             }}
           />
         )}
