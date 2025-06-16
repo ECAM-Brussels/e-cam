@@ -7,7 +7,7 @@ import Button from '~/components/Button'
 import Suspense from '~/components/Suspense'
 import ZodError from '~/components/ZodError'
 import Feedback from '~/lib/exercises/feedback'
-import { optionsSchema, type ExerciseType, type OptionsWithDefault } from '~/lib/exercises/schemas'
+import { optionsSchema, type ExerciseType, type Options } from '~/lib/exercises/schemas'
 
 export type ExerciseProps<Name, Question, Attempt, Params, Feedback> = {
   type: Name
@@ -20,7 +20,7 @@ export type ExerciseProps<Name, Question, Attempt, Params, Feedback> = {
     },
     action: 'generate' | 'submit',
   ) => Promise<unknown> | void
-  options: OptionsWithDefault
+  options: Options
   attempts: { correct: boolean; attempt: Attempt }[]
 } & ({ question: Question; params: never } | { params: Params; question: never })
 
@@ -151,7 +151,7 @@ export function createExerciseType<
   }
   const schema = z.object({
     type: z.literal(exercise.name),
-    options: optionsSchema,
+    options: optionsSchema.partial().optional(),
     attempts: z
       .object({
         correct: z.boolean(),

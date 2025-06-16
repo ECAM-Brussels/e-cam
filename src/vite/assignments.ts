@@ -7,13 +7,6 @@ import { loadEnv, type Plugin } from 'vite'
 import { z } from 'zod'
 import { type AssignmentInput } from '~/lib/exercises/assignment'
 
-const options = {
-  adjustElo: true,
-  maxAttempts: 1,
-  note: '',
-  whiteboard: true,
-  streak: 0,
-}
 let prisma: PrismaClient
 
 async function createEmptyAssignments(prisma: PrismaClient, assignments: string[]) {
@@ -21,7 +14,7 @@ async function createEmptyAssignments(prisma: PrismaClient, assignments: string[
     data: assignments.map((path) => {
       const relativePath = relative(resolve('content'), path)
       const url = '/' + relativePath.replace(/\.ya?ml$/, '')
-      return { url, body: [], options }
+      return { url, body: [] }
     }),
     skipDuplicates: true,
   })

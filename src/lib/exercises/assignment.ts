@@ -1,7 +1,7 @@
 import { getUser } from '../auth/session'
 import { prisma } from '../db'
 import { getEloGain } from '../elo'
-import { type OptionsWithDefault, optionsSchemaWithDefault } from './schemas'
+import { type Options, optionsSchema } from './schemas'
 import { type Prisma } from '@prisma/client'
 import { query, redirect } from '@solidjs/router'
 import { type ElementDefinition } from 'cytoscape'
@@ -55,7 +55,7 @@ export const assignmentSchema = z.object({
     .default('')
     .describe('Description of the assignment, entered as markdown'),
   body: exerciseSchema.array().default([]).describe('List of exercises'),
-  options: optionsSchemaWithDefault,
+  options: optionsSchema.optional().transform((opts) => optionsSchema.parse({ ...opts })),
   lastModified: z.date().default(new Date()),
   prerequisites: z
     .object({
@@ -116,10 +116,9 @@ const getExercises = query(async (url: string, email: string) => {
 function addExercises(
   body: Exercise[],
   questions: Exercise[],
-  options: Partial<OptionsWithDefault> | null,
+  options: Partial<Options> | null,
 ): Exercise[] {
-  const opts = (id: number) =>
-    optionsSchemaWithDefault.parse({ ...options, ...questions.at(id)?.options })
+  const opts = (id: number) => optionsSchema.parse({ ...options, ...questions.at(id)?.options })
   const streak = (id: number) => opts(id).streak
   let [dynamicId, currentStreak] = [0, 0]
   for (const exercise of body) {
@@ -161,17 +160,12 @@ async function upsertExercise(exercise: Exercise) {
     select: { score: true },
   })
   if (!data) {
-    let average = await prisma.question.aggregate({
-      _avg: { score: true },
-      where: { type: exercise.type },
-    })
-    const score = average._avg.score ?? 1500
     await prisma.question.create({
       data: {
         hash,
         type: exercise.type,
         body: exercise.question,
-        score,
+        score: exercise.options.initialElo,
       },
       select: { score: true },
     })

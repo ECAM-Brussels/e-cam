@@ -1,28 +1,15 @@
 import { type JSXElement } from 'solid-js'
 import { z } from 'zod'
 
-export const optionsSchema = z
-  .object({
-    adjustElo: z.boolean().optional(),
-    maxAttempts: z.null().or(z.number()).optional(),
-    note: z.string().optional(),
-    whiteboard: z.boolean().optional(),
-    streak: z.number().optional(),
-  })
-  .default({})
-
-export const optionsSchemaWithDefault = z
-  .object({
-    adjustElo: z.boolean().default(true),
-    maxAttempts: z.null().or(z.number()).default(1),
-    note: z.string().default(''),
-    whiteboard: z.boolean().default(true),
-    streak: z.number().default(0),
-  })
-  .default({})
-
+export const optionsSchema = z.object({
+  adjustElo: z.boolean().default(true),
+  initialElo: z.number().default(1500),
+  maxAttempts: z.null().or(z.number()).default(1),
+  note: z.string().default(''),
+  whiteboard: z.boolean().default(true),
+  streak: z.number().default(0),
+})
 export type Options = z.infer<typeof optionsSchema>
-export type OptionsWithDefault = z.infer<typeof optionsSchemaWithDefault>
 
 /**
  * Type used to describe how exercises types are created.

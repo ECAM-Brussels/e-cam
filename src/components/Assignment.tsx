@@ -26,7 +26,7 @@ import {
   getPaginationInfo,
 } from '~/lib/exercises/assignment'
 import { ExerciseProps } from '~/lib/exercises/base'
-import { optionsSchemaWithDefault } from '~/lib/exercises/schemas'
+import { optionsSchema } from '~/lib/exercises/schemas'
 import { getUserInfo } from '~/lib/user'
 
 type AssignmentProps = {
@@ -214,7 +214,7 @@ export function ExerciseUI<N, Q, A, P, F>(props: Exercise) {
 export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
   const exercise = createAsyncStore(() => getExercise(props.url, props.userEmail, props.index))
   const options = () =>
-    optionsSchemaWithDefault.parse({
+    optionsSchema.parse({
       ...props.data.options,
       ...(exercise()?.options || {}),
     })
