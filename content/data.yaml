@@ -13,6 +13,8 @@ courses:
     title: Analyse
   - code: geometry
     title: Géométrie
+  - code: trigonometry
+    title: Trigonométrie
   - code: 4MATH5
     title: 4ème maths 5
   - code: 5MATH4

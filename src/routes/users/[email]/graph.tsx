@@ -16,7 +16,7 @@ export const route = {
 const grouping = [
   { label: 'Ne pas grouper', groups: [] },
   { label: 'Grouper par année', groups: ['4MATH5', '5MATH4', '5MATH6', '6MATH4', '6MATH6'] },
-  { label: 'Grouper par domaine', groups: ['algebra', 'calculus'] },
+  { label: 'Grouper par domaine', groups: ['algebra', 'calculus', 'trigonometry'] },
 ]
 
 export default function () {

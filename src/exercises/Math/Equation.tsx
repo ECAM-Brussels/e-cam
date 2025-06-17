@@ -102,6 +102,21 @@ const { Component, schema } = createExerciseType({
   generator: {
     params: z.discriminatedUnion('type', [
       z.object({
+        type: z.literal('simpleTrigonometric'),
+        F: z
+          .union([z.literal('cos'), z.literal('sin'), z.literal('tan'), z.literal('cot')])
+          .array()
+          .nonempty(),
+        A: z.string().min(1).or(z.number()).array().nonempty(),
+        B: z.string().min(1).or(z.number()).array().nonempty(),
+        C: z.string().min(1).or(z.number()).array().nonempty(),
+        X: z.string().array().nonempty().default(['x']),
+        Intervals: z
+          .tuple([z.string().or(z.number()), z.string().or(z.number())])
+          .array()
+          .nonempty(),
+      }),
+      z.object({
         type: z.literal('polynomial'),
         A: z.number().or(z.string()).array().default([1]),
         roots: z.union([
@@ -112,7 +127,7 @@ const { Component, schema } = createExerciseType({
             })
             .transform((set) => product(...set.product)),
         ]),
-        X: z.string().array().default(['x']),
+        X: z.string().array().nonempty().default(['x']),
         extra: z
           .string()
           .or(z.number())
@@ -122,38 +137,65 @@ const { Component, schema } = createExerciseType({
       }),
     ]),
     generate: async (params) => {
-      const x = sample(params.X)!
-      let [lhs, rhs] = [`(${sample(params.A)})`, '']
-      sample(params.roots)?.forEach((root) => {
-        lhs += `((${x}) - (${root}))`
-      })
-      sample(params.extra)?.forEach((coeff, index) => {
-        rhs += `+ (${coeff})` + (index > 0 ? `(${x})^{${index}}` : '')
-      })
-      const data = await request(
-        graphql(`
-          query CalculateQuadraticEquation($lhs: Math!, $rhs: Math!) {
-            lhs: expression(expr: $lhs) {
-              normalizeRoots {
-                add(expr: $rhs) {
-                  simplify {
-                    expr
-                  }
+      if (params.type === 'simpleTrigonometric') {
+        const f = sample(params.F)
+        const a = sample(params.A)
+        const b = sample(params.B)
+        const c = sample(params.C)
+        const x = sample(params.X)
+        const I = sample(params.Intervals)
+        const { expression } = await request(
+          graphql(`
+            query CalculateArg($expr: Math!) {
+              expression(expr: $expr) {
+                simplify {
+                  expr
                 }
               }
             }
-            rhs: expression(expr: $rhs) {
-              simplify {
-                expr
+          `),
+          { expr: `(${a}) ${x} + ${b}` },
+        )
+        const arg = expression.simplify.expr
+        return {
+          equation: `\\${f}\\left(${arg}\\right) = ${c}`,
+          interval: [String(I[0]), String(I[1])] as [string, string],
+          x,
+        }
+      } else {
+        const x = sample(params.X)
+        let [lhs, rhs] = [`(${sample(params.A)})`, '']
+        sample(params.roots)?.forEach((root) => {
+          lhs += `((${x}) - (${root}))`
+        })
+        sample(params.extra)?.forEach((coeff, index) => {
+          rhs += `+ (${coeff})` + (index > 0 ? `(${x})^{${index}}` : '')
+        })
+        const data = await request(
+          graphql(`
+            query CalculateQuadraticEquation($lhs: Math!, $rhs: Math!) {
+              lhs: expression(expr: $lhs) {
+                normalizeRoots {
+                  add(expr: $rhs) {
+                    simplify {
+                      expr
+                    }
+                  }
+                }
+              }
+              rhs: expression(expr: $rhs) {
+                simplify {
+                  expr
+                }
               }
             }
-          }
-        `),
-        { lhs, rhs },
-      )
-      return {
-        equation: `${data.lhs.normalizeRoots.add.simplify.expr} = ${data.rhs.simplify.expr}`,
-        x,
+          `),
+          { lhs, rhs },
+        )
+        return {
+          equation: `${data.lhs.normalizeRoots.add.simplify.expr} = ${data.rhs.simplify.expr}`,
+          x,
+        }
       }
     },
   },

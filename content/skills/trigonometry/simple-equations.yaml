@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: "Équations trigonométriques simples"
+courses:
+  - trigonometry
+  - PM1C
+  - 4MATH5
+options:
+  streak: 999
+body:
+  - type: Equation
+    params:
+      type: simpleTrigonometric
+      F:
+        - sin
+        - cos
+        - tan
+        - cot
+      A: [1, -1, 2, -2, 3, -3]
+      B:
+        - \pi
+        - -\pi
+        - \frac{\pi}{2}
+        - -\frac{\pi}{2}
+        - \frac{\pi}{3}
+        - -\frac{\pi}{3}
+        - \frac{\pi}{4}
+        - -\frac{\pi}{4}
+        - \frac{\pi}{6}
+        - -\frac{\pi}{6}
+        - \frac{\pi}{12}
+        - -\frac{\pi}{12}
+      C:
+        - '0'
+        - \frac{1}{2},
+        - \frac{\sqrt{2}}{2}
+        - \frac{\sqrt{3}}{2}
+        - '1'
+        - -\frac{1}{2}
+        - -\frac{\sqrt{2}}{2}
+        - -\frac{\sqrt{3}}{2}
+        - '-1'
+      Intervals:
+       - ['0', '2 \pi']
+       - ['-\pi', '\pi']
