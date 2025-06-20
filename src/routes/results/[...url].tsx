@@ -25,6 +25,7 @@ export default function () {
         </p>
         <h1 class="font-bold text-3xl">Résultats</h1>
         <Table
+          search
           data={data()}
           columns={[
             {
