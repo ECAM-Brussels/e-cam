@@ -1,10 +1,9 @@
-import { prisma } from './db'
+import { type Prisma } from '@prisma/client'
 import { query } from '@solidjs/router'
+import { prisma } from '~/lib/db'
 
-export const getCourses = query(async () => {
+export const getCourses = query(async (args: Prisma.CourseFindManyArgs) => {
   'use server'
-  const courses = await prisma.course.findMany({
-    where: { url: { not: '' } },
-  })
+  const courses = await prisma.course.findMany(args)
   return courses
 }, 'getCourses')

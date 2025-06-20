@@ -97,7 +97,7 @@ function NavbarItem(props: NavbarItemProps) {
 
 function Drawer(props: { visible?: boolean; onOutsideClick?: () => void }) {
   const user = createAsync(() => getUser())
-  const courses = createAsync(() => getCourses())
+  const courses = createAsync(() => getCourses({ where: { url: { not: '' } } }))
   return (
     <Portal>
       <div

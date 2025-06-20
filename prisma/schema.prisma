@@ -40,6 +40,7 @@ model Course {
   title String?
   image String?
   url String?
+  ecam Boolean @default(false)
 
   assignments Assignment[]
 }

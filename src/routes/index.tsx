@@ -1,82 +1,46 @@
-import { createAsync, type RouteDefinition } from '@solidjs/router'
-import { createSignal, For, Show, type JSXElement } from 'solid-js'
-import Graph from '~/components/Graph'
+import { createAsyncStore, type RouteDefinition } from '@solidjs/router'
+import { createSignal, For } from 'solid-js'
+import Card from '~/components/Card'
 import Page from '~/components/Page'
 import { getUser } from '~/lib/auth/session'
-import { getAssignmentList } from '~/lib/exercises/assignment'
+import { getCourses } from '~/lib/course'
 
 export const route = {
   preload() {
-    getAssignmentList({ courses: { some: { code: 'algebra' } } })
     getUser()
   },
 } satisfies RouteDefinition
 
-const options = {
-  PM1C: "Je suis étudiant ou considère étudier à l'ECAM",
-  '5MATH4': 'Je suis en 5ème secondaire',
-  '6MATH4': 'Je suis en 6ème secondaire',
-} as const
-
 export default function Home() {
-  const [choice, setChoice] = createSignal<keyof typeof options | undefined>(undefined)
-  return (
-    <Page title="Accueil" class="">
-      <div class="mx-auto h-[400px] flex flex-col justify-center text-center bg-gradient-to-b from-slate-50 to-sky-50">
-        <h2 class="text-3xl my-8">Que souhaitez-vous réviser?</h2>
-        <div class="md:flex justify-center">
-          <For each={Object.entries(options)}>
-            {([course, label]) => (
-              <button
-                class="block rounded-full border shadow-sm p-4 m-4 bg-white hover:ring-blue-400 hover:ring-2"
-                classList={{
-                  'ring-sky-400 ring-2': choice() === course,
-                }}
-                onClick={() => setChoice(course as keyof typeof options)}
-              >
-                {label}
-              </button>
-            )}
-          </For>
-        </div>
-      </div>
-      <Show when={choice()}>
-        <div class="bg-white">
-          <Graph
-            class="container mx-auto h-[600px]"
-            query={{ courses: { some: { code: choice() } } }}
-          />
-        </div>
-      </Show>
-      <h2 class="text-4xl font-bold text-slate-800 my-8 container mx-auto">Compétences</h2>
-      <Skills title="Algèbre" code="algebra" open />
-      <Skills title="Analyse" code="calculus" open />
-    </Page>
+  const [student, setStudent] = createSignal(false)
+  const courses = createAsyncStore(
+    () => getCourses({ where: { url: { not: '' }, image: { not: '' } } }),
+    {
+      initialValue: [],
+    },
   )
-}
-
-function Skills(props: { code: string; title: JSXElement; open?: boolean }) {
-  const data = createAsync(() => getAssignmentList({ courses: { some: { code: props.code } } }))
-  const user = createAsync(() => getUser())
   return (
-    <section class="even:bg-white p-8">
-      <details open={props.open} class="container mx-auto">
-        <summary class="font-semibold text-2xl my-4 cursor-pointer">{props.title}</summary>
-        <ul class="lg:columns-2">
-          <For each={data()}>
-            {(assignment) => (
-              <li class="flex justify-between m-2">
-                <a href={assignment.url} class="hover:text-cyan-700">
-                  {assignment.page.title}
-                </a>
-                <Show when={user()}>
-                  <progress value={assignment.grade / 10} />
-                </Show>
-              </li>
-            )}
-          </For>
-        </ul>
-      </details>
-    </section>
+    <Page title="Accueil">
+      <label class="inline-flex gap-4">
+        <input
+          type="checkbox"
+          class="sr-only peer"
+          checked={student()}
+          onChange={(e) => setStudent(e.target.checked)}
+        />{' '}
+        <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600"></div>
+        Je suis étudiant·e à l'ECAM
+      </label>
+      <label class="inline-flex items-center cursor-pointer"></label>
+      <div class="grid lg:grid-cols-2 gap-8 container mx-auto my-8">
+        <For each={courses()?.filter((c) => c.ecam === student())}>
+          {(course) => (
+            <Card href={course.url ?? ''} image={course.image ?? ''}>
+              <h3>{course.title}</h3>
+            </Card>
+          )}
+        </For>
+      </div>
+    </Page>
   )
 }
