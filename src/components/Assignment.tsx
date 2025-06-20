@@ -42,6 +42,7 @@ export const getGraphQuery = (url: string) => ({
 
 function Shell(props: AssignmentProps & { children: JSXElement }) {
   const user = createAsync(() => getUserInfo(props.userEmail))
+  const currentUser = createAsync(() => getUser())
   const eloDiff = createAsync(() => getEloDiff(props.userEmail), { initialValue: 0 })
   const [fullScreen, setFullScreen] = createSignal(false)
   const [zoom, setZoom] = createSignal(1)
@@ -59,9 +60,14 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
 
   return (
     <ErrorBoundary>
-      <h1 class="text-4xl my-4" classList={{ hidden: fullScreen() }}>
-        {props.data.page.title}
-      </h1>
+      <div class="flex items-center justify-between text-small">
+        <h1 class="text-4xl my-4" classList={{ hidden: fullScreen() }}>
+          {props.data.page.title}
+        </h1>
+        <Show when={currentUser()?.role === 'TEACHER' || user()?.role === 'ADMIN'}>
+          <a href={`/results/${props.url}`}>Voir les résultats</a>
+        </Show>
+      </div>
       <FullScreen class="bg-slate-50 h-screen w-full overflow-hidden" onChange={setFullScreen}>
         <div classList={{ 'grid grid-cols-3 p-4': fullScreen(), 'mb-8': !fullScreen() }}>
           <h2 class="text-2xl" classList={{ hidden: !fullScreen() }}>
