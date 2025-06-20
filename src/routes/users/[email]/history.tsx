@@ -9,7 +9,7 @@ import Page from '~/components/Page'
 import Table from '~/components/Table'
 import { getUser } from '~/lib/auth/session'
 import { getUserAttempts } from '~/lib/exercises/attempt'
-import { optionsSchemaWithDefault } from '~/lib/exercises/schemas'
+import { optionsSchema } from '~/lib/exercises/schemas'
 import { createSearchParam } from '~/lib/params'
 import { getUserInfo } from '~/lib/user'
 
@@ -84,7 +84,7 @@ export default function () {
                     <Suspense>
                       <ExerciseUI
                         {...row.exercise}
-                        options={optionsSchemaWithDefault.parse(exercise().options)}
+                        options={optionsSchema.parse(exercise().options)}
                       />
                       <a class="text-sm" href={`${row.url}/${row.position}`}>
                         Plus de détails
