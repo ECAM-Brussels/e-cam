@@ -1,10 +1,18 @@
-import { faCheck, faFile, faLink, faUser, faXmark } from '@fortawesome/free-solid-svg-icons'
-import { createAsync, useParams } from '@solidjs/router'
+import { faCheck, faFile, faUser, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { createAsync, type RouteDefinition, useParams } from '@solidjs/router'
 import { For } from 'solid-js'
 import Fa from '~/components/Fa'
 import Page from '~/components/Page'
 import Table from '~/components/Table'
+import { getUser } from '~/lib/auth/session'
 import { getAssignmentResults } from '~/lib/exercises/assignment'
+
+export const route = {
+  preload({ params }) {
+    getUser()
+    getAssignmentResults('/' + params.url)
+  },
+} satisfies RouteDefinition
 
 export default function () {
   const params = useParams()
