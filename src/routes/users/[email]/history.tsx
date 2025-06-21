@@ -2,7 +2,7 @@ import UserTabs from './_tabs'
 import { createAsyncStore, type RouteDefinition, useParams } from '@solidjs/router'
 import { formatDistance } from 'date-fns'
 import { fr } from 'date-fns/locale'
-import { Show, Suspense } from 'solid-js'
+import { JSX, Show, Suspense } from 'solid-js'
 import { z } from 'zod'
 import { ExerciseUI } from '~/components/Assignment'
 import Page from '~/components/Page'
@@ -21,11 +21,23 @@ export const route = {
   },
 } satisfies RouteDefinition
 
+const filters: {
+  [key: string]: (attempt: Awaited<ReturnType<typeof getUserAttempts>>[number]) => boolean
+} = {
+  all: () => true,
+  incorrect: (attempt) => attempt.correct === false,
+}
+const filterNames = z.union([z.literal('incorrect'), z.literal('all')]).default('all')
+
 export default function () {
   const params = useParams()
   const user = createAsyncStore(() => getUserInfo(params.email))
   const attempts = createAsyncStore(() => getUserAttempts(params.email))
   const [page, setPage] = createSearchParam('page', z.coerce.number().default(1))
+  const [filter, setFilter] = createSearchParam('filter', filterNames)
+  const changeFilter: JSX.ChangeEventHandler<HTMLInputElement, Event> = (event) => {
+    setFilter(filterNames.parse(event.target.value))
+  }
   return (
     <Page title={`Historique`}>
       <UserTabs />
@@ -34,6 +46,28 @@ export default function () {
           {user()?.lastName}, {user()?.firstName}
         </h1>
         <h2 class="text-xl">ELO: {user()?.score}</h2>
+        <p class="flex gap-4">
+          <label>
+            <input
+              type="radio"
+              name="filter"
+              value="all"
+              onChange={changeFilter}
+              checked={filter() === 'all'}
+            />{' '}
+            Tout montrer
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="filter"
+              value="incorrect"
+              onChange={changeFilter}
+              checked={filter() === 'incorrect'}
+            />{' '}
+            Montrer les erreurs
+          </label>
+        </p>
         <Show when={attempts()}>
           {(attempts) => (
             <Table
@@ -77,7 +111,7 @@ export default function () {
                   ),
                 },
               ]}
-              data={attempts()}
+              data={attempts().filter(filters[filter()])}
               subComponent={(row) => (
                 <Show when={row.exercise}>
                   {(exercise) => (
