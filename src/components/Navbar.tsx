@@ -1,13 +1,18 @@
 import { faBars, faCircleXmark, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import { createAsync, useLocation } from '@solidjs/router'
-import { createSignal, For, Show, type JSXElement } from 'solid-js'
+import { For, Show, type JSXElement } from 'solid-js'
 import { Portal } from 'solid-js/web'
+import { z } from 'zod'
 import Fa from '~/components/Fa'
 import { getUser, logout } from '~/lib/auth/session'
 import { getCourses } from '~/lib/course'
+import { createSearchParam } from '~/lib/params'
 
 export default function Navbar() {
-  const [showSidebar, setShowSidebar] = createSignal(false)
+  const [showSidebar, setShowSidebar] = createSearchParam(
+    'sidebar',
+    z.coerce.boolean().default(false),
+  )
   return (
     <NavbarShell>
       <Logo />
