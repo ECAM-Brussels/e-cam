@@ -1,12 +1,19 @@
+import { extractFormData } from '../form'
 import { getLoginUrl } from './azure'
-import { action, query, redirect } from '@solidjs/router'
+import { action, json, query, redirect } from '@solidjs/router'
 import { useSession } from 'vinxi/http'
+import { z } from 'zod'
 import { prisma } from '~/lib/db'
+
+const preferencesSchema = z.object({
+  ecam: z.coerce.boolean().default(false),
+})
 
 type SessionData = {
   email?: string
   state?: string
   codeVerifier?: string
+  preferences?: z.infer<typeof preferencesSchema>
 }
 
 export function getSession() {
@@ -47,3 +54,22 @@ export const logout = action(async () => {
   const session = await getSession()
   await session.clear()
 })
+
+export const getPreferences = query(async () => {
+  'use server'
+  const session = await getSession()
+  const preferences = preferencesSchema.parse(session.data.preferences ?? {})
+  return preferences
+}, 'getPreferences')
+
+export const setPreferences = action(
+  async (payload: Partial<z.infer<typeof preferencesSchema>>, form: FormData) => {
+    'use server'
+    const session = await getSession()
+    const data = extractFormData(form)
+    await session.update({
+      preferences: preferencesSchema.parse({ ...session.data.preferences, ...payload, ...data }),
+    })
+    return json(null, { revalidate: getPreferences.key })
+  },
+)
