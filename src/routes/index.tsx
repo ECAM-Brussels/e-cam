@@ -1,5 +1,5 @@
 import { createAsyncStore, useSubmission, type RouteDefinition } from '@solidjs/router'
-import { For, Show } from 'solid-js'
+import { For } from 'solid-js'
 import Card from '~/components/Card'
 import Page from '~/components/Page'
 import { getPreferences, getUser, setPreferences } from '~/lib/auth/session'
