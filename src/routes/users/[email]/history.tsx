@@ -2,12 +2,15 @@ import UserTabs from './_tabs'
 import { createAsyncStore, type RouteDefinition, useParams } from '@solidjs/router'
 import { formatDistance } from 'date-fns'
 import { fr } from 'date-fns/locale'
-import { JSX, Show, Suspense } from 'solid-js'
+import { JSX, Show } from 'solid-js'
 import { z } from 'zod'
 import { ExerciseUI } from '~/components/Assignment'
+import LineChart from '~/components/LineChart'
 import Page from '~/components/Page'
+import Suspense from '~/components/Suspense'
 import Table from '~/components/Table'
 import { getUser } from '~/lib/auth/session'
+import { getEloGraph } from '~/lib/elo'
 import { getUserAttempts } from '~/lib/exercises/attempt'
 import { optionsSchema } from '~/lib/exercises/schemas'
 import { createSearchParam } from '~/lib/params'
@@ -18,6 +21,7 @@ export const route = {
     getUser()
     getUserInfo(params.email)
     getUserAttempts(params.email)
+    getEloGraph(params.email)
   },
 } satisfies RouteDefinition
 
@@ -38,6 +42,7 @@ export default function () {
   const changeFilter: JSX.ChangeEventHandler<HTMLInputElement, Event> = (event) => {
     setFilter(filterNames.parse(event.target.value))
   }
+  const dataset = createAsyncStore(() => getEloGraph(params.email))
   return (
     <Page title={`Historique`}>
       <UserTabs />
@@ -46,6 +51,9 @@ export default function () {
           {user()?.lastName}, {user()?.firstName}
         </h1>
         <h2 class="text-xl">ELO: {user()?.score}</h2>
+        <Show when={dataset()}>
+          {(dataset) => <LineChart class="p-4 lg:p-12" {...dataset()} />}
+        </Show>
         <p class="flex gap-4">
           <label>
             <input
