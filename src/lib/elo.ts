@@ -47,12 +47,8 @@ export const getEloGraph = query(async (email?: string) => {
   }
   const user = await getUserInfo(email)
   const attempts = await prisma.attempt.findMany({
-    where: {
-      email,
-      gain: { not: null },
-    },
+    where: { email, gain: { not: null } },
     select: { gain: true, date: true },
-    orderBy: { date: 'desc' },
   })
   let score = user?.score ?? 1500
   const data: number[] = []
