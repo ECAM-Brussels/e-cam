@@ -1,6 +1,6 @@
 import UserTabs from './_tabs'
 import { action, json, type RouteDefinition } from '@solidjs/router'
-import { createSignal, For } from 'solid-js'
+import { For } from 'solid-js'
 import { z } from 'zod'
 import Graph from '~/components/Graph'
 import Page from '~/components/Page'
@@ -43,7 +43,8 @@ export default function () {
             {([key, group]) => (
               <button>
                 <label>
-                  <input type="radio" name="groupBy" value={key} /> {group.label}
+                  <input type="radio" name="groupBy" value={key} checked={groupBy() === key} />{' '}
+                  {group.label}
                 </label>
               </button>
             )}
