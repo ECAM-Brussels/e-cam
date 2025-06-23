@@ -72,7 +72,7 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
         <Show
           when={!fullScreen() && (currentUser()?.role === 'TEACHER' || user()?.role === 'ADMIN')}
         >
-          <a href={`/results/${props.url}`}>Voir les résultats</a>
+          <a href={`/results${props.url}`}>Voir les résultats</a>
         </Show>
       </div>
       <FullScreen class="bg-slate-50 h-screen w-full overflow-hidden" onChange={setFullScreen}>
