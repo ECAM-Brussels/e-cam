@@ -7,6 +7,7 @@ import {
 import { createAsync, createAsyncStore, json, reload } from '@solidjs/router'
 import { Component, createEffect, createSignal, type JSXElement, Show } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
+import { z } from 'zod'
 import ErrorBoundary from '~/components/ErrorBoundary'
 import Fa from '~/components/Fa'
 import FullScreen from '~/components/FullScreen'
@@ -27,6 +28,7 @@ import {
 } from '~/lib/exercises/assignment'
 import { ExerciseProps } from '~/lib/exercises/base'
 import { optionsSchema } from '~/lib/exercises/schemas'
+import { createSearchParam } from '~/lib/params'
 import { getUserInfo } from '~/lib/user'
 
 type AssignmentProps = {
@@ -44,7 +46,10 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
   const user = createAsync(() => getUserInfo(props.userEmail))
   const currentUser = createAsync(() => getUser())
   const eloDiff = createAsync(() => getEloDiff(props.userEmail), { initialValue: 0 })
-  const [fullScreen, setFullScreen] = createSignal(false)
+  const [fullScreen, setFullScreen] = createSearchParam(
+    'fullscreen',
+    z.coerce.boolean().default(false),
+  )
   const [zoom, setZoom] = createSignal(1)
   let boardContainer!: HTMLDivElement
 
@@ -64,7 +69,9 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
         <h1 class="text-4xl my-4" classList={{ hidden: fullScreen() }}>
           {props.data.page.title}
         </h1>
-        <Show when={currentUser()?.role === 'TEACHER' || user()?.role === 'ADMIN'}>
+        <Show
+          when={!fullScreen() && (currentUser()?.role === 'TEACHER' || user()?.role === 'ADMIN')}
+        >
           <a href={`/results/${props.url}`}>Voir les résultats</a>
         </Show>
       </div>
@@ -181,6 +188,7 @@ function Navigation(props: AssignmentProps) {
     initialValue: [],
   })
   const realUser = createAsync(() => getUser())
+  const [fullscreen] = createSearchParam('fullscreen', z.coerce.boolean().default(false))
   return (
     <div class="text-center">
       <Pagination
@@ -193,7 +201,7 @@ function Navigation(props: AssignmentProps) {
           if (index > 1) {
             parts.push(`${index}`)
           }
-          return parts.join('/')
+          return parts.join('/') + (fullscreen() ? '?fullscreen=true' : '')
         }}
         max={pagination().length || 0}
         classList={(i) => ({
