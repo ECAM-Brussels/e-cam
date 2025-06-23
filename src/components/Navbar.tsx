@@ -116,18 +116,16 @@ function Drawer(props: { visible?: boolean; onOutsideClick?: () => void }) {
           >
             <Fa icon={faCircleXmark} />
           </button>
+          <DrawerLink href="/">Accueil</DrawerLink>
+          <Show when={user()}>
+            <DrawerLink href={`/users/${user()?.email}`}>Profil</DrawerLink>
+          </Show>
           <h3 class="px-4 mb-4 font-bold text-lg [font-variant:small-caps]">Cours</h3>
-          <ul class="text-slate-600 font-semibold">
+          <ul class="px-4">
             <For each={courses()}>
               {(course) => (
                 <li>
-                  <a
-                    class="block py-4 px-8 hover:bg-slate-50"
-                    href={course.url ?? undefined}
-                    noScroll
-                  >
-                    {course.title}
-                  </a>
+                  <DrawerLink href={course.url ?? '/'}>{course.title}</DrawerLink>
                 </li>
               )}
             </For>
@@ -143,5 +141,17 @@ function Drawer(props: { visible?: boolean; onOutsideClick?: () => void }) {
         <div class="bg-black h-screen w-full opacity-50" onClick={props.onOutsideClick} />
       </div>
     </Portal>
+  )
+}
+
+function DrawerLink(props: { href: string; children: JSXElement }) {
+  return (
+    <a
+      class="text-slate-600 font-semibold block py-4 px-4 hover:bg-slate-50"
+      href={props.href}
+      noScroll
+    >
+      {props.children}
+    </a>
   )
 }
