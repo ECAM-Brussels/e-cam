@@ -125,7 +125,7 @@ function Drawer(props: { visible?: boolean; onOutsideClick?: () => void }) {
             <For each={courses()}>
               {(course) => (
                 <li>
-                  <DrawerLink href={course.url ?? '/'}>{course.title}</DrawerLink>
+                  <DrawerLink href={course.url ?? '#'}>{course.title}</DrawerLink>
                 </li>
               )}
             </For>
