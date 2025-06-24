@@ -1,12 +1,13 @@
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { hash, compare } from 'bcryptjs'
-import { For, isServer, Show } from 'solid-js/web'
+import { For, isServer } from 'solid-js/web'
 import { z } from 'zod'
 import Code from '~/components/Code'
 import Fa from '~/components/Fa'
 import Markdown from '~/components/Markdown'
-import { decrypt, encrypt } from '~/lib/cryptography'
+import { encrypt } from '~/lib/cryptography'
 import { createExerciseType } from '~/lib/exercises/base'
+import { wrapCode } from '~/lib/helpers'
 
 let execPython: (code: string, test: string) => Promise<string>
 if (isServer) {
@@ -57,7 +58,7 @@ const { Component, schema } = createExerciseType({
   Component: (props) => (
     <>
       <Markdown value={props.question.text} />
-      <Code lang="python" name="attempt" value={props.attempt ?? ''} run />
+      <Code class="w-full" lang="python" name="attempt" value={props.attempt ?? ''} run />
     </>
   ),
   question: z
@@ -95,6 +96,7 @@ const { Component, schema } = createExerciseType({
         state.descriptions[i] = state.descriptions[i] ?? `Running ${test} yields correct result`
         return test
       })
+      if (state.wrap) state.answer = wrapCode(state.answer)
       const patch = state.results.length
         ? {}
         : {
@@ -108,6 +110,7 @@ const { Component, schema } = createExerciseType({
     if (question.constraints.some(([regex, val]) => new RegExp(regex).test(attempt) !== val)) {
       return false
     }
+    if (question.wrap) attempt = wrapCode(attempt)
     const tests = runTests(attempt, question.tests, question.results)
     return Promise.race([
       Promise.all(tests).then((t) => t.every((v) => v)),
@@ -115,12 +118,12 @@ const { Component, schema } = createExerciseType({
     ])
   },
   feedback: [
-    async (remainingAttempts, question, attempt) => {
+    async (_, question, attempt) => {
+      if (question.wrap) attempt = wrapCode(attempt)
       const tests = runTests(attempt, question.tests, question.results)
       const results = await Promise.all(tests)
       return {
         results: question.descriptions.map((d, i) => [d, results[i]] as const),
-        answer: remainingAttempts ? undefined : decrypt(question.answer),
       }
     },
     (props) => (
@@ -135,9 +138,6 @@ const { Component, schema } = createExerciseType({
             )}
           </For>
         </ul>
-        <Show when={props.answer}>
-          {(answer) => <Code value={answer()} lang="python" readOnly />}
-        </Show>
       </>
     ),
   ],
