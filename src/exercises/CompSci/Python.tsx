@@ -56,13 +56,13 @@ const { Component, schema } = createExerciseType({
   name: 'Python',
   Component: (props) => (
     <>
-      <Markdown value={props.question.question} />
-      <Code lang="python" name="attempt" value={props.attempt} run />
+      <Markdown value={props.question.text} />
+      <Code lang="python" name="attempt" value={props.attempt ?? ''} run />
     </>
   ),
   question: z
     .object({
-      question: z.string().describe('Question, entered as markdown'),
+      text: z.string().describe('Question, entered as markdown'),
       tests: z
         .string()
         .or(z.object({ test: z.string(), desc: z.string() }))
@@ -95,7 +95,7 @@ const { Component, schema } = createExerciseType({
         state.descriptions[i] = state.descriptions[i] ?? `Running ${test} yields correct result`
         return test
       })
-      const patch = state.results
+      const patch = state.results.length
         ? {}
         : {
             answer: encrypt(state.answer),
