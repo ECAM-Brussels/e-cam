@@ -108,7 +108,11 @@ export function createExerciseType<
     const submit = action(async (form: FormData) => {
       const attempt: z.infer<Attempt> = exercise.attempt.parse(extractFormData(form).attempt)
       const correct = await mark(question(), attempt)
-      return useSave({ attempts: [...props.attempts, { correct, attempt }] }, 'submit')
+      const attempts =
+        props.options.save === 'lastAttempt'
+          ? [{ correct, attempt }]
+          : [...props.attempts, { correct, attempt }]
+      return useSave({ attempts }, 'submit')
     }, `exercise-${hash()}`)
     const submission = useSubmission(submit)
 

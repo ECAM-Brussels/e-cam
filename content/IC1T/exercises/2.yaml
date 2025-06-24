@@ -4,6 +4,7 @@ options:
   adjustElo: false
   whiteboard: false
   maxAttempts: null
+  save: lastAttempt
 body:
   - type: Python
     question:
@@ -21,49 +22,18 @@ body:
         - test: main([0])
           desc: Entrer 0 devrait donner 'pair'
         - test: main([1])
-          desc: 1 devrait être impair
+          desc: Entrer 1 devrait donner 'impair'
         - test: main([2])
-          desc: 2 devrait être pair
+          desc: Entrer 2 devrait donner 'pair'
         - test: main([3])
-          desc: 3 devrait être impair
+          desc: Entrer 3 devrait donner 'impair'
         - test: main([4])
-          desc: 4 devrait être pair
+          desc: Entrer 4 devrait donner 'pair'
         - test: main([5])
-          desc: 5 devrait être impair
+          desc: Entrer 5 devrait donner 'impair'
         - test: main([6])
-          desc: 6 devrait être pair
+          desc: Entrer 6 devrait donner 'pair'
         - test: main([7])
-          desc: 7 devrait être impair
+          desc: Entrer 7 devrait donner 'impair'
         - test: main([8])
-          desc: 8 devrait être pair
-  - type: Python
-    question:
-      wrap: true
-      text: |
-        Écrire un programme qui demande un entier
-        et qui affiche
-
-        - `pair` si ce nombre est pair
-        - `impair` si ce nombre est impair
-      answer: |
-        n = int(input(""))
-        print("impair" if n % 2 else "pair")
-      tests:
-        - test: main([0])
-          desc: Entrer 0 devrait donner 'pair'
-        - test: main([1])
-          desc: 1 devrait être impair
-        - test: main([2])
-          desc: 2 devrait être pair
-        - test: main([3])
-          desc: 3 devrait être impair
-        - test: main([4])
-          desc: 4 devrait être pair
-        - test: main([5])
-          desc: 5 devrait être impair
-        - test: main([6])
-          desc: 6 devrait être pair
-        - test: main([7])
-          desc: 7 devrait être impair
-        - test: main([8])
-          desc: 8 devrait être pair
+          desc: Entrer 8 devrait donner 'pair'

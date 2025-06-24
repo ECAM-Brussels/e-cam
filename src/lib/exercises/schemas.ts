@@ -4,6 +4,7 @@ import { z } from 'zod'
 export const optionsSchema = z.object({
   adjustElo: z.boolean().default(true),
   initialElo: z.number().default(1500),
+  save: z.union([z.literal('all'), z.literal('lastAttempt')]).default('all'),
   maxAttempts: z.null().or(z.number()).default(1),
   note: z.string().default(''),
   whiteboard: z.boolean().default(true),
