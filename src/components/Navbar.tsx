@@ -120,7 +120,7 @@ function Drawer(props: { visible?: boolean; onOutsideClick?: () => void }) {
           <Show when={user()}>
             <DrawerLink href={`/users/${user()?.email}`}>Profil</DrawerLink>
           </Show>
-          <h3 class="px-4 mb-4 font-bold text-lg [font-variant:small-caps]">Cours</h3>
+          <h3 class="px-4 py-4 font-bold text-lg">Cours</h3>
           <ul class="px-4">
             <For each={courses()}>
               {(course) => (
@@ -129,14 +129,16 @@ function Drawer(props: { visible?: boolean; onOutsideClick?: () => void }) {
                 </li>
               )}
             </For>
-            <Show when={user()}>
-              <li class="hover:bg-slate-50 py-4 px-4">
-                <form action={logout} method="post">
-                  <button>Se déconnecter</button>
-                </form>
-              </li>
-            </Show>
           </ul>
+          <Show when={user()}>
+            <form
+              class="hover:bg-slate-50 py-4 px-4 font-semibold text-slate-600"
+              action={logout}
+              method="post"
+            >
+              <button>Se déconnecter</button>
+            </form>
+          </Show>
         </div>
         <div class="bg-black h-screen w-full opacity-50" onClick={props.onOutsideClick} />
       </div>
