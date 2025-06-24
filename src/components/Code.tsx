@@ -5,6 +5,7 @@ import { formatDistance } from 'date-fns'
 import { createEffect, createSignal, on, onCleanup, Show } from 'solid-js'
 import Fa from '~/components/Fa'
 import Html from '~/components/Html'
+import Suspense from '~/components/Suspense'
 import { getUser } from '~/lib/auth/session'
 
 type CodeProps = {
@@ -74,6 +75,7 @@ export default function Code(props: CodeProps) {
         <div class="flex items-end relative z-20">
           <Show when={props.run}>
             <button
+              type="button"
               class="block text-cyan-950 px-2 text-xl"
               onClick={() => {
                 setCodeToRun('')
@@ -91,7 +93,7 @@ export default function Code(props: CodeProps) {
               readOnly={props.readOnly}
               onMount={(editor) => {
                 textarea = editor.textarea
-                textarea.addEventListener('blur', (event) => {
+                textarea.addEventListener('blur', () => {
                   setValue(textarea.value)
                 })
                 textarea.addEventListener('keydown', (event) => {
@@ -134,7 +136,9 @@ export default function Code(props: CodeProps) {
         </Show>
       </Show>
       <Show when={props.lang === 'python' && props.run}>
-        <Python value={codeToRun()} />
+        <Suspense>
+          <Python value={codeToRun()} />
+        </Suspense>
       </Show>
       <Show when={props.lang === 'html' && props.run}>
         <Html value={codeToRun()} tailwind={props.tailwind} />
