@@ -106,14 +106,23 @@ const getExercises = query(async (url: string, email: string) => {
     select: {
       body: true,
       options: true,
-      attempts: { where: { email }, select: { exercise: true }, orderBy: { position: 'asc' } },
+      attempts: {
+        where: { email },
+        select: { exercise: true, position: true },
+        orderBy: { position: 'asc' },
+      },
     },
   })
-  return addExercises(
-    attempts.map((a) => a.exercise),
-    questions,
-    options,
-  )
+  const body: Exercise[] = []
+  for (const attempt of attempts) {
+    body[attempt.position - 1] = attempt.exercise
+  }
+  for (let i = 0; i < body.length; i++) {
+    if (body[i] === undefined) {
+      body[i] = questions[i]
+    }
+  }
+  return addExercises(body, questions, options)
 }, 'getExercises')
 
 function addExercises(
