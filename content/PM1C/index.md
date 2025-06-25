@@ -4,7 +4,7 @@ title: 'Pont vers le supérieur: mathématiques'
 
 # Pont vers le supérieur : mathématiques
 
-![Pont mathématiques](/images/PM1C.png){.w-full .lg:max-h-96 .max-h-84 .object-cover .rounded-xl .opacity-70}
+![Pont mathématiques](/images/PM1C.png){.w-full .lg:max-h-96 .max-h-84 .object-cover .rounded-xl}
 
 <details open class="bg-white border rounded-xl shadow p-4 py-2 my-4">
 <summary class="font-bold">Algèbre</summary>
