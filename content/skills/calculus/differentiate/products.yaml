@@ -3,6 +3,7 @@ courses:
   - calculus
   - 5MATH4
   - PM1C
+  - MATH
 prerequisites:
   - /skills/calculus/differentiate/basic
 options:

@@ -3,6 +3,7 @@ title: "Système de 3 équations à 3 inconnues"
 courses:
   - algebra
   - PM1C
+  - MATH
 prerequisites:
   - /skills/algebra/equations/simultaneous/2-vars
 options:

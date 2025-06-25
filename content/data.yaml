@@ -1,4 +1,6 @@
 courses:
+  - code: MATH
+    title: Mathématiques
   - code: PM1C
     title: Pont mathématique
     image: /images/PM1C.png

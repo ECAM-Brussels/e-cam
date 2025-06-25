@@ -4,6 +4,7 @@ courses:
   - algebra
   - PM1C
   - 4MATH5
+  - MATH
 prerequisites:
   - /skills/algebra/complete-monic-square
 options:
