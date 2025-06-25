@@ -43,6 +43,12 @@ export const getGraphQuery = (url: string) => ({
 })
 
 function Shell(props: AssignmentProps & { children: JSXElement }) {
+  const exercise = createAsyncStore(() => getExercise(props.url, props.userEmail, props.index))
+  const options = () =>
+    optionsSchema.parse({
+      ...props.data.options,
+      ...(exercise()?.options || {}),
+    })
   const user = createAsync(() => getUserInfo(props.userEmail))
   const currentUser = createAsync(() => getUser())
   const eloDiff = createAsync(() => getEloDiff(props.userEmail), { initialValue: 0 })
@@ -94,21 +100,23 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
           </div>
           <div class="grow">
             <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl">{props.children}</ErrorBoundary>
-            <div class="h-full border max-w-full relative" ref={boardContainer}>
-              <Whiteboard
-                class="bg-white"
-                requestFullScreen={() => {
-                  setFullScreen(true)
-                  const parent = boardContainer.parentNode!.parentNode!.parentNode as HTMLElement
-                  parent.requestFullscreen()
-                }}
-                url={props.url}
-                owner={props.userEmail}
-                name={`${props.index}`}
-                container={boardContainer}
-                toolbarPosition="left"
-              />
-            </div>
+            <Show when={options().whiteboard}>
+              <div class="h-full border max-w-full relative" ref={boardContainer}>
+                <Whiteboard
+                  class="bg-white"
+                  requestFullScreen={() => {
+                    setFullScreen(true)
+                    const parent = boardContainer.parentNode!.parentNode!.parentNode as HTMLElement
+                    parent.requestFullscreen()
+                  }}
+                  url={props.url}
+                  owner={props.userEmail}
+                  name={`${props.index}`}
+                  container={boardContainer}
+                  toolbarPosition="left"
+                />
+              </div>
+            </Show>
             <Show when={fullScreen() && props.data.video}>
               {(src) => (
                 <div class="fixed bottom-5 right-5 mb-4 z-50">
