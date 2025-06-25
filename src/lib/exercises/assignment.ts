@@ -171,13 +171,14 @@ async function upsertExercise(exercise: Exercise) {
     where: { type: exercise.type, hash },
     select: { score: true },
   })
+  const options = optionsSchema.parse(exercise.options)
   if (!data) {
     await prisma.question.create({
       data: {
         hash,
         type: exercise.type,
         body: exercise.question,
-        score: exercise.options.initialElo,
+        score: options.initialElo,
       },
       select: { score: true },
     })
@@ -196,12 +197,13 @@ export async function saveExercise(
     await check(email)
     const key = { url, email, position }
     const hash = await upsertExercise(exercise)
+    const options = optionsSchema.parse(exercise.options)
     const payload = {
       hash,
       exercise,
       position,
       correct: exercise.attempts.at(0)?.correct ?? null,
-      ...(exercise.options.adjustElo && exercise.attempts.length === 1
+      ...(options.adjustElo && exercise.attempts.length === 1
         ? { gain: await getEloGain(email, hash, exercise.attempts[0].correct) }
         : {}),
     } satisfies Prisma.AttemptUpsertArgs['update']
