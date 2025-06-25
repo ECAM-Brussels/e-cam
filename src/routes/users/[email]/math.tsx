@@ -23,13 +23,14 @@ const grouping = {
     groups: ['algebra', 'calculus', 'trigonometry', 'geometry'],
   },
 }
+const query = { courses: { some: { code: 'MATH' } } }
 
 export const route = {
   preload({ params }) {
     getUser()
     getUserInfo(params.email)
-    getAssignmentList()
-    getAssignmentGraph(undefined, grouping.field.groups)
+    getAssignmentList(query)
+    getAssignmentGraph(query, grouping.field.groups)
   },
 } satisfies RouteDefinition
 
@@ -43,6 +44,9 @@ export default function () {
   }, 'groupAssignments')
   return (
     <Page title={`Profil de ${user()?.firstName} ${user()?.lastName}`}>
+      <h1 class="font-bold text-3xl my-8">
+        {user()?.lastName}, {user()?.firstName}
+      </h1>
       <UserTabs />
       <section class="bg-white rounded-xl p-4 py-8 border">
         <form method="post" action={groupAssignments} class="flex gap-4">
@@ -57,11 +61,12 @@ export default function () {
             )}
           </For>
         </form>
-        <Graph class="min-h-96 w-full h-[800px]" groups={grouping[groupBy()].groups} />
-        <h1 class="font-bold text-3xl my-8">
-          {user()?.lastName}, {user()?.firstName}
-        </h1>
-        <AssignmentTable search />
+        <Graph
+          class="min-h-96 w-full h-[800px]"
+          groups={grouping[groupBy()].groups}
+          query={query}
+        />
+        <AssignmentTable query={query} search />
       </section>
     </Page>
   )
