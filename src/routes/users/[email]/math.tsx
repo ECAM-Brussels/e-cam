@@ -44,11 +44,11 @@ export default function () {
   }, 'groupAssignments')
   return (
     <Page title={`Profil de ${user()?.firstName} ${user()?.lastName}`}>
-      <h1 class="font-bold text-3xl my-8">
-        {user()?.lastName}, {user()?.firstName}
-      </h1>
       <UserTabs />
       <section class="bg-white rounded-xl p-4 py-8 border">
+        <h1 class="font-bold text-3xl my-8">
+          {user()?.lastName}, {user()?.firstName}
+        </h1>
         <form method="post" action={groupAssignments} class="flex gap-4">
           <For each={Object.entries(grouping)}>
             {([key, group]) => (
