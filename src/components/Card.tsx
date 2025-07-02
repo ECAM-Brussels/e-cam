@@ -1,4 +1,4 @@
-import { Show, type JSXElement } from 'solid-js'
+import { type JSXElement } from 'solid-js'
 
 export default function Card(props: { image: string; href: string; children: JSXElement }) {
   return (
