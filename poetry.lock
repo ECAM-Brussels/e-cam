@@ -1304,41 +1304,41 @@ full = ["httpx (>=0.27.0,<0.29.0)", "itsdangerous", "jinja2", "python-multipart 
 
 [[package]]
 name = "strawberry-graphql"
-version = "0.235.2"
+version = "0.275.5"
 description = "A library for creating GraphQL APIs"
 optional = false
-python-versions = "<4.0,>=3.8"
+python-versions = "<4.0,>=3.9"
 groups = ["main"]
 files = [
-    {file = "strawberry_graphql-0.235.2-py3-none-any.whl", hash = "sha256:2e438d6b55c9c42a661f6ea9e06f07b77856f9d2bd1c6a6da6d3bcf6fa6864b0"},
-    {file = "strawberry_graphql-0.235.2.tar.gz", hash = "sha256:5b8abc8ea970eac0ee924edea9b4792defc298231e373467558853b8ff22b27c"},
+    {file = "strawberry_graphql-0.275.5-py3-none-any.whl", hash = "sha256:b1d2c7c6febb5f8bd5bc9f3059d23f527f61f7a9fb6f7f24f4c5a7771dba7050"},
+    {file = "strawberry_graphql-0.275.5.tar.gz", hash = "sha256:080518de70b82c04a1f2d6118f268fadde45b985821e20e1550e3281afdecc41"},
 ]
 
 [package.dependencies]
 fastapi = {version = ">=0.65.2", optional = true, markers = "extra == \"fastapi\""}
-graphql-core = ">=3.2.0,<3.3.0"
-python-dateutil = ">=2.7.0,<3.0.0"
-python-multipart = {version = ">=0.0.7", optional = true, markers = "extra == \"asgi\" or extra == \"debug-server\" or extra == \"fastapi\""}
+graphql-core = ">=3.2.0,<3.4.0"
+packaging = ">=23"
+python-dateutil = ">=2.7,<3.0"
+python-multipart = {version = ">=0.0.7", optional = true, markers = "extra == \"fastapi\""}
 typing-extensions = ">=4.5.0"
 
 [package.extras]
-aiohttp = ["aiohttp (>=3.7.4.post0,<4.0.0)"]
+aiohttp = ["aiohttp (>=3.7.4.post0,<4)"]
 asgi = ["python-multipart (>=0.0.7)", "starlette (>=0.18.0)"]
 chalice = ["chalice (>=1.22,<2.0)"]
 channels = ["asgiref (>=3.2,<4.0)", "channels (>=3.0.5)"]
-cli = ["graphlib_backport ; python_version < \"3.9\"", "libcst (>=0.4.7)", "pygments (>=2.3,<3.0)", "rich (>=12.0.0)", "typer (>=0.7.0)"]
-debug = ["libcst (>=0.4.7)", "rich (>=12.0.0)"]
-debug-server = ["libcst (>=0.4.7)", "pygments (>=2.3,<3.0)", "python-multipart (>=0.0.7)", "rich (>=12.0.0)", "starlette (>=0.18.0)", "typer (>=0.7.0)", "uvicorn (>=0.11.6)"]
+cli = ["libcst", "pygments (>=2.3,<3.0)", "rich (>=12.0.0)", "typer (>=0.7.0)"]
+debug = ["libcst", "rich (>=12.0.0)"]
+debug-server = ["libcst", "pygments (>=2.3,<3.0)", "python-multipart (>=0.0.7)", "rich (>=12.0.0)", "starlette (>=0.18.0)", "typer (>=0.7.0)", "uvicorn (>=0.11.6)", "websockets (>=15.0.1,<16)"]
 django = ["Django (>=3.2)", "asgiref (>=3.2,<4.0)"]
 fastapi = ["fastapi (>=0.65.2)", "python-multipart (>=0.0.7)"]
 flask = ["flask (>=1.1)"]
-litestar = ["litestar (>=2) ; python_version >= \"3.8\""]
+litestar = ["litestar (>=2) ; python_version ~= \"3.10\""]
 opentelemetry = ["opentelemetry-api (<2)", "opentelemetry-sdk (<2)"]
 pydantic = ["pydantic (>1.6.1)"]
 pyinstrument = ["pyinstrument (>=4.0.0)"]
 quart = ["quart (>=0.19.3)"]
 sanic = ["sanic (>=20.12.2)"]
-starlite = ["starlite (>=1.48.0) ; python_version >= \"3.8\""]
 
 [[package]]
 name = "sympy"
@@ -1701,4 +1701,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "c2d5dd980d94393aabd07938222c51b7e5318eacf8acc1b96673f83216041a0b"
+content-hash = "74ca9b365ae535e5a9e99503fc0a31be0c30e4076679e531a8a65cb528534972"
