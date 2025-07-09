@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
 title: "Dérivées: règle du produit"
 courses:
   - calculus

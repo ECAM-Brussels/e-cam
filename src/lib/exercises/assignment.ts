@@ -16,6 +16,7 @@ import { schema as FactorSchema } from '~/exercises/Math/Factor'
 import { schema as LimitSchema } from '~/exercises/Math/Limit'
 import { schema as SimpleSchema } from '~/exercises/Math/Simple'
 import { schema as SystemSchema } from '~/exercises/Math/System'
+import { schema as TangentSchema } from '~/exercises/Math/Tangent'
 import { schema as VectorAngleSchema } from '~/exercises/Math/VectorAngle'
 import { schema as MultipleChoiceSchema } from '~/exercises/MultipleChoice'
 import { hashObject } from '~/lib/helpers'
@@ -31,6 +32,7 @@ export const exercises = {
   Limit: lazy(() => import('~/exercises/Math/Limit')),
   Simple: lazy(() => import('~/exercises/Math/Simple')),
   System: lazy(() => import('~/exercises/Math/System')),
+  Tangent: lazy(() => import('~/exercises/Math/Tangent')),
   VectorAngle: lazy(() => import('~/exercises/Math/VectorAngle')),
   MultipleChoice: lazy(() => import('~/exercises/MultipleChoice')),
 } as const
@@ -45,6 +47,7 @@ export const exerciseSchema = z.discriminatedUnion('type', [
   LimitSchema,
   SimpleSchema,
   SystemSchema,
+  TangentSchema,
   VectorAngleSchema,
   MultipleChoiceSchema,
 ])
