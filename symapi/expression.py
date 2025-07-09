@@ -261,6 +261,8 @@ class Expression:
         normal: Optional[bool] = False,
     ) -> "Expression":
         m = sympy.diff(self.expr, x).subs({x: x0})
+        if m == 0 and normal:
+            return Expression(expr=sympy.Eq(x, x0))
         if normal:
             m = -1 / m
         return Expression(expr=sympy.Eq(y, m * (x - x0) + self.expr.subs({x: x0})))
