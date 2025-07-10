@@ -1,8 +1,19 @@
+import { sample } from 'lodash-es'
 import { z } from 'zod'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
 import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
+import { simplify } from '~/queries/algebra'
+
+const trigFunction = z.union([
+  z.literal('cos'),
+  z.literal('sin'),
+  z.literal('tan'),
+  z.literal('cot'),
+])
+
+const quadrant = z.union([z.literal('I'), z.literal('II'), z.literal('III'), z.literal('IV')])
 
 const { Component, schema } = createExerciseType({
   name: 'Calculate',
@@ -34,6 +45,35 @@ const { Component, schema } = createExerciseType({
       { ...question, attempt },
     )
     return expression.isEqual && expression.isNumber
+  },
+  generator: {
+    params: z.discriminatedUnion('type', [
+      z.object({
+        type: z.literal('trigonometricValues'),
+        exercises: z
+          .object({
+            F: trigFunction.array().nonempty().default(['cos', 'sin', 'tan', 'cot']),
+            Alpha: z.string().nonempty().array().nonempty(),
+            Q: quadrant.array().nonempty().default(['I', 'II', 'III', 'IV']),
+            K: z.number().array().nonempty().default([0]),
+          })
+          .array()
+          .nonempty(),
+      }),
+    ]),
+    generate: async (params) => {
+      'use server'
+      if (params.type === 'trigonometricValues') {
+        const ex = sample(params.exercises)
+        const [f, q, k] = [sample(ex.F), sample(ex.Q), sample(ex.K)]
+        let alpha = sample(ex.Alpha)
+        alpha = { I: alpha, II: `\\pi - ${alpha}`, III: `\\pi + ${alpha}`, IV: `-${alpha}` }[q]
+        alpha = await simplify(`${alpha} + 2 \\times ${k} \\pi`)
+        return { expr: `\\${f}\\left(${alpha}\\right)` }
+      } else {
+        throw new Error('params.type has incorrect value')
+      }
+    },
   },
 })
 

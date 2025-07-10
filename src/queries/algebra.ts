@@ -96,3 +96,19 @@ export async function normalizePolynomial(expr: string) {
   )
   return expression.normalizeRoots.expr
 }
+
+export async function simplify(expr: string) {
+  const { expression } = await request(
+    graphql(`
+      query Simplify($expr: Math!) {
+        expression(expr: $expr) {
+          simplify {
+            expr
+          }
+        }
+      }
+    `),
+    { expr },
+  )
+  return expression.simplify.expr
+}
