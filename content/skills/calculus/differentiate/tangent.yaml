@@ -1,0 +1,75 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: "Tangentes et normales à un graphe"
+courses:
+  - calculus
+  - 5MATH4
+  - PM1C
+  - MATH
+prerequisites:
+  - /skills/calculus/differentiate/basic
+options:
+  streak: 999
+body:
+  - type: Tangent
+    params:
+      - Expr:
+          - \sin{x}
+          - \sin(-x)
+          - \cos{x}
+          - \cos(-x)
+          - \sin{2x}
+          - \sin(-2x)
+          - \cos(2x)
+          - \cos(-2x)
+        X0:
+          - '0'
+          - \frac{\pi}{6}
+          - \frac{\pi}{4}
+          - \frac{\pi}{3}
+          - \frac{\pi}{2}
+          - \pi
+      - Expr:
+          - \tan{x}
+          - \tan(-x)
+          - \cot{x}
+          - \cot(-x)
+        X0:
+          - \frac{\pi}{6}
+          - \frac{\pi}{4}
+          - \frac{\pi}{3}
+      - Expr:
+          - x^2
+          - x^3
+          - -x^2
+          - -x^3
+          - x^4
+          - -x^4
+          - (x - 1)^2
+          - (x + 1)^2
+          - (x - 2)^2
+          - (x + 2)^2
+          - (x - 3)^2
+          - (x + 3)^2
+          - (x - 1)^3
+          - (x + 1)^3
+          - (x - 2)^3
+          - (x + 2)^3
+          - (x - 3)^3
+          - (x + 3)^3
+          - (1 - x)^3
+          - (2 - x)^3
+          - (3 - x)^3
+        X0: ['0', '1', '-1', '2', '-2', '3', '-3']
+      - Expr:
+          - e^x
+          - e^{-x}
+          - e^{2x}
+          - e^{-2x}
+          - e^{x - 1}
+          - e^{x + 1}
+        X0: ['0', '1', '-1', '\ln{2}', '-\ln{2}', '\ln{3}', '-\ln{3}']
+      - Expr:
+          - \ln{x}
+          - \ln(2x)
+          - \ln(x + 1)
+        X0: ['1', '2', 'e']
