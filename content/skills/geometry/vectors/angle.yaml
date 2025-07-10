@@ -5,6 +5,8 @@ courses:
   - PM1C
   - 5MATH4
   - MATH
+prerequisites:
+  - /skills/trigonometry/values
 options:
   streak: 999
 body:

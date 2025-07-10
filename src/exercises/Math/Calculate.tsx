@@ -50,6 +50,7 @@ const { Component, schema } = createExerciseType({
     params: z.discriminatedUnion('type', [
       z.object({
         type: z.literal('trigonometricValues'),
+        text: z.string().optional(),
         exercises: z
           .object({
             F: trigFunction.array().nonempty().default(['cos', 'sin', 'tan', 'cot']),
@@ -69,7 +70,7 @@ const { Component, schema } = createExerciseType({
         let alpha = sample(ex.Alpha)
         alpha = { I: alpha, II: `\\pi - ${alpha}`, III: `\\pi + ${alpha}`, IV: `-${alpha}` }[q]
         alpha = await simplify(`${alpha} + 2 \\times ${k} \\pi`)
-        return { expr: `\\${f}\\left(${alpha}\\right)` }
+        return { expr: `\\${f}\\left(${alpha}\\right)`, text: params.text }
       } else {
         throw new Error('params.type has incorrect value')
       }
