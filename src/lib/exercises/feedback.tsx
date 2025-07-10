@@ -3,6 +3,7 @@ import { createAsync } from '@solidjs/router'
 import { Show, type Component } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import Fa from '~/components/Fa'
+import Suspense from '~/components/Suspense'
 
 export default function Feedback<Q, A, F extends object>(props: {
   attempts: { correct: boolean; attempt: A }[]
@@ -58,9 +59,11 @@ export default function Feedback<Q, A, F extends object>(props: {
           </Show>
           <Show when={props.component}>
             {(Component) => (
-              <Show when={feedback()}>
-                {(feedback) => <Dynamic component={Component()} {...feedback()} />}
-              </Show>
+              <Suspense>
+                <Show when={feedback()}>
+                  {(feedback) => <Dynamic component={Component()} {...feedback()} />}
+                </Show>
+              </Suspense>
             )}
           </Show>
         </details>
