@@ -4,7 +4,7 @@ import sympy
 import sympy.core.function
 import sympy.parsing.latex
 import sympy.parsing.sympy_parser
-from typing import NewType
+from typing import NewType, Optional
 
 
 def parse_latex(expr: str):
@@ -60,3 +60,10 @@ Math = strawberry.scalar(
     parse_value=parse_latex,
     description="Mathematical formula",
 )
+
+@strawberry.input
+class Interval:
+    a: Math
+    b: Math
+    left_open: Optional[bool] = False
+    right_open: Optional[bool] = False
