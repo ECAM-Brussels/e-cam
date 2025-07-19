@@ -1,10 +1,12 @@
+import dataclasses
+import json
 import re
 import strawberry
 import sympy
 import sympy.core.function
 import sympy.parsing.latex
 import sympy.parsing.sympy_parser
-from typing import NewType, Optional
+from typing import Literal, NewType, Optional
 
 
 def parse_latex(expr: str):
@@ -61,9 +63,21 @@ Math = strawberry.scalar(
     description="Mathematical formula",
 )
 
-@strawberry.input
-class Interval:
-    a: Math
-    b: Math
-    left_open: Optional[bool] = False
-    right_open: Optional[bool] = False
+def parse_set(expr: str):
+    authorized = ["Interval", "Union", "Complement", "FiniteSet", "EmptySet"]
+    data = json.loads(expr)
+    def parse_entry(entry: list | str | list | bool):
+        if isinstance(entry, int) or isinstance(entry, bool):
+            return entry
+        if isinstance(entry, str):
+            return parse_latex(entry)
+        if isinstance(entry, list) and entry[0] in authorized and len(entry) > 1:
+            return getattr(sympy, entry[0])(*map(parse_entry, entry[1:]))
+    return parse_entry(data)
+
+MathSet = strawberry.scalar(
+    NewType("MathSet", sympy.Basic),
+    serialize=sympy.latex,
+    parse_value=parse_set,
+    description="Mathematical set",
+)

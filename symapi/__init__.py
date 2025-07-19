@@ -6,7 +6,7 @@ import sympy
 import typing
 
 from symapi.conic_section import ConicSection
-from symapi.core import Math, Interval
+from symapi.core import Math, MathSet
 from symapi.expression import Expression
 from symapi.system import System
 from symapi.vector import Vector
@@ -32,9 +32,8 @@ class Query:
         return System()
 
     @strawberry.field(description="Set")
-    def set(self, intervals: typing.List[Interval]) -> "Expression":
-        I = map(lambda i: sympy.Interval(i.a, i.b, i.left_open, i.right_open), intervals)
-        return Expression(expr=sympy.Union(*I))
+    def set(self, expr: MathSet) -> "Expression":
+        return Expression(expr=expr)
 
 
 schema = strawberry.Schema(Query)
