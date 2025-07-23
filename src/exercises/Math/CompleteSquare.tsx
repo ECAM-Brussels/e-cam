@@ -24,9 +24,9 @@ const { Component, schema } = createExerciseType({
   attempt: z.union([
     z
       .string()
-      .min(1)
+      .nonempty()
       .transform((s) => [s]),
-    z.string().min(1).array(),
+    z.string().nonempty().array(),
   ]),
   mark: async (question, attempt) => {
     const data = await request(
@@ -44,9 +44,9 @@ const { Component, schema } = createExerciseType({
   },
   generator: {
     params: z.object({
-      A: z.number().or(z.string()).array().default([1]),
-      Alpha: z.number().or(z.string()).array(),
-      Beta: z.number().or(z.string()).array(),
+      A: z.number().or(z.string()).array().nonempty().default([1]),
+      Alpha: z.number().or(z.string()).array().nonempty(),
+      Beta: z.number().or(z.string()).array().nonempty(),
     }),
     async generate(params) {
       const a = sample(params.A)

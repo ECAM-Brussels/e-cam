@@ -24,7 +24,7 @@ const { Component, schema } = createExerciseType({
     </>
   ),
   question: z.object({
-    expr: z.string().min(1),
+    expr: z.string().nonempty(),
     x: z.string().default('x'),
   }),
   attempt: z.string().min(1),
@@ -80,11 +80,12 @@ const { Component, schema } = createExerciseType({
           z.string().transform((expr) => ({ expr, x: 'x' })),
           z.object({ expr: z.string(), x: z.string() }),
         ])
-        .array(),
+        .array()
+        .nonempty(),
     }),
     generate: async (params) => {
       'use server'
-      return sample(params.questions)!
+      return sample(params.questions)
     },
   },
 })
