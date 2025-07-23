@@ -99,7 +99,7 @@ export default function SetInput(props: SetInputProps) {
           </Button>
         </span>
       </Show>
-      <input type="text" name={props.name} value={JSON.stringify(input)} />
+      <input type="hidden" name={props.name} value={JSON.stringify(input)} />
     </span>
   )
 }
