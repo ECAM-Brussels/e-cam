@@ -9,56 +9,58 @@ type SetInputProps = {
   name?: string
 }
 
-const intervalType = z.union([
-  z.literal('closed'),
-  z.literal('open'),
-  z.literal('openclosed'),
-  z.literal('closedopen'),
+const interval = z.tuple([
+  z.literal('Interval'),
+  z.string(),
+  z.string(),
+  z.boolean().default(false),
+  z.boolean().default(false),
 ])
 
-const interval = z.tuple([intervalType, z.string(), z.string()])
+const set = z.tuple([z.literal('Union')]).rest(interval)
 
-type IntervalType = z.infer<typeof intervalType>
 type Interval = z.infer<typeof interval>
+type Set = z.infer<typeof set>
 
-function latex(t: IntervalType, a?: string, b?: string, placeholder = false) {
-  const del = {
-    closed: ['[', ']'],
-    open: [']', '['],
-    openclosed: [']', ']'],
-    closedopen: ['[', '['],
-  } as const
+function latex(I: Interval, placeholder = false) {
   return String.raw`
-    \left${del[t][0]}
+    \left${I[3] ? ']' : '['}
       ${placeholder ? `\\placeholder[a]{` : ''}
-      ${a}
+      ${I[1]}
       ${placeholder ? `}` : ''};
       ${placeholder ? `\\placeholder[b]{` : ''}
-      ${b}
+      ${I[2]}
       ${placeholder ? `}` : ''}
-    \right${del[t][1]}
+    \right${I[4] ? '[' : ']'}
   `
 }
 
-const labels = {
-  closed: 'Intervalle fermé',
-  open: 'Intervalle ouvert',
-  openclosed: 'Intervalle ouvert-fermé',
-  closedopen: 'Intervalle fermé-ouvert',
-} as const
+const labels: { [key: string]: [string, boolean, boolean] } = {
+  closed: ['Intervalle fermé', false, false],
+  open: ['Intervalle ouvert', true, true],
+  openclosed: ['Intervalle ouvert-fermé', true, false],
+  closedopen: ['Intervalle fermé-ouvert', false, true],
+}
 
 export default function SetInput(props: SetInputProps) {
   const [showModal, setShowModal] = createSignal(false)
-  const [input, setInput] = createStore<Interval[]>([])
-  const [interval, setInterval] = createStore<Interval>(['closed', '', ''])
+  const [input, setInput] = createStore<Set>(['Union'])
+  const [interval, setInterval] = createStore<Interval>(['Interval', '', '', false, false])
   let mf!: MathfieldElement
   const addInterval = () => {
-    setInput(input.length, [interval[0], mf.getPromptValue('a'), mf.getPromptValue('b')])
+    setInput(input.length, [
+      'Interval',
+      mf.getPromptValue('a'),
+      mf.getPromptValue('b'),
+      interval[3],
+      interval[4],
+    ])
     mf.setPromptValue('a', '', {})
     mf.setPromptValue('b', '', {})
-    setInterval(['closed', '', ''])
+    setInterval(1, '')
+    setInterval(2, '')
   }
-  const tex = () => input.map((i) => latex(...i)).join('\\bigcup')
+  const tex = () => (input.slice(1) as Interval[]).map((i) => latex(i)).join('\\bigcup')
   return (
     <span onMouseEnter={() => setShowModal(true)} onMouseLeave={() => setShowModal(false)}>
       <Math class="border min-w-24 p-2" value={tex()} />
@@ -67,30 +69,37 @@ export default function SetInput(props: SetInputProps) {
           <label>
             Ajouter un{' '}
             <select
-              value={interval[0]}
-              onChange={(e) =>
+              value="closed"
+              onChange={(e) => {
+                const params = labels[e.target.value]
                 setInterval([
-                  e.target.value as IntervalType,
+                  'Interval',
                   mf.getPromptValue('a'),
                   mf.getPromptValue('b'),
+                  params[1],
+                  params[2],
                 ])
-              }
+              }}
             >
-              <For each={Object.keys(labels).map((key) => [key, labels[key as IntervalType]])}>
+              <For
+                each={Object.keys(labels).map(
+                  (key) => [key, ...labels[key as keyof typeof labels]] as const,
+                )}
+              >
                 {([value, label]) => <option value={value}>{label}</option>}
               </For>
             </select>
-            : <Math ref={mf} editable readOnly value={latex(...interval, true)} displayMode />
+            : <Math ref={mf} editable readOnly value={latex(interval, true)} displayMode />
           </label>
           <Button color="green" onClick={addInterval}>
             +
           </Button>
-          <Button type="button" onClick={() => setInput([])}>
+          <Button type="button" onClick={() => setInput(['Union'])}>
             Reset
           </Button>
         </span>
       </Show>
-      <input type="hidden" name={props.name} value={JSON.stringify(input)} />
+      <input type="text" name={props.name} value={JSON.stringify(input)} />
     </span>
   )
 }
