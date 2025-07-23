@@ -205,6 +205,20 @@ class Expression:
             res.sort(key=sort.value)
         return [Expression(expr=item) for item in res]
 
+    @strawberry.field(description="Maximum value of the current expression")
+    def maximum(self, x: Optional[Math] = sympy.Symbol("x"), a: Optional[Math] = None, b: Optional[Math] = None) -> "Expression":
+        interval = sympy.S.Reals
+        if a is not None and b is not None:
+            interval = interval.intersect(sympy.Interval(a, b))
+        return Expression(expr=sympy.maximum(self.expr, x, interval))
+
+    @strawberry.field(description="Minimum value of the current expression")
+    def minimum(self, x: Optional[Math] = sympy.Symbol("x"), a: Optional[Math] = None, b: Optional[Math] = None) -> "Expression":
+        interval = sympy.S.Reals
+        if a is not None and b is not None:
+            interval = interval.intersect(sympy.Interval(a, b))
+        return Expression(expr=sympy.minimum(self.expr, x, interval))
+
     @strawberry.field(description="Multiply a polynomial so that it could be factored without fractions if all its roots are rational.")
     def normalize_roots(self) -> "Expression":
         multiple = 1
@@ -239,6 +253,13 @@ class Expression:
     @strawberry.field(description="Subtract `expr` from the current expression")
     def subtract(self, expr: Math) -> "Expression":
         return Expression(expr=sympy.Add(self.expr, sympy.Mul(-1, expr)))
+
+    @strawberry.field(description="Get stationary points of an expression")
+    def stationary_points(self, x: Optional[Math] = sympy.Symbol("x"), a: Optional[Math] = None, b: Optional[Math] = None) -> "Expression":
+        interval = sympy.S.Reals
+        if a is not None and b is not None:
+            interval = interval.intersect(sympy.Interval(a, b))
+        return Expression(expr=sympy.stationary_points(self.expr, x, interval))
 
     @strawberry.field
     def str(self) -> str:
