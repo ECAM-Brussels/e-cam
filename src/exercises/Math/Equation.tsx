@@ -71,31 +71,28 @@ const { Component, schema } = createExerciseType({
   question: z.object({
     x: z.string().default('x').describe('Unknown value to solve for'),
     equation: z.string().describe('Equation'),
-    interval: z.tuple([z.string(), z.string()]).optional(),
+    S: z.string().optional(),
     complex: z.boolean().default(false).describe('Solve over C or R'),
   }),
-  attempt: z.union([z.string().min(1).array(), z.string().transform((val) => [val])]),
+  attempt: z.union([z.string().nonempty().array(), z.string().transform((val) => [val])]),
   mark: async (question, attempt) => {
     'use server'
-    const { interval, ...info } = question
     const { equation } = await request(
       graphql(`
         query CheckEquationSolution(
           $equation: Math!
-          $attempt: [Math!]!
-          $a: Math
-          $b: Math
-          $x: Math
+          $attempt: MathSet!
+          $S: MathSet
           $complex: Boolean
         ) {
           equation: expression(expr: $equation) {
-            solveset(a: $a, b: $b, x: $x, complex: $complex) {
-              isSetEqual(items: $attempt)
+            solveset(S: $S, complex: $complex) {
+              isSetEqual(S: $attempt)
             }
           }
         }
       `),
-      { ...info, a: interval?.[0], b: interval?.[1], attempt },
+      { ...question, attempt: JSON.stringify(['FiniteSet', ...attempt]) },
     )
     return equation.solveset.isSetEqual
   },

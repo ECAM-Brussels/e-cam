@@ -18,7 +18,7 @@ const { Component, schema } = createExerciseType({
       <>
         <p>
           Trouvez {obj()} de <Math value={props.question.expr} />{' '}
-          <Show when={props.question.interval?.join(',')}>
+          <Show when={props.question.S}>
             {(interval) => (
               <>
                 sur l'intervalle <Math value={`\\left[${interval()}\\right]`} />.
@@ -31,7 +31,7 @@ const { Component, schema } = createExerciseType({
   },
   question: z.object({
     expr: z.string().nonempty(),
-    interval: z.tuple([z.string().nonempty(), z.string().nonempty()]).optional(),
+    S: z.string().optional(),
     x: z.string().nonempty().default('x'),
     type: z
       .union([z.literal('stationary'), z.literal('max'), z.literal('min')])
@@ -40,53 +40,46 @@ const { Component, schema } = createExerciseType({
   attempt: z.union([z.string().min(1).array(), z.string().transform((val) => [val])]),
   mark: async (question, attempt) => {
     'use server'
-    const { interval, ...info } = question
     if (question.type === 'stationary') {
       const { expression } = await request(
         graphql(`
-          query CheckStationaryPoint(
-            $expr: Math!
-            $attempt: [Math!]!
-            $a: Math
-            $b: Math
-            $x: Math
-          ) {
+          query CheckStationaryPoint($expr: Math!, $attempt: MathSet!, $S: MathSet, $x: Math) {
             expression(expr: $expr) {
-              stationaryPoints(x: $x, a: $a, b: $b) {
-                isSetEqual(items: $attempt)
+              stationaryPoints(x: $x, S: $S) {
+                isSetEqual(S: $attempt)
               }
             }
           }
         `),
-        { ...info, a: interval?.[0], b: interval?.[1], attempt },
+        { ...question, attempt: JSON.stringify(['FiniteSet', ...attempt]) },
       )
       return expression.stationaryPoints.isSetEqual
     } else if (question.type === 'max') {
       const { expression } = await request(
         graphql(`
-          query CheckMaximum($expr: Math!, $attempt: Math!, $a: Math, $b: Math, $x: Math) {
+          query CheckMaximum($expr: Math!, $attempt: Math!, $S: MathSet, $x: Math) {
             expression(expr: $expr) {
-              maximum(x: $x, a: $a, b: $b) {
+              maximum(x: $x, S: $S) {
                 isEqual(expr: $attempt)
               }
             }
           }
         `),
-        { ...info, a: interval?.[0], b: interval?.[1], attempt: attempt[0] },
+        { ...question, attempt: attempt[0] },
       )
       return expression.maximum.isEqual
     } else {
       const { expression } = await request(
         graphql(`
-          query CheckMinimum($expr: Math!, $attempt: Math!, $a: Math, $b: Math, $x: Math) {
+          query CheckMinimum($expr: Math!, $attempt: Math!, $S: MathSet, $x: Math) {
             expression(expr: $expr) {
-              minimum(x: $x, a: $a, b: $b) {
+              minimum(x: $x, S: $S) {
                 isEqual(expr: $attempt)
               }
             }
           }
         `),
-        { ...info, a: interval?.[0], b: interval?.[1], attempt: attempt[0] },
+        { ...question, attempt: attempt[0] },
       )
       return expression.minimum.isEqual
     }

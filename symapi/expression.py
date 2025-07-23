@@ -4,7 +4,7 @@ import sympy
 import textwrap
 from typing import Optional
 
-from symapi.core import Math
+from symapi.core import Math, MathSet
 
 @strawberry.enum
 class SortOptions(Enum):
@@ -127,22 +127,20 @@ class Expression:
 
     @strawberry.field(description="")
     def is_symmetric_set(self) -> bool:
-        return self.is_set_equal([-e for e in list(self.expr)])
+        x = sympy.Symbol("x")
+        opposite = sympy.Lambda(x, -x)
+        return self.is_set_equal(sympy.simplify(sympy.ImageSet(opposite, self.expr)))
 
     @strawberry.field(description=textwrap.dedent("""
         Check if the current expression (a mathematical set, as given by `solveset` for example)
         is equal to a given list after it is converted to a set.
     """))
-    def is_set_equal(self, items: list[Math]) -> bool:
-        def sanitize(expr):
-            if isinstance(expr, sympy.Tuple):
-                return sympy.Tuple(*[sanitize(a) for a in expr.args])
-            return sympy.expand_complex(sympy.simplify(expr))
-
-        items = [sanitize(i) for i in items]
+    def is_set_equal(self, S: MathSet) -> bool:
+        x = sympy.Symbol("x")
+        sanitize = sympy.Lambda(x, sympy.expand_complex(sympy.simplify(x)))
         return (
             sympy.SymmetricDifference(
-                sympy.simplify(self.expr), sympy.simplify(set(items))
+                sympy.simplify(self.expr), sympy.simplify(sympy.ImageSet(sanitize, S))
             )
             == sympy.S.EmptySet
         )
@@ -206,18 +204,12 @@ class Expression:
         return [Expression(expr=item) for item in res]
 
     @strawberry.field(description="Maximum value of the current expression")
-    def maximum(self, x: Optional[Math] = sympy.Symbol("x"), a: Optional[Math] = None, b: Optional[Math] = None) -> "Expression":
-        interval = sympy.S.Reals
-        if a is not None and b is not None:
-            interval = interval.intersect(sympy.Interval(a, b))
-        return Expression(expr=sympy.maximum(self.expr, x, interval))
+    def maximum(self, x: Optional[Math] = sympy.Symbol("x"), S: Optional[MathSet] = sympy.S.Reals) -> "Expression":
+        return Expression(expr=sympy.maximum(self.expr, x, S))
 
     @strawberry.field(description="Minimum value of the current expression")
-    def minimum(self, x: Optional[Math] = sympy.Symbol("x"), a: Optional[Math] = None, b: Optional[Math] = None) -> "Expression":
-        interval = sympy.S.Reals
-        if a is not None and b is not None:
-            interval = interval.intersect(sympy.Interval(a, b))
-        return Expression(expr=sympy.minimum(self.expr, x, interval))
+    def minimum(self, x: Optional[Math] = sympy.Symbol("x"), S: Optional[MathSet] = sympy.S.Reals) -> "Expression":
+        return Expression(expr=sympy.minimum(self.expr, x, S))
 
     @strawberry.field(description="Multiply a polynomial so that it could be factored without fractions if all its roots are rational.")
     def normalize_roots(self) -> "Expression":
@@ -237,8 +229,7 @@ class Expression:
     @strawberry.field(description="Get the solution set of an equation, which can be intersected with [`a`, `b`] if necessary")
     def solveset(
         self,
-        a: Optional[Math] = None,
-        b: Optional[Math] = None,
+        S: Optional[MathSet] = None,
         complex: Optional[bool] = None,
         x: Optional[Math] = sympy.Symbol("x"),
     ) -> "Expression":
@@ -246,8 +237,8 @@ class Expression:
             solset = sympy.solveset(self.expr, x, sympy.S.Complexes)
         else:
             solset = sympy.solveset(self.expr, x, sympy.S.Reals)
-        if a is not None and b is not None:
-            solset = solset.intersect(sympy.Interval(a, b))
+        if S is not None:
+            solset = solset.intersect(S)
         return Expression(expr=solset)
 
     @strawberry.field(description="Subtract `expr` from the current expression")
@@ -255,11 +246,8 @@ class Expression:
         return Expression(expr=sympy.Add(self.expr, sympy.Mul(-1, expr)))
 
     @strawberry.field(description="Get stationary points of an expression")
-    def stationary_points(self, x: Optional[Math] = sympy.Symbol("x"), a: Optional[Math] = None, b: Optional[Math] = None) -> "Expression":
-        interval = sympy.S.Reals
-        if a is not None and b is not None:
-            interval = interval.intersect(sympy.Interval(a, b))
-        return Expression(expr=sympy.stationary_points(self.expr, x, interval))
+    def stationary_points(self, x: Optional[Math] = sympy.Symbol("x"), S: Optional[MathSet] = sympy.S.Reals) -> "Expression":
+        return Expression(expr=sympy.stationary_points(self.expr, x, S))
 
     @strawberry.field
     def str(self) -> str:
