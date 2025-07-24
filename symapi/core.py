@@ -63,17 +63,19 @@ Math = strawberry.scalar(
     description="Mathematical formula",
 )
 
-def parse_set(expr: str):
+def parse_set(expr):
     authorized = ["Interval", "Union", "Complement", "FiniteSet", "EmptySet"]
-    data = json.loads(expr)
-    def parse_entry(entry: list | str | list | bool):
+    if isinstance(expr, str):
+        expr = json.loads(expr)
+    def parse_entry(entry: list | str | bool):
         if isinstance(entry, int) or isinstance(entry, bool):
             return entry
         if isinstance(entry, str):
             return parse_latex(entry)
         if isinstance(entry, list) and entry[0] in authorized and len(entry) > 1:
             return getattr(sympy, entry[0])(*map(parse_entry, entry[1:]))
-    return parse_entry(data)
+        return entry
+    return parse_entry(expr)
 
 MathSet = strawberry.scalar(
     NewType("MathSet", sympy.Basic),

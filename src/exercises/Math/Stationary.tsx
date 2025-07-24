@@ -51,7 +51,7 @@ const { Component, schema } = createExerciseType({
             }
           }
         `),
-        { ...question, attempt: JSON.stringify(['FiniteSet', ...attempt]) },
+        { ...question, attempt: ['FiniteSet', ...attempt] },
       )
       return expression.stationaryPoints.isSetEqual
     } else if (question.type === 'max') {

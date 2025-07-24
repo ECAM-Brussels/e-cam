@@ -4,6 +4,7 @@ import { createEffect, createSignal, For, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { z } from 'zod'
 import Math from '~/components/Math'
+import MathSet, { MathJSON } from '~/components/MathSet'
 import { graphql } from '~/gql'
 import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
@@ -18,12 +19,8 @@ const { Component, schema } = createExerciseType({
       <>
         <p>Résolvez l'équation</p>
         <Math value={props.question.equation} displayMode />
-        <Show when={props.question.interval}>
-          {(interval) => (
-            <p>
-              sur l'intervalle <Math value={`\\left[${interval().join(',')}\\right]`} />.
-            </p>
-          )}
+        <Show when={props.question.S}>
+          sur <MathSet value={props.question.S} />
         </Show>
         <div class="flex gap-8">
           <For each={attempt}>
@@ -71,7 +68,7 @@ const { Component, schema } = createExerciseType({
   question: z.object({
     x: z.string().default('x').describe('Unknown value to solve for'),
     equation: z.string().describe('Equation'),
-    S: z.string().optional(),
+    S: z.tuple([z.string()]).rest(z.any()).optional(),
     complex: z.boolean().default(false).describe('Solve over C or R'),
   }),
   attempt: z.union([z.string().nonempty().array(), z.string().transform((val) => [val])]),
@@ -92,7 +89,7 @@ const { Component, schema } = createExerciseType({
           }
         }
       `),
-      { ...question, attempt: JSON.stringify(['FiniteSet', ...attempt]) },
+      { ...question, attempt: ['FiniteSet', ...attempt] },
     )
     return equation.solveset.isSetEqual
   },
@@ -108,10 +105,9 @@ const { Component, schema } = createExerciseType({
         B: z.string().min(1).or(z.number()).array().nonempty(),
         C: z.string().min(1).or(z.number()).array().nonempty(),
         X: z.string().array().nonempty().default(['x']),
-        Intervals: z
-          .tuple([z.string().or(z.number()), z.string().or(z.number())])
-          .array()
-          .nonempty(),
+        S: MathJSON.array()
+          .nonempty()
+          .default([['Interval', '0', '2 \\pi']]),
       }),
       z.object({
         type: z.literal('polynomial'),
@@ -140,7 +136,7 @@ const { Component, schema } = createExerciseType({
         const b = sample(params.B)
         const c = sample(params.C)
         const x = sample(params.X)
-        const I = sample(params.Intervals)
+        const S = sample(params.S)
         const { expression } = await request(
           graphql(`
             query CalculateArg($expr: Math!) {
@@ -156,7 +152,7 @@ const { Component, schema } = createExerciseType({
         const arg = expression.simplify.expr
         return {
           equation: `\\${f}\\left(${arg}\\right) = ${c}`,
-          interval: [String(I[0]), String(I[1])] as [string, string],
+          S,
           x,
         }
       } else {

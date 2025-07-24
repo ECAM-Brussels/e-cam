@@ -42,6 +42,6 @@ body:
         - -\frac{\sqrt{2}}{2}
         - -\frac{\sqrt{3}}{2}
         - '-1'
-      Intervals:
-       - ['0', '2 \pi']
-       - ['-\pi', '\pi']
+      S:
+        - ['Interval', '0', '2 \pi']
+        - ['Interval', '-\pi', '\pi']
