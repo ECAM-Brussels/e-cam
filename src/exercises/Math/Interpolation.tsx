@@ -18,7 +18,7 @@ const { Component, schema } = createExerciseType({
             {(coordinates, pos) => (
               <>
                 <Math value={String.raw`\left(${coordinates.join(';')}\right)`} />
-                {pos() === props.question.points.length - 2 && !props.question.line ? ' et' : ', '}
+                {pos() === props.question.points.length - 2 && !props.question.line ? ' et ' : ', '}
               </>
             )}
           </For>
