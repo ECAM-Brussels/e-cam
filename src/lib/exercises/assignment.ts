@@ -10,7 +10,9 @@ import { z } from 'zod'
 import { schema as PythonSchema } from '~/exercises/CompSci/Python'
 import { schema as CalculateSchema } from '~/exercises/Math/Calculate'
 import { schema as CompleteSquareSchema } from '~/exercises/Math/CompleteSquare'
+import { schema as CrossProductSchema } from '~/exercises/Math/CrossProduct'
 import { schema as DifferentiateSchema } from '~/exercises/Math/Differentiate'
+import { schema as DotProductSchema } from '~/exercises/Math/DotProduct'
 import { schema as EquationSchema } from '~/exercises/Math/Equation'
 import { schema as ExpandSchema } from '~/exercises/Math/Expand'
 import { schema as FactorSchema } from '~/exercises/Math/Factor'
@@ -28,7 +30,9 @@ export const exercises = {
   Python: lazy(() => import('~/exercises/CompSci/Python')),
   Calculate: lazy(() => import('~/exercises/Math/Calculate')),
   CompleteSquare: lazy(() => import('~/exercises/Math/CompleteSquare')),
+  CrossProduct: lazy(() => import('~/exercises/Math/CrossProduct')),
   Differentiate: lazy(() => import('~/exercises/Math/Differentiate')),
+  DotProduct: lazy(() => import('~/exercises/Math/DotProduct')),
   Equation: lazy(() => import('~/exercises/Math/Equation')),
   Expand: lazy(() => import('~/exercises/Math/Expand')),
   Factor: lazy(() => import('~/exercises/Math/Factor')),
@@ -45,7 +49,9 @@ export const exerciseSchema = z.discriminatedUnion('type', [
   PythonSchema,
   CalculateSchema,
   CompleteSquareSchema,
+  CrossProductSchema,
   DifferentiateSchema,
+  DotProductSchema,
   EquationSchema,
   ExpandSchema,
   FactorSchema,

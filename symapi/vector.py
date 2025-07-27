@@ -27,6 +27,12 @@ class Vector:
         return Vector(coordinates=list(a.cross(b)))
 
     @strawberry.field
+    def dot(self, coordinates: list[Math]) -> "Expression":
+        a = sympy.Matrix(self.coordinates)
+        b = sympy.Matrix(coordinates)
+        return Expression(expr=a.dot(b))
+
+    @strawberry.field
     def euler_rotate(self, phi: Math, theta: Math, psi: Math) -> "Vector":
         R_x = sympy.Matrix([
             [1, 0, 0],
