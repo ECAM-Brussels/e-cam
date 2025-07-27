@@ -8,6 +8,7 @@ courses:
 prerequisites:
   - /skills/calculus/differentiate/basic
   - /skills/trigonometry/values
+  - /skills/algebra/equations/straight-lines
 options:
   streak: 999
 body:
