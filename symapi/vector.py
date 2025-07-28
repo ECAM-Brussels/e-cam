@@ -64,3 +64,10 @@ class Vector:
             if sympy.simplify(sympy.expand_complex(x - y)) != 0:
                 return False
         return True
+
+    @strawberry.field
+    def permute(self, swaps: list[tuple[int, int]]) -> "Vector":
+        coord = self.coordinates
+        for [i, j] in swaps:
+            coord[i], coord[j] = coord[j], coord[i]
+        return Vector(coordinates=coord)
