@@ -121,7 +121,7 @@ const { Component, schema } = createExerciseType({
           B: points[1],
           C: points[2],
           D: points[3],
-          swaps: [sampleSize([0, 1, 2], 2), sampleSize([0, 1, 2], 2), sampleSize([0, 1, 2], 2)],
+          swaps: [sampleSize([0, 1, 2], 2), sampleSize([0, 1, 2], 2)],
         },
       )
       return {
