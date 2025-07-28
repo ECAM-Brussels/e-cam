@@ -18,19 +18,21 @@ const { Component, schema } = createExerciseType({
         et que <Math value={`0 < ${props.question.theta} < \\frac{\\pi}{2}`} />, trouvez les autres
         nombres trigonométriques:
       </p>
-      <For each={['sin', 'cos', 'tan', 'cot']}>
-        {(fn, index) => (
-          <Show
-            when={fn != props.question.fn}
-            fallback={<input type="hidden" name="attempt" value={props.question.value} />}
-          >
-            <div class="flex justify-center items-center gap-2">
-              <Math value={`\\${fn} ${props.question.theta} =`} displayMode />
-              <Math name="attempt" editable value={props.attempt?.[index()] ?? ''} />
-            </div>
-          </Show>
-        )}
-      </For>
+      <div class="flex gap-8">
+        <For each={['sin', 'cos', 'tan', 'cot']}>
+          {(fn, index) => (
+            <Show
+              when={fn != props.question.fn}
+              fallback={<input type="hidden" name="attempt" value={props.question.value} />}
+            >
+              <div class="flex justify-center items-center gap-2">
+                <Math value={`\\${fn} ${props.question.theta} =`} displayMode />
+                <Math name="attempt" editable value={props.attempt?.[index()] ?? ''} displayMode />
+              </div>
+            </Show>
+          )}
+        </For>
+      </div>
     </>
   ),
   question: z.object({
