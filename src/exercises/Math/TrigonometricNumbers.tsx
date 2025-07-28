@@ -14,8 +14,9 @@ const { Component, schema } = createExerciseType({
     <>
       <p>
         Sachant que{' '}
-        <Math value={`\\${props.question.fn} ${props.question.theta} = ${props.question.value}`} />,
-        trouvez les autres nombres trigonométriques
+        <Math value={`\\${props.question.fn} ${props.question.theta} = ${props.question.value}`} />{' '}
+        et que <Math value={`0 < ${props.question.theta} < \\frac{\\pi}{2}`} />, trouvez les autres
+        nombres trigonométriques:
       </p>
       <For each={['sin', 'cos', 'tan', 'cot']}>
         {(fn, index) => (
