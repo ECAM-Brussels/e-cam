@@ -110,6 +110,10 @@ class Expression:
         result = expand(expr - self.expr)
         return sympy.simplify(result) == 0
 
+    @strawberry.field(description="Check if a number is nonnegative")
+    def is_nonnegative(self) -> bool:
+        return self.expr.is_nonnegative
+
     @strawberry.field(description="Check if it's a number")
     def is_number(self) -> bool:
         return self.expr.is_number and not self.expr.has(sympy.Function)

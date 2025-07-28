@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: "Nombres trigonométriques dans un triangle rectangle"
+courses:
+  - trigonometry
+  - PM1C
+  - 4MATH5
+  - MATH
+options:
+  streak: 999
+body:
+  - type: TrigonometricNumbers
+    params:
+      Opposite: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      Adjacent: [1, 2, 3, 4, 5, 6, 7, 8, 9]
