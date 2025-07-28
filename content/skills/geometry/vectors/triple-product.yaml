@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: 'Produits mixtes'
+title: Volume d'un parallélépipède
 prerequisites:
   - /skills/geometry/vectors/cross-product
   - /skills/geometry/vectors/dot-product

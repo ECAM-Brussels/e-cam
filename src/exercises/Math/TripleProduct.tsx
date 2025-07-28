@@ -16,7 +16,7 @@ const { Component, schema } = createExerciseType({
   Component: (props) => (
     <>
       <p>
-        Calculez le volume du parallélépipède comportant les points{' '}
+        Calculez le volume du parallélépipède dont 4 des sommets sont
         <For each={props.question.points}>
           {(point, index) => (
             <>
@@ -27,8 +27,7 @@ const { Component, schema } = createExerciseType({
               </Show>
             </>
           )}
-        </For>{' '}
-        comme sommets.
+        </For>
       </p>
       <div class="flex justify-center items-center gap-2">
         <Math value={`V =`} displayMode />
