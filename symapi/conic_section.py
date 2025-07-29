@@ -65,6 +65,16 @@ class ConicSection:
                     (self.info.x0, self.info.y0 + self.info.c),
                 )
             )
+    
+    @strawberry.field
+    def is_circle(self) -> bool:
+        return self.info.type == "ellipse" and self.info.c == 0
+
+    @strawberry.field
+    def radius(self) -> "Expression":
+        if not self.is_circle:
+            raise ValueError("This conic section is not a circle")
+        return Expression(expr=self.info.a)
 
     @strawberry.field
     def vertices(self) -> "Expression":
