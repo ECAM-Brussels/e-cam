@@ -31,20 +31,23 @@ export async function checkFactorisation(attempt: string, expr: string) {
   return expression.isEqual && expression.isFactored
 }
 
-export async function expand(expr: string) {
+export async function expand(expr: string, simplify = false) {
   const { expression } = await request(
     graphql(`
-      query ExpandExpr($expr: Math!) {
+      query ExpandExpr($expr: Math!, $simplify: Boolean!) {
         expression(expr: $expr) {
           expand {
             expr
+            simplify @include(if: $simplify) {
+              expr
+            }
           }
         }
       }
     `),
-    { expr },
+    { expr, simplify },
   )
-  return expression.expand.expr
+  return expression.expand.simplify?.expr ?? expression.expand.expr
 }
 
 export async function factor(expr: string) {
