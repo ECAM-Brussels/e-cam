@@ -1,6 +1,8 @@
+import { sample } from 'lodash-es'
 import { Show } from 'solid-js'
 import { z } from 'zod'
 import Math from '~/components/Math'
+import { MathJSON } from '~/components/MathSet'
 import { graphql } from '~/gql'
 import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
@@ -31,7 +33,7 @@ const { Component, schema } = createExerciseType({
   },
   question: z.object({
     expr: z.string().nonempty(),
-    S: z.string().optional(),
+    S: MathJSON.optional(),
     x: z.string().nonempty().default('x'),
     type: z
       .union([z.literal('stationary'), z.literal('max'), z.literal('min')])
@@ -83,6 +85,28 @@ const { Component, schema } = createExerciseType({
       )
       return expression.minimum.isEqual
     }
+  },
+  generator: {
+    params: z.object({
+      questions: z
+        .object({
+          expr: z.string().nonempty(),
+          x: z.string().default('x'),
+          S: MathJSON.optional(),
+          types: z
+            .union([z.literal('stationary'), z.literal('max'), z.literal('min')])
+            .array()
+            .nonempty()
+            .default(['stationary', 'max', 'min']),
+        })
+        .array()
+        .nonempty(),
+    }),
+    generate: async (params) => {
+      'use server'
+      const { types, ...question } = sample(params.questions)
+      return { ...question, type: sample(types) }
+    },
   },
 })
 
