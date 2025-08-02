@@ -70,7 +70,7 @@ const { Component, schema } = createExerciseType({
                 Rayon: <Math name="attempt.radius" value={radius()} editable />
               </li>
             </Match>
-            <Match when={conicSectionType() === 'ellipse' || conicSectionType() === 'hyperbola'}>
+            <Match when={['ellipse', 'hyperbola', 'parabola'].includes(conicSectionType())}>
               <li>
                 Foyers: <Math name="attempt.foci" value={foci()[0]} editable />
                 et <Math name="attempt.foci" value={foci()[1]} editable />
@@ -105,6 +105,13 @@ const { Component, schema } = createExerciseType({
       center: z.string().nonempty(),
       vertices: finiteSet,
       foci: finiteSet,
+    }),
+    z.object({
+      type: z.literal('parabola'),
+      center: z.string().nonempty(),
+      foci: finiteSet,
+      vertices: finiteSet,
+      directrix: z.string(),
     }),
   ]),
   mark: async (question, attempt) => {
