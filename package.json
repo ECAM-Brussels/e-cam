@@ -1,9 +1,12 @@
 {
   "name": "example-bare",
   "type": "module",
+  "private": true,
+  "workspaces": [
+    "symapi"
+  ],
   "scripts": {
-    "api": "poetry run fastapi dev symapi",
-    "dev": "concurrently 'vinxi dev' 'npm run api'",
+    "dev": "vinxi dev",
     "postinstall": "poetry install",
     "build": "vinxi build",
     "start": "vinxi start",

@@ -1,0 +1,21 @@
+[project]
+name = "symapi"
+version = "0.0.0"
+description = ""
+authors = [
+    {name = "Khoi Nguyen",email = "khoi@nguyen.me.uk"}
+]
+requires-python = ">=3.13,<4.0"
+dependencies = [
+    "sympy (>=1.14.0,<2.0.0)",
+    "strawberry-graphql[fastapi] (>=0.278.0,<0.279.0)",
+    "fastapi[standard] (>=0.116.1,<0.117.0)",
+    "antlr4-python3-runtime (==4.11)"
+]
+
+[tool.poetry]
+package-mode = false
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
