@@ -1,5 +1,0 @@
-{
-  "yaml.schemas": {
-    "http://:3000/schema.json": ["content/**/*.yaml", "content/**/*.yml"]
-  }
-}
