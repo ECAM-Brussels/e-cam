@@ -30,7 +30,7 @@ function extractMetadata(file: string) {
 }
 
 async function generatePage(file: string, prisma: PrismaClient) {
-  const relativePath = relative(resolve('content'), file)
+  const relativePath = relative(resolve('../content'), file)
   let outputPath = resolve('src/routes/(generated)', relativePath.replace(/\.md$/, '.tsx'))
   if (existsSync(outputPath) && statSync(outputPath).mtime >= statSync(file).mtime) {
     return
@@ -100,7 +100,7 @@ async function generateImports() {
 }
 
 async function buildAll(prisma: PrismaClient) {
-  const pages = await glob.glob('content/**/*.md')
+  const pages = await glob.glob('../content/**/*.md')
   for (const file of pages) {
     generatePage(file, prisma)
   }
@@ -119,7 +119,7 @@ const pandocPlugin = (): Plugin => {
       buildAll(prisma)
     },
     async handleHotUpdate({ file }) {
-      if (file.endsWith('.md') && file.startsWith(resolve('content'))) {
+      if (file.endsWith('.md') && file.startsWith(resolve('../content'))) {
         generatePage(file, prisma)
       }
     },
