@@ -1,0 +1,11 @@
+{
+  "tasks": {
+    "codegen": {
+      "outputs": []
+    },
+    "dev": {
+      "dependsOn": ["^dev", "codegen"],
+      "outputs": []
+    }
+  }
+}

@@ -57,7 +57,7 @@ export async function registerAssignment(
 }
 
 async function createAssignment(file: string, prisma: PrismaClient) {
-  const relativePath = relative(resolve('content'), file)
+  const relativePath = relative(resolve('../content'), file)
   const outputPath = resolve(
     'src/routes/(generated)',
     relativePath.replace(/\.ya?ml$/, '/[[index]].tsx'),
@@ -88,7 +88,7 @@ const dataSchema = z.object({
 })
 
 async function loadData(prisma: PrismaClient) {
-  const data = dataSchema.parse(yaml.load(readFileSync('content/data.yaml', 'utf-8')))
+  const data = dataSchema.parse(yaml.load(readFileSync('../content/data.yaml', 'utf-8')))
   try {
     for (const create of data.courses) {
       const { code, ...update } = create
@@ -108,7 +108,7 @@ export default function (): Plugin {
       prisma = new PrismaClient({
         datasources: { db: { url: env.VITE_DATABASE_URL } },
       })
-      const assignments = await glob.glob('content/**/*.yaml', { ignore: ['content/data.yaml'] })
+      const assignments = await glob.glob('../content/**/*.yaml', { ignore: ['../content/data.yaml'] })
       await createEmptyAssignments(prisma, assignments)
       await Promise.all([
         ...assignments.map((file) => createAssignment(file, prisma)),

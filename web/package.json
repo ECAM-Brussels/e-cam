@@ -1,11 +1,9 @@
 {
-  "name": "example-bare",
+  "name": "web",
   "type": "module",
   "private": true,
-  "workspaces": [
-    "symapi"
-  ],
   "scripts": {
+    "codegen": "graphql-codegen",
     "dev": "vinxi dev",
     "postinstall": "poetry install",
     "build": "vinxi build",
