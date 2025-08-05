@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { exec as execWithCallback } from 'child_process'
 import glob from 'fast-glob'
-import { existsSync, mkdirSync, readFileSync, statSync } from 'fs'
+import { mkdir, readFile, stat } from 'fs/promises'
 import yaml from 'js-yaml'
 import { dirname, relative, resolve } from 'path'
 import { promisify } from 'util'
@@ -16,8 +16,8 @@ const metadataSchema = z.object({
   slideshow: z.boolean().default(false),
 })
 
-function extractMetadata(file: string) {
-  const content = readFileSync(file, 'utf-8')
+async function extractMetadata(file: string) {
+  const content = await readFile(file, 'utf-8')
   const match = content.match(/^---\s*\n([\s\S]*?)\n---\s*\n/)
   if (!match) return null
   try {
@@ -32,17 +32,14 @@ function extractMetadata(file: string) {
 async function generatePage(file: string, prisma: PrismaClient) {
   const relativePath = relative(resolve('content'), file)
   let outputPath = resolve('src/routes/(generated)', relativePath.replace(/\.md$/, '.tsx'))
-  if (existsSync(outputPath) && statSync(outputPath).mtime >= statSync(file).mtime) {
-    return
-  }
-  mkdirSync(dirname(outputPath), { recursive: true })
+  await mkdir(dirname(outputPath), { recursive: true })
 
   let template
-  const meta = extractMetadata(file)
+  const meta = await extractMetadata(file)
   template = meta?.slideshow ? 'template.slideshow.tsx' : 'template.tsx'
   if (meta?.slideshow) {
     outputPath = outputPath.replace('.tsx', '/[[slide]]/[[board]].tsx')
-    mkdirSync(dirname(outputPath), { recursive: true })
+    await mkdir(dirname(outputPath), { recursive: true })
   }
   if (meta) {
     const url = '/' + relativePath.replace(/(\/index)?\.md/, '')
@@ -69,6 +66,12 @@ async function generatePage(file: string, prisma: PrismaClient) {
     cmd.push(`--filter ${filter}`)
   }
 
+  const [inStat, outStat] = await Promise.all([stat(file), stat(outputPath)])
+  if (outStat.mtime >= inStat.mtime) {
+    return;
+  }
+
+  console.log(`Converting ${file}...`)
   try {
     const { stderr } = await exec(cmd.join(' '))
     if (stderr) {
