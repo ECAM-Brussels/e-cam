@@ -120,6 +120,8 @@ export default function (): Plugin {
         if (file.endsWith('data.yaml')) {
           await loadData(prisma)
         } else {
+          const assignments = await glob.glob('content/**/*.yaml', { ignore: ['content/data.yaml'] })
+          await createEmptyAssignments(prisma, assignments)
           await createAssignment(file, prisma)
         }
       }
