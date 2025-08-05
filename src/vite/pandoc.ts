@@ -69,7 +69,7 @@ async function generatePage(file: string, prisma: PrismaClient) {
   try {
     const [inStat, outStat] = await Promise.all([stat(file), stat(outputPath)])
     if (outStat.mtime >= inStat.mtime) {
-      return;
+      return
     }
   } catch {}
 
