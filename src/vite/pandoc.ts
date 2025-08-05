@@ -66,10 +66,12 @@ async function generatePage(file: string, prisma: PrismaClient) {
     cmd.push(`--filter ${filter}`)
   }
 
-  const [inStat, outStat] = await Promise.all([stat(file), stat(outputPath)])
-  if (outStat.mtime >= inStat.mtime) {
-    return;
-  }
+  try {
+    const [inStat, outStat] = await Promise.all([stat(file), stat(outputPath)])
+    if (outStat.mtime >= inStat.mtime) {
+      return;
+    }
+  } catch {}
 
   console.log(`Converting ${file}...`)
   try {

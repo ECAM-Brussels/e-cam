@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import glob from 'fast-glob'
-import { mkdirSync, readFileSync, writeFileSync } from 'fs'
+import { mkdir, readFile, stat, writeFile } from 'fs/promises'
 import yaml from 'js-yaml'
 import { dirname, relative, resolve } from 'path'
 import { loadEnv, type Plugin } from 'vite'
@@ -62,12 +62,18 @@ async function createAssignment(file: string, prisma: PrismaClient) {
     'src/routes/(generated)',
     relativePath.replace(/\.ya?ml$/, '/[[index]].tsx'),
   )
-  mkdirSync(dirname(outputPath), { recursive: true })
-  const assignment = yaml.load(readFileSync(file, 'utf-8')) as Omit<AssignmentInput, 'url'>
-  const template = readFileSync(resolve('src/vite/template.assignment.tsx'), 'utf-8')
+  await mkdir(dirname(outputPath), { recursive: true })
+  try {
+    const [inStat, outStat] = await Promise.all([stat(file), stat(outputPath)])
+    if (outStat.mtime >= inStat.mtime) {
+      return
+    }
+  } catch { }
+  const assignment = yaml.load(await readFile(file, 'utf-8')) as Omit<AssignmentInput, 'url'>
+  const template = await readFile(resolve('src/vite/template.assignment.tsx'), 'utf-8')
   let content = template.replace('$body$', JSON.stringify(assignment, null, 2))
   content = content.replace('$route$', file)
-  writeFileSync(outputPath, content, 'utf-8')
+  await writeFile(outputPath, content, 'utf-8')
   const url = '/' + relativePath.replace(/\.ya?ml$/, '')
   try {
     await registerAssignment(prisma, { ...assignment, url }, {})
@@ -88,7 +94,7 @@ const dataSchema = z.object({
 })
 
 async function loadData(prisma: PrismaClient) {
-  const data = dataSchema.parse(yaml.load(readFileSync('content/data.yaml', 'utf-8')))
+  const data = dataSchema.parse(yaml.load(await readFile('content/data.yaml', 'utf-8')))
   try {
     for (const create of data.courses) {
       const { code, ...update } = create
