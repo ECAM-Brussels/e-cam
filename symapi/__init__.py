@@ -71,3 +71,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(graphql, prefix="/graphql")
+
+@app.head("/health")
+async def health_check():
+    return {"status": "ok"}

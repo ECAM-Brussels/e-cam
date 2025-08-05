@@ -1,9 +1,0 @@
-{
-  "name": "symapi",
-  "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "postinstall": "poetry install",
-    "dev": "poetry run fastapi dev ."
-  }
-}
