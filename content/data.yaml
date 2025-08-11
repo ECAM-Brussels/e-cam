@@ -17,6 +17,8 @@ courses:
     url: /courses/algebra
   - code: calculus
     title: Analyse
+    image: /images/algebra.png
+    url: /courses/calculus
   - code: geometry
     title: Géométrie
   - code: trigonometry

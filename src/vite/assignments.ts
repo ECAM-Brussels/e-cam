@@ -68,7 +68,7 @@ async function createAssignment(file: string, prisma: PrismaClient) {
     if (outStat.mtime >= inStat.mtime) {
       return
     }
-  } catch { }
+  } catch {}
   const assignment = yaml.load(await readFile(file, 'utf-8')) as Omit<AssignmentInput, 'url'>
   const template = await readFile(resolve('src/vite/template.assignment.tsx'), 'utf-8')
   let content = template.replace('$body$', JSON.stringify(assignment, null, 2))
@@ -126,7 +126,9 @@ export default function (): Plugin {
         if (file.endsWith('data.yaml')) {
           await loadData(prisma)
         } else {
-          const assignments = await glob.glob('content/**/*.yaml', { ignore: ['content/data.yaml'] })
+          const assignments = await glob.glob('content/**/*.yaml', {
+            ignore: ['content/data.yaml'],
+          })
           await createEmptyAssignments(prisma, assignments)
           await createAssignment(file, prisma)
         }
