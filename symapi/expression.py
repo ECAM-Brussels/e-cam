@@ -6,6 +6,7 @@ from typing import Optional
 
 from symapi.core import Math, MathSet
 
+
 @strawberry.enum
 class SortOptions(Enum):
     abs = sympy.Abs
@@ -54,7 +55,9 @@ class Expression:
     def count(self, expr: Math) -> int:
         return self.expr.count(expr)
 
-    @strawberry.field(description="Differentiate n times with respect to a given variable")
+    @strawberry.field(
+        description="Differentiate n times with respect to a given variable"
+    )
     def diff(self, x: Math = sympy.Symbol("x"), n: int = 1) -> "Expression":
         expr = self.expr.replace(
             lambda expr: expr.is_Function
@@ -79,14 +82,25 @@ class Expression:
     @strawberry.field(description="Factor an expression")
     def factor(self) -> "Expression":
         return Expression(expr=sympy.factor(self.expr))
-    
+
     @strawberry.field(description="Get element with a particular index from a list")
     def index(self, i: int) -> "Expression":
         return Expression(expr=list(self.expr)[i])
 
-    @strawberry.field(description="Check whether the difference between the current expression and `expr` is sufficiently small")
+    @strawberry.field(
+        description="Check whether the difference between the current expression and `expr` is sufficiently small"
+    )
     def is_approximately_equal(self, expr: Math, error: float) -> bool:
         return bool(sympy.N(sympy.Abs(self.expr - expr)) <= error)
+
+    @strawberry.field(description="Check if a complex number is in standard form")
+    def is_complex_rectangular(self) -> bool:
+        return (
+            self.expr.func == sympy.Add
+            and len(self.expr.args) == 2
+            and self.expr.args[0].is_real
+            and self.expr.args[1].is_imaginary
+        )
 
     @strawberry.field(description="Perform equality check")
     def is_equal(self, expr: Math, complex: Optional[bool] = False) -> bool:
@@ -110,6 +124,19 @@ class Expression:
         result = expand(expr - self.expr)
         return sympy.simplify(result) == 0
 
+    @strawberry.field(description="Check if a complex number is in exponential form")
+    def is_exponential(self) -> bool:
+        if not self.is_polar(False):
+            return False
+        return (
+            self.expr.args[1].func == sympy.exp
+            and self.expr.args[1].args[0].is_imaginary
+        ) or (
+            self.expr.args[1].func == sympy.Pow
+            and self.expr.args[1].args[0] == sympy.E
+            and self.expr.args[1].args[1].is_imaginary
+        )
+
     @strawberry.field(description="Check if a number is nonnegative")
     def is_nonnegative(self) -> bool:
         return self.expr.is_nonnegative
@@ -119,14 +146,16 @@ class Expression:
         return self.expr.is_number and not self.expr.has(sympy.Function)
 
     @strawberry.field(description="Check if a complex number is in polar form")
-    def is_polar(self) -> bool:
-        if self.expr.is_real:
-            return True
+    def is_polar(self, strict: Optional[bool] = False) -> bool:
         if self.expr.func != sympy.Mul or len(self.expr.args) != 2:
             return False
         r, u = self.expr.args
         if r != sympy.Abs(self.expr) or sympy.Abs(u) != 1:
             return False
+        if strict:
+            if u.func != sympy.Add:
+                return False
+            return all(map(lambda x: x.is_real or x.is_imaginary, u.args))
         return True
 
     @strawberry.field(description="")
@@ -135,10 +164,14 @@ class Expression:
         opposite = sympy.Lambda(x, -x)
         return self.is_set_equal(sympy.simplify(sympy.ImageSet(opposite, self.expr)))
 
-    @strawberry.field(description=textwrap.dedent("""
-        Check if the current expression (a mathematical set, as given by `solveset` for example)
-        is equal to a given list after it is converted to a set.
-    """))
+    @strawberry.field(
+        description=textwrap.dedent(
+            """
+                Check if the current expression (a mathematical set,
+                as given by `solveset` for example) is equal to a given set.
+            """
+        )
+    )
     def is_set_equal(self, S: MathSet) -> bool:
         x = sympy.Symbol("x")
         sanitize = sympy.Lambda(x, sympy.expand_complex(sympy.simplify(x)))
@@ -188,7 +221,9 @@ class Expression:
                 return False
         return True
 
-    @strawberry.field(description="Check if the current expression is a float or an int")
+    @strawberry.field(
+        description="Check if the current expression is a float or an int"
+    )
     def is_numeric(self) -> bool:
         return isinstance(self.expr, (sympy.Float, sympy.Integer))
 
@@ -196,26 +231,42 @@ class Expression:
     def is_polynomial(self, symbols: list[Math] = []) -> bool:
         return self.expr.is_polynomial(*symbols)
 
-    @strawberry.field(description="Evaluate the limit of the current expression at `x` = `x0`")
+    @strawberry.field(
+        description="Evaluate the limit of the current expression at `x` = `x0`"
+    )
     def limit(self, x0: Math, x: Optional[Math] = sympy.Symbol("x")) -> "Expression":
         return Expression(expr=sympy.limit(self.expr, x, x0))
 
-    @strawberry.field(description="Transform the current expression into a list of expressions.")
-    def list(self, sort: Optional[SortOptions] = SortOptions.nosort) -> list["Expression"]:
+    @strawberry.field(
+        description="Transform the current expression into a list of expressions."
+    )
+    def list(
+        self, sort: Optional[SortOptions] = SortOptions.nosort
+    ) -> list["Expression"]:
         res = list(self.expr)
         if sort != SortOptions.nosort:
             res.sort(key=sort.value)
         return [Expression(expr=item) for item in res]
 
     @strawberry.field(description="Maximum value of the current expression")
-    def maximum(self, x: Optional[Math] = sympy.Symbol("x"), S: Optional[MathSet] = sympy.S.Reals) -> "Expression":
+    def maximum(
+        self,
+        x: Optional[Math] = sympy.Symbol("x"),
+        S: Optional[MathSet] = sympy.S.Reals,
+    ) -> "Expression":
         return Expression(expr=sympy.maximum(self.expr, x, S))
 
     @strawberry.field(description="Minimum value of the current expression")
-    def minimum(self, x: Optional[Math] = sympy.Symbol("x"), S: Optional[MathSet] = sympy.S.Reals) -> "Expression":
+    def minimum(
+        self,
+        x: Optional[Math] = sympy.Symbol("x"),
+        S: Optional[MathSet] = sympy.S.Reals,
+    ) -> "Expression":
         return Expression(expr=sympy.minimum(self.expr, x, S))
 
-    @strawberry.field(description="Multiply a polynomial so that it could be factored without fractions if all its roots are rational.")
+    @strawberry.field(
+        description="Multiply a polynomial so that it could be factored without fractions if all its roots are rational."
+    )
     def normalize_roots(self) -> "Expression":
         multiple = 1
         for root in sympy.roots(self.expr, multiple=True):
@@ -230,7 +281,9 @@ class Expression:
     def simplify(self) -> "Expression":
         return Expression(expr=sympy.simplify(self.expr))
 
-    @strawberry.field(description="Get the solution set of an equation, which can be intersected with [`a`, `b`] if necessary")
+    @strawberry.field(
+        description="Get the solution set of an equation, which can be intersected with [`a`, `b`] if necessary"
+    )
     def solveset(
         self,
         S: Optional[MathSet] = None,
@@ -250,7 +303,11 @@ class Expression:
         return Expression(expr=sympy.Add(self.expr, sympy.Mul(-1, expr)))
 
     @strawberry.field(description="Get stationary points of an expression")
-    def stationary_points(self, x: Optional[Math] = sympy.Symbol("x"), S: Optional[MathSet] = sympy.S.Reals) -> "Expression":
+    def stationary_points(
+        self,
+        x: Optional[Math] = sympy.Symbol("x"),
+        S: Optional[MathSet] = sympy.S.Reals,
+    ) -> "Expression":
         return Expression(expr=sympy.stationary_points(self.expr, x, S))
 
     @strawberry.field
