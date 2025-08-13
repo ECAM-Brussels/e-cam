@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: "Équation de l'ellipse'"
+title: "Équation de l'ellipse"
 prerequisites:
   - /skills/geometry/conic-sections/circle
 courses:

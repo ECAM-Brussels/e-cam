@@ -32,6 +32,7 @@ title: 'Pont vers le supérieur: mathématiques'
     "page": {
       "NOT": {
         "title": { contains: "complex" },
+        "title": { contains: "interpolation" },
       }
     }
   }}>
@@ -42,6 +43,7 @@ title: 'Pont vers le supérieur: mathématiques'
   <ChapterInfo title="Chapitre 4: Droites et Coniques" query={{
     "page": {
       OR: [
+        { "title": { contains: "interpolation" } },
         { "title": { contains: "hyperbole" } },
         { "title": { contains: "parabole" } },
         { "title": { contains: "ellipse" } },
