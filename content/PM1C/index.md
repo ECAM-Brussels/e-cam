@@ -13,23 +13,53 @@ title: 'Pont vers le supérieur: mathématiques'
     <Resource type="exercise" href="/PM1C/exercises/01-trigonometry">EX 1</Resource>
     <Resource type="exercise" href="/PM1C/exercises/02-trigonometry">EX 2</Resource>
   </ChapterInfo>
-  <ChapterInfo title="Chapitre 2: Vecteurs">
+  <ChapterInfo title="Chapitre 2: Vecteurs" query={{
+    "page": {
+      OR: [
+        { "title": { contains: "vect" } },
+        { "title": { contains: "scalaire" } },
+        { "title": { contains: "parallélé" } },
+      ]
+    }
+  }}>
     <Resource type="theory" href="/PM1C/slides/02-vectors">CT 2</Resource>
     <Resource type="exercise" href="/PM1C/exercises/03-vectors">EX 3</Resource>
     <Resource type="exercise" href="/PM1C/exercises/04-vectors">EX 4</Resource>
     <Resource type="exercise" href="/PM1C/exercises/05-vectors">EX 5</Resource>
   </ChapterInfo>
-  <ChapterInfo title="Chapitre 3: Algèbre et systèmes" query={{ "courses": { "some": { "code": "algebra " } } }}>
+  <ChapterInfo title="Chapitre 3: Algèbre et systèmes" query={{
+    "courses": { "some": { "code": "algebra " } },
+    "page": {
+      "NOT": {
+        "title": { contains: "complex" },
+      }
+    }
+  }}>
     <Resource type="theory" href="/PM1C/slides/03-algebra">CT 3</Resource>
     <Resource type="exercise" href="/PM1C/exercises/06-algebra">EX 6</Resource>
     <Resource type="exercise" href="/PM1C/exercises/07-simultaneous-equations">EX 7</Resource>
   </ChapterInfo>
-  <ChapterInfo title="Chapitre 4: Droites et Coniques">
+  <ChapterInfo title="Chapitre 4: Droites et Coniques" query={{
+    "page": {
+      OR: [
+        { "title": { contains: "hyperbole" } },
+        { "title": { contains: "parabole" } },
+        { "title": { contains: "ellipse" } },
+        { "title": { contains: "cercle" } },
+        { "title": { contains: "conique" } },
+      ]
+    }
+  }}>
     <Resource type="theory" href="/PM1C/slides/04-straight-lines-and-conic-sections">CT 4</Resource>
     <Resource type="exercise" href="/PM1C/exercises/08-straight-lines">EX 8</Resource>
     <Resource type="exercise" href="/PM1C/exercises/09-conic-sections">EX 9</Resource>
   </ChapterInfo>
-  <ChapterInfo title="Chapitre 5: Nombres complexes">
+  <ChapterInfo title="Chapitre 5: Nombres complexes" query={{
+    "courses": { "some": { "code": "algebra" } },
+    "page": {
+      "title": { contains: "complex" },
+    }
+  }}>
     <Resource type="theory" href="/PM1C/slides/05-complex-numbers">CT 5</Resource>
     <Resource type="exercise" href="/PM1C/exercises/10-complex-numbers">EX 10</Resource>
     <Resource type="exercise" href="/PM1C/exercises/11-complex-numbers">EX 11</Resource>
@@ -41,7 +71,7 @@ title: 'Pont vers le supérieur: mathématiques'
     <Resource type="exercise" href="/PM1C/exercises/13-functions-and-limits">EX 13</Resource>
     <Resource type="exercise" href="/PM1C/exercises/14-limits">EX 14</Resource>
   </ChapterInfo>
-  <ChapterInfo title="Chapitre 7: Dérivées">
+  <ChapterInfo title="Chapitre 7: Dérivées" query={{ "courses": { "some": { "code": "calculus" } } }}>
     <Resource type="theory" href="/PM1C/slides/08-differentiation">CT 6</Resource>
     <Resource type="exercise" href="/PM1C/exercises/15-differentiation">EX 15</Resource>
     <Resource type="exercise" href="/PM1C/exercises/16-differentiation">EX 16</Resource>
