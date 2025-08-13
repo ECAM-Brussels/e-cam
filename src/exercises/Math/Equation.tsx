@@ -128,6 +128,13 @@ const { Component, schema } = createExerciseType({
           .array()
           .transform((coeff) => product(...coeff)),
       }),
+      z.object({
+        type: z.literal('complexRoots'),
+        N: z.number().array().nonempty(),
+        R: z.string().nonempty().or(z.number().transform(String)).array().nonempty(),
+        Theta: z.string().nonempty().array().nonempty(),
+        Z: z.string().nonempty().array().nonempty().default(['z']),
+      }),
     ]),
     generate: async (params) => {
       if (params.type === 'simpleTrigonometric') {
@@ -155,7 +162,7 @@ const { Component, schema } = createExerciseType({
           S,
           x,
         }
-      } else {
+      } else if (params.type === 'polynomial') {
         const x = sample(params.X)
         let [lhs, rhs] = [`(${sample(params.A)})`, '']
         sample(params.roots)?.forEach((root) => {
@@ -189,6 +196,30 @@ const { Component, schema } = createExerciseType({
           equation: `${data.lhs.normalizeRoots.add.simplify.expr} = ${data.rhs.simplify.expr}`,
           x,
         }
+      } else if (params.type === 'complexRoots') {
+        const [n, r, theta] = [sample(params.N), sample(params.R), sample(params.Theta)]
+        const z = sample(params.Z)
+        const { expression } = await request(
+          graphql(`
+            query CalculateComplexExpr($expr: Math!) {
+              expression(expr: $expr) {
+                expand {
+                  simplify {
+                    expr
+                  }
+                }
+              }
+            }
+          `),
+          { expr: `(${r})^{${n}} (\\cos((${n}) (${theta})) + i \\sin((${n}) (${theta})))` },
+        )
+        return {
+          equation: `${z}^{${n}} = ${expression.expand.simplify.expr}`,
+          complex: true,
+          x: z,
+        }
+      } else {
+        throw new Error('Type params has incorrect value')
       }
     },
   },

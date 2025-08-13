@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: "Racines complexes d'un nombre complexe"
+courses:
+  - algebra
+  - 6MATH6
+  - PM1C
+  - MATH
+prerequisites:
+  - /skills/algebra/complex/exponential
+  - /skills/trigonometry/values
+options:
+  streak: 999
+body:
+  - type: Equation
+    params:
+      type: complexRoots
+      N: [2, 3, 4, 6]
+      R: [1, 2, 3, 4, 5]
+      Theta:
+        - '0'
+        - \frac{\pi}{6}
+        - \frac{\pi}{4}
+        - \frac{\pi}{3}
+        - \frac{\pi}{2}
+        - \pi - \frac{\pi}{6}
+        - \pi - \frac{\pi}{4}
+        - \pi - \frac{\pi}{3}
+        - \pi - \frac{\pi}{2}
+        - \pi
+        - \frac{\pi}{6} + \pi
+        - \frac{\pi}{4} + \pi
+        - \frac{\pi}{3} + \pi
+        - \frac{\pi}{2} + \pi
+        - -\frac{\pi}{6}
+        - -\frac{\pi}{4}
+        - -\frac{\pi}{3}
+        - -\frac{\pi}{2}
