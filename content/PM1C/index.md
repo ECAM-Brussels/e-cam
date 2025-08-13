@@ -30,10 +30,10 @@ title: 'Pont vers le supérieur: mathématiques'
   <ChapterInfo title="Chapitre 3: Algèbre et systèmes" query={{
     "courses": { "some": { "code": "algebra " } },
     "page": {
-      "NOT": {
-        "title": { contains: "complex" },
-        "title": { contains: "interpolation" },
-      }
+      AND: [
+        { "NOT": { title: { contains: "complex" } } },
+        { "NOT": { title: { contains: "interpolation" } } },
+      ],
     }
   }}>
     <Resource type="theory" href="/PM1C/slides/03-algebra">CT 3</Resource>
