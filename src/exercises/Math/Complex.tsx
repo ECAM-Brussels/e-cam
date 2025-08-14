@@ -4,6 +4,7 @@ import Math from '~/components/Math'
 import { graphql } from '~/gql'
 import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
+import { simplify } from '~/queries/algebra'
 
 const { Component, schema } = createExerciseType({
   name: 'Complex',
@@ -65,6 +66,10 @@ const { Component, schema } = createExerciseType({
   generator: {
     params: z.discriminatedUnion('type', [
       z.object({
+        type: z.literal('division'),
+        C: z.number().or(z.string().nonempty()).array().nonempty(),
+      }),
+      z.object({
         type: z.literal('polar'),
         R: z.number().transform(String).or(z.string().nonempty()).array().nonempty(),
         Theta: z.number().transform(String).or(z.string().nonempty()).array().nonempty(),
@@ -94,6 +99,17 @@ const { Component, schema } = createExerciseType({
         return {
           format: params.type,
           expr: expression.expand.expr,
+        }
+      } else if (params.type === 'division') {
+        const [a, b] = [sample(params.C), sample(params.C)]
+        const [c, d] = [sample(params.C), sample(params.C)]
+        const [num, den] = await Promise.all([
+          simplify(`(${a}) + (${b})i`),
+          simplify(`(${c}) + (${d})i`),
+        ])
+        return {
+          format: 'rectangular' as const,
+          expr: String.raw`\frac{${num}}{${den}}`,
         }
       } else {
         throw new Error('Type param does not have an acceptable value')
