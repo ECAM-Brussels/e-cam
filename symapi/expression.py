@@ -38,6 +38,10 @@ class Expression:
             theta -= sympy.pi
         return Expression(expr=theta)
 
+    @strawberry.field
+    def args(self) -> list["Expression"]:
+        return [Expression(expr=arg) for arg in self.expr.args]
+
     @strawberry.field(description="Coefficient of `x`^`n`")
     def coeff(self, x: Math = sympy.Symbol("x"), n: int = 1) -> "Expression":
         return Expression(expr=sympy.expand(self.expr).coeff(x, n))
@@ -82,6 +86,10 @@ class Expression:
     @strawberry.field(description="Factor an expression")
     def factor(self) -> "Expression":
         return Expression(expr=sympy.factor(self.expr))
+
+    @strawberry.field
+    def func(self) -> str:
+        return str(self.expr.func.__name__)
 
     @strawberry.field(description="Get element with a particular index from a list")
     def index(self, i: int) -> "Expression":
