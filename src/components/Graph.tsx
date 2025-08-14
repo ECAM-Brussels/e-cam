@@ -18,6 +18,26 @@ export default function Graph(props: {
   const preload = usePreloadRoute()
   const query = () => (typeof props.query === 'string' ? JSON.parse(props.query) : props.query)
   const elements = createAsync(() => getAssignmentGraph(query(), props.groups))
+  const redraw = () => {
+    if (cy() && elements()) {
+      cy()?.resize()
+      cy()!.json({
+        elements: elements()?.map((el) => {
+          if (props.currentNode && el.data.id === props.currentNode) {
+            return { ...el, classes: 'current' }
+          }
+          return el
+        }),
+      })
+      cy()!
+        .layout({
+          name: 'dagre',
+          rankDir: props.rankDir || 'LR',
+        } as { name: string })
+        .run()
+    }
+  }
+  let ro: ResizeObserver | undefined = undefined
 
   onMount(async () => {
     cytoscape.use(dagre)
@@ -102,29 +122,15 @@ export default function Graph(props: {
       event.target.removeClass('hovered')
       cy()!.container()!.style.cursor = 'default'
     })
+    ro = new ResizeObserver(redraw)
+    ro.observe(container)
   })
 
-  createEffect(() => {
-    if (cy() && elements()) {
-      cy()!.json({
-        elements: elements()?.map((el) => {
-          if (props.currentNode && el.data.id === props.currentNode) {
-            return { ...el, classes: 'current' }
-          }
-          return el
-        }),
-      })
-      cy()!
-        .layout({
-          name: 'dagre',
-          rankDir: props.rankDir || 'LR',
-        } as { name: string })
-        .run()
-    }
-  })
+  createEffect(redraw)
 
   onCleanup(() => {
     cy()?.destroy()
+    ro?.disconnect()
   })
 
   return <div class={props.class} ref={container} />
