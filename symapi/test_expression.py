@@ -88,6 +88,9 @@ def test_is_equal(expr: str, attempt: str, expected: bool):
     "expr,expected",
     [
         ("3 + 0i", True),
+        ("3 i^2 + 0i", False),
+        ("3 i^4 + 0i", False),
+        ("3 + i^3", False),
         ("0 + 0i", True),
         ("0 - i", True),
         ("3 + 4i", True),

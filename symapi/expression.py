@@ -95,12 +95,19 @@ class Expression:
 
     @strawberry.field(description="Check if a complex number is in standard form")
     def is_complex_rectangular(self) -> bool:
+        a, b = self.expr.args[0], self.expr.args[1]
         return (
             self.expr.func == sympy.Add
             and len(self.expr.args) == 2
-            and self.expr.args[0].is_real
+            and a.is_real
+            and a.has(sympy.I) == False
             and (
-                self.expr.args[1].is_imaginary or sympy.simplify(self.expr.args[1]) == 0
+                b == sympy.I
+                or (
+                    b.func == sympy.Mul
+                    and all([x.is_real for x in b.args[:-1]])
+                    and b.args[-1] == sympy.I
+                )
             )
         )
 
