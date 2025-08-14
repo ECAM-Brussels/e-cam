@@ -1,3 +1,4 @@
+from typing import Optional
 import pytest
 
 from symapi import schema
@@ -85,31 +86,37 @@ def test_is_equal(expr: str, attempt: str, expected: bool):
 
 
 @pytest.mark.parametrize(
-    "expr,expected",
+    "expr,strict,expected",
     [
-        ("3 + 0i", True),
-        ("3 i^2 + 0i", False),
-        ("3 i^4 + 0i", False),
-        ("3 + i^3", False),
-        ("0 + 0i", True),
-        ("0 - i", True),
-        ("3 + 4i", True),
-        ("-4 - i", True),
-        ("1 + i", True),
-        ("3 e^{i \\pi}", False),
-        ("2 (\\cos{\\pi} + i \\sin{\\pi})", False),
+        ("3", False, True),
+        ("3", True, False),
+        ("i", False, True),
+        ("i", True, False),
+        ("4i", True, False),
+        ("4i", False, True),
+        ("3 + 0i", False, True),
+        ("3 i^2 + 0i", False, False),
+        ("3 i^4 + 0i", False, False),
+        ("3 + i^3", False, False),
+        ("0 + 0i", False, True),
+        ("0 - i", False, True),
+        ("3 + 4i", False, True),
+        ("-4 - i", False, True),
+        ("1 + i", False, True),
+        ("3 e^{i \\pi}", False, False),
+        ("2 (\\cos{\\pi} + i \\sin{\\pi})", False, False),
     ],
 )
-def test_is_rectangular(expr: str, expected: bool):
+def test_is_rectangular(expr: str, strict: bool, expected: bool):
     result = schema.execute_sync(
         """
-            query ($expr: Math!) {
+            query ($expr: Math!, $strict: Boolean!) {
                 expression(expr: $expr) {
-                    isComplexRectangular
+                    isComplexRectangular(strict: $strict)
                 }
             }
         """,
-        variable_values={"expr": expr},
+        variable_values={"expr": expr, "strict": strict},
     )
     assert result.data is not None
     assert result.data["expression"] == {
