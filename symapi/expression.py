@@ -13,6 +13,18 @@ class SortOptions(Enum):
     nosort = False
 
 
+def flatten_mul(expr: sympy.Basic) -> sympy.Basic:
+    if expr.func != sympy.Mul:
+        return expr
+    factors = []
+    for term in expr.args:
+        if term.func == sympy.Mul:
+            factors += term.args
+        else:
+            factors.append(term)
+    return sympy.Mul(*factors, evaluate=False)
+
+
 @strawberry.type
 class Expression:
     expr: Math = strawberry.field(description="Current mathematical expression")
@@ -117,7 +129,7 @@ class Expression:
                     return True
         if self.expr.func != sympy.Add or len(self.expr.args) != 2:
             return False
-        a, b = self.expr.args[0], self.expr.args[1]
+        a, b = flatten_mul(self.expr.args[0]), flatten_mul(self.expr.args[1])
         return (
             a.is_real
             and a.has(sympy.I) == False
@@ -235,16 +247,9 @@ class Expression:
         expr = self.expr
         if expr.func != sympy.Mul:
             expr = sympy.Mul(1, expr, evaluate=False)
+        expr = flatten_mul(expr)
 
-        # Flatten the tree to avoid inner multiplications
-        factors = []
         for term in expr.args:
-            if term.func == sympy.Mul:
-                factors += term.args
-            else:
-                factors.append(term)
-
-        for term in factors:
             if sympy.factor(term).func == sympy.Mul:
                 return False
             if term.func != sympy.Pow and sympy.factor(term).func == sympy.Pow:
