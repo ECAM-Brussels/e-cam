@@ -29,6 +29,16 @@ class ConicSection:
         return self.info.direction
 
     @strawberry.field
+    def directrix(self) -> "Expression":
+        if self.info.type != "parabola":
+            raise ValueError("This conic section is not a parabola")
+        x, y = sympy.symbols("x y")
+        if self.info.direction == "vertical":
+            return Expression(expr=sympy.Eq(y, -self.info.p))
+        else:
+            return Expression(expr=sympy.Eq(x, -self.info.p))
+
+    @strawberry.field
     def type(self) -> str:
         return self.info.type
 
@@ -47,10 +57,14 @@ class ConicSection:
     @strawberry.field
     def foci(self) -> "Expression":
         if self.info.type == "parabola":
-            if self.info.direction == 'horizontal':
-                return Expression(expr=sympy.FiniteSet((self.info.x0 + self.info.p, self.info.y0)))
+            if self.info.direction == "horizontal":
+                return Expression(
+                    expr=sympy.FiniteSet((self.info.x0 + self.info.p, self.info.y0))
+                )
             else:
-                return Expression(expr=sympy.FiniteSet((self.info.x0, self.info.y0 + self.info.p)))
+                return Expression(
+                    expr=sympy.FiniteSet((self.info.x0, self.info.y0 + self.info.p))
+                )
         if self.info.direction == "horizontal":
             return Expression(
                 expr=sympy.FiniteSet(
@@ -65,7 +79,7 @@ class ConicSection:
                     (self.info.x0, self.info.y0 + self.info.c),
                 )
             )
-    
+
     @strawberry.field
     def is_circle(self) -> bool:
         return self.info.type == "ellipse" and self.info.c == 0
