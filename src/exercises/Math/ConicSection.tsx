@@ -50,20 +50,26 @@ const { Component, schema } = createExerciseType({
         <Math value={props.question.equation} displayMode />
         <input type="hidden" name="attempt.type" value={conicSectionType()} />
         <Show when={props.question.type === 'conic'}>
-          <select
-            value={conicSectionType()}
-            onChange={(e) => setConicSectionType(e.target.value as ConicSectionType)}
-          >
-            <option value="circle">Cercle</option>
-            <option value="ellipse">Ellipse</option>
-            <option value="parabola">Parabola</option>
-            <option value="hyperbola">Hyperbola</option>
-          </select>
+          <label>
+            Type de conique:{' '}
+            <select
+              class="border bg-white py-2 px-2"
+              value={conicSectionType()}
+              onChange={(e) => setConicSectionType(e.target.value as ConicSectionType)}
+            >
+              <option value="circle">Cercle</option>
+              <option value="ellipse">Ellipse</option>
+              <option value="parabola">Parabola</option>
+              <option value="hyperbola">Hyperbola</option>
+            </select>
+          </label>
         </Show>
         <ul>
-          <li>
-            Centre: <Math name="attempt.center" value={props.attempt?.center ?? ''} editable />
-          </li>
+          <Show when={['ellipse', 'circle'].includes(conicSectionType())}>
+            <li>
+              Centre: <Math name="attempt.center" value={props.attempt?.center ?? ''} editable />
+            </li>
+          </Show>
           <Switch>
             <Match when={conicSectionType() === 'circle'}>
               <li>
@@ -72,12 +78,20 @@ const { Component, schema } = createExerciseType({
             </Match>
             <Match when={['ellipse', 'hyperbola', 'parabola'].includes(conicSectionType())}>
               <li>
-                Foyers: <Math name="attempt.foci" value={foci()[0]} editable />
-                et <Math name="attempt.foci" value={foci()[1]} editable />
+                Foyer{conicSectionType() !== 'parabola' && 's'}:{' '}
+                <Math name="attempt.foci" value={foci()[0]} editable />
+                <Show when={conicSectionType() !== 'parabola'}>
+                  {' '}
+                  et <Math name="attempt.foci" value={foci()[1]} editable />
+                </Show>
               </li>
               <li>
-                Sommets: <Math name="attempt.vertices" value={vertices()[0]} editable />
-                et <Math name="attempt.vertices" value={vertices()[1]} editable />
+                Sommet{conicSectionType() !== 'parabola' && 's'}:{' '}
+                <Math name="attempt.vertices" value={vertices()[0]} editable />
+                <Show when={conicSectionType() !== 'parabola'}>
+                  {' '}
+                  et <Math name="attempt.vertices" value={vertices()[1]} editable />
+                </Show>
               </li>
             </Match>
             <Match when={conicSectionType() === 'hyperbola'}>
@@ -108,10 +122,15 @@ const { Component, schema } = createExerciseType({
     }),
     z.object({
       type: z.literal('parabola'),
-      center: z.string().nonempty(),
       foci: finiteSet,
       vertices: finiteSet,
       directrix: z.string(),
+    }),
+    z.object({
+      type: z.literal('hyperbola'),
+      asymptotes: finiteSet,
+      vertices: finiteSet,
+      foci: finiteSet,
     }),
   ]),
   mark: async (question, attempt) => {
@@ -168,6 +187,55 @@ const { Component, schema } = createExerciseType({
         conicSection.center.isEqual &&
         conicSection.foci.isSetEqual
       )
+    } else if (attempt.type === 'parabola') {
+      const { conicSection } = await request(
+        graphql(`
+          query CheckParabola(
+            $equation: Math!
+            $directrix: Math!
+            $foci: MathSet!
+            $vertices: MathSet!
+          ) {
+            conicSection(equation: $equation) {
+              type
+              directrix {
+                isEqual(expr: $directrix)
+              }
+              foci {
+                isSetEqual(S: $foci)
+              }
+              vertices {
+                isSetEqual(S: $vertices)
+              }
+            }
+          }
+        `),
+        { ...question, ...attempt },
+      )
+      return (
+        conicSection.type === 'parabola' &&
+        conicSection.directrix.isEqual &&
+        conicSection.foci.isSetEqual &&
+        conicSection.vertices.isSetEqual
+      )
+    } else if (attempt.type === 'hyperbola') {
+      const { conicSection } = await request(
+        graphql(`
+          query CheckHyperbola($equation: Math!, $foci: MathSet!, $vertices: MathSet!) {
+            conicSection(equation: $equation) {
+              type
+              vertices {
+                isSetEqual(S: $vertices)
+              }
+              foci {
+                isSetEqual(S: $foci)
+              }
+            }
+          }
+        `),
+        { ...question, ...attempt },
+      )
+      return conicSection.type === 'hyperbola' && conicSection.foci.isSetEqual
     }
     return false
   },
