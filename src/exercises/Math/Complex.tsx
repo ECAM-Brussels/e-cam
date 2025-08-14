@@ -6,6 +6,22 @@ import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
 import { simplify } from '~/queries/algebra'
 
+async function getRectangularForm(expr: string) {
+  const { expression } = await request(
+    graphql(`
+      query GetComplexRectangularForm($expr: Math!) {
+        expression(expr: $expr) {
+          expand {
+            expr
+          }
+        }
+      }
+    `),
+    { expr },
+  )
+  return expression.expand.expr
+}
+
 const { Component, schema } = createExerciseType({
   name: 'Complex',
   Component: (props) => (
@@ -78,6 +94,12 @@ const { Component, schema } = createExerciseType({
         N: z.number().array().nonempty(),
       }),
       z.object({
+        type: z.literal('powersOfComplexNumber'),
+        N: z.number().array().nonempty(),
+        R: z.number().transform(String).or(z.string().nonempty()).array().nonempty(),
+        Theta: z.number().transform(String).or(z.string().nonempty()).array().nonempty(),
+      }),
+      z.object({
         type: z.literal('polar'),
         R: z.number().transform(String).or(z.string().nonempty()).array().nonempty(),
         Theta: z.number().transform(String).or(z.string().nonempty()).array().nonempty(),
@@ -92,21 +114,9 @@ const { Component, schema } = createExerciseType({
       'use server'
       if (params.type === 'polar' || params.type === 'exponential') {
         const [r, theta] = [sample(params.R), sample(params.Theta)]
-        const { expression } = await request(
-          graphql(`
-            query GetComplexRectangularForm($expr: Math!) {
-              expression(expr: $expr) {
-                expand {
-                  expr
-                }
-              }
-            }
-          `),
-          { expr: `(${r}) (\\cos(${theta}) + i \\sin(${theta}))` },
-        )
         return {
           format: params.type,
-          expr: expression.expand.expr,
+          expr: await getRectangularForm(`(${r}) (\\cos(${theta}) + i \\sin(${theta}))`),
         }
       } else if (params.type === 'division' || params.type === 'multiplication') {
         const [a, b] = [sample(params.C), sample(params.C)]
@@ -127,6 +137,13 @@ const { Component, schema } = createExerciseType({
         return {
           format: 'rectangular' as const,
           expr: `i^{${n}}`,
+        }
+      } else if (params.type === 'powersOfComplexNumber') {
+        const [n, r, theta] = [sample(params.N), sample(params.R), sample(params.Theta)]
+        const z = await getRectangularForm(`(${r}) (\\cos(${theta}) + i \\sin(${theta}))`)
+        return {
+          format: 'polar' as const,
+          expr: String.raw`\left(${z}\right)^{${n}}`,
         }
       } else {
         throw new Error('Type param does not have an acceptable value')
