@@ -47,7 +47,7 @@ const { Component, schema } = createExerciseType({
         query CheckComplex($expr: Math!, $attempt: Math!) {
           expression(expr: $attempt) {
             isEqual(expr: $expr)
-            isComplexRectangular
+            isComplexRectangular(strict: false)
             isExponential
             isPolar(strict: true)
             isNumber
@@ -72,6 +72,10 @@ const { Component, schema } = createExerciseType({
       z.object({
         type: z.literal('division'),
         C: z.number().or(z.string().nonempty()).array().nonempty(),
+      }),
+      z.object({
+        type: z.literal('powersOfI'),
+        N: z.number().array().nonempty(),
       }),
       z.object({
         type: z.literal('polar'),
@@ -117,6 +121,12 @@ const { Component, schema } = createExerciseType({
             params.type === 'division'
               ? String.raw`\frac{${num}}{${den}}`
               : String.raw`\left(${num}\right)\left(${den}\right)`,
+        }
+      } else if (params.type === 'powersOfI') {
+        const n = sample(params.N)
+        return {
+          format: 'rectangular' as const,
+          expr: `i^{${n}}`,
         }
       } else {
         throw new Error('Type param does not have an acceptable value')

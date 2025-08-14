@@ -6,6 +6,8 @@ courses:
   - MATH
 options:
   streak: 999
+prerequisites:
+  - /skills/algebra/complex/powers-of-i
 body:
   - type: Complex
     params:
