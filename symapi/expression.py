@@ -99,7 +99,9 @@ class Expression:
             self.expr.func == sympy.Add
             and len(self.expr.args) == 2
             and self.expr.args[0].is_real
-            and self.expr.args[1].is_imaginary
+            and (
+                self.expr.args[1].is_imaginary or sympy.simplify(self.expr.args[1]) == 0
+            )
         )
 
     @strawberry.field(description="Perform equality check")
@@ -150,7 +152,8 @@ class Expression:
         if self.expr.func != sympy.Mul or len(self.expr.args) != 2:
             return False
         r, u = self.expr.args
-        if r != sympy.Abs(self.expr) or sympy.Abs(u) != 1:
+        neq = lambda x, y: sympy.simplify(x - y) != 0
+        if neq(r, sympy.Abs(self.expr)) or neq(sympy.Abs(u), 1):
             return False
         if strict:
             if u.func != sympy.Add:

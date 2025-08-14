@@ -2,6 +2,7 @@ import pytest
 
 from symapi import schema
 
+
 @pytest.mark.parametrize(
     "expr,expected",
     [
@@ -62,7 +63,7 @@ def test_expand(expr: str, expected: str):
         ("e", "\\exp(1)", True),
         ("\\pi", "2*\\arcsin(1)", True),
         ("x^2 - 4x", "x(x - 4)", True),
-        ('1 + i', '\\sqrt{2} e^{i \\frac{\\pi}{4}}', True),
+        ("1 + i", "\\sqrt{2} e^{i \\frac{\\pi}{4}}", True),
     ],
 )
 def test_is_equal(expr: str, attempt: str, expected: bool):
@@ -82,14 +83,49 @@ def test_is_equal(expr: str, attempt: str, expected: bool):
         "isEqual": expected,
     }
 
+
 @pytest.mark.parametrize(
     "expr,expected",
     [
-        ('\\frac {22} {7}', True),
-        ('3 e^{i \\frac{\\pi} 4}', True),
-        ('3 (\\cos \\frac{\\pi}{3} + i \\sin \\frac{\\pi}{3})', True),
-        ('3 (\\cos \\frac{\\pi}{3} + i \\cos \\frac{\\pi}{3})', False),
-        ('2 + 3i', False),
+        ("3 + 0i", True),
+        ("0 + 0i", True),
+        ("0 - i", True),
+        ("3 + 4i", True),
+        ("-4 - i", True),
+        ("1 + i", True),
+        ("3 e^{i \\pi}", False),
+        ("2 (\\cos{\\pi} + i \\sin{\\pi})", False),
+    ],
+)
+def test_is_rectangular(expr: str, expected: bool):
+    result = schema.execute_sync(
+        """
+            query ($expr: Math!) {
+                expression(expr: $expr) {
+                    isComplexRectangular
+                }
+            }
+        """,
+        variable_values={"expr": expr},
+    )
+    assert result.data is not None
+    assert result.data["expression"] == {
+        "isComplexRectangular": expected,
+    }
+
+
+@pytest.mark.parametrize(
+    "expr,expected",
+    [
+        ("\\frac {22} {7}", False),
+        ("3", False),
+        ("-3", False),
+        ("\\frac {22} {7} (\\cos{0} + i \\sin{0})", True),
+        ("3 (\\cos{0} + i \\sin{0})", True),
+        ("3 e^{i \\frac{\\pi} 4}", True),
+        ("3 (\\cos \\frac{\\pi}{3} + i \\sin \\frac{\\pi}{3})", True),
+        ("3 (\\cos \\frac{\\pi}{3} + i \\cos \\frac{\\pi}{3})", False),
+        ("2 + 3i", False),
     ],
 )
 def test_is_polar(expr: str, expected: bool):
@@ -118,8 +154,8 @@ def test_is_polar(expr: str, expected: bool):
         ("2x + 2", False),
         ("(2x + 4)(x + 1)", False),
         ("x^2 + 1", True),
-        ('-x (x + 1)', True),
-        ('x^2 - 14x + 49', False),
+        ("-x (x + 1)", True),
+        ("x^2 - 14x + 49", False),
     ],
 )
 def test_is_factored(expr: str, expected: bool):
