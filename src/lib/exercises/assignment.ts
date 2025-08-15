@@ -14,6 +14,7 @@ import { schema as ComplexSchema } from '~/exercises/Math/Complex'
 import { schema as ConicSectionSchema } from '~/exercises/Math/ConicSection'
 import { schema as CrossProductSchema } from '~/exercises/Math/CrossProduct'
 import { schema as DifferentiateSchema } from '~/exercises/Math/Differentiate'
+import { schema as DistanceSchema } from '~/exercises/Math/Distance'
 import { schema as DotProductSchema } from '~/exercises/Math/DotProduct'
 import { schema as EquationSchema } from '~/exercises/Math/Equation'
 import { schema as ExpandSchema } from '~/exercises/Math/Expand'
@@ -38,6 +39,7 @@ export const exercises = {
   ConicSection: lazy(() => import('~/exercises/Math/ConicSection')),
   CrossProduct: lazy(() => import('~/exercises/Math/CrossProduct')),
   Differentiate: lazy(() => import('~/exercises/Math/Differentiate')),
+  Distance: lazy(() => import('~/exercises/Math/Distance')),
   DotProduct: lazy(() => import('~/exercises/Math/DotProduct')),
   Equation: lazy(() => import('~/exercises/Math/Equation')),
   Expand: lazy(() => import('~/exercises/Math/Expand')),
@@ -61,6 +63,7 @@ export const exerciseSchema = z.discriminatedUnion('type', [
   ConicSectionSchema,
   CrossProductSchema,
   DifferentiateSchema,
+  DistanceSchema,
   DotProductSchema,
   EquationSchema,
   ExpandSchema,
