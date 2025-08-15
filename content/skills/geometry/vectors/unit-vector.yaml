@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: Vecteurs unitaires
+courses:
+  - geometry
+  - PM1C
+  - 5MATH4
+  - MATH
+prerequisites:
+  - /skills/geometry/vectors/norm
+options:
+  streak: 999
+body:
+  - type: UnitVector
+    params:
+      N: [3]
+      X: [-9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
