@@ -2,6 +2,7 @@
 title: "Équation du cercle"
 prerequisites:
   - /skills/algebra/complete-square
+  - /skills/geometry/pythagoras
 courses:
   - geometry
   - PM1C

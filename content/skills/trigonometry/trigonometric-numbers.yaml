@@ -5,6 +5,8 @@ courses:
   - PM1C
   - 4MATH5
   - MATH
+prerequisites:
+  - /skills/geometry/pythagoras
 options:
   streak: 999
 body:

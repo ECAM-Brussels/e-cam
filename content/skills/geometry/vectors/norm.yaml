@@ -6,7 +6,7 @@ courses:
   - 4MATH5
   - MATH
 prerequisites:
-  - /skills/geometry/vectors/dot-product
+  - /skills/geometry/pythagoras
 options:
   streak: 999
 body:

@@ -23,6 +23,7 @@ import { schema as InterpolationSchema } from '~/exercises/Math/Interpolation'
 import { schema as LimitSchema } from '~/exercises/Math/Limit'
 import { schema as ModulusSchema } from '~/exercises/Math/Modulus'
 import { schema as NormSchema } from '~/exercises/Math/Norm'
+import { schema as PythagorasSchema } from '~/exercises/Math/Pythagoras'
 import { schema as SimpleSchema } from '~/exercises/Math/Simple'
 import { schema as SystemSchema } from '~/exercises/Math/System'
 import { schema as TangentSchema } from '~/exercises/Math/Tangent'
@@ -51,6 +52,7 @@ export const exercises = {
   Limit: lazy(() => import('~/exercises/Math/Limit')),
   Modulus: lazy(() => import('~/exercises/Math/Modulus')),
   Norm: lazy(() => import('~/exercises/Math/Norm')),
+  Pythagoras: lazy(() => import('~/exercises/Math/Pythagoras')),
   Simple: lazy(() => import('~/exercises/Math/Simple')),
   System: lazy(() => import('~/exercises/Math/System')),
   Tangent: lazy(() => import('~/exercises/Math/Tangent')),
@@ -78,6 +80,7 @@ export const exerciseSchema = z.discriminatedUnion('type', [
   LimitSchema,
   ModulusSchema,
   NormSchema,
+  PythagorasSchema,
   SimpleSchema,
   SystemSchema,
   TangentSchema,

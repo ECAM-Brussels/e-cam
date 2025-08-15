@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: Théorème de Pythagore
+courses:
+  - geometry
+  - PM1C
+  - 4MATH5
+  - MATH
+options:
+  streak: 999
+body:
+  - type: Pythagoras
+    params:
+      N: 5
+      K: 12
+      X: ['a', 'b', 'c', 'x', 'y']
