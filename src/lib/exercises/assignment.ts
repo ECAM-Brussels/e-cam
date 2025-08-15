@@ -21,6 +21,7 @@ import { schema as ExpandSchema } from '~/exercises/Math/Expand'
 import { schema as FactorSchema } from '~/exercises/Math/Factor'
 import { schema as InterpolationSchema } from '~/exercises/Math/Interpolation'
 import { schema as LimitSchema } from '~/exercises/Math/Limit'
+import { schema as NormSchema } from '~/exercises/Math/Norm'
 import { schema as SimpleSchema } from '~/exercises/Math/Simple'
 import { schema as SystemSchema } from '~/exercises/Math/System'
 import { schema as TangentSchema } from '~/exercises/Math/Tangent'
@@ -46,6 +47,7 @@ export const exercises = {
   Factor: lazy(() => import('~/exercises/Math/Factor')),
   Interpolation: lazy(() => import('~/exercises/Math/Interpolation')),
   Limit: lazy(() => import('~/exercises/Math/Limit')),
+  Norm: lazy(() => import('~/exercises/Math/Norm')),
   Simple: lazy(() => import('~/exercises/Math/Simple')),
   System: lazy(() => import('~/exercises/Math/System')),
   Tangent: lazy(() => import('~/exercises/Math/Tangent')),
@@ -70,6 +72,7 @@ export const exerciseSchema = z.discriminatedUnion('type', [
   FactorSchema,
   InterpolationSchema,
   LimitSchema,
+  NormSchema,
   SimpleSchema,
   SystemSchema,
   TangentSchema,

@@ -19,6 +19,7 @@ title: 'Pont vers le supérieur: mathématiques'
         { "title": { contains: "vect" } },
         { "title": { contains: "scalaire" } },
         { "title": { contains: "parallélé" } },
+        { "title": { contains: "distance" } },
       ]
     }
   }}>
