@@ -1,18 +1,16 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: "Nombres complexes: forme polaire"
+title: "Nombres complexes: argument"
 courses:
   - algebra
   - PM1C
   - MATH
+prerequisites:
+  - /skills/trigonometry/values
 options:
   streak: 999
-prerequisites:
-  - /skills/algebra/complex/modulus
-  - /skills/algebra/complex/argument
 body:
-  - type: Complex
+  - type: Argument
     params:
-      type: polar
       R: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
       Theta:
         - \frac{\pi}{6}

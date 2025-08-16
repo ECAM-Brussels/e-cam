@@ -9,14 +9,14 @@ import { simplify } from '~/queries/algebra'
 const vector = z.string().nonempty().or(z.number()).array().nonempty()
 
 const { Component, schema } = createExerciseType({
-  name: 'Modulus',
+  name: 'Argument',
   Component: (props) => (
     <>
       <p class="my-4">
-        Calculez le module de <Math value={`z = ${props.question.expr}`} />
+        Calculez l'argument de <Math value={`z = ${props.question.expr}`} />
       </p>
       <div class="flex justify-center items-center gap-2">
-        <Math value={`|z| =`} displayMode />
+        <Math value={`\\mathrm{arg} z =`} displayMode />
         <Math name="attempt" editable value={props.attempt} />
       </div>
     </>
@@ -29,9 +29,9 @@ const { Component, schema } = createExerciseType({
     'use server'
     const { expression } = await request(
       graphql(`
-        query CheckModulus($attempt: Math!, $expr: Math!) {
+        query CheckArgument($attempt: Math!, $expr: Math!) {
           expression(expr: $expr) {
-            abs {
+            arg {
               isEqual(expr: $attempt)
             }
           }
@@ -39,7 +39,7 @@ const { Component, schema } = createExerciseType({
       `),
       { ...question, attempt },
     )
-    return expression.abs.isEqual
+    return expression.arg.isEqual
   },
   generator: {
     params: z.object({

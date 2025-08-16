@@ -8,6 +8,7 @@ import { type ElementDefinition } from 'cytoscape'
 import { lazy } from 'solid-js'
 import { z } from 'zod'
 import { schema as PythonSchema } from '~/exercises/CompSci/Python'
+import { schema as ArgumentSchema } from '~/exercises/Math/Argument'
 import { schema as CalculateSchema } from '~/exercises/Math/Calculate'
 import { schema as CompleteSquareSchema } from '~/exercises/Math/CompleteSquare'
 import { schema as ComplexSchema } from '~/exercises/Math/Complex'
@@ -37,6 +38,7 @@ import { registerAssignment } from '~/vite/assignments'
 
 export const exercises = {
   Python: lazy(() => import('~/exercises/CompSci/Python')),
+  Argument: lazy(() => import('~/exercises/Math/Argument')),
   Calculate: lazy(() => import('~/exercises/Math/Calculate')),
   Complex: lazy(() => import('~/exercises/Math/Complex')),
   CompleteSquare: lazy(() => import('~/exercises/Math/CompleteSquare')),
@@ -65,6 +67,7 @@ export const exercises = {
 
 export const exerciseSchema = z.discriminatedUnion('type', [
   PythonSchema,
+  ArgumentSchema,
   CalculateSchema,
   CompleteSquareSchema,
   ComplexSchema,

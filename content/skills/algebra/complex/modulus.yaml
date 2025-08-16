@@ -11,5 +11,21 @@ options:
 body:
   - type: Modulus
     params:
-      X: [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-      Y: [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      R: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      Theta:
+        - \frac{\pi}{6}
+        - \frac{\pi}{4}
+        - \frac{\pi}{3}
+        - \frac{\pi}{2}
+        - \pi - \frac{\pi}{6}
+        - \pi - \frac{\pi}{4}
+        - \pi - \frac{\pi}{3}
+        - \pi - \frac{\pi}{2}
+        - \frac{\pi}{6} + \pi
+        - \frac{\pi}{4} + \pi
+        - \frac{\pi}{3} + \pi
+        - \frac{\pi}{2} + \pi
+        - -\frac{\pi}{6}
+        - -\frac{\pi}{4}
+        - -\frac{\pi}{3}
+        - -\frac{\pi}{2}
