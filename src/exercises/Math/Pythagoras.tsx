@@ -1,4 +1,4 @@
-import { random, sample } from 'lodash-es'
+import { random, sample, sampleSize } from 'lodash-es'
 import { z } from 'zod'
 import Math from '~/components/Math'
 import RightTriangle from '~/components/RightTriangle'
@@ -52,8 +52,10 @@ const { Component, schema } = createExerciseType({
       'use server'
       const unknown = sample(['a', 'b', 'c']) as 'a' | 'b' | 'c'
       const x = sample(params.X)
-      const m = random(1, params.N)
-      const n = random(1, params.N)
+      const [m, n] = sampleSize(
+        [...Array(params.N).keys()].map((n) => n + 1),
+        2,
+      )
       const k = random(1, params.K)
       let a = k * (m ** 2 - n ** 2)
       a = a < 0 ? -a : a
