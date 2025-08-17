@@ -1,4 +1,5 @@
 import { sample } from 'lodash-es'
+import { Show } from 'solid-js'
 import { z } from 'zod'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
@@ -46,6 +47,25 @@ const { Component, schema } = createExerciseType({
     )
     return expression.isEqual && expression.isNumber
   },
+  feedback: [
+    async (remaining, question, _attempt) => {
+      'use server'
+      if (!remaining) {
+        return {
+          remaining,
+          ...question,
+          answer: await simplify(question.expr),
+        }
+      } else {
+        return { remaining }
+      }
+    },
+    (props) => (
+      <Show when={!props.remaining}>
+        <Math value={`${props.expr} = ${props.answer}`} displayMode />
+      </Show>
+    ),
+  ],
   generator: {
     params: z.discriminatedUnion('type', [
       z.object({

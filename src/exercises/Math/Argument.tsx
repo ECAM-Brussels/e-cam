@@ -1,4 +1,5 @@
 import { sample } from 'lodash-es'
+import { Show } from 'solid-js'
 import { z } from 'zod'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
@@ -41,6 +42,39 @@ const { Component, schema } = createExerciseType({
     )
     return expression.arg.isEqual
   },
+  feedback: [
+    async (remaining, question, _attempt) => {
+      'use server'
+      const { expression } = await request(
+        graphql(`
+          query getArgument($expr: Math!) {
+            expression(expr: $expr) {
+              arg {
+                expr
+              }
+            }
+          }
+        `),
+        question,
+      )
+      if (!remaining) {
+        return {
+          remaining,
+          expr: question.expr,
+          arg: expression.arg.expr,
+        }
+      } else {
+        return { remaining }
+      }
+    },
+    (props) => (
+      <Show when={!props.remaining}>
+        <p>
+          L'argument de <Math value={props.expr} /> est <Math value={props.arg} />.
+        </p>
+      </Show>
+    ),
+  ],
   generator: {
     params: z.object({
       R: vector,
