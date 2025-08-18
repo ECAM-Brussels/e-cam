@@ -1,6 +1,7 @@
 import { faCheckCircle, faHourglass, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { createAsync } from '@solidjs/router'
 import { Show, type Component } from 'solid-js'
+import { unwrap } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web'
 import Fa from '~/components/Fa'
 import Suspense from '~/components/Suspense'
@@ -25,7 +26,7 @@ export default function Feedback<Q, A, F extends object>(props: {
       : props.maxAttempts - props.attempts.length + (offset ?? 0)
   }
   const feedback = createAsync(async () =>
-    props.getFeedback?.(remaining(), props.question, attempt()),
+    props.getFeedback?.(remaining(), unwrap(props.question), attempt()),
   )
   return (
     <div
