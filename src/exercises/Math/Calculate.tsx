@@ -5,6 +5,7 @@ import Math from '~/components/Math'
 import { graphql } from '~/gql'
 import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
+import { narrow } from '~/lib/helpers'
 import { simplify } from '~/queries/algebra'
 
 const trigFunction = z.union([
@@ -61,8 +62,13 @@ const { Component, schema } = createExerciseType({
       }
     },
     (props) => (
-      <Show when={!props.remaining}>
-        <Math value={`${props.expr} = ${props.answer}`} displayMode />
+      <Show
+        when={narrow(
+          () => props,
+          (p) => 'answer' in p,
+        )}
+      >
+        {(p) => <Math value={`${p().expr} = ${p().answer}`} displayMode />}
       </Show>
     ),
   ],

@@ -1,10 +1,12 @@
 import { sample } from 'lodash-es'
+import { Show } from 'solid-js'
 import { z } from 'zod'
 import EquationSteps from '~/components/EquationSteps'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
 import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
+import { narrow } from '~/lib/helpers'
 
 const { Component, schema } = createExerciseType({
   name: 'CompleteSquare',
@@ -42,6 +44,41 @@ const { Component, schema } = createExerciseType({
     )
     return data.attempt.isEqual && data.attempt.count === 1
   },
+  feedback: [
+    async (remaining, question, _attempt) => {
+      'use server'
+      const { expression } = await request(
+        graphql(`
+          query CompleteSquare($expr: Math!) {
+            expression(expr: $expr) {
+              completeSquare {
+                expr
+              }
+            }
+          }
+        `),
+        question,
+      )
+      if (!remaining) {
+        return {
+          remaining,
+          ...question,
+          answer: expression.completeSquare.expr,
+        }
+      }
+      return { remaining }
+    },
+    (props) => (
+      <Show
+        when={narrow(
+          () => props,
+          (p) => 'answer' in p,
+        )}
+      >
+        {(p) => <Math value={`${p().expr} = ${p().answer}`} displayMode />}
+      </Show>
+    ),
+  ],
   generator: {
     params: z.object({
       A: z.number().or(z.string()).array().nonempty().default([1]),

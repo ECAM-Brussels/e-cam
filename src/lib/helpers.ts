@@ -35,3 +35,11 @@ export function round(value: number, decimals = 3) {
   const factor = Math.pow(10, decimals)
   return Math.round(value * factor) / factor
 }
+
+export const narrow = <A, B extends A>(accessor: () => A, guard: (v: A) => v is B): B | null => {
+  const val = accessor()
+  if (guard(val)) {
+    return val
+  }
+  return null
+}
