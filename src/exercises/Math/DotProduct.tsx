@@ -1,9 +1,11 @@
 import { sample } from 'lodash-es'
+import { Show } from 'solid-js'
 import { z } from 'zod'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
 import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
+import { narrow } from '~/lib/helpers'
 
 const vector = (v: string[]) => `\\begin{pmatrix}${v.join(` \\\\ `)}\\end{pmatrix}`
 
@@ -42,6 +44,39 @@ const { Component, schema } = createExerciseType({
     )
     return vector.dot.isEqual
   },
+  feedback: [
+    async (remaining, question) => {
+      'use server'
+      if (!remaining) {
+        const { vector } = await request(
+          graphql(`
+            query CalculateDotProduct($a: [Math!]!, $b: [Math!]!) {
+              vector(coordinates: $a) {
+                dot(coordinates: $b) {
+                  expr
+                }
+              }
+            }
+          `),
+          question,
+        )
+        return { remaining, ...question, answer: vector.dot.expr }
+      }
+      return { remaining }
+    },
+    (props) => (
+      <Show
+        when={narrow(
+          () => props,
+          (p) => 'answer' in p,
+        )}
+      >
+        {(p) => (
+          <Math value={`${vector(p().a)} \\cdot ${vector(p().b)} = ${p().answer}`} displayMode />
+        )}
+      </Show>
+    ),
+  ],
   generator: {
     params: z.object({
       numbers: z.string().nonempty().or(z.number().transform(String)).array().nonempty(),
