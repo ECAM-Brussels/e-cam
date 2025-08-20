@@ -8,6 +8,7 @@ import MathSet, { MathJSON } from '~/components/MathSet'
 import { graphql } from '~/gql'
 import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
+import { narrow } from '~/lib/helpers'
 
 const { Component, schema } = createExerciseType({
   name: 'Equation',
@@ -93,6 +94,42 @@ const { Component, schema } = createExerciseType({
     )
     return equation.solveset.isSetEqual
   },
+  feedback: [
+    async (remaining, question) => {
+      'use server'
+      if (!remaining) {
+        const { equation } = await request(
+          graphql(`
+            query SolveEquation($equation: Math!, $S: MathSet, $complex: Boolean) {
+              equation: expression(expr: $equation) {
+                solveset(S: $S, complex: $complex) {
+                  expr
+                }
+              }
+            }
+          `),
+          question,
+        )
+        return { remaining, ...question, answer: equation.solveset.expr }
+      }
+      return { remaining }
+    },
+    (props) => (
+      <Show
+        when={narrow(
+          () => props,
+          (p) => 'answer' in p,
+        )}
+      >
+        {(props) => (
+          <p>
+            {' '}
+            L'ensemble des solutions est <Math value={props().answer} displayMode />
+          </p>
+        )}
+      </Show>
+    ),
+  ],
   generator: {
     params: z.discriminatedUnion('type', [
       z.object({
