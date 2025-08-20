@@ -1,9 +1,11 @@
 import { sample } from 'lodash-es'
+import { Show } from 'solid-js'
 import { z } from 'zod'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
 import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
+import { narrow } from '~/lib/helpers'
 import { simplify } from '~/queries/algebra'
 
 async function getRectangularForm(expr: string) {
@@ -56,6 +58,55 @@ const { Component, schema } = createExerciseType({
     format: z.union([z.literal('rectangular'), z.literal('exponential'), z.literal('polar')]),
   }),
   attempt: z.string().nonempty(),
+  feedback: [
+    async (remaining, question, _attempt) => {
+      'use server'
+      const { expression } = await request(
+        graphql(`
+          query SolveComplex($expr: Math!) {
+            expression(expr: $expr) {
+              abs {
+                expr
+              }
+              arg {
+                expr
+              }
+              im {
+                expr
+              }
+              real {
+                expr
+              }
+            }
+          }
+        `),
+        question,
+      )
+      const r = expression.abs.expr
+      const theta = expression.arg.expr
+      const a = expression.real.expr
+      const b = expression.im.expr
+      const answers = {
+        polar: `${r} \\left(\\cos\\left(${theta}\\right) + i \\sin\\left(${theta}\\right)\\right)`,
+        exponential: `${r} e^{i\\left(${theta}\\right)}`,
+        rectangular: `\\left(${a}\\right) + i \\left(${b}\\right)`,
+      } as const
+      if (!remaining) {
+        return { remaining, ...question, answer: answers[question.format] }
+      }
+      return { remaining, ...question }
+    },
+    (props) => (
+      <Show
+        when={narrow(
+          () => props,
+          (p) => 'answer' in p,
+        )}
+      >
+        {(p) => <Math value={`${p().expr} = ${p().answer}`} displayMode />}
+      </Show>
+    ),
+  ],
   mark: async (question, attempt) => {
     'use server'
     const { expression } = await request(
