@@ -1,17 +1,20 @@
 import { sample } from 'lodash-es'
+import { Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { z } from 'zod'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
 import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
+import { narrow } from '~/lib/helpers'
+
+const vector = (v: [string, string, string]) =>
+  String.raw`\begin{pmatrix} ${v[0]} \\ ${v[1]} \\ ${v[2]} \\ \end{pmatrix}`
 
 const { Component, schema } = createExerciseType({
   name: 'CrossProduct',
   Component: (props) => {
     const [c, setC] = createStore<[string, string, string]>(props.attempt ?? ['', '', ''])
-    const vector = (v: [string, string, string]) =>
-      String.raw`\begin{pmatrix} ${v[0]} \\ ${v[1]} \\ ${v[2]} \\ \end{pmatrix}`
     return (
       <>
         <p>Calculez le produit vectoriel suivant</p>
@@ -65,6 +68,42 @@ const { Component, schema } = createExerciseType({
     )
     return vector.cross.isEqual
   },
+  feedback: [
+    async (remaining, question) => {
+      'use server'
+      if (!remaining) {
+        const { vector } = await request(
+          graphql(`
+            query CalculateCrossProduct($a: [Math!]!, $b: [Math!]!) {
+              vector(coordinates: $a) {
+                cross(coordinates: $b) {
+                  coordinates
+                }
+              }
+            }
+          `),
+          question,
+        )
+        return { remaining, ...question, answer: vector.cross.coordinates }
+      }
+      return { remaining }
+    },
+    (props) => (
+      <Show
+        when={narrow(
+          () => props,
+          (p) => 'answer' in p,
+        )}
+      >
+        {(p) => (
+          <Math
+            value={`${vector(p().a)} \\times ${vector(p().b)} = ${vector(p().answer as [string, string, string])}`}
+            displayMode
+          />
+        )}
+      </Show>
+    ),
+  ],
   generator: {
     params: z.object({
       numbers: z.string().nonempty().or(z.number().transform(String)).array().nonempty(),
