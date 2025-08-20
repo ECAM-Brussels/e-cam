@@ -5,6 +5,7 @@ import Math from '~/components/Math'
 import { graphql } from '~/gql'
 import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
+import { narrow } from '~/lib/helpers'
 
 const { Component, schema } = createExerciseType({
   name: 'Differentiate',
@@ -45,31 +46,40 @@ const { Component, schema } = createExerciseType({
     return expression.diff.isEqual
   },
   feedback: [
-    async (remaining, question, attempt) => {
-      const data = await request(
-        graphql(`
-          query DifferentiationFeedback($expr: Math!, $x: Math!) {
-            expression(expr: $expr) {
-              diff(x: $x) {
-                expr
+    async (remaining, question) => {
+      'use server'
+      if (!remaining) {
+        const data = await request(
+          graphql(`
+            query DifferentiationFeedback($expr: Math!, $x: Math!) {
+              expression(expr: $expr) {
+                diff(x: $x) {
+                  simplify {
+                    expr
+                  }
+                }
               }
             }
-          }
-        `),
-        question,
-      )
-      return { remaining, question, attempt, data }
+          `),
+          question,
+        )
+        return { remaining, ...question, answer: data.expression.diff.simplify.expr }
+      } else {
+        return { remaining }
+      }
     },
     (props) => (
       <Show
-        when={props.remaining}
-        fallback={
-          <p>
-            La réponse est <Math value={props.data.expression.diff.expr} />
-          </p>
-        }
+        when={narrow(
+          () => props,
+          (p) => 'answer' in p,
+        )}
       >
-        Hello
+        {(props) => (
+          <p>
+            La réponse est <Math value={props().answer} />
+          </p>
+        )}
       </Show>
     ),
   ],
