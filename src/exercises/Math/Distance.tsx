@@ -1,10 +1,23 @@
 import { sample } from 'lodash-es'
+import { Show } from 'solid-js'
 import { z } from 'zod'
 import Math from '~/components/Math'
 import { createExerciseType } from '~/lib/exercises/base'
-import { checkEqual } from '~/queries/algebra'
+import { narrow } from '~/lib/helpers'
+import { checkEqual, simplify } from '~/queries/algebra'
 
 const vector = z.string().nonempty().or(z.number()).array().nonempty()
+const vect = (v: (string | number)[]) =>
+  String.raw`\begin{pmatrix} ${v.join('\\\\ ')} \end{pmatrix}`
+
+function dist(A: (string | number)[], B: (string | number)[]) {
+  let calc = '0'
+  for (let i = 0; i < A.length; i++) {
+    calc += `+ ((${B[i]}) - (${A[i]}))^2`
+  }
+  calc = `\\sqrt{${calc}}`
+  return calc
+}
 
 const { Component, schema } = createExerciseType({
   name: 'Distance',
@@ -30,13 +43,36 @@ const { Component, schema } = createExerciseType({
   attempt: z.string().nonempty(),
   mark: async (question, attempt) => {
     'use server'
-    let calc = '0'
-    for (let i = 0; i < question.A.length; i++) {
-      calc += `+ ((${question.B[i]}) - (${question.A[i]}))^2`
-    }
-    calc = `\\sqrt{${calc}}`
-    return await checkEqual(attempt, calc)
+    return await checkEqual(attempt, dist(question.A, question.B))
   },
+  feedback: [
+    async (remaining, question) => {
+      'use server'
+      if (!remaining) {
+        return {
+          remaining,
+          ...question,
+          answer: await simplify(dist(question.A, question.B)),
+        }
+      }
+      return { remaining }
+    },
+    (props) => (
+      <Show
+        when={narrow(
+          () => props,
+          (p) => 'answer' in p,
+        )}
+      >
+        {(p) => (
+          <Math
+            value={`\\mathrm{dist}\\left(${vect(p().A)}, ${vect(p().B)}\\right) = ${p().answer}`}
+            displayMode
+          />
+        )}
+      </Show>
+    ),
+  ],
   generator: {
     params: z.object({
       N: z.number().array().nonempty().default([3]),
