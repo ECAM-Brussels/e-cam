@@ -123,7 +123,6 @@ const { Component, schema } = createExerciseType({
       >
         {(props) => (
           <p>
-            {' '}
             L'ensemble des solutions est <Math value={props().answer} displayMode />
           </p>
         )}
