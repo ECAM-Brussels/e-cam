@@ -103,6 +103,11 @@ class Expression:
     def func(self) -> str:
         return str(self.expr.func.__name__)
 
+    @strawberry.field
+    def im(self) -> "Expression":
+        _, b = self.expr.as_real_imag()
+        return Expression(expr=b)
+
     @strawberry.field(description="Get element with a particular index from a list")
     def index(self, i: int) -> "Expression":
         return Expression(expr=list(self.expr)[i])
@@ -311,6 +316,11 @@ class Expression:
     @strawberry.field
     def opposite(self) -> "Expression":
         return Expression(expr=sympy.Mul(-1, self.expr))
+
+    @strawberry.field
+    def real(self) -> "Expression":
+        a, _ = self.expr.as_real_imag()
+        return Expression(expr=a)
 
     @strawberry.field
     def simplify(self) -> "Expression":
