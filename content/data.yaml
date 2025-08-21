@@ -13,11 +13,11 @@ courses:
     ecam: true
   - code: algebra
     title: Algèbre
-    image: /images/algebra.png
+    image: /images/algebra.jpg
     url: /courses/algebra
   - code: calculus
     title: Analyse
-    image: /images/algebra.png
+    image: /images/calculus.jpg
     url: /courses/calculus
   - code: geometry
     title: Géométrie
