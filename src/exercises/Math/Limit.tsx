@@ -1,9 +1,11 @@
 import { sample } from 'lodash-es'
+import { Show } from 'solid-js'
 import { z } from 'zod'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
 import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
+import { narrow } from '~/lib/helpers'
 
 const { Component, schema } = createExerciseType({
   name: 'Limit',
@@ -44,24 +46,37 @@ const { Component, schema } = createExerciseType({
   feedback: [
     async (remaining, question) => {
       'use server'
-      const { expression } = await request(
-        graphql(`
-          query SolveLimit($expr: Math!, $x0: Math!, $x: Math) {
-            expression(expr: $expr) {
-              limit(x0: $x0, x: $x) {
-                expr
+      if (!remaining) {
+        const { expression } = await request(
+          graphql(`
+            query SolveLimit($expr: Math!, $x0: Math!, $x: Math) {
+              expression(expr: $expr) {
+                limit(x0: $x0, x: $x) {
+                  expr
+                }
               }
             }
-          }
-        `),
-        question,
-      )
-      return { answer: expression.limit.expr, remaining }
+          `),
+          question,
+        )
+        return { answer: expression.limit.expr, remaining, ...question }
+      }
+      return { remaining }
     },
     (props) => (
-      <p>
-        La réponse est <Math value={props.answer} />
-      </p>
+      <Show
+        when={narrow(
+          () => props,
+          (p) => 'answer' in p,
+        )}
+      >
+        {(props) => (
+          <Math
+            value={`\\lim_{${props().x} \\to ${props().x0}} ${props().expr} =${props().answer}`}
+            displayMode
+          />
+        )}
+      </Show>
     ),
   ],
   generator: {
