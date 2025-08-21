@@ -1,8 +1,10 @@
 import { sample } from 'lodash-es'
+import { Show } from 'solid-js'
 import { z } from 'zod'
 import Math from '~/components/Math'
 import { createExerciseType } from '~/lib/exercises/base'
-import { checkEqual } from '~/queries/algebra'
+import { narrow } from '~/lib/helpers'
+import { checkEqual, simplify } from '~/queries/algebra'
 
 const vector = z.string().nonempty().or(z.number()).array().nonempty()
 
@@ -29,6 +31,35 @@ const { Component, schema } = createExerciseType({
     let calc = question.A.map((n) => `(${n})^2`)
     return await checkEqual(attempt, `\\sqrt{${calc.join('+')}}`)
   },
+  feedback: [
+    async (remaining, question) => {
+      'use server'
+      if (!remaining) {
+        let calc = question.A.map((n) => `(${n})^2`)
+        return {
+          remaining,
+          ...question,
+          answer: await simplify(`\\sqrt{${calc.join('+')}}`),
+        }
+      }
+      return { remaining, ...question }
+    },
+    (props) => (
+      <Show
+        when={narrow(
+          () => props,
+          (p) => 'answer' in p,
+        )}
+      >
+        {(props) => (
+          <Math
+            value={`\\left\\|\\begin{pmatrix} ${props().A.join(' \\\\ ')}\\end{pmatrix}\\right\\|=${props().answer}`}
+            displayMode
+          />
+        )}
+      </Show>
+    ),
+  ],
   generator: {
     params: z.object({
       N: z.number().array().nonempty().default([3]),
