@@ -5,6 +5,7 @@ import Math from '~/components/Math'
 import { graphql } from '~/gql'
 import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
+import { narrow } from '~/lib/helpers'
 
 const { Component, schema } = createExerciseType({
   name: 'Interpolation',
@@ -60,6 +61,35 @@ const { Component, schema } = createExerciseType({
     )
     return interpolate.isEqual
   },
+  feedback: [
+    async (remaining, question) => {
+      'use server'
+      if (!remaining) {
+        const { interpolate } = await request(
+          graphql(`
+            query Interpolate($points: [[Math!]!]!, $line: Math, $perpendicular: Boolean) {
+              interpolate(points: $points, line: $line, perpendicular: $perpendicular) {
+                expr
+              }
+            }
+          `),
+          question,
+        )
+        return { remaining, ...question, answer: interpolate.expr }
+      }
+      return { remaining, ...question }
+    },
+    (props) => (
+      <Show
+        when={narrow(
+          () => props,
+          (p) => 'answer' in p,
+        )}
+      >
+        {(props) => <Math value={props().answer} displayMode />}
+      </Show>
+    ),
+  ],
   generator: {
     params: z.object({
       type: z.literal('line'),
