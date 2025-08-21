@@ -1,10 +1,12 @@
 import { product } from './Factor'
 import { sample } from 'lodash-es'
+import { Show } from 'solid-js'
 import { z } from 'zod'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
 import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
+import { narrow } from '~/lib/helpers'
 import { factor } from '~/queries/algebra'
 
 const possibilities = z.union([
@@ -46,6 +48,37 @@ const { Component, schema } = createExerciseType({
     )
     return expression.isEqual && expression.isExpanded
   },
+  feedback: [
+    async (remaining, question) => {
+      'use server'
+      if (!remaining) {
+        const { expression } = await request(
+          graphql(`
+            query Expand($expr: Math!) {
+              expression(expr: $expr) {
+                expand {
+                  expr
+                }
+              }
+            }
+          `),
+          question,
+        )
+        return { remaining, ...question, answer: expression.expand.expr }
+      }
+      return { remaining }
+    },
+    (props) => (
+      <Show
+        when={narrow(
+          () => props,
+          (p) => 'answer' in p,
+        )}
+      >
+        {(p) => <Math value={`${p().expr} = ${p().answer}`} displayMode />}
+      </Show>
+    ),
+  ],
   generator: {
     params: z.object({
       multiply: z
