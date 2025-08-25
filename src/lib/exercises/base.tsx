@@ -1,7 +1,7 @@
 import { extractFormData } from '../form'
 import { hashObject } from '../helpers'
 import { action, createAsync, query, useAction, useSubmission } from '@solidjs/router'
-import { createEffect, Show } from 'solid-js'
+import { createContext, createEffect, Show, useContext } from 'solid-js'
 import { z } from 'zod'
 import Button from '~/components/Button'
 import Suspense from '~/components/Suspense'
@@ -23,6 +23,16 @@ export type ExerciseProps<Name, Question, Attempt, Params, Feedback> = {
   options: Options
   attempts: { correct: boolean; attempt: Attempt }[]
 } & ({ question: Question; params: never } | { params: Params; question: never })
+
+const exerciseContextSchema = z.object({
+  readOnly: z.boolean().default(false),
+})
+type ExerciseContextType = z.infer<typeof exerciseContextSchema>
+const ExerciseContext = createContext<ExerciseContextType>()
+export function useExerciseContext() {
+  const context = useContext(ExerciseContext)
+  return context ?? null
+}
 
 /**
  * Create an exercise type from its building blocks
@@ -94,7 +104,7 @@ export function createExerciseType<
         ? true
         : props.options.maxAttempts - props.attempts.length + (offset ?? 0)
     }
-    const readOnly = () => remaining() === 0 || props.attempts.at(-1)?.correct
+    const readOnly = () => remaining() === 0 || (props.attempts.at(-1)?.correct ?? false)
 
     const mark = query(async (question: z.infer<Question>, attempt: z.infer<Attempt>) => {
       try {
@@ -118,38 +128,47 @@ export function createExerciseType<
 
     return (
       <Suspense fallback="Génération d'un exercice...">
-        <form method="post" action={submit}>
-          <fieldset disabled={readOnly()} class="flex items-end gap-8">
-            <Show when={question()}>
-              <div>
-                <exercise.Component
-                  question={question()}
-                  attempt={props.attempts.at(-1)?.attempt}
-                />
-              </div>
-            </Show>
-            <Show when={!readOnly() && !submission.pending}>
-              <div class="mb-2">
-                <Button type="submit" color="green">
-                  Corriger
-                </Button>
-              </div>
-            </Show>
-          </fieldset>
-          <ZodError error={submission.error} />
-        </form>
-        <Show when={props.attempts.length > 0 && question()}>
-          <Suspense fallback="Calcul du feedback...">
-            <Feedback
-              attempts={props.attempts}
-              maxAttempts={props.options.maxAttempts}
-              getFeedback={getFeedback}
-              component={ExerciseFeedback}
-              marking={submission.pending}
-              question={question()}
-            />
-          </Suspense>
-        </Show>
+        <ExerciseContext.Provider
+          value={{
+            get readOnly() {
+              return readOnly()
+            },
+          }}
+        >
+          <pre>Hello {JSON.stringify(readOnly())}</pre>
+          <form method="post" action={submit}>
+            <fieldset disabled={readOnly()} class="flex items-end gap-8">
+              <Show when={question()}>
+                <div>
+                  <exercise.Component
+                    question={question()}
+                    attempt={props.attempts.at(-1)?.attempt}
+                  />
+                </div>
+              </Show>
+              <Show when={!readOnly() && !submission.pending}>
+                <div class="mb-2">
+                  <Button type="submit" color="green">
+                    Corriger
+                  </Button>
+                </div>
+              </Show>
+            </fieldset>
+            <ZodError error={submission.error} />
+          </form>
+          <Show when={props.attempts.length > 0 && question()}>
+            <Suspense fallback="Calcul du feedback...">
+              <Feedback
+                attempts={props.attempts}
+                maxAttempts={props.options.maxAttempts}
+                getFeedback={getFeedback}
+                component={ExerciseFeedback}
+                marking={submission.pending}
+                question={question()}
+              />
+            </Suspense>
+          </Show>
+        </ExerciseContext.Provider>
       </Suspense>
     )
   }

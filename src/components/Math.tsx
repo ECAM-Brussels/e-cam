@@ -3,6 +3,7 @@ import 'katex/dist/katex.min.css'
 import 'mathlive'
 import type { MathfieldElement } from 'mathlive'
 import { ComponentProps, createEffect, createSignal, on, Show, splitProps } from 'solid-js'
+import { useExerciseContext } from '~/lib/exercises/base'
 
 declare module 'solid-js' {
   namespace JSX {
@@ -34,24 +35,9 @@ export default function Math(props: MathProps) {
   const [value, setValue] = createSignal(props.value)
   createEffect(() => setValue(props.value))
 
-  const [disabled, setDisabled] = createSignal(props.disabled)
-  createEffect(() => setDisabled(props.disabled))
+  const exercise = useExerciseContext()
+  const disabled = () => exercise?.readOnly ?? props.disabled
   let field!: HTMLInputElement
-  createEffect(
-    on(
-      () => [props.value, props.name],
-      () => {
-        if (props.name && field) {
-          const fieldset = field.closest('fieldset')
-          if (fieldset) {
-            setDisabled(fieldset.disabled)
-          } else {
-            setDisabled(false)
-          }
-        }
-      },
-    ),
-  )
 
   const html = () =>
     katex.renderToString(value() || '', {
@@ -78,7 +64,7 @@ export default function Math(props: MathProps) {
       }
     >
       <math-field
-        className={props.class ?? 'border min-w-24 p-2'}
+        className={props.class ?? 'border min-w-24 py-2'}
         {...others}
         oninput={(event: MathInputEvent) => {
           extra.onInput?.(event)
