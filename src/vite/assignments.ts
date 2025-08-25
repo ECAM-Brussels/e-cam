@@ -56,6 +56,14 @@ export async function registerAssignment(
   await prisma.assignment.update({ where: { url: assignment.url }, data })
 }
 
+async function safeStat(path: string) {
+  try {
+    return await stat(path)
+  } catch (err) {
+    return { mtime: 0 }
+  }
+}
+
 async function createAssignment(file: string, prisma: PrismaClient) {
   const relativePath = relative(resolve('content'), file)
   const outputPath = resolve(
@@ -64,7 +72,7 @@ async function createAssignment(file: string, prisma: PrismaClient) {
   )
   await mkdir(dirname(outputPath), { recursive: true })
   try {
-    const [inStat, outStat] = await Promise.all([stat(file), stat(outputPath)])
+    const [inStat, outStat] = await Promise.all([safeStat(file), safeStat(outputPath)])
     const assignment = yaml.load(await readFile(file, 'utf-8')) as Omit<AssignmentInput, 'url'>
     const url = '/' + relativePath.replace(/\.ya?ml$/, '')
     await registerAssignment(prisma, { ...assignment, url }, {})
