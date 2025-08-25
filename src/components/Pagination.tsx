@@ -1,5 +1,10 @@
 import Fa from './Fa'
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import {
+  faBackwardFast,
+  faBackwardStep,
+  faForwardFast,
+  faForwardStep,
+} from '@fortawesome/free-solid-svg-icons'
 import { A } from '@solidjs/router'
 import { For, type JSXElement } from 'solid-js'
 
@@ -11,7 +16,7 @@ type PaginationProps = {
   url: (i: number) => string
 }
 
-function getPagination(current: number, total: number, delta = 10): number[] {
+function getPagination(current: number, total: number, delta = 5): number[] {
   let start = Math.max(1, current - delta)
   let end = Math.min(total, current + delta)
   while (end - start < delta * 2 && (start > 1 || end < total)) {
@@ -25,16 +30,17 @@ export default function Pagination(props: PaginationProps) {
   const keys = () => getPagination(props.current, props.max)
   return (
     <nav class={props.class}>
-      <ul class="inline-flex text-gray-500">
-        <Link
-          class="border-e-0 rounded-l-lg"
-          href={props.url((props.current - 1 + props.max) % props.max)}
-        >
-          <Fa icon={faChevronLeft} />
+      <ul class="inline-flex text-gray-400">
+        <Link class="border-e-0 rounded-l-lg" href={props.url(1)}>
+          <Fa icon={faBackwardFast} />
+        </Link>
+        <Link href={props.url((props.current - 1 + props.max) % props.max)}>
+          <Fa icon={faBackwardStep} />
         </Link>
         <For each={keys()}>
           {(i) => (
             <Link
+              class="text-gray-500"
               classList={{
                 'font-bold border-2 text-black border-black': props.current === i,
                 ...props.classList(i),
@@ -45,8 +51,11 @@ export default function Pagination(props: PaginationProps) {
             </Link>
           )}
         </For>
-        <Link class="rounded-r-lg" href={props.url((props.current + 1) % props.max)}>
-          <Fa icon={faChevronRight} />
+        <Link href={props.url((props.current + 1) % props.max)}>
+          <Fa icon={faForwardStep} />
+        </Link>
+        <Link class="rounded-r-lg" href={props.url(props.max)}>
+          <Fa icon={faForwardFast} />
         </Link>
       </ul>
     </nav>
