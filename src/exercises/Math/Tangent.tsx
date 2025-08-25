@@ -1,9 +1,11 @@
 import { sample } from 'lodash-es'
+import { Show } from 'solid-js'
 import { z } from 'zod'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
 import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
+import { narrow } from '~/lib/helpers'
 
 const type = z.union([z.literal('tangent'), z.literal('normal')])
 
@@ -13,7 +15,7 @@ const { Component, schema } = createExerciseType({
     <>
       <p>
         Calculez la {props.question.type === 'tangent' ? 'tangente' : 'normale'} de{' '}
-        <Math value={`y = ${props.question.expr}`} /> en{' '}
+        <Math value={`${props.question.y} = ${props.question.expr}`} /> en{' '}
         <Math value={`${props.question.x} = ${props.question.x0}`} />.
       </p>
       <div class="flex items-center justify-center gap-2">
@@ -26,6 +28,7 @@ const { Component, schema } = createExerciseType({
     type: type.default('tangent'),
     expr: z.string().nonempty(),
     x: z.string().default('x'),
+    y: z.string().default('y'),
     x0: z.string().nonempty(),
   }),
   attempt: z.string().nonempty(),
@@ -33,9 +36,16 @@ const { Component, schema } = createExerciseType({
     'use server'
     const { expression } = await request(
       graphql(`
-        query CheckTangent($expr: Math!, $attempt: Math!, $x0: Math!, $x: Math!, $normal: Boolean) {
+        query CheckTangent(
+          $expr: Math!
+          $attempt: Math!
+          $x0: Math!
+          $x: Math!
+          $y: Math!
+          $normal: Boolean
+        ) {
           expression(expr: $expr) {
-            tangent(x0: $x0, x: $x, normal: $normal) {
+            tangent(x0: $x0, x: $x, y: $y, normal: $normal) {
               isEqual(expr: $attempt)
             }
           }
@@ -45,6 +55,43 @@ const { Component, schema } = createExerciseType({
     )
     return expression.tangent.isEqual
   },
+  feedback: [
+    async (remaining, question) => {
+      'use server'
+      if (!remaining) {
+        const { expression } = await request(
+          graphql(`
+            query CalculateTangent(
+              $expr: Math!
+              $x0: Math!
+              $x: Math!
+              $y: Math!
+              $normal: Boolean
+            ) {
+              expression(expr: $expr) {
+                tangent(x0: $x0, x: $x, y: $y, normal: $normal) {
+                  expr
+                }
+              }
+            }
+          `),
+          { ...question, normal: question.type === 'normal' },
+        )
+        return { remaining, ...question, answer: expression.tangent.expr }
+      }
+      return { remaining, ...question }
+    },
+    (props) => (
+      <Show
+        when={narrow(
+          () => props,
+          (p) => 'answer' in p,
+        )}
+      >
+        {(p) => <Math value={`${p().answer}`} displayMode />}
+      </Show>
+    ),
+  ],
   generator: {
     params: z
       .object({
