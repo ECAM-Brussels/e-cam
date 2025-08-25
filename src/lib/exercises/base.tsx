@@ -135,7 +135,6 @@ export function createExerciseType<
             },
           }}
         >
-          <pre>Hello {JSON.stringify(readOnly())}</pre>
           <form method="post" action={submit}>
             <fieldset disabled={readOnly()} class="flex items-end gap-8">
               <Show when={question()}>
