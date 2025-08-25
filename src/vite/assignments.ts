@@ -65,18 +65,16 @@ async function createAssignment(file: string, prisma: PrismaClient) {
   await mkdir(dirname(outputPath), { recursive: true })
   try {
     const [inStat, outStat] = await Promise.all([stat(file), stat(outputPath)])
+    const assignment = yaml.load(await readFile(file, 'utf-8')) as Omit<AssignmentInput, 'url'>
+    const url = '/' + relativePath.replace(/\.ya?ml$/, '')
+    await registerAssignment(prisma, { ...assignment, url }, {})
     if (outStat.mtime >= inStat.mtime) {
       return
     }
-  } catch {}
-  const assignment = yaml.load(await readFile(file, 'utf-8')) as Omit<AssignmentInput, 'url'>
-  const template = await readFile(resolve('src/vite/template.assignment.tsx'), 'utf-8')
-  let content = template.replace('$body$', JSON.stringify(assignment, null, 2))
-  content = content.replace('$route$', file)
-  await writeFile(outputPath, content, 'utf-8')
-  const url = '/' + relativePath.replace(/\.ya?ml$/, '')
-  try {
-    await registerAssignment(prisma, { ...assignment, url }, {})
+    const template = await readFile(resolve('src/vite/template.assignment.tsx'), 'utf-8')
+    let content = template.replace('$body$', JSON.stringify(assignment, null, 2))
+    content = content.replace('$route$', file)
+    await writeFile(outputPath, content, 'utf-8')
   } catch (error) {
     console.log(`Error when writing the metadata of ${file} to the database: ${error}`)
   }
@@ -89,6 +87,7 @@ const dataSchema = z.object({
       title: z.string(),
       image: z.string().optional(),
       url: z.string().optional(),
+      ecam: z.boolean().default(false),
     })
     .array(),
 })
