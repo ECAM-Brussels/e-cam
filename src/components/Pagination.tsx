@@ -11,7 +11,18 @@ type PaginationProps = {
   url: (i: number) => string
 }
 
+function getPagination(current: number, total: number, delta = 10): number[] {
+  let start = Math.max(1, current - delta)
+  let end = Math.min(total, current + delta)
+  while (end - start < delta * 2 && (start > 1 || end < total)) {
+    if (start > 1) start--
+    else if (end < total) end++
+  }
+  return Array.from({ length: end - start + 1 }, (_, i) => start + i)
+}
+
 export default function Pagination(props: PaginationProps) {
+  const keys = () => getPagination(props.current, props.max)
   return (
     <nav class={props.class}>
       <ul class="inline-flex text-gray-500">
@@ -21,7 +32,7 @@ export default function Pagination(props: PaginationProps) {
         >
           <Fa icon={faChevronLeft} />
         </Link>
-        <For each={[...Array(props.max).keys()].map((i) => i + 1)}>
+        <For each={keys()}>
           {(i) => (
             <Link
               classList={{
