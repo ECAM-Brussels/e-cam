@@ -11,6 +11,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@babel/standalone": "^7.28.3",
     "@fontsource/fira-sans": "^5.0.20",
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",

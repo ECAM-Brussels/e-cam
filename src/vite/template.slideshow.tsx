@@ -36,7 +36,7 @@ export const route = {
 } satisfies RouteDefinition
 
 // @ts-ignore
-const children = [$body$]
+const children = () => [$body$]
 
 export default function () {
   const params = useParams()
@@ -50,7 +50,7 @@ export default function () {
         hIndex={index.parse(params.slide)}
         vIndex={index.parse(params.board)}
         url={url(location.pathname, [params.board, params.slide])}
-        slides={children}
+        slides={children()}
         showBoard={showBoard()}
         onShowBoardChange={(value) => {
           setSearchParams({ showBoard: value ? 1 : 0 })
