@@ -71,9 +71,6 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
   return (
     <ErrorBoundary>
       <div class="flex items-center justify-between text-small">
-        <h1 class="text-4xl my-4" classList={{ hidden: fullScreen() }}>
-          {props.data.page.title}
-        </h1>
         <Show
           when={!fullScreen() && (currentUser()?.role === 'TEACHER' || user()?.role === 'ADMIN')}
         >
