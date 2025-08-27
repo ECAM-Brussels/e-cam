@@ -5,7 +5,7 @@ import { mkdir, readFile, stat } from 'fs/promises'
 import yaml from 'js-yaml'
 import { dirname, relative, resolve } from 'path'
 import { promisify } from 'util'
-import { loadEnv, type Plugin } from 'vite'
+import { type Plugin } from 'vite'
 import { z } from 'zod'
 
 const exec = promisify(execWithCallback)
@@ -115,11 +115,9 @@ const pandocPlugin = (): Plugin => {
   let prisma: PrismaClient
   return {
     name: 'pandoc-plugin',
-    buildStart() {},
-    async configResolved(config) {
-      const env = loadEnv(config.mode, process.cwd(), 'VITE')
+    buildStart() {
       prisma = new PrismaClient({
-        datasources: { db: { url: env.VITE_DATABASE_URL } },
+        datasources: { db: { url: process.env.DATABASE_URL } },
       })
       buildAll(prisma)
     },

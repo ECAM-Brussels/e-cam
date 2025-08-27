@@ -3,7 +3,7 @@ import glob from 'fast-glob'
 import { mkdir, readFile, stat, writeFile } from 'fs/promises'
 import yaml from 'js-yaml'
 import { dirname, relative, resolve } from 'path'
-import { loadEnv, type Plugin } from 'vite'
+import { type Plugin } from 'vite'
 import { z } from 'zod'
 import { type AssignmentInput } from '~/lib/exercises/assignment'
 
@@ -116,10 +116,9 @@ export default function (): Plugin {
   let prisma: PrismaClient
   return {
     name: 'assignments-plugin',
-    async configResolved(config) {
-      const env = loadEnv(config.mode, process.cwd(), 'VITE')
+    async buildStart() {
       prisma = new PrismaClient({
-        datasources: { db: { url: env.VITE_DATABASE_URL } },
+        datasources: { db: { url: process.env.DATABASE_URL } },
       })
       const assignments = await glob.glob('content/**/*.yaml', { ignore: ['content/data.yaml'] })
       await createEmptyAssignments(prisma, assignments)
