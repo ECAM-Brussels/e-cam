@@ -20,13 +20,12 @@ import { getEloDiff } from '~/lib/elo'
 import {
   type Assignment,
   exercises,
-  Exercise,
+  type Exercise,
   saveExercise,
   type getAssignment,
   getExercise,
   getPaginationInfo,
 } from '~/lib/exercises/assignment'
-import { ExerciseProps } from '~/lib/exercises/base'
 import { optionsSchema } from '~/lib/exercises/schemas'
 import { createSearchParam } from '~/lib/params'
 import { getUserInfo } from '~/lib/user'
@@ -222,18 +221,22 @@ function Navigation(props: AssignmentProps) {
   )
 }
 
-export function ExerciseUI<N, Q, A, P, F>(props: Exercise) {
+type ExerciseUIProps = Exercise & {
+  onChange?: (exercise: Exercise, action: 'generate' | 'submit') => Promise<unknown> | void
+}
+
+export function ExerciseUI(props: ExerciseUIProps) {
+  const options = () => optionsSchema.parse({ ...props.options })
   return (
     <Dynamic
-      component={
-        exercises[props.type as keyof typeof exercises] as Component<ExerciseProps<N, Q, A, P, F>>
-      }
-      {...(props as ExerciseProps<N, Q, A, P, F>)}
+      component={exercises[props.type] as Component<Exercise>}
+      {...props}
+      options={options()}
     />
   )
 }
 
-export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
+export default function Assignment(props: AssignmentProps) {
   const exercise = createAsyncStore(() => getExercise(props.url, props.userEmail, props.index))
   const key = () => [props.url, props.userEmail, props.index] as const
   const options = () =>
@@ -245,9 +248,8 @@ export default function Assignment<N, Q, A, P, F>(props: AssignmentProps) {
     <Shell {...props}>
       <Show when={exercise()} fallback={<p>Loading exercise...</p>}>
         {(exercise) => (
-          <Dynamic
-            component={exercises[exercise().type] as Component<ExerciseProps<N, Q, A, P, F>>}
-            {...(exercise() as ExerciseProps<N, Q, A, P, F>)}
+          <ExerciseUI
+            {...exercise()}
             options={options()}
             onChange={async (event, action) => {
               await saveExercise(...key(), event as Exercise)

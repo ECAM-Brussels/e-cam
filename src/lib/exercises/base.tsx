@@ -22,7 +22,9 @@ export type ExerciseProps<Name, Question, Attempt, Params, Feedback> = {
   ) => Promise<unknown> | void
   options: Options
   attempts: { correct: boolean; attempt: Attempt }[]
-} & ({ question: Question; params: never } | { params: Params; question: never })
+  question?: Question
+  params?: Params
+}
 
 const exerciseContextSchema = z.object({
   readOnly: z.boolean().default(false),

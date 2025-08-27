@@ -1,6 +1,6 @@
 import { createAsync, query, useLocation, useParams, type RouteDefinition } from '@solidjs/router'
-import { Show } from 'solid-js'
-import Assignment, { getGraphQuery } from '~/components/Assignment'
+import { createEffect, createSignal, Show } from 'solid-js'
+import Assignment, { ExerciseUI, getGraphQuery } from '~/components/Assignment'
 import Page from '~/components/Page'
 import { getUser } from '~/lib/auth/session'
 import { loadBoard } from '~/lib/board'
@@ -11,6 +11,7 @@ import {
   getExercise,
   getPaginationInfo,
 } from '~/lib/exercises/assignment'
+import { optionsSchema } from '~/lib/exercises/schemas'
 import { getUserInfo } from '~/lib/user'
 
 const getOriginalAssignment = query((url?: string) => {
@@ -50,18 +51,42 @@ export const route = {
   },
 } satisfies RouteDefinition
 
+type Exercise = Parameters<typeof ExerciseUI>[0]
+
 export default function () {
   const location = useLocation()
   const params = useParams()
   const info = () => getInfo(params.index, location.pathname)
   const user = createAsync(() => getUser())
   const assignment = createAsync(() => getOriginalAssignment(info().url))
+
+  const [exercise, setExercise] = createSignal<null | Exercise>(null)
+  createEffect(() => {
+    if (assignment() && exercise() === null) {
+      setExercise(assignment()!.body[0])
+    }
+  })
   return (
-    <Show when={user()}>
-      {(user) => (
-        <Page title={assignment()?.page.title ?? ''}>
-          <Show when={assignment()}>
-            {(assignment) => (
+    <Page title={assignment()?.page.title ?? ''}>
+      <h1 class="text-4xl my-4">{assignment()?.page.title}</h1>
+      <Show when={assignment()}>
+        {(assignment) => (
+          <Show
+            when={user()}
+            fallback={
+              <Show when={exercise()}>
+                <ExerciseUI
+                  {...(exercise() as Exercise)}
+                  onChange={(event, action) => {
+                    if (exercise()?.params !== undefined || action == 'submit') {
+                      setExercise(event)
+                    }
+                  }}
+                />
+              </Show>
+            }
+          >
+            {(user) => (
               <Assignment
                 url={info().url}
                 data={assignment()}
@@ -70,8 +95,8 @@ export default function () {
               />
             )}
           </Show>
-        </Page>
-      )}
-    </Show>
+        )}
+      </Show>
+    </Page>
   )
 }
