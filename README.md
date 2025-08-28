@@ -56,7 +56,7 @@ Run the following commands
 
 ~~~ bash
 npm install
-poetry run npm run dev
+npm run dev
 ~~~
 
 ### Structure
