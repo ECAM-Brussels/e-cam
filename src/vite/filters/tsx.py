@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import json
 import panflute as pf
@@ -52,7 +52,7 @@ def code(el: pf.Element, doc: pf.Doc):
     del doc
     if type(el) == pf.Code:
         el.text = re.sub(r"(\{|\})", r'{"\1"}', el.text)
-    if type(el) == pf.CodeBlock and 'raw' in el.classes:
+    if type(el) == pf.CodeBlock and "raw" in el.classes:
         return pf.RawBlock(el.text)
     if type(el) == pf.CodeBlock and el.classes:
         run = "true" if "run" in el.classes else "false"
