@@ -9,7 +9,7 @@ courses:
   - 4MATH5
   - MATH
 options:
-  maxAttempts: 3
+  initialElo: 1200
   streak: 999
 body:
   - type: Factor

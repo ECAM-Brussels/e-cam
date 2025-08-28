@@ -6,6 +6,7 @@ courses:
   - MATH
 options:
   streak: 999
+  initialElo: 800
 prerequisites:
   - /skills/algebra/complex/powers-of-i
 body:

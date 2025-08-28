@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: "Interpolation"
+title: "Équation du premier degré"
 courses:
-  - algebra
+  - geometry
   - 4MATH5
   - PM1C
   - MATH

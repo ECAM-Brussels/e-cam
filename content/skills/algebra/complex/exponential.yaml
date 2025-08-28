@@ -8,6 +8,7 @@ prerequisites:
   - /skills/algebra/complex/polar
 options:
   streak: 999
+  initialElo: 1200
 body:
   - type: Complex
     params:

@@ -9,6 +9,7 @@ prerequisites:
   - /skills/algebra/factor/trinomials
 options:
   streak: 999
+  initialElo: 1600
 body:
   - type: Limit
     params:

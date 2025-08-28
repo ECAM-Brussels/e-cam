@@ -10,6 +10,7 @@ courses:
   - MATH
 options:
   streak: 999
+  initialElo: 1600
 body:
   - type: Equation
     params:

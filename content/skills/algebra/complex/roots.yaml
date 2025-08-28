@@ -10,6 +10,7 @@ prerequisites:
   - /skills/trigonometry/values
 options:
   streak: 999
+  initialElo: 1600
 body:
   - type: Equation
     params:

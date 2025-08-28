@@ -8,6 +8,7 @@ prerequisites:
   - /skills/algebra/complex/exponential
 options:
   streak: 999
+  initialElo: 1600
 body:
   - type: Complex
     params:

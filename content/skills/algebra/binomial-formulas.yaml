@@ -6,6 +6,7 @@ courses:
   - PM1C
   - MATH
 options:
+  initialElo: 800
   streak: 999
 body:
   - type: Expand

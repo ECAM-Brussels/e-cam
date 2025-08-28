@@ -6,6 +6,7 @@ courses:
   - MATH
 options:
   streak: 999
+  initialElo: 1200
 prerequisites:
   - /skills/algebra/complex/modulus
   - /skills/algebra/complex/argument

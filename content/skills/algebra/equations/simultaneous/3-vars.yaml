@@ -8,6 +8,7 @@ prerequisites:
   - /skills/algebra/equations/simultaneous/2-vars
 options:
   streak: 999
+  initialElo: 1600
 body:
   - type: System
     params:

@@ -9,6 +9,7 @@ prerequisites:
   - /skills/geometry/vectors/norm
 options:
   streak: 999
+  initialElo: 800
 body:
   - type: Distance
     params:
