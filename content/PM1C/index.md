@@ -8,12 +8,12 @@ title: 'Pont vers le supérieur: mathématiques'
 
 ~~~ {.tsx .raw}
 <div class="grid lg:grid-cols-2 gap-4 mb-4">
-  <ChapterInfo title="Chapitre 1: Trigonométrie" query={{ "courses": { "some": { "code": "trigonometry" } } }}>
+  <ChapterInfo title="Trigonométrie" query={{ "courses": { "some": { "code": "trigonometry" } } }}>
     <Resource type="theory" href="/PM1C/slides/01-trigonometry">CT 1</Resource>
     <Resource type="exercise" href="/PM1C/exercises/01-trigonometry">EX 1</Resource>
     <Resource type="exercise" href="/PM1C/exercises/02-trigonometry">EX 2</Resource>
   </ChapterInfo>
-  <ChapterInfo title="Chapitre 2: Vecteurs" query={{
+  <ChapterInfo title="Vecteurs" query={{
     "page": {
       OR: [
         { "title": { contains: "vect" } },
@@ -28,7 +28,7 @@ title: 'Pont vers le supérieur: mathématiques'
     <Resource type="exercise" href="/PM1C/exercises/04-vectors">EX 4</Resource>
     <Resource type="exercise" href="/PM1C/exercises/05-vectors">EX 5</Resource>
   </ChapterInfo>
-  <ChapterInfo title="Chapitre 3: Algèbre et systèmes" query={{
+  <ChapterInfo title="Algèbre et systèmes" query={{
     "courses": { "some": { "code": "algebra " } },
     "page": {
       AND: [
@@ -41,7 +41,7 @@ title: 'Pont vers le supérieur: mathématiques'
     <Resource type="exercise" href="/PM1C/exercises/06-algebra">EX 6</Resource>
     <Resource type="exercise" href="/PM1C/exercises/07-simultaneous-equations">EX 7</Resource>
   </ChapterInfo>
-  <ChapterInfo title="Chapitre 4: Droites et Coniques" query={{
+  <ChapterInfo title="Droites et Coniques" query={{
     "page": {
       OR: [
         { "title": { contains: "interpolation" } },
@@ -57,7 +57,7 @@ title: 'Pont vers le supérieur: mathématiques'
     <Resource type="exercise" href="/PM1C/exercises/08-straight-lines">EX 8</Resource>
     <Resource type="exercise" href="/PM1C/exercises/09-conic-sections">EX 9</Resource>
   </ChapterInfo>
-  <ChapterInfo title="Chapitre 5: Nombres complexes" query={{
+  <ChapterInfo title="Nombres complexes" query={{
     "courses": { "some": { "code": "algebra" } },
     "page": {
       "title": { contains: "complex" },
@@ -67,7 +67,7 @@ title: 'Pont vers le supérieur: mathématiques'
     <Resource type="exercise" href="/PM1C/exercises/10-complex-numbers">EX 10</Resource>
     <Resource type="exercise" href="/PM1C/exercises/11-complex-numbers">EX 11</Resource>
   </ChapterInfo>
-  <ChapterInfo title="Chapitre 6: Fonctions et limites" query={{
+  <ChapterInfo title="Fonctions et limites" query={{
     "page": {
       "title": { contains: "limite" },
     }
@@ -78,7 +78,7 @@ title: 'Pont vers le supérieur: mathématiques'
     <Resource type="exercise" href="/PM1C/exercises/13-functions-and-limits">EX 13</Resource>
     <Resource type="exercise" href="/PM1C/exercises/14-limits">EX 14</Resource>
   </ChapterInfo>
-  <ChapterInfo title="Chapitre 7: Dérivées" query={{
+  <ChapterInfo title="Dérivées" query={{
     "courses": { "some": { "code": "calculus" } },
     "page": {
        "NOT": { title: { contains: "limite" } },
