@@ -13,39 +13,28 @@ options:
 body:
   - type: Differentiate
     params:
+      subs:
+        n: [2, 3, 4, 5, 6, 7, 8, 9]
+        a: [2, 3, e]
       questions:
-        - x^{2} \sin{x}
-        - x^{3} \sin{x}
-        - x^{2} \cos{x}
-        - x^{3} \cos{x}
-        - x^{2} \tan{x}
-        - x^{3} \tan{x}
-        - e^{x} \sin{x}
-        - e^{x} \cos{x}
-        - 2^{x} \sin{x}
-        - 2^{x} \cos{x}
-        - x^{2} \ln{x}
-        - x^{3} \ln{x}
-        - x^{2} e^{x}
-        - x^{3} e^{x}
-        - x^{2} 2^{x}
-        - x^{3} 2^{x}
-        - x^{2} 3^{x}
-        - x^{3} 3^{x}
+        - x^{{n}} \sin{x}
+        - x^{{n}} \cos{x}
+        - x^{{n}} \tan{x}
+        - x^{{n}} \ln{x}
+        - x^{{n}} {{a}}^{x}
+        - '{{a}}^{x} \sin{x}'
+        - '{{a}}^{x} \cos{x}'
+        - '{{a}}^{x} \tan{x}'
+        - '{{a}}^{x} \ln{x}'
+        - \ln{x} \sin{x}
+        - \ln{x} \cos{x}
+        - \ln{x} \tan{x}
         - \sqrt{x} \sin{x}
         - \sqrt{x} \cos{x}
+        - \sqrt{x} \tan{x}
         - \sqrt{x} \ln{x}
-        - \sqrt{x} e^{x}
-        - \sqrt{x} 2^{x}
-        - \sqrt{x} 3^{x}
+        - \sqrt{x} {{a}}^{x}
         - \sin{x} \tan{x}
         - \sin{x} \cos{x}
-        - x^{2} {\sin{x}} e^{x}
-        - x^{3} {\sin{x}} e^{x}
-        - x^{4} {\sin{x}} e^{x}
-        - x^{2} {\cos{x}} e^{x}
-        - x^{3} {\cos{x}} e^{x}
-        - x^{4} {\cos{x}} e^{x}
-        - x^{2} {\sin{x}} 2^{x}
-        - x^{3} {\sin{x}} 2^{x}
-        - x^{4} {\sin{x}} 2^{x}
+        - x^{{n}} {\sin{x}} {{a}}^{x}
+        - x^{{n}} {\cos{x}} {{a}}^{x}
