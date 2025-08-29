@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE `Question` MODIFY `score` INTEGER NOT NULL DEFAULT 1200;
+
+-- AlterTable
+ALTER TABLE `User` MODIFY `score` INTEGER NOT NULL DEFAULT 800;

@@ -50,7 +50,7 @@ export const getEloGraph = query(async (email?: string) => {
     where: { email, gain: { not: null } },
     select: { gain: true, date: true },
   })
-  let score = user?.score ?? 1500
+  let score = user?.score ?? 800
   const data: number[] = []
   const labels = []
   for (let i = 0; i < 14; i++) {

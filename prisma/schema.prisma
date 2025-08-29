@@ -50,7 +50,7 @@ model Question {
   type String
   /// [Question]
   body Json
-  score Int @default(1500)
+  score Int @default(1200)
   attempts Attempt[]
 }
 
@@ -59,7 +59,7 @@ model User {
   firstName String
   lastName String
   role Role @default(STUDENT)
-  score Int @default(1500)
+  score Int @default(800)
 
   attempts Attempt[]
   strokes Stroke[]

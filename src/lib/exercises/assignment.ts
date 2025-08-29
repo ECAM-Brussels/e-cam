@@ -268,7 +268,7 @@ export async function saveExercise(
           }),
           tx.question.update({
             where: { hash },
-            data: { score: { increment: -payload.gain } },
+            data: { score: { increment: -Math.floor(payload.gain / 4) } },
           }),
         )
       }
