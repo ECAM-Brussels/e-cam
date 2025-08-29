@@ -22,9 +22,9 @@ body:
         - \sin({{m}}x^{{n}} + {{p}})
         - \cos({{m}}x^{{n}} + {{p}})
         - \tan({{m}}x^{{n}} + {{p}})
-        - \sin\left({{a}}^{{n}}\right)
-        - \cos\left({{a}}^{{n}}\right)
-        - \tan\left({{a}}^{{n}}\right)
+        - \sin\left({{a}}^{x}\right)
+        - \cos\left({{a}}^{x}\right)
+        - \tan\left({{a}}^{x}\right)
         - \left(\sin x\right)^{{n}}
         - \left(\cos x\right)^{{n}}
         - \left(\tan x\right)^{{n}}
