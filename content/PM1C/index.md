@@ -6,6 +6,14 @@ title: 'Pont vers le supérieur: mathématiques'
 
 ![Pont mathématiques](/images/PM1C.png){.w-full .lg:max-h-96 .max-h-84 .object-cover .rounded-xl}
 
+::: {.flex .gap-4 .justify-center}
+[Ressources](/PM1C/)
+
+[Compétences](/PM1C/skills)
+
+[Informations sur l'examen](/PM1C/exam)
+:::
+
 ~~~ {.tsx .raw}
 <div class="grid lg:grid-cols-2 gap-4 mb-4">
   <ChapterInfo title="Trigonométrie" query={{ "courses": { "some": { "code": "trigonometry" } } }}>
@@ -89,9 +97,4 @@ title: 'Pont vers le supérieur: mathématiques'
     <Resource type="exercise" href="/PM1C/exercises/16-differentiation">EX 16</Resource>
   </ChapterInfo>
 </div>
-<Graph
-  class="border bg-white rounded-xl w-full h-[1600px]"
-  query={{ courses: { some: { code: 'PM1C' } } }}
-  groups={['algebra', 'calculus', 'trigonometry', 'geometry']}
-/>
 ~~~

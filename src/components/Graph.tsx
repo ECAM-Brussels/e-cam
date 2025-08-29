@@ -45,6 +45,7 @@ export default function Graph(props: {
       cytoscape({
         container,
         elements: [],
+        userZoomingEnabled: false,
         style: [
           {
             selector: 'node',

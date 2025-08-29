@@ -2,6 +2,16 @@
 title: Examen
 ---
 
+![Pont mathématiques](/images/PM1C.png){.w-full .lg:max-h-96 .max-h-84 .object-cover .rounded-xl}
+
+::: {.flex .gap-4 .justify-center}
+[Ressources](/PM1C/)
+
+[Compétences](/PM1C/skills)
+
+[Informations sur l'examen](/PM1C/exam)
+:::
+
 ::::: {.bg-white .rounded-xl .border .p-8}
 
 # À propos de l'examen
