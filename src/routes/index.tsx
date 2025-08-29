@@ -23,7 +23,7 @@ export default function Home() {
     }
   }
   const courses = createAsyncStore(() =>
-    getCourses({ where: { url: { not: '' }, image: { not: '' } } }),
+    getCourses({ where: { url: { not: '' }, image: { not: '' } }, orderBy: { title: 'asc' } }),
   )
   return (
     <Page title="Accueil">

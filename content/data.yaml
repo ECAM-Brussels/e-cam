@@ -2,12 +2,12 @@ courses:
   - code: MATH
     title: Mathématiques
   - code: PM1C
-    title: Pont mathématique
+    title: 1BA — Pont mathématique
     image: /images/PM1C.png
     url: /PM1C
     ecam: true
   - code: IC1T
-    title: Programmation
+    title: 1BA — Programmation
     image: /images/IC1T.png
     url: /IC1T
     ecam: true
@@ -33,3 +33,13 @@ courses:
     title: 6ème maths 4
   - code: 6MATH6
     title: 6ème maths 6
+  - code: SA4T
+    title: 4MIN — Algorithms
+    image: /images/SA4T.webp
+    url: /SA4T
+    ecam: true
+  - code: LW3L
+    title: 3BE — Network and web technologies
+    image: /images/LW3L.png
+    url: /SA4T
+    ecam: true
