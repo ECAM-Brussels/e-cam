@@ -92,10 +92,22 @@ const { Component, schema } = createExerciseType({
         ])
         .array()
         .nonempty(),
+      subs: z
+        .record(
+          z.string(),
+          z.string().nonempty().or(z.number().transform(String)).array().nonempty(),
+        )
+        .optional(),
     }),
     generate: async (params) => {
       'use server'
-      return sample(params.questions)
+      let question = sample(params.questions)
+      if (params.subs) {
+        Object.entries(params.subs).forEach(([symbol, choices]) => {
+          question.expr = question.expr.replaceAll(`{${symbol}}`, `{${sample(choices)}}`)
+        })
+      }
+      return question
     },
   },
 })
