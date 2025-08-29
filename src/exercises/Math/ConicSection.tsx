@@ -5,7 +5,7 @@ import Math from '~/components/Math'
 import { graphql } from '~/gql'
 import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
-import { expand } from '~/queries/algebra'
+import { expand, simplify } from '~/queries/algebra'
 
 const conicSectionType = z.union([
   z.literal('parabola'),
@@ -250,10 +250,16 @@ const { Component, schema } = createExerciseType({
       A: z.number().transform(String).or(z.string().nonempty()).array().nonempty(),
       B: z.number().transform(String).or(z.string().nonempty()).array().nonempty(),
       classify: z.boolean().default(true),
+      expand: z
+        .boolean()
+        .transform((b) => [b])
+        .or(z.boolean().array().nonempty())
+        .default([true]),
     }),
     generate: async (params) => {
       'use server'
       const conicSection = sample(params.Types)
+      const exp = sample(params.expand)
       const [x0, y0] = [sample(params.X0), sample(params.Y0)]
       const [a, b] = [sample(params.A), sample(params.B)]
       const s = sample([-1, 1])
@@ -265,7 +271,7 @@ const { Component, schema } = createExerciseType({
           s == 1 ? `(x - ${x0})^2 - 4 (${a}) (y - ${y0})` : `(y - ${y0})^2 - 4 (${a}) (x - ${x0})`,
       }[conicSection]
       return {
-        equation: `${await expand(equation)} = 0`,
+        equation: `${exp ? await expand(equation) : await simplify(equation)} = 0`,
         type: params.classify ? (`conic` as const) : conicSection,
       }
     },

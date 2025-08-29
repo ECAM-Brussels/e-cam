@@ -2,6 +2,7 @@
 title: "Équation de l'hyperbole"
 prerequisites:
   - /skills/algebra/complete-square
+  - /skills/geometry/conic-sections/hyperbola-canonical
 courses:
   - geometry
   - PM1C

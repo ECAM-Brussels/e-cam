@@ -4,6 +4,7 @@ prerequisites:
   - /skills/geometry/conic-sections/ellipse
   - /skills/geometry/conic-sections/parabola
   - /skills/geometry/conic-sections/hyperbola
+  - /skills/geometry/conic-sections/classification-canonical
 courses:
   - geometry
   - PM1C
