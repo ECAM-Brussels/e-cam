@@ -83,6 +83,13 @@ class Expression:
         )
         return Expression(expr=sympy.diff(expr, x, n))
 
+    @strawberry.field
+    def differential_quotient(
+        self, x0: Math, x: Math = sympy.Symbol("x")
+    ) -> "Expression":
+        expr = (self.expr - self.expr.subs({x: x0})) / (x - x0)
+        return Expression(expr=expr)
+
     @strawberry.field(description="Expand an expression")
     def expand(self) -> "Expression":
         return Expression(expr=sympy.expand(self.expr))
