@@ -1,0 +1,52 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: "Dérivées: règle de la composée"
+courses:
+  - calculus
+  - 5MATH4
+  - PM1C
+  - MATH
+prerequisites:
+  - /skills/calculus/differentiate/basic
+options:
+  streak: 999
+  initialElo: 1200
+body:
+  - type: Differentiate
+    params:
+      subs:
+        n: [2, 3, 4, 5, 6, 7, 8, 9]
+        m: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        p: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        a: [2, 3, 4, e]
+      questions:
+        - \sin({{m}}x^{{n}} + {{p}})
+        - \cos({{m}}x^{{n}} + {{p}})
+        - \tan({{m}}x^{{n}} + {{p}})
+        - \sin\left({{a}}^{{n}}\right)
+        - \cos\left({{a}}^{{n}}\right)
+        - \tan\left({{a}}^{{n}}\right)
+        - \left(\sin x\right)^{{n}}
+        - \left(\cos x\right)^{{n}}
+        - \left(\tan x\right)^{{n}}
+        - \left(\ln x\right)^{{n}}
+        - \sqrt{\sin{x}}
+        - \sqrt{\cos{x}}
+        - \sqrt{\tan{x}}
+        - \sqrt{\ln{x}}
+        - \sqrt{{{a}}^{x}}
+        - \ln\left(\sin x}\right)
+        - \ln\left(\cos x}\right)
+        - \ln\left(\tan x}\right)
+        - '{{a}}^{\sin x}'
+        - '{{a}}^{\cos x}'
+        - '{{a}}^{\tan x}'
+        - \sin({{a}}^{{x}})
+        - \cos({{a}}^{{x}})
+        - \tan({{a}}^{{x}})
+        - \sin\left(\ln(x)\right)
+        - \cos\left(\ln(x)\right)
+        - \tan\left(\ln(x)\right)
+        - \frac{1}{\sin x}
+        - \frac{1}{\cos x}
+        - \frac{1}{\tan x}
+        - \frac{1}{\ln x}

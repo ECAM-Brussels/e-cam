@@ -11,39 +11,20 @@ options:
 body:
   - type: Differentiate
     params:
+      subs:
+        n: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+        a: [2, 3, 4, 5, 6, e]
       questions:
         - x
-        - x^2
-        - x^3
-        - x^4
-        - x^5
-        - x^6
-        - x^7
-        - x^8
-        - x^9
-        - x^{10}
+        - x^{{n}}
         - \sqrt{x}
-        - \sqrt{x}
-        - \sqrt{x}
+        - \sqrt[3]{x}
+        - \sqrt{x^{{n}}}
         - \frac{1}{x}
-        - \frac{1}{x^{2}}
-        - \frac{1}{x^{3}}
-        - \frac{1}{x^{4}}
-        - \frac{1}{x^{5}}
-        - \frac{1}{x^{6}}
-        - \sin{x}
-        - \sin{x}
+        - \frac{1}{x^{n}}
         - \sin{x}
         - \cos{x}
-        - \cos{x}
-        - \cos{x}
-        - e^x
-        - e^x
-        - e^x
-        - 2^x
-        - 3^x
-        - 4^x
-        - \ln{x}
-        - \ln{x}
-        - \ln{x}
+        - \tan{x}
+        - \cot{x}
+        - '{{a}}^x'
         - \ln{x}
