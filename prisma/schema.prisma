@@ -1,11 +1,9 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
+}
+
+generator json {
+  provider = "prisma-json-types-generator"
 }
 
 datasource db {
@@ -14,36 +12,95 @@ datasource db {
 }
 
 model Page {
-  url String @id @unique
-  title String
-  assignments Assignment[]
+  url String @id
+  title String?
+  description String?
+  assignment Assignment?
 }
 
 model Assignment {
-  page Page @relation(fields: [url], references: [url])
-  url String
-  user User @relation(fields: [userEmail], references: [email])
-  userEmail String
-  id String
+  url String @id
+  /// [ExerciseList]
   body Json
+  /// [Options]
+  options Json?
+  hash String?
   lastModified DateTime @default(now())
-  finished Boolean @default(false)
+  video String?
 
-  @@id([url, userEmail, id])
+  attempts Attempt[]
+  page Page @relation(fields: [url], references: [url])
+  courses Course[]
+  prerequisites Assignment[] @relation("Prerequisites")
+  requiredBy Assignment[] @relation("Prerequisites")
+}
+
+model Course {
+  code String @id
+  title String?
+  image String?
+  url String?
+  ecam Boolean @default(false)
+
+  assignments Assignment[]
+}
+
+model Question {
+  hash String @id
+  type String
+  /// [Question]
+  body Json
+  score Int @default(1200)
+  attempts Attempt[]
 }
 
 model User {
   email String @id
-  admin Boolean @default(false)
   firstName String
   lastName String
-  assignments Assignment[]
+  role Role @default(STUDENT)
+  score Int @default(800)
+
+  attempts Attempt[]
+  strokes Stroke[]
 }
 
-model Board {
+enum Role {
+  STUDENT
+  TEACHER
+  ADMIN
+}
+
+model Attempt {
+  id String @id @default(uuid())
   url String
-  id String
-  body Json
+  email String
+  position Int
+  hash String
+  /// [Exercise]
+  exercise Json
+  correct Boolean?
+  gain Int?
+  date DateTime @default(now())
   lastModified DateTime @default(now())
-  @@id([url, id])
+
+  assignment Assignment @relation(fields: [url], references: [url])
+  user User @relation(fields: [email], references: [email])
+  question Question @relation(fields: [hash], references: [hash])
+
+  @@unique([url, email, position])
+}
+
+model Stroke {
+  id String @id @default(uuid())
+  url String
+  ownerEmail String
+  board String
+  color String @default("#255994")
+  lineWidth Int @default(2)
+  /// [PointList]
+  points Json
+  created DateTime @default(now())
+
+  owner User @relation(fields: [ownerEmail], references: [email])
 }

@@ -6,6 +6,34 @@
 - MySQL or MariaDB
 - [Pandoc](https://pandoc.org)
 
+### Instructions for MacOS
+
+~~~ bash
+# Install homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install dependecies
+brew install node python poetry mariadb pandoc
+
+# Start MariaDB
+brew services start mariadb
+~~~
+
+### Create a database
+
+First, connect to the database server via the `mysql` command.
+
+~~~ sql
+CREATE DATABASE ecam;
+~~~
+
+Then connect to the server as root `sudo mysql` to set up a password for your user.
+
+~~~ sql
+ALTER USER '<username>'@'localhost' IDENTIFIED BY '<password>';
+FLUSH PRIVILEGES;
+~~~
+
 ## First run
 
 ### Env variables
@@ -19,7 +47,7 @@ VITE_AZURE_CLIENT_SECRET=
 VITE_AZURE_REDIRECT_URI=
 VITE_PASSPHRASE=
 VITE_SESSION_SECRET=
-DATABASE_URL=
+DATABASE_URL=mysql://<user>:<password>@localhost:3306/ecam
 ~~~
 
 ### Set up
@@ -28,11 +56,6 @@ Run the following commands
 
 ~~~ bash
 npm install
-npm run api
-npx graphql-codegen
-npx prisma migrate deploy
-npx prisma generate
-# After killing 'npm run api'
 npm run dev
 ~~~
 

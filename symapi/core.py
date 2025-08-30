@@ -1,9 +1,9 @@
+import json
 import re
 import strawberry
 import sympy
 import sympy.core.function
 import sympy.parsing.latex
-import sympy.parsing.sympy_parser
 from typing import NewType
 
 
@@ -44,12 +44,19 @@ def remove_funcs(expr: sympy.Basic) -> sympy.Basic:
     return expr
 
 
-def custom_latex_log(expr, printer=None):
+def test(*args, **kwargs):
+    return rf"args: {args}; {kwargs}"
+
+
+def custom_latex_log(expr, printer=None, exp=None):
     del printer
+    suffix = "" if exp is None else f"^{{{exp}}}"
     if len(expr.args) > 1 and expr.args[1] != sympy.E:
-        return rf"\log_{{{sympy.latex(expr.args[1])}}}\left({expr.args[0]}\right)"
+        return (
+            rf"\log{suffix}_{{{sympy.latex(expr.args[1])}}}\left({expr.args[0]}\right)"
+        )
     else:
-        return rf"\ln\left({sympy.latex(expr.args[0])}\right)"
+        return rf"\ln{suffix}\left({sympy.latex(expr.args[0])}\right)"
 
 
 sympy.log._latex = custom_latex_log
@@ -59,4 +66,29 @@ Math = strawberry.scalar(
     serialize=sympy.latex,
     parse_value=parse_latex,
     description="Mathematical formula",
+)
+
+
+def parse_set(expr):
+    authorized = ["Interval", "Union", "Complement", "FiniteSet", "EmptySet"]
+    if isinstance(expr, str):
+        expr = json.loads(expr)
+
+    def parse_entry(entry: list | str | bool):
+        if isinstance(entry, int) or isinstance(entry, bool):
+            return entry
+        if isinstance(entry, str):
+            return parse_latex(entry)
+        if isinstance(entry, list) and entry[0] in authorized and len(entry) > 1:
+            return getattr(sympy, entry[0])(*map(parse_entry, entry[1:]))
+        return entry
+
+    return parse_entry(expr)
+
+
+MathSet = strawberry.scalar(
+    NewType("MathSet", sympy.Basic),
+    serialize=sympy.latex,
+    parse_value=parse_set,
+    description="Mathematical set",
 )

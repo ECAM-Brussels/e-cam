@@ -1,0 +1,40 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: "Valeurs trigonométriques exactes"
+courses:
+  - trigonometry
+  - PM1C
+  - 4MATH5
+  - MATH
+options:
+  streak: 999
+body:
+  - type: Calculate
+    params:
+      type: trigonometricValues
+      exercises:
+        - F:
+           - cos
+           - sin
+          Alpha:
+           - '0'
+           - \frac{\pi}{6}
+           - \frac{\pi}{4}
+           - \frac{\pi}{3}
+           - \frac{\pi}{2}
+          K: [-2, -1, 0, 1, 2]
+        - F:
+           - tan
+          Alpha:
+           - '0'
+           - \frac{\pi}{6}
+           - \frac{\pi}{4}
+           - \frac{\pi}{3}
+          K: [-2, -1, 0, 1, 2]
+        - F:
+           - cot
+          Alpha:
+           - \frac{\pi}{6}
+           - \frac{\pi}{4}
+           - \frac{\pi}{3}
+           - \frac{\pi}{2}
+          K: [-2, -1, 0, 1, 2]

@@ -1,0 +1,40 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: "Dérivées: règle du produit"
+courses:
+  - calculus
+  - 5MATH4
+  - PM1C
+  - MATH
+prerequisites:
+  - /skills/calculus/differentiate/basic
+options:
+  streak: 999
+  initialElo: 1200
+body:
+  - type: Differentiate
+    params:
+      subs:
+        n: [2, 3, 4, 5, 6, 7, 8, 9]
+        a: [2, 3, e]
+      questions:
+        - x^{{n}} \sin{x}
+        - x^{{n}} \cos{x}
+        - x^{{n}} \tan{x}
+        - x^{{n}} \ln{x}
+        - x^{{n}} {{a}}^{x}
+        - '{{a}}^{x} \sin{x}'
+        - '{{a}}^{x} \cos{x}'
+        - '{{a}}^{x} \tan{x}'
+        - '{{a}}^{x} \ln{x}'
+        - \ln{x} \sin{x}
+        - \ln{x} \cos{x}
+        - \ln{x} \tan{x}
+        - \sqrt{x} \sin{x}
+        - \sqrt{x} \cos{x}
+        - \sqrt{x} \tan{x}
+        - \sqrt{x} \ln{x}
+        - \sqrt{x} {{a}}^{x}
+        - \sin{x} \tan{x}
+        - \sin{x} \cos{x}
+        - x^{{n}} {\sin{x}} {{a}}^{x}
+        - x^{{n}} {\cos{x}} {{a}}^{x}

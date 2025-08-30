@@ -1,4 +1,4 @@
-import type * as Babel from '@babel/standalone'
+import * as babel from '@babel/standalone'
 import dedent from 'dedent-js'
 
 const cdn = 'https://esm.sh'
@@ -32,7 +32,6 @@ function importPlugin() {
 }
 
 async function babelTransform(code: string, presetNames: string[] = []) {
-  const babel = (await import(/* @vite-ignore */ `${cdn}/@babel/standalone`)) as typeof Babel
   const presets = await Promise.all(
     presetNames.map(async (name) => {
       if (name in babel.availablePresets) {

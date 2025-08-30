@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: 'Angle entre deux vecteurs'
+courses:
+  - geometry
+  - PM1C
+  - 5MATH4
+  - MATH
+prerequisites:
+  - /skills/geometry/vectors/dot-product
+  - /skills/trigonometry/values
+options:
+  streak: 999
+  initialElo: 1600
+body:
+  - type: VectorAngle
+    params:
+      Norms: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      Angles:
+        - \frac{\pi}{6}
+        - \frac{\pi}{4}
+        - \frac{\pi}{3}
+        - \frac{\pi}{2}
+        - 2 \frac{\pi}{3}
+        - 3 \frac{\pi}{4}
+        - 5 \frac{\pi}{6}
+        - \pi
+      EulerAngles:
+        - 0
+        - \frac{\pi}{6}
+        - \frac{\pi}{4}
+        - \frac{\pi}{3}
+        - \frac{\pi}{2}
+        - 2 \frac{\pi}{3}
+        - 3 \frac{\pi}{4}
+        - 5 \frac{\pi}{6}
+        - \pi
+        - -\pi
+        - -5 \frac{\pi}{6}
+        - -3 \frac{\pi}{4}
+        - -2 \frac{\pi}{3}
+        - -\frac{\pi}{2}
+        - -\frac{\pi}{3}
+        - -\frac{\pi}{4}
+        - -\frac{\pi}{6}

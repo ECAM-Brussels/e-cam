@@ -1,0 +1,22 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: "Limites: quotients différentiels"
+courses:
+  - calculus
+  - 5MATH4
+  - PM1C
+  - MATH
+prerequisites:
+  - /skills/calculus/limits/rational
+options:
+  streak: 999
+  initialElo: 1200
+body:
+  - type: Limit
+    params:
+      type: differentialQuotient
+      Expr:
+        - x^2
+        - e^x
+        - \sin{x}
+        - \cos{x}
+      X0: [-3, -2, -1, 0, 1, 2, 3]

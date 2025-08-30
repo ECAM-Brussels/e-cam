@@ -7,100 +7,138 @@ import {
   faPlus,
   faUpRightAndDownLeftFromCenter,
 } from '@fortawesome/free-solid-svg-icons'
-import { query, createAsync, revalidate, useLocation } from '@solidjs/router'
-import { cloneDeep, debounce, find } from 'lodash-es'
-import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
+import { useAction, useSubmissions, createAsyncStore } from '@solidjs/router'
+import { cloneDeep, debounce } from 'lodash-es'
+import { getStroke } from 'perfect-freehand'
+import { createEffect, createMemo, createSignal, For, on, onMount, Show } from 'solid-js'
 import { createStore, SetStoreFunction, unwrap } from 'solid-js/store'
 import Fa from '~/components/Fa'
 import Spinner from '~/components/Spinner'
 import { getUser } from '~/lib/auth/session'
-import { prisma } from '~/lib/db'
+import { addStroke, Board, clearBoard, loadBoard, removeStroke, type Stroke } from '~/lib/board'
+import { hashObject, round } from '~/lib/helpers'
 
 type Mode = 'draw' | 'erase' | 'read'
 type Status = 'unsaved' | 'saving' | 'saved'
 
-type Stroke = {
-  color: string
-  lineWidth: number
-  points: [number, number][]
-}
-
-export const loadBoard = query(async (url: string, id: string) => {
-  'use server'
-  const record = await prisma.board.findUnique({ where: { url_id: { url, id } } })
-  return record ? (JSON.parse(String(record.body)) as Stroke[]) : null
-}, 'loadBoards')
-
-const upsertBoard = async (url: string, id: string, data: Stroke[]) => {
-  'use server'
-  const user = await getUser()
-  if (!user || !user.admin) {
-    throw new Error('Error when upserting board: user is not an admin')
-  }
-  const body = JSON.stringify(data)
-  await prisma.board.upsert({
-    where: { url_id: { url, id } },
-    update: { body, lastModified: new Date() },
-    create: { url, id, body },
-  })
-}
-
 type WhiteboardProps = {
-  id?: string
+  name: string
   class?: string
-  height: number
+  requestFullScreen?: () => void
   readOnly?: boolean
-  width: number
   scale?: boolean
-  toolbarPosition?: 'top' | 'bottom'
+  toolbarPosition?: 'top' | 'bottom' | 'left'
   onAdd?: () => void
+  owner: string
+  url: string
+} & (
+  | {
+      container: HTMLDivElement
+      width?: never
+      height?: never
+    }
+  | {
+      container?: never
+      width: number
+      height: number
+    }
+)
+
+function drawStroke(context: CanvasRenderingContext2D, stroke: Stroke) {
+  const points = getStroke(stroke.points, { size: stroke.lineWidth, simulatePressure: false })
+  context.fillStyle = stroke.color
+  context.beginPath()
+  if (!points.length) {
+    return
+  }
+  context.moveTo(points[0][0], points[0][1])
+  for (let i = 1; i < points.length; i++) {
+    context.lineTo(points[i][0], points[i][1])
+  }
+  context.closePath()
+  context.fill()
 }
 
 export default function Whiteboard(props: WhiteboardProps) {
-  const location = useLocation()
   let canvasRef!: HTMLCanvasElement
+  let currentStrokeCanvas!: HTMLCanvasElement
   let container!: HTMLDivElement
   const ctx = () => canvasRef?.getContext('2d')
   const [mode, setMode] = createSignal<Mode>('read')
 
-  const [strokes, setStrokes] = createStore<Stroke[]>([])
-  const savedStrokes = createAsync(() => loadBoard(location.pathname, props.id || ''))
-  const [status, setStatus] = createSignal<Status>('saved')
-  const save = debounce(async (id: string = props.id || '') => {
-    setStatus('saving')
-    await upsertBoard(location.pathname, id, strokes)
-    revalidate(loadBoard.keyFor(location.pathname, id))
-  }, 3000)
-  createEffect(() => {
-    const saved = savedStrokes()
-    if (saved) {
-      const currentStrokes = unwrap(strokes)
-      if (!saved.every((s) => find(currentStrokes, s))) {
-        setStrokes(saved)
-      }
-      setStatus('saved')
-    } else if (saved === null) {
-      setStrokes([])
-      setStatus('saved')
+  const [width, setWidth] = createSignal(props.width || 100)
+  const [height, setHeight] = createSignal(props.height || 100)
+  const resize = debounce(() => {
+    if (props.container) {
+      setWidth(props.container.clientWidth)
+      setHeight(props.container.clientHeight)
+    }
+  }, 10)
+  onMount(() => {
+    if (props.container) {
+      const resizeObserver = new ResizeObserver((_entries) => resize())
+      resizeObserver.observe(props.container)
     }
   })
 
+  const user = createAsyncStore(() => getUser())
+  const readOnly = () => {
+    if (props.readOnly) return true
+    return user()?.email !== props.owner && user()?.role !== 'ADMIN'
+  }
+
+  const board = () => ({ url: props.url, ownerEmail: props.owner, board: props.name })
+  const strokes = createAsyncStore(() => loadBoard(board()), {
+    initialValue: [],
+  })
+  const useAddStroke = () => useAction(addStroke.with(board()))
+  const useClear = useAction(clearBoard)
+  const useRemoveStroke = useAction(removeStroke)
   const [currentStroke, setCurrentStroke] = createStore<Stroke>({
     color: '#255994',
     lineWidth: 2,
     points: [],
   })
+  const filter =
+    () =>
+    ([b]: [Board]) =>
+      hashObject(b) === hashObject(board())
+  const adding = useSubmissions(addStroke, filter())
+  const removing = useSubmissions(removeStroke, filter())
+  const clearing = useSubmissions(clearBoard, filter())
+  const allStrokes = createMemo(() => {
+    if (clearing.pending) {
+      return []
+    }
+    const beingAdded = Array.from(adding.entries()).map(([_, data]) => data.input[1])
+    const beingRemoved = Array.from(removing.entries()).map(([_, data]) => data.input[1])
+    const seen = new Set<string>()
+    return [...strokes(), ...beingAdded].filter((s) => {
+      const key = JSON.stringify(s.points)
+      if (seen.has(key) || (s.id && beingRemoved.includes(s.id))) {
+        return false
+      }
+      seen.add(key)
+      return true
+    })
+  })
+  const status = () => (adding.pending || removing.pending || clearing.pending ? 'saving' : 'saved')
 
-  const handlePointerMove = (x: number, y: number) => {
+  const handlePointerMove = async (x: number, y: number) => {
     if (mode() === 'draw') {
-      setCurrentStroke('points', currentStroke.points.length, [x, y])
+      x = round(x, 2)
+      y = round(y, 2)
+      const lastPoint = currentStroke.points.at(-1)
+      if (!lastPoint || x !== lastPoint[0] || y !== lastPoint[1]) {
+        setCurrentStroke('points', currentStroke.points.length, [x, y])
+      }
     } else if (mode() === 'erase') {
-      for (let i = 0; i < strokes.length; i++) {
-        for (const p of strokes[i].points) {
+      for (let i = 0; i < strokes().length; i++) {
+        for (const p of strokes()[i].points) {
           const dist = (p[0] - x) ** 2 + (p[1] - y) ** 2
-          if (dist <= 5) {
-            setStrokes(strokes.filter((s, j) => j !== i))
-            setStatus('unsaved')
+          const stroke = strokes()[i]
+          if (dist <= 5 && stroke.id) {
+            await useRemoveStroke(board(), stroke.id)
             return
           }
         }
@@ -122,15 +160,11 @@ export default function Whiteboard(props: WhiteboardProps) {
   createEffect(
     on(mode, () => {
       if (mode() === 'read' && currentStroke.points.length) {
-        setStrokes(strokes.length, cloneDeep(unwrap(currentStroke)))
+        useAddStroke()(cloneDeep(unwrap(currentStroke)))
         setCurrentStroke('points', [])
         ctx()?.closePath()
-        setStatus('unsaved')
       } else if (mode() === 'draw') {
         ctx()?.beginPath()
-      }
-      if (mode() === 'draw') {
-        save.cancel()
       }
     }),
   )
@@ -138,79 +172,25 @@ export default function Whiteboard(props: WhiteboardProps) {
   // Drawing strokes from scratch
   createEffect(
     on(
-      () => strokes.length,
+      () => [allStrokes().length, width(), height()],
       () => {
         const context = ctx()!
-        context.clearRect(0, 0, props.width, props.height)
-        for (const stroke of strokes) {
-          context.beginPath()
-          context.fillStyle = stroke.color
-          context.strokeStyle = stroke.color
-          context.lineWidth = stroke.lineWidth
-          if (stroke.points.length > 3) {
-            context.moveTo(...stroke.points[0])
-            let i
-            for (i = 1; i < stroke.points.length - 2; i++) {
-              const x = (stroke.points[i][0] + stroke.points[i + 1][0]) / 2
-              const y = (stroke.points[i][1] + stroke.points[i + 1][1]) / 2
-              context.quadraticCurveTo(...stroke.points[i], x, y)
-            }
-            context.quadraticCurveTo(...stroke.points[i], ...stroke.points[i + 1])
-          } else {
-            for (const point of stroke.points) {
-              context.lineTo(...point)
-            }
-          }
-          context.stroke()
-          context.closePath()
+        context.clearRect(0, 0, width(), height())
+        for (const stroke of allStrokes()) {
+          drawStroke(context, stroke)
         }
-        context.fillStyle = currentStroke.color
-        context.strokeStyle = currentStroke.color
-        context.lineWidth = currentStroke.lineWidth
       },
-    ),
-  )
-
-  // Saving
-  createEffect(
-    on(
-      () => strokes.length,
-      () => {
-        save(props.id || '')
-      },
-      { defer: true },
-    ),
-  )
-
-  createEffect(
-    on(
-      () => props.id,
-      async () => {
-        // Wait for save before clearing the strokes
-        await save.flush()
-        setStrokes([])
-        setTimeout(save.cancel)
-        revalidate(loadBoard.keyFor(location.pathname, props.id || ''))
-      },
-      { defer: true },
     ),
   )
 
   // Adding points
   createEffect(
     on(
-      () => currentStroke.points.length,
+      () => [currentStroke.points.length, width(), height()],
       () => {
-        if (currentStroke.points.length < 4) {
-          return
-        }
-        const context = ctx()!
-        const lastPoint = (i: number) => currentStroke.points[currentStroke.points.length - i]
-        const x = (lastPoint(2)[0] + lastPoint(1)[0]) / 2
-        const y = (lastPoint(2)[1] + lastPoint(1)[1]) / 2
-        context.moveTo(...lastPoint(3))
-        context.quadraticCurveTo(...lastPoint(2), x, y)
-        context.stroke()
+        const context = currentStrokeCanvas.getContext('2d')!
+        context.clearRect(0, 0, width(), height())
+        drawStroke(context, currentStroke)
       },
     ),
   )
@@ -218,37 +198,35 @@ export default function Whiteboard(props: WhiteboardProps) {
   onMount(() => {
     canvasRef!.oncontextmenu = () => false
   })
-
   const [erasing, setErasing] = createSignal(false)
 
   return (
-    <div class={props.class} style={{ width: `${props.width}px`, height: `${props.height}px` }}>
+    <div class={props.class} style={{ width: `${width()}px`, height: `${height()}px` }}>
       <div
         ref={container!}
         class="relative"
-        style={{ width: `${props.width}px`, height: `${props.height}px` }}
+        style={{ width: `${width()}px`, height: `${height()}px` }}
       >
         <Toolbar
           currentStroke={currentStroke}
+          requestFullScreen={props.requestFullScreen}
           setter={setCurrentStroke}
           status={status()}
           erasing={erasing()}
           setErasing={setErasing}
-          onDelete={() => {
-            setStrokes([])
-          }}
+          onDelete={() => useClear(board())}
           onAdd={props.onAdd}
           position={props.toolbarPosition || 'top'}
         />
         <canvas
-          class="z-10 touch-none select-none"
-          classList={{ 'cursor-crosshair': !props.readOnly }}
+          class="absolute z-20 touch-none select-none"
+          classList={{ 'cursor-crosshair': !readOnly() }}
           ref={canvasRef!}
-          height={props.height}
-          width={props.width}
+          height={height()}
+          width={width()}
           onPointerDown={(event) => {
             event.preventDefault()
-            if (props.readOnly || event.pointerType === 'touch') {
+            if (readOnly() || event.pointerType === 'touch') {
               return
             }
             if (erasing()) {
@@ -291,6 +269,12 @@ export default function Whiteboard(props: WhiteboardProps) {
             setMode('read')
           }}
         />
+        <canvas
+          ref={currentStrokeCanvas}
+          height={height()}
+          width={width()}
+          class="absolute top-0 left-0 z-10"
+        />
       </div>
     </div>
   )
@@ -298,13 +282,14 @@ export default function Whiteboard(props: WhiteboardProps) {
 
 type ToolbarProps = {
   currentStroke: Stroke
+  requestFullScreen?: () => void
   onAdd?: () => void
   onDelete?: () => void
   setter: SetStoreFunction<Stroke>
   status: Status
   erasing: boolean
   setErasing: (nextVal: boolean) => void
-  position: 'top' | 'bottom'
+  position: 'top' | 'bottom' | 'left'
 }
 
 function Toolbar(props: ToolbarProps) {
@@ -317,8 +302,12 @@ function Toolbar(props: ToolbarProps) {
   ]
   return (
     <div
-      class="absolute flex gap-1 p-2"
-      classList={{ 'top-0': props.position === 'top', 'bottom-0': props.position === 'bottom' }}
+      class="absolute flex gap-1 p-2 z-30 print:hidden"
+      classList={{
+        'top-0': props.position === 'top',
+        'bottom-0': props.position === 'bottom',
+        'flex-col': props.position === 'left',
+      }}
     >
       <For each={pens}>
         {(color) => (
@@ -383,7 +372,7 @@ function Toolbar(props: ToolbarProps) {
         class="rounded-lg px-2 py-1 text-2xl z-20"
         onClick={() => {
           if (!document.fullscreenElement) {
-            document.body.requestFullscreen()
+            ;(props.requestFullScreen ?? document.body.requestFullscreen)()
           } else {
             document.exitFullscreen()
           }
@@ -391,12 +380,12 @@ function Toolbar(props: ToolbarProps) {
       >
         <Fa icon={faUpRightAndDownLeftFromCenter} />
       </button>
-      <span class="px-2 py-1 text-2xl z-20">
+      <span class="px-2 py-1 text-2xl z-20 flex flex-row items-center">
         <Show when={props.status === 'unsaved'}>
           <Fa icon={faFloppyDisk} />
         </Show>
         <Show when={props.status === 'saving'}>
-          <Spinner /> Saving...
+          <Spinner /> <span class="text-sm pl-2">Saving...</span>
         </Show>
       </span>
     </div>

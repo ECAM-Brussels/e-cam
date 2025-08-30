@@ -6,7 +6,7 @@ import { prisma } from '~/lib/db'
 const getUsers = query(async () => {
   'use server'
   const user = await getUser()
-  if (!user?.admin) {
+  if (user?.role !== 'ADMIN') {
     throw new Error('Only admins can access user information')
   }
   const users = await prisma.user.findMany()

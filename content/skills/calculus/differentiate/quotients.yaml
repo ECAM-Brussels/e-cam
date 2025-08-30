@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: "Dérivées: règle du quotient"
+courses:
+  - calculus
+  - 5MATH4
+  - PM1C
+  - MATH
+prerequisites:
+  - /skills/calculus/differentiate/basic
+options:
+  streak: 999
+  initialElo: 1200
+body:
+  - type: Differentiate
+    params:
+      subs:
+        n: [2, 3, 4, 5, 6, 7, 8, 9]
+        a: [2, 3, e]
+        b: [2, 3, 4]
+      questions:
+        - \frac{x^{{n}}}{\sin{x}}
+        - \frac{x^{{n}}}{\cos{x}}
+        - \frac{x^{{n}}}{\tan{x}}
+        - \frac{x^{{n}}}{\ln{x}}
+        - \frac{x^{{n}}}{\log_{{b}}{x}}
+        - \frac{{{a}}^{x}}{\sin{x}}
+        - \frac{{{a}}^{x}}{\cos{x}}
+        - \frac{{{a}}^{x}}{\tan{x}}
+        - \frac{{{a}}^{x}}{\ln{x}}
+        - \frac{{{a}}^{x}}{\sqrt{x}}
+        - \frac{{{a}}^{x}}{\log_{{b}}{x}}
+        - \frac{\sqrt{x}}{{{a}}^{x}}
+        - \frac{\sqrt{x}}{\sin{x}}
+        - \frac{\sqrt{x}}{\cos{x}}
+        - \frac{\sqrt{x}}{\tan{x}}
+        - \frac{\sqrt{x}}{\ln{x}}
+        - \frac{\sqrt{x}}{\log_{{b}}{x}}
+        - \frac{\ln{x}}{\sin{x}}
+        - \frac{\ln{x}}{\cos{x}}
+        - \frac{\ln{x}}{\tan{x}}
+        - \frac{\ln{x}}{\sqrt{x}}
+        - \frac{\sin{x}}{\sqrt{x}}
+        - \frac{\sin{x}}{\ln{x}}
+        - \frac{\sin{x}}{\log_{{b}}{x}}
+        - \frac{\cos{x}}{\sqrt{x}}
+        - \frac{\cos{x}}{\ln{x}}
+        - \frac{\cos{x}}{\log_{{b}}{x}}
+        - \frac{\tan{x}}{\sqrt{x}}
+        - \frac{\tan{x}}{\ln{x}}
+        - \frac{\tan{x}}{\log_{{b}}{x}}

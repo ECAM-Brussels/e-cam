@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: "Nombres complexes: module"
+courses:
+  - algebra
+  - PM1C
+  - MATH
+prerequisites:
+  - /skills/geometry/pythagoras
+options:
+  streak: 999
+  initialElo: 800
+body:
+  - type: Modulus
+    params:
+      R: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      Theta:
+        - \frac{\pi}{6}
+        - \frac{\pi}{4}
+        - \frac{\pi}{3}
+        - \frac{\pi}{2}
+        - \pi - \frac{\pi}{6}
+        - \pi - \frac{\pi}{4}
+        - \pi - \frac{\pi}{3}
+        - \pi - \frac{\pi}{2}
+        - \frac{\pi}{6} + \pi
+        - \frac{\pi}{4} + \pi
+        - \frac{\pi}{3} + \pi
+        - \frac{\pi}{2} + \pi
+        - -\frac{\pi}{6}
+        - -\frac{\pi}{4}
+        - -\frac{\pi}{3}
+        - -\frac{\pi}{2}

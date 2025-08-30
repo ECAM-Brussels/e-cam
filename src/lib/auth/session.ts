@@ -1,14 +1,22 @@
-import { action, query, redirect, reload } from '@solidjs/router'
+import { extractFormData } from '../form'
+import { getLoginUrl } from './azure'
+import { action, json, query, redirect } from '@solidjs/router'
 import { useSession } from 'vinxi/http'
-import { loadAssignment } from '~/components/ExerciseSequence.server'
-import { generatePKCE, getUserInfo } from '~/lib/auth/azure'
+import { z } from 'zod'
 import { prisma } from '~/lib/db'
 
+const preferencesSchema = z.object({
+  ecam: z.coerce.boolean().default(false),
+})
+
 type SessionData = {
-  email: string
+  email?: string
+  state?: string
+  codeVerifier?: string
+  preferences?: z.infer<typeof preferencesSchema>
 }
 
-function getSession() {
+export function getSession() {
   'use server'
   return useSession<SessionData>({
     password: import.meta.env.VITE_SESSION_SECRET,
@@ -30,37 +38,15 @@ export const getUser = query(async () => {
   }
 }, 'getUser')
 
-export const startLogin = action(async () => {
-  const { codeVerifier, codeChallenge } = await generatePKCE()
-  sessionStorage.setItem('codeVerifier', codeVerifier)
-  throw redirect(
-    `https://login.microsoftonline.com/${import.meta.env.VITE_AZURE_TENANT_ID}` +
-      `/oauth2/v2.0/authorize?client_id=${import.meta.env.VITE_AZURE_CLIENT_ID}&response_type=code` +
-      `&redirect_uri=${import.meta.env.VITE_AZURE_REDIRECT_URI}&response_mode=query&scope=openid profile email` +
-      `&code_challenge=${codeChallenge}&code_challenge_method=S256`,
-  )
-}, 'startLogin')
-
-export const login = action(async (token: string) => {
+export const saveAuthState = async (state: string, codeVerifier: string) => {
   'use server'
   const session = await getSession()
-  const userInfo = await getUserInfo(token)
-  if (userInfo) {
-    await prisma.user.upsert({
-      where: { email: userInfo.email },
-      update: {},
-      create: {
-        admin: /^[a-zA-Z][a-zA-Z0-9]{2}@/.test(userInfo.email),
-        email: userInfo.email,
-        firstName: userInfo.given_name,
-        lastName: userInfo.family_name,
-      },
-    })
-    await session.update((data: SessionData) => {
-      data.email = userInfo.email
-      return data
-    })
-  }
+  await session.update({ state, codeVerifier })
+}
+
+export const startLogin = action(async () => {
+  'use server'
+  throw redirect(await getLoginUrl())
 })
 
 export const logout = action(async () => {
@@ -68,3 +54,22 @@ export const logout = action(async () => {
   const session = await getSession()
   await session.clear()
 })
+
+export const getPreferences = query(async () => {
+  'use server'
+  const session = await getSession()
+  const preferences = preferencesSchema.parse(session.data.preferences ?? {})
+  return preferences
+}, 'getPreferences')
+
+export const setPreferences = action(
+  async (payload: Partial<z.infer<typeof preferencesSchema>>, form: FormData) => {
+    'use server'
+    const session = await getSession()
+    const data = extractFormData(form)
+    await session.update({
+      preferences: preferencesSchema.parse({ ...session.data.preferences, ...payload, ...data }),
+    })
+    return json(null, { revalidate: getPreferences.key })
+  },
+)

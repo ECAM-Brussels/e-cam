@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: "Système de 3 équations à 3 inconnues"
+courses:
+  - algebra
+  - PM1C
+  - MATH
+prerequisites:
+  - /skills/algebra/equations/simultaneous/2-vars
+options:
+  streak: 999
+  initialElo: 1600
+body:
+  - type: System
+    params:
+      L: [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
+      U: [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5]
+      X: [-9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      geometricProbability: 0.5

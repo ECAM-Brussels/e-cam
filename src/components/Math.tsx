@@ -2,7 +2,8 @@ import katex from 'katex'
 import 'katex/dist/katex.min.css'
 import 'mathlive'
 import type { MathfieldElement } from 'mathlive'
-import { ComponentProps, Show, splitProps } from 'solid-js'
+import { ComponentProps, createEffect, createSignal, on, Show, splitProps } from 'solid-js'
+import { useExerciseContext } from '~/lib/exercises/base'
 
 declare module 'solid-js' {
   namespace JSX {
@@ -31,10 +32,18 @@ type MathProps = ComponentProps<'math-field'> & {
 }
 
 export default function Math(props: MathProps) {
+  const [value, setValue] = createSignal(props.value)
+  createEffect(() => setValue(props.value))
+
+  const exercise = useExerciseContext()
+  const disabled = () => exercise?.readOnly ?? props.disabled
+  let field!: HTMLInputElement
+
   const html = () =>
-    katex.renderToString(props.value || '', {
+    katex.renderToString(value() || '', {
       displayMode: props.displayMode,
       strict: false,
+      output: 'html',
       macros: {
         '\\placeholder': '',
         '\\dd': '\\mathrm{d}',
@@ -42,15 +51,35 @@ export default function Math(props: MathProps) {
         '\\imaginaryI': 'i',
       },
     })
-  const [listeners, others] = splitProps(props, ['onInput', 'onBlur'])
+  const [extra, others] = splitProps(props, ['onInput', 'onBlur', 'name'])
   return (
-    <Show when={props.editable} fallback={<span innerHTML={html()} class={props.class} />}>
+    <Show
+      when={props.editable && !disabled()}
+      fallback={
+        <span
+          innerHTML={html()}
+          class={props.class}
+          classList={{ 'border px-2': !props.class && props.name !== undefined }}
+        />
+      }
+    >
       <math-field
-        className={props.class}
+        className={props.class ?? 'border min-w-24 py-2'}
         {...others}
-        oninput={listeners.onInput}
-        onblur={listeners.onBlur}
+        oninput={(event: MathInputEvent) => {
+          extra.onInput?.(event)
+          setValue(event.target.value)
+        }}
+        onblur={extra.onBlur}
+        onkeydown={(event: KeyboardEvent) => {
+          if (props.name && event.key === 'Enter') {
+            field.closest('form')?.requestSubmit()
+          }
+        }}
       />
+      <Show when={props.name}>
+        <input type="hidden" name={props.name} value={value() || ''} ref={field} />
+      </Show>
     </Show>
   )
 }

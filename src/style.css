@@ -1,4 +1,4 @@
-@import "@fontsource/fira-sans/300.css";
+@import '@fontsource/fira-sans/300.css';
 
 @tailwind base;
 @tailwind components;
@@ -6,7 +6,7 @@
 
 @layer base {
   html {
-    font-family: "Fira Sans", sans-serif;
+    font-family: 'Fira Sans', sans-serif;
   }
   math-field::part(menu-toggle) {
     display: none;

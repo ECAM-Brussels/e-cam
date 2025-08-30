@@ -1,6 +1,8 @@
+from typing import Optional
 import pytest
 
 from symapi import schema
+
 
 @pytest.mark.parametrize(
     "expr,expected",
@@ -62,7 +64,7 @@ def test_expand(expr: str, expected: str):
         ("e", "\\exp(1)", True),
         ("\\pi", "2*\\arcsin(1)", True),
         ("x^2 - 4x", "x(x - 4)", True),
-        ('1 + i', '\\sqrt{2} e^{i \\frac{\\pi}{4}}', True),
+        ("1 + i", "\\sqrt{2} e^{i \\frac{\\pi}{4}}", True),
     ],
 )
 def test_is_equal(expr: str, attempt: str, expected: bool):
@@ -82,14 +84,62 @@ def test_is_equal(expr: str, attempt: str, expected: bool):
         "isEqual": expected,
     }
 
+
+@pytest.mark.parametrize(
+    "expr,strict,expected",
+    [
+        ("3", False, True),
+        ("3", True, False),
+        ("i", False, True),
+        ("i", True, False),
+        ("4i", True, False),
+        ("4i", False, True),
+        ("3 + 0i", False, True),
+        ("3 i^2 + 0i", False, False),
+        ("3 i^4 + 0i", False, False),
+        ("3 + i^3", False, False),
+        ("0 + 0i", False, True),
+        ("0 - i", False, True),
+        ("3 + 4i", False, True),
+        ("-4 - i", False, True),
+        ("-14 - 12i", False, True),
+        ("-14 + 12i", False, True),
+        ("14 - 12i", False, True),
+        ("-14 - 12i", False, True),
+        ("1 + i", False, True),
+        ("3 e^{i \\pi}", False, False),
+        ("2 (\\cos{\\pi} + i \\sin{\\pi})", False, False),
+    ],
+)
+def test_is_rectangular(expr: str, strict: bool, expected: bool):
+    result = schema.execute_sync(
+        """
+            query ($expr: Math!, $strict: Boolean!) {
+                expression(expr: $expr) {
+                    isComplexRectangular(strict: $strict)
+                }
+            }
+        """,
+        variable_values={"expr": expr, "strict": strict},
+    )
+    assert result.data is not None
+    assert result.data["expression"] == {
+        "isComplexRectangular": expected,
+    }
+
+
 @pytest.mark.parametrize(
     "expr,expected",
     [
-        ('\\frac {22} {7}', True),
-        ('3 e^{i \\frac{\\pi} 4}', True),
-        ('3 (\\cos \\frac{\\pi}{3} + i \\sin \\frac{\\pi}{3})', True),
-        ('3 (\\cos \\frac{\\pi}{3} + i \\cos \\frac{\\pi}{3})', False),
-        ('2 + 3i', False),
+        ("\\frac {22} {7}", False),
+        ("3", False),
+        ("-3", False),
+        ("\\frac {22} {7} (\\cos{0} + i \\sin{0})", True),
+        ("3 (\\cos{0} + i \\sin{0})", True),
+        ("3 e^{i \\frac{\\pi} 4}", True),
+        ("3 (\\cos \\frac{\\pi}{3} + i \\sin \\frac{\\pi}{3})", True),
+        ("3 (\\cos \\frac{\\pi}{3} + i \\cos \\frac{\\pi}{3})", False),
+        ("2 + 3i", False),
     ],
 )
 def test_is_polar(expr: str, expected: bool):
@@ -118,7 +168,8 @@ def test_is_polar(expr: str, expected: bool):
         ("2x + 2", False),
         ("(2x + 4)(x + 1)", False),
         ("x^2 + 1", True),
-        ('-x (x + 1)', True)
+        ("-x (x + 1)", True),
+        ("x^2 - 14x + 49", False),
     ],
 )
 def test_is_factored(expr: str, expected: bool):

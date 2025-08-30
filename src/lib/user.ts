@@ -1,15 +1,21 @@
 import { getUser } from './auth/session'
 import { prisma } from './db'
+import { query, redirect } from '@solidjs/router'
 
-export const getUserInfo = async (email: string) => {
+export const getUserInfo = query(async (email?: string) => {
   'use server'
-  const record = await prisma.user.findFirst({ where: { email } })
-  const user = await getUser()
-  if (!user) {
-    throw new Error('You need to be logged in')
+  if (!email) {
+    return getUser()
   }
-  if (!user.admin && user.email != email) {
+  const [record, user] = await Promise.all([
+    prisma.user.findUnique({ where: { email } }),
+    getUser(),
+  ])
+  if (!user) {
+    throw redirect('/auth/login')
+  }
+  if (user.role !== 'ADMIN' && user.email != email) {
     throw new Error('You do not have the rights to see this')
   }
   return record
-}
+}, 'getUserInfo')

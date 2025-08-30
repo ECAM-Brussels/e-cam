@@ -1,127 +1,139 @@
-import { query, createAsync, revalidate, useLocation } from '@solidjs/router'
-import 'reveal.js/dist/reveal.css'
-import { createEffect, For, onCleanup, onMount, type JSXElement } from 'solid-js'
+import type { IconDefinition } from '@fortawesome/fontawesome-common-types'
+import {
+  faBlackboard,
+  faChevronDown,
+  faChevronLeft,
+  faChevronRight,
+  faChevronUp,
+  faEyeSlash,
+} from '@fortawesome/free-solid-svg-icons'
+import { A, createAsync } from '@solidjs/router'
+import { createSignal, onMount, Show, type JSXElement } from 'solid-js'
 import Breadcrumbs from '~/components/Breadcrumbs'
+import Fa from '~/components/Fa'
 import Whiteboard from '~/components/Whiteboard'
-import { getUser } from '~/lib/auth/session'
-import { prisma } from '~/lib/db'
+import { getBoardCount } from '~/lib/slideshow'
 
 type SlideshowProps = {
-  children: JSXElement
-  boardName?: string
-}
-
-export const getBoardCount = query(async (url: string, boardName: string) => {
-  'use server'
-  const boards = await prisma.board.findMany({
-    where: { url, id: { startsWith: `slide-${boardName}-` } },
-    select: { id: true },
-  })
-  const result: { [key: string]: number } = {}
-  for (const board of boards) {
-    const id = board.id.split('-').at(-2) as string
-    result[id] = id in result ? result[id] + 1 : 1
-  }
-  return result
-}, 'getBoards')
-
-async function addBoard(url: string, boardName: string, i: number, j: number) {
-  'use server'
-  const board = await prisma.board.create({
-    data: { url, id: `slide-${boardName}-${i}-${j}`, body: '[]' },
-  })
-}
-
-function getSlides(props: SlideshowProps) {
-  const results = []
-  const { children } = props
-  if (Array.isArray(children)) {
-    for (let i = 0; i < children.length; i++) {
-      results[i] = (j: number) => (j === 0 ? children[i] : (props.children as HTMLElement[])[i])
-    }
-  } else {
-    results[0] = (j: number) => (j === 0 ? children : props.children)
-  }
-  return results
+  slides: JSXElement[]
+  board: string
+  hIndex: number
+  vIndex: number
+  url: string
+  showBoard?: boolean
+  onShowBoardChange?: (newVal: boolean) => void
 }
 
 export default function Slideshow(props: SlideshowProps) {
-  const location = useLocation()
-  const user = createAsync(() => getUser())
-  const slides = getSlides(props)
+  let container!: HTMLDivElement
 
-  let deck: InstanceType<typeof import('reveal.js')>
-
-  const count = createAsync(() => getBoardCount(location.pathname, props.boardName || ''))
-  createEffect(() => {
-    if (count() && deck) {
-      deck.sync()
-    }
+  const [scale, setScale] = createSignal(1)
+  const [translation, setTranslation] = createSignal('0, 0')
+  onMount(() => {
+    const observer = new ResizeObserver((_entries) => {
+      const scaleX = container.clientWidth / 1920
+      const scaleY = container.clientHeight / 1080
+      const scale = Math.min(scaleX, scaleY)
+      setScale(scale)
+      const x = (container.clientWidth - 1920 * scale) / 2
+      const y = (container.clientHeight - 1080 * scale) / 2
+      setTranslation(`${x}px, ${y}px`)
+    })
+    observer.observe(container)
   })
 
-  onMount(async () => {
-    const Reveal = (await import('reveal.js')).default
-    deck = new Reveal({
-      center: false,
-      hash: true,
-      height: 1080,
-      slideNumber: true,
-      touch: false,
-      transition: 'none',
-      width: 1920,
-    })
-    deck.initialize()
-    deck.addKeyBinding(40, async () => {
-      const { h, v } = deck.getIndices()
-      if (v === (count()?.[String(h)] || 1) - 1 && user()?.admin) {
-        await addBoard(location.pathname, props.boardName || '', h, v + 1)
-        revalidate(getBoardCount.keyFor(location.pathname, props.boardName || ''))
-      } else {
-        deck.down()
+  return (
+    <div class="w-screen h-screen" ref={container!}>
+      <div
+        class="bg-white w-[1920px] h-[1080px] relative origin-top-left overflow-hidden"
+        style={{ transform: `scale(${scale()}) translate(${translation()})` }}
+      >
+        {props.slides[props.hIndex]}
+        <Show when={props.showBoard}>
+          <Whiteboard
+            class="absolute top-0 z-10"
+            width={1920}
+            height={1080}
+            toolbarPosition="bottom"
+            owner="ngy@ecam.be"
+            url={props.url}
+            name={`${props.board}-${props.hIndex}-${props.vIndex}`}
+            scale
+          />
+        </Show>
+        <Remote {...props} />
+      </div>
+    </div>
+  )
+}
+
+function Remote(props: SlideshowProps) {
+  return (
+    <div class="absolute bottom-4 right-4 text-4xl z-20 flex gap-4 items-center print:hidden">
+      <Breadcrumbs class="text-sm mr-8" />
+      <Arrow {...props} dir="left" />
+      <div class="flex flex-col">
+        <Arrow {...props} dir="up" />
+        <button
+          onClick={() => props.onShowBoardChange?.(!props.showBoard)}
+          title={props.showBoard ? 'Hide board' : 'Show board'}
+        >
+          <Fa icon={props.showBoard ? faEyeSlash : faBlackboard} />
+        </button>
+        <Arrow {...props} dir="down" />
+      </div>
+      <Arrow {...props} dir="right" />
+    </div>
+  )
+}
+
+const arrows = {
+  up: [faChevronUp, (i, j) => [i, j - 1], 'ArrowUp'],
+  down: [faChevronDown, (i, j) => [i, j + 1], 'ArrowDown'],
+  left: [faChevronLeft, (i, _j) => [i - 1, 1], 'ArrowLeft'],
+  right: [faChevronRight, (i, _j) => [i + 1, 1], 'ArrowRight'],
+} as const satisfies {
+  [dir: string]: [IconDefinition, (i: number, j: number) => [number, number], string]
+}
+
+function Arrow(props: SlideshowProps & { dir: keyof typeof arrows }) {
+  const boardCount = createAsync(() =>
+    getBoardCount(props.url, 'ngy@ecam.be', props.board, props.hIndex),
+  )
+  const icon = () => arrows[props.dir][0]
+  const link = () => {
+    const [i, j] = arrows[props.dir][1](props.hIndex, props.vIndex)
+    const pathname =
+      i >= 1 &&
+      j >= 1 &&
+      i < props.slides.length &&
+      boardCount() !== undefined &&
+      j <= boardCount()! + 1
+        ? `${props.url}/${i}/${j}`
+        : null
+    if (pathname === null) return null
+    return `${pathname}${props.board ? `?boardName=${props.board}` : ''}`
+  }
+
+  const [arrow, setArrow] = createSignal<HTMLAnchorElement | undefined>(undefined)
+  onMount(() => {
+    window.addEventListener('keydown', (event) => {
+      const arr = arrow()
+      if (event.key === arrows[props.dir][2] && arr && link()) {
+        arr.click()
       }
     })
   })
 
-  onCleanup(async () => {
-    if (deck) {
-      deck.destroy()
-    }
-  })
-
   return (
-    <div class="reveal bg-white">
-      <div class="slides">
-        <For each={slides}>
-          {(child, i) => (
-            <section>
-              <For each={[...Array((count() || {})[String(i())] || 1).keys()]}>
-                {(j) => (
-                  <section class="relative h-full">
-                    {child(j)}
-                    <Whiteboard
-                      id={`slide-${props.boardName || ''}-${i()}-${j}`}
-                      class="absolute top-0 left-0"
-                      onAdd={async () => {
-                        const { h, v } = deck.getIndices()
-                        if (v === (count()?.[String(h)] || 1) - 1 && user()?.admin) {
-                          await addBoard(location.pathname, props.boardName || '', h, v + 1)
-                          revalidate(getBoardCount.keyFor(location.pathname, props.boardName || ''))
-                        }
-                      }}
-                      width={1920}
-                      height={1080}
-                      readOnly={!user()?.admin}
-                      scale
-                      toolbarPosition="bottom"
-                    />
-                    <Breadcrumbs class="absolute bottom-0 w-full" />
-                  </section>
-                )}
-              </For>
-            </section>
-          )}
-        </For>
-      </div>
+    <div>
+      <Show when={link()} fallback={<Fa icon={icon()} class="text-gray-200" />}>
+        {(link) => (
+          <A href={link()} noScroll ref={setArrow}>
+            <Fa icon={icon()} />
+          </A>
+        )}
+      </Show>
     </div>
   )
 }

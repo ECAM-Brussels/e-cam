@@ -1,14 +1,18 @@
+#!/usr/bin/env python3
+
 import json
 import panflute as pf
 import yaml
+
 
 def convert(message: dict):
     msg_type = "in" if "in" in message else "out"
     msg = message[msg_type]
     return {
-      "incoming": True if msg_type == "in" else False,
-      "text": msg,
+        "incoming": True if msg_type == "in" else False,
+        "text": msg,
     }
+
 
 def conversation(el: pf.Element, doc: pf.Doc):
     del doc
