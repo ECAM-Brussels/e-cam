@@ -49,10 +49,14 @@ export const startLogin = action(async () => {
   throw redirect(await getLoginUrl())
 })
 
-export const logout = action(async () => {
+export const logout = action(async (form: FormData) => {
   'use server'
+  const data = extractFormData(form)
   const session = await getSession()
   await session.clear()
+  if (data.currentUrl) {
+    throw redirect(String(data.currentUrl))
+  }
 })
 
 export const getPreferences = query(async () => {

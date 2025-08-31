@@ -33,6 +33,7 @@ const Logo = () => (
 
 function UserInfo(props: { onBurgerClick: () => void }) {
   const user = createAsync(() => getUser())
+  const location = useLocation()
   return (
     <ul class="flex items-center">
       <Show when={user()} fallback={<NavbarItem href="/auth/login">Se connecter</NavbarItem>}>
@@ -41,6 +42,7 @@ function UserInfo(props: { onBurgerClick: () => void }) {
             <NavbarItem href={`/users/${user().email}`}>{user().firstName}</NavbarItem>
             <NavbarItem>
               <form action={logout} method="post">
+                <input type="hidden" name="currentUrl" value={location.pathname} />
                 <button type="submit">
                   <Fa icon={faRightFromBracket} /> Se déconnecter
                 </button>
@@ -103,6 +105,7 @@ function NavbarItem(props: NavbarItemProps) {
 function Drawer(props: { visible?: boolean; onOutsideClick?: () => void }) {
   const user = createAsync(() => getUser())
   const courses = createAsync(() => getCourses({ where: { url: { not: '' } } }))
+  const location = useLocation()
   return (
     <Portal>
       <div
@@ -136,6 +139,7 @@ function Drawer(props: { visible?: boolean; onOutsideClick?: () => void }) {
               action={logout}
               method="post"
             >
+              <input type="hidden" name="currentUrl" value={location.pathname} />
               <button>Se déconnecter</button>
             </form>
           </Show>
