@@ -53,7 +53,7 @@ export const logout = action(async (form: FormData) => {
   'use server'
   const data = extractFormData(form)
   const session = await getSession()
-  await session.clear()
+  await session.update({ email: undefined })
   if (data.currentUrl) {
     throw redirect(String(data.currentUrl))
   }
