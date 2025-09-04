@@ -13,7 +13,7 @@ def slideshow(el: pf.Element, doc: pf.Doc):
         classes = list(map(lambda c: c.replace("--", "/"), el.classes))
         el.classes = []
         elements += [
-            pf.RawBlock('<Slide class="' + " ".join(classes) + '" title={<>'),
+            pf.RawBlock('() => <Slide class="' + " ".join(classes) + '" title={<>'),
             el,
             pf.RawBlock("</>}>"),
         ]

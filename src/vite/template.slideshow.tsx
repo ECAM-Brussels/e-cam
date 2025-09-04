@@ -36,7 +36,7 @@ export const route = {
 } satisfies RouteDefinition
 
 // @ts-ignore
-const children = () => [$body$]
+const children = createMemo(() => [$body$])
 
 export default function () {
   const params = useParams()
