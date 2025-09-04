@@ -1,8 +1,18 @@
-import { getBoardCount } from './slideshow'
-import { query, action, reload, redirect } from '@solidjs/router'
+import {
+  query,
+  action,
+  reload,
+  redirect,
+  useSubmissions,
+  createAsyncStore,
+  useAction,
+} from '@solidjs/router'
+import { createMemo } from 'solid-js'
 import { z } from 'zod'
 import { getUser } from '~/lib/auth/session'
 import { prisma } from '~/lib/db'
+import { hashObject } from '~/lib/helpers'
+import { getBoardCount } from '~/lib/slideshow'
 
 async function check<T extends { ownerEmail: string }>(data: T) {
   'use server'
@@ -62,3 +72,52 @@ export const clearBoard = action(async (board: Board) => {
   await prisma.stroke.deleteMany({ where })
   return reload({ revalidate: loadBoard.keyFor(where) })
 })
+
+export default function useBoard(board: () => Board) {
+  const filter =
+    () =>
+    ([b]: [Board]) =>
+      hashObject(b) === hashObject(board())
+  const adding = useSubmissions(addStroke, filter())
+  const removing = useSubmissions(removeStroke, filter())
+  const clearing = useSubmissions(clearBoard, filter())
+  const strokes = createAsyncStore(() => loadBoard(board()), { initialValue: [] })
+  const allStrokes = createMemo(() => {
+    if (clearing.pending) {
+      return []
+    }
+    const beingAdded = Array.from(adding.entries()).map(([_, data]) => data.input[1])
+    const beingRemoved = Array.from(removing.entries()).map(([_, data]) => data.input[1])
+    const seen = new Set<string>()
+    return [...strokes(), ...beingAdded].filter((s) => {
+      const key = JSON.stringify(s.points)
+      if (seen.has(key) || (s.id && beingRemoved.includes(s.id))) {
+        return false
+      }
+      seen.add(key)
+      return true
+    })
+  })
+  const addStrokeMethod = useAction(addStroke)
+  const removeStrokeMethod = useAction(removeStroke)
+  const clearBoardMethod = useAction(clearBoard)
+  return {
+    get strokes() {
+      return allStrokes()
+    },
+    get status() {
+      return adding.pending || removing.pending || clearing.pending
+        ? ('saving' as const)
+        : ('saved' as const)
+    },
+    addStroke(stroke: Stroke) {
+      return addStrokeMethod(board(), stroke)
+    },
+    removeStroke(id: string) {
+      return removeStrokeMethod(board(), id)
+    },
+    clearBoard() {
+      return clearBoardMethod(board())
+    },
+  }
+}

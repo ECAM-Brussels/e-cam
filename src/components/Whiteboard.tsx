@@ -7,16 +7,16 @@ import {
   faPlus,
   faUpRightAndDownLeftFromCenter,
 } from '@fortawesome/free-solid-svg-icons'
-import { useAction, useSubmissions, createAsyncStore } from '@solidjs/router'
+import { createAsyncStore } from '@solidjs/router'
 import { cloneDeep, debounce } from 'lodash-es'
 import { getStroke } from 'perfect-freehand'
-import { createEffect, createMemo, createSignal, For, on, onMount, Show } from 'solid-js'
+import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
 import { createStore, SetStoreFunction, unwrap } from 'solid-js/store'
 import Fa from '~/components/Fa'
 import Spinner from '~/components/Spinner'
 import { getUser } from '~/lib/auth/session'
-import { addStroke, Board, clearBoard, loadBoard, removeStroke, type Stroke } from '~/lib/board'
-import { hashObject, round } from '~/lib/helpers'
+import useBoard, { type Stroke } from '~/lib/board'
+import { round } from '~/lib/helpers'
 
 type Mode = 'draw' | 'erase' | 'read'
 type Status = 'unsaved' | 'saving' | 'saved'
@@ -87,42 +87,12 @@ export default function Whiteboard(props: WhiteboardProps) {
     return user()?.email !== props.owner && user()?.role !== 'ADMIN'
   }
 
-  const board = () => ({ url: props.url, ownerEmail: props.owner, board: props.name })
-  const strokes = createAsyncStore(() => loadBoard(board()), {
-    initialValue: [],
-  })
-  const useAddStroke = () => useAction(addStroke.with(board()))
-  const useClear = useAction(clearBoard)
-  const useRemoveStroke = useAction(removeStroke)
+  const board = useBoard(() => ({ url: props.url, ownerEmail: props.owner, board: props.name }))
   const [currentStroke, setCurrentStroke] = createStore<Stroke>({
     color: '#255994',
     lineWidth: 2,
     points: [],
   })
-  const filter =
-    () =>
-    ([b]: [Board]) =>
-      hashObject(b) === hashObject(board())
-  const adding = useSubmissions(addStroke, filter())
-  const removing = useSubmissions(removeStroke, filter())
-  const clearing = useSubmissions(clearBoard, filter())
-  const allStrokes = createMemo(() => {
-    if (clearing.pending) {
-      return []
-    }
-    const beingAdded = Array.from(adding.entries()).map(([_, data]) => data.input[1])
-    const beingRemoved = Array.from(removing.entries()).map(([_, data]) => data.input[1])
-    const seen = new Set<string>()
-    return [...strokes(), ...beingAdded].filter((s) => {
-      const key = JSON.stringify(s.points)
-      if (seen.has(key) || (s.id && beingRemoved.includes(s.id))) {
-        return false
-      }
-      seen.add(key)
-      return true
-    })
-  })
-  const status = () => (adding.pending || removing.pending || clearing.pending ? 'saving' : 'saved')
 
   const handlePointerMove = async (x: number, y: number) => {
     if (mode() === 'draw') {
@@ -133,12 +103,12 @@ export default function Whiteboard(props: WhiteboardProps) {
         setCurrentStroke('points', currentStroke.points.length, [x, y])
       }
     } else if (mode() === 'erase') {
-      for (let i = 0; i < strokes().length; i++) {
-        for (const p of strokes()[i].points) {
+      for (let i = 0; i < board.strokes.length; i++) {
+        for (const p of board.strokes[i].points) {
           const dist = (p[0] - x) ** 2 + (p[1] - y) ** 2
-          const stroke = strokes()[i]
+          const stroke = board.strokes[i]
           if (dist <= 5 && stroke.id) {
-            await useRemoveStroke(board(), stroke.id)
+            await board.removeStroke(stroke.id)
             return
           }
         }
@@ -160,7 +130,7 @@ export default function Whiteboard(props: WhiteboardProps) {
   createEffect(
     on(mode, () => {
       if (mode() === 'read' && currentStroke.points.length) {
-        useAddStroke()(cloneDeep(unwrap(currentStroke)))
+        board.addStroke(cloneDeep(unwrap(currentStroke)))
         setCurrentStroke('points', [])
         ctx()?.closePath()
       } else if (mode() === 'draw') {
@@ -172,11 +142,11 @@ export default function Whiteboard(props: WhiteboardProps) {
   // Drawing strokes from scratch
   createEffect(
     on(
-      () => [allStrokes().length, width(), height()],
+      () => [board.strokes.length, width(), height()],
       () => {
         const context = ctx()!
         context.clearRect(0, 0, width(), height())
-        for (const stroke of allStrokes()) {
+        for (const stroke of board.strokes) {
           drawStroke(context, stroke)
         }
       },
@@ -211,10 +181,10 @@ export default function Whiteboard(props: WhiteboardProps) {
           currentStroke={currentStroke}
           requestFullScreen={props.requestFullScreen}
           setter={setCurrentStroke}
-          status={status()}
+          status={board.status}
           erasing={erasing()}
           setErasing={setErasing}
-          onDelete={() => useClear(board())}
+          onDelete={() => board.clearBoard()}
           onAdd={props.onAdd}
           position={props.toolbarPosition || 'top'}
         />
