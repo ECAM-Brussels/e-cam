@@ -5,6 +5,9 @@ import { defineConfig } from '@solidjs/start/config'
 
 export default defineConfig({
   vite: {
+    build: {
+      target: 'esnext',
+    },
     plugins: [pandocPlugin(), assignmentPlugin(), graphqlPlugin()],
     server: {
       watch: {
