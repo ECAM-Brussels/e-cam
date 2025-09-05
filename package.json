@@ -6,7 +6,7 @@
     "dev": "prisma migrate dev && concurrently 'poetry run fastapi dev symapi' 'npm run codegen && vinxi dev'",
     "postinstall": "poetry install",
     "reset": "prisma migrate reset",
-    "build": "vinxi build",
+    "build": "NODE_OPTIONS='--max-old-space-size=4096' vinxi build",
     "start": "vinxi start",
     "test": "vitest"
   },
