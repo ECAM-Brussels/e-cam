@@ -108,7 +108,7 @@ le rhythme y est un peu plus lent.
 
 # Cercle trigonométrique {.w-1--2}
 
-<Geogebra id="yyufnmy9" width={1000} heigth={850} />
+<Geogebra id="yyufnmy9" width={1000} height={850} />
 
 - **Cercle trigonométrique**: rayon $1$ centré à l'origine.
 - $\alpha$: angle de $AM$ avec l'axe $O x$,

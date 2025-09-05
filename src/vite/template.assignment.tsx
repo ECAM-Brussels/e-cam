@@ -11,7 +11,6 @@ import {
   getExercise,
   getPaginationInfo,
 } from '~/lib/exercises/assignment'
-import { optionsSchema } from '~/lib/exercises/schemas'
 import { getUserInfo } from '~/lib/user'
 
 const getOriginalAssignment = query((url?: string) => {

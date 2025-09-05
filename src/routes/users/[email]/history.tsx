@@ -102,7 +102,12 @@ export default function () {
                   header: 'Gain',
                   accessorKey: 'gain',
                   cell: (info) => (
-                    <Show when={info.row.original.gain}>
+                    <Show
+                      when={info.row.original.gain}
+                      fallback={
+                        <div class="text-center rounded font-bold bg-gray-200 text-gray-400">0</div>
+                      }
+                    >
                       {(gain) => (
                         <div
                           class="text-center rounded font-bold"

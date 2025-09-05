@@ -62,11 +62,10 @@ export default function () {
           </For>
         </form>
         <Graph
-          class="min-h-96 w-full h-[800px]"
+          class="min-h-96 w-full h-[2000px]"
           groups={grouping[groupBy()].groups}
           query={query}
         />
-        <AssignmentTable query={query} search />
       </section>
     </Page>
   )
