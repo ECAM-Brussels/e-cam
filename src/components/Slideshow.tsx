@@ -49,7 +49,7 @@ export default function Slideshow(props: SlideshowProps) {
         class="bg-white w-[1920px] h-[1080px] relative origin-top-left overflow-hidden"
         style={{ transform: `scale(${scale()}) translate(${translation()})` }}
       >
-        <Dynamic component={props.slides[props.hIndex]} />
+        <Dynamic component={props.slides[props.hIndex - 1]} />
         <Show when={props.showBoard}>
           <Whiteboard
             class="absolute top-0 z-10"
@@ -107,7 +107,7 @@ function Arrow(props: SlideshowProps & { dir: keyof typeof arrows }) {
     const pathname =
       i >= 1 &&
       j >= 1 &&
-      i < props.slides.length &&
+      i <= props.slides.length &&
       boardCount() !== undefined &&
       j <= boardCount()! + 1
         ? `${props.url}/${i}/${j}`
