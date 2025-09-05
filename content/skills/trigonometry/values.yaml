@@ -7,6 +7,7 @@ courses:
   - MATH
 options:
   streak: 999
+  initialElo: 800
 body:
   - type: Calculate
     params:
