@@ -14,7 +14,7 @@ if (isServer) {
   const { spawn } = await import('child_process')
   execPython = (code: string, test: string) => {
     return new Promise(async (resolve, reject) => {
-      const process = spawn('python', ['-c', `${code}\nprint(${test})`])
+      const process = spawn('python3', ['-c', `${code}\nprint(${test})`])
       let out = { stdout: '', stderr: '' }
       for (const key of ['stdout', 'stderr'] as const) {
         process[key].on('data', (data) => {
