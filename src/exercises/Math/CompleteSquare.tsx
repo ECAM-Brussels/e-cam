@@ -31,6 +31,7 @@ const { Component, schema } = createExerciseType({
     z.string().nonempty().array(),
   ]),
   mark: async (question, attempt) => {
+    'use server'
     const data = await request(
       graphql(`
         query CheckSquare($expr: Math!, $attempt: Math!) {
