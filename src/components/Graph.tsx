@@ -11,13 +11,16 @@ export default function Graph(props: {
   groups?: string[]
   rankDir?: string
   currentNode?: string
+  userEmail?: string
 }) {
   let container!: HTMLDivElement
   const [cy, setCy] = createSignal<Core | null>(null)
   const navigate = useNavigate()
   const preload = usePreloadRoute()
   const query = () => (typeof props.query === 'string' ? JSON.parse(props.query) : props.query)
-  const elements = createAsync(() => getAssignmentGraph(query(), props.groups))
+  const elements = createAsync(() => getAssignmentGraph(query(), props.groups, props.userEmail), {
+    initialValue: [],
+  })
   const redraw = () => {
     if (cy() && elements()) {
       cy()?.resize()

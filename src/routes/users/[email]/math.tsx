@@ -2,7 +2,6 @@ import UserTabs from './_tabs'
 import { action, createAsyncStore, json, type RouteDefinition, useParams } from '@solidjs/router'
 import { For } from 'solid-js'
 import { z } from 'zod'
-import AssignmentTable from '~/components/AssignmentTable'
 import Graph from '~/components/Graph'
 import Page from '~/components/Page'
 import { getUser } from '~/lib/auth/session'
@@ -62,6 +61,7 @@ export default function () {
           </For>
         </form>
         <Graph
+          userEmail={user()?.email}
           class="min-h-96 w-full h-[2000px]"
           groups={grouping[groupBy()].groups}
           query={query}

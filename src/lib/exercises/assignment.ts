@@ -34,6 +34,7 @@ import { schema as UnitVectorSchema } from '~/exercises/Math/UnitVector'
 import { schema as VectorAngleSchema } from '~/exercises/Math/VectorAngle'
 import { schema as MultipleChoiceSchema } from '~/exercises/MultipleChoice'
 import { hashObject } from '~/lib/helpers'
+import { getUserInfo } from '~/lib/user'
 import { registerAssignment } from '~/vite/assignments'
 
 export const exercises = {
@@ -314,9 +315,13 @@ export const getAssignmentGraph = query(
   async (
     where: Prisma.AssignmentFindManyArgs['where'] = {},
     courses: string[] = [],
+    userEmail?: string,
   ): Promise<ElementDefinition[]> => {
     'use server'
-    const user = await getUser()
+    let user = await getUser()
+    if (user && userEmail && user.role !== 'STUDENT') {
+      user = await getUserInfo(userEmail)
+    }
     const groups = (
       await prisma.course.findMany({
         select: { code: true, title: true },
