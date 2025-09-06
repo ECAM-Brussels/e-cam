@@ -3,6 +3,7 @@ import { clientOnly } from '@solidjs/start'
 import { createMemo, lazy } from 'solid-js'
 import { z } from 'zod'
 import MetaProvider from '~/components/MetaProvider'
+import { getUser } from '~/lib/auth/session'
 import { loadBoard } from '~/lib/board'
 import { getBoardCount } from '~/lib/slideshow'
 
@@ -24,12 +25,14 @@ const index = z.coerce.number().default(1)
 export const route = {
   async preload({ location, params }) {
     const u = url(location.pathname, [params.board, params.slide])
+    const board = location.query.boardName ?? ''
     await Promise.all([
+      getUser(),
       getBoardCount(u, 'ngy@ecam.be', '', index.parse(params.slide)),
       loadBoard({
         url: u,
         ownerEmail: 'ngy@ecam.be',
-        board: '-' + index.parse(params.slide) + '-' + index.parse(params.board),
+        board: `${board}-${index.parse(params.slide)}-${index.parse(params.board)}`,
       }),
     ])
   },
