@@ -32,7 +32,8 @@ export const route = {
       loadBoard({
         url: u,
         ownerEmail: 'ngy@ecam.be',
-        board: `${board}-${index.parse(params.slide)}-${index.parse(params.board)}`,
+        // Avoid string interpolation for pandoc
+        board: board + '-' + index.parse(params.slide) + '-' + index.parse(params.board),
       }),
     ])
   },
