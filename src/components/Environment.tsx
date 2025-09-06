@@ -46,7 +46,7 @@ export default function Environment(props: EnvironmentProps) {
           <span class="font-thin">({props.title})</span>
         </Show>
       </div>
-      <div class={`px-2 ${props.class}`}>{props.children}</div>
+      <div class={`px-4 ${props.class}`}>{props.children}</div>
     </div>
   )
 }
