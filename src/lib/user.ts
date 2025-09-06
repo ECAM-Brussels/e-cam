@@ -29,7 +29,7 @@ export const getUsers = query(async () => {
   return users
 }, 'getUsers')
 
-export const viewProfise = action(async (form: FormData) => {
+export const viewProfile = action(async (form: FormData) => {
   'use server'
   const schema = z.object({
     email: z.string().email(),

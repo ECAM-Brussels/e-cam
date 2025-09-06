@@ -5,7 +5,7 @@ import { createMemo, createSignal, For, Show } from 'solid-js'
 import Fa from '~/components/Fa'
 import Tabs from '~/components/Tabs'
 import { getUser } from '~/lib/auth/session'
-import { getUsers } from '~/lib/user'
+import { getUsers, viewProfile } from '~/lib/user'
 
 export default function UserTabs() {
   const params = useParams()
@@ -29,7 +29,7 @@ export default function UserTabs() {
   return (
     <>
       <Show when={user()?.role !== 'STUDENT'}>
-        <form method="post" class="w-4/5 mx-auto text-center mb-8 flex">
+        <form method="post" class="w-4/5 mx-auto text-center mb-8 flex" action={viewProfile}>
           <input
             class="border bg-slate-50 rounded-s-lg w-full px-4 py-2"
             list="students"
