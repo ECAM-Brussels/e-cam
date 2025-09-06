@@ -86,6 +86,7 @@ const { Component, schema } = createExerciseType({
       Beta: z.number().or(z.string()).array().nonempty(),
     }),
     async generate(params) {
+      'use server'
       const a = sample(params.A)
       const alpha = sample(params.Alpha)
       const beta = sample(params.Beta)
