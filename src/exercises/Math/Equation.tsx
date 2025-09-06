@@ -173,6 +173,7 @@ const { Component, schema } = createExerciseType({
       }),
     ]),
     generate: async (params) => {
+      'use server'
       if (params.type === 'simpleTrigonometric') {
         const f = sample(params.F)
         const a = sample(params.A)

@@ -67,7 +67,16 @@ const { Component, schema } = createExerciseType({
         <ul>
           <Show when={['ellipse', 'circle'].includes(conicSectionType())}>
             <li>
-              Centre: <Math name="attempt.center" value={props.attempt?.center ?? ''} editable />
+              Centre:{' '}
+              <Math
+                name="attempt.center"
+                value={
+                  props.attempt?.type === 'circle' || props.attempt?.type === 'ellipse'
+                    ? props.attempt.center
+                    : ''
+                }
+                editable
+              />
             </li>
           </Show>
           <Switch>
