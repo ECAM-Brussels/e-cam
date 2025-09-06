@@ -17,10 +17,26 @@ et pleine de belles rencontres!
 - **Respect du temps de parole**
 - **Respect mutuel et de l'apprentissage du groupe**
 
+# Mathématiques au Q1
+
+- **Pont math A**: examen en **novembre**
+
+  - Trigonométrie
+  - Vecteurs
+  - Algèbre et systèmes
+  - Droites et coniques
+  - Nombres complexes
+  - Fonctions et limites
+  - Dérivées
+
+- **Pont math B**: examen en **janvier**
+  - Application des dérivées
+  - Intégrales
+
 # À propos de ce cours {.w-1--2}
 
 Objectifs
-: Rappels du secondaire dont vous aurez besoin cette année
+: Rappels du secondaire dont vous aurez besoin cette année.
 
 Théorie
 : Khôi Nguyễn (NGY)
@@ -31,9 +47,13 @@ Exercices
 Resources
 : 
   - [Calculus](https://www.stewartcalculus.com/) (ressource principale)
-  - [Exercices du baccalauréat britannique](https://www.physicsandmathstutor.com/maths-revision/a-level-edexcel/) (exercices supplémentaires)
   - [Plateforme d'apprentissage ECAM](/) (en construction)
   - [Slides annotés](/PM1C)
+
+::: warning
+Le livre "Calculus" sera utilisé dans tous vos cours de mathématiques.
+Il est vraiment nécéssaire d'obtenir une copie papier ou électronique.
+:::
 
 # À propos des séances d'exercices {.columns-2}
 
@@ -42,6 +62,9 @@ Resources
 - Allez dans **votre** série
 - Au *début* de la session,
   posez vos questions sur la préparation.
+- Venez avec le livre ou les slides,
+  en format papier ou électronique sur un écran assez grand
+  (pas sur smartphone).
 - Faites les exercices individuellement ou en groupe,
   et posez vos questions aux enseignants.
   On ne résoudra pas les exercices pour vous.
