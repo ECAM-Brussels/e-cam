@@ -1,5 +1,5 @@
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
-import { createAsync, useParams } from '@solidjs/router'
+import { createAsync, useLocation, useParams } from '@solidjs/router'
 import Fuse from 'fuse.js'
 import { createMemo, createSignal, For, Show } from 'solid-js'
 import Fa from '~/components/Fa'
@@ -23,6 +23,9 @@ export default function UserTabs() {
           ?.search(search())
           .map((r) => r.item) ?? students())
       : students()
+
+  const location = useLocation()
+  const path = () => location.pathname.split('/').slice(3).join('/')
   return (
     <>
       <Show when={user()?.role !== 'STUDENT'}>
@@ -47,6 +50,7 @@ export default function UserTabs() {
             </For>
           </datalist>
           <input type="hidden" name="email" value={filtered().at(0)?.email} />
+          <input type="hidden" name="path" value={path()} />
         </form>
       </Show>
       <Tabs

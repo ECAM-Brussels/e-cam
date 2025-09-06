@@ -1,5 +1,6 @@
 import { getUser } from './auth/session'
 import { prisma } from './db'
+import { extractFormData } from './form'
 import { action, query, redirect } from '@solidjs/router'
 import z from 'zod'
 
@@ -28,11 +29,15 @@ export const getUsers = query(async () => {
   return users
 }, 'getUsers')
 
-export const viewProfise = action(async (email: string) => {
+export const viewProfise = action(async (form: FormData) => {
   'use server'
-  email = z.string().email().parse(email)
+  const schema = z.object({
+    email: z.string().email(),
+    path: z.string().default(''),
+  })
+  const { email, path } = schema.parse(extractFormData(form))
   const user = await getUser()
   if (user && user.role !== 'STUDENT') {
-    throw redirect(`/users/${email}`)
+    throw redirect(`/users/${email}/${path}`)
   }
 })
