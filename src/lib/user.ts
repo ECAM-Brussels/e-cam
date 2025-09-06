@@ -1,6 +1,7 @@
 import { getUser } from './auth/session'
 import { prisma } from './db'
-import { query, redirect } from '@solidjs/router'
+import { action, query, redirect } from '@solidjs/router'
+import z from 'zod'
 
 export const getUserInfo = query(async (email?: string) => {
   'use server'
@@ -19,3 +20,19 @@ export const getUserInfo = query(async (email?: string) => {
   }
   return record
 }, 'getUserInfo')
+
+export const getUsers = query(async () => {
+  'use server'
+  const [users, user] = await Promise.all([prisma.user.findMany(), getUser()])
+  if (!user || user.role === 'STUDENT') return []
+  return users
+}, 'getUsers')
+
+export const viewProfise = action(async (email: string) => {
+  'use server'
+  email = z.string().email().parse(email)
+  const user = await getUser()
+  if (user && user.role !== 'STUDENT') {
+    throw redirect(`/users/${email}`)
+  }
+})
