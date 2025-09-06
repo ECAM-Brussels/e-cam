@@ -2,6 +2,7 @@ import { graphql } from '~/gql'
 import { request } from '~/lib/graphql'
 
 export async function checkEqual(expr1: string, expr2: string, error: number = 0) {
+  'use server'
   const { expression } = await request(
     graphql(`
       query EqualityCheck($expr1: Math!, $expr2: Math!, $error: Float!, $approximately: Boolean!) {
@@ -17,6 +18,7 @@ export async function checkEqual(expr1: string, expr2: string, error: number = 0
 }
 
 export async function checkFactorisation(attempt: string, expr: string) {
+  'use server'
   const { expression } = await request(
     graphql(`
       query CheckFactor($expr: Math!, $attempt: Math!) {
@@ -32,6 +34,7 @@ export async function checkFactorisation(attempt: string, expr: string) {
 }
 
 export async function expand(expr: string, simplify = false) {
+  'use server'
   const { expression } = await request(
     graphql(`
       query ExpandExpr($expr: Math!, $simplify: Boolean!) {
@@ -51,6 +54,7 @@ export async function expand(expr: string, simplify = false) {
 }
 
 export async function factor(expr: string) {
+  'use server'
   const { expression } = await request(
     graphql(`
       query Factor($expr: Math!) {
@@ -67,6 +71,7 @@ export async function factor(expr: string) {
 }
 
 export async function getFirstRoot(expr: string) {
+  'use server'
   const { expression } = await request(
     graphql(`
       query GetFirstRoot($expr: Math!) {
@@ -85,6 +90,7 @@ export async function getFirstRoot(expr: string) {
 }
 
 export async function normalizePolynomial(expr: string) {
+  'use server'
   const { expression } = await request(
     graphql(`
       query NormalizePolynomial($expr: Math!) {
@@ -101,6 +107,7 @@ export async function normalizePolynomial(expr: string) {
 }
 
 export async function simplify(expr: string) {
+  'use server'
   const { expression } = await request(
     graphql(`
       query Simplify($expr: Math!) {
