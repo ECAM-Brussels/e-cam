@@ -98,6 +98,7 @@ const dataSchema = z.object({
       ecam: z.boolean().default(false),
     })
     .array(),
+  admins: z.string().email().array().default([]),
 })
 
 async function loadData(prisma: PrismaClient) {
@@ -107,6 +108,14 @@ async function loadData(prisma: PrismaClient) {
       const { code, ...update } = create
       await prisma.course.upsert({ where: { code }, update, create })
     }
+    await Promise.all(
+      data.admins.map((email) => {
+        prisma.user.updateMany({
+          where: { email, NOT: { role: 'ADMIN' } },
+          data: { role: 'ADMIN' },
+        })
+      }),
+    )
   } catch {
     console.log(`Error when loading data.yaml`)
   }

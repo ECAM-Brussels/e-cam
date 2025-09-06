@@ -1,3 +1,6 @@
+admins:
+  - ngy@ecam.be
+  - hil@ecam.be
 courses:
   - code: MATH
     title: Mathématiques
