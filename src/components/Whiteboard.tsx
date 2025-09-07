@@ -27,7 +27,7 @@ type WhiteboardProps = {
   requestFullScreen?: () => void
   readOnly?: boolean
   scale?: boolean
-  toolbarPosition?: 'top' | 'bottom' | 'left'
+  toolbarPosition?: 'top' | 'bottom' | 'left' | 'hidden'
   onAdd?: () => void
   owner: string
   url: string
@@ -181,17 +181,19 @@ export default function Whiteboard(props: WhiteboardProps) {
         class="relative"
         style={{ width: `${width()}px`, height: `${height()}px` }}
       >
-        <Toolbar
-          currentStroke={currentStroke}
-          requestFullScreen={props.requestFullScreen}
-          setter={setCurrentStroke}
-          status={board.status}
-          erasing={erasing()}
-          setErasing={setErasing}
-          onDelete={() => board.clearBoard()}
-          onAdd={props.onAdd}
-          position={props.toolbarPosition || 'top'}
-        />
+        <Show when={props.toolbarPosition !== 'hidden'}>
+          <Toolbar
+            currentStroke={currentStroke}
+            requestFullScreen={props.requestFullScreen}
+            setter={setCurrentStroke}
+            status={board.status}
+            erasing={erasing()}
+            setErasing={setErasing}
+            onDelete={() => board.clearBoard()}
+            onAdd={props.onAdd}
+            position={props.toolbarPosition || 'top'}
+          />
+        </Show>
         <canvas
           class="absolute z-20 touch-none select-none"
           classList={{ 'cursor-crosshair': !readOnly() }}
@@ -263,7 +265,7 @@ type ToolbarProps = {
   status: Status
   erasing: boolean
   setErasing: (nextVal: boolean) => void
-  position: 'top' | 'bottom' | 'left'
+  position: 'top' | 'bottom' | 'left' | 'hidden'
 }
 
 function Toolbar(props: ToolbarProps) {

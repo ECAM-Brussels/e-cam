@@ -12,3 +12,17 @@ export const getBoardCount = query(
   },
   'getBoardCount',
 )
+
+export const getBoardCounts = query(async (url: string, ownerEmail: string, board: string) => {
+  'use server'
+  const data = await prisma.stroke.groupBy({
+    where: { url, ownerEmail, board: { startsWith: `${board}-` } },
+    by: ['board'],
+  })
+  const results: { [i: number]: number } = {}
+  for (const { board } of data) {
+    const [i, j] = board.split('-').slice(-2).map(Number)
+    results[i] = Math.max(j, results[i] ?? -1)
+  }
+  return results
+}, 'getBoardCounts')

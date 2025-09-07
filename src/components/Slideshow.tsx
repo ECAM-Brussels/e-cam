@@ -8,12 +8,12 @@ import {
   faEyeSlash,
 } from '@fortawesome/free-solid-svg-icons'
 import { A, createAsync } from '@solidjs/router'
-import { createSignal, onMount, Show, type JSXElement } from 'solid-js'
+import { createSignal, For, onMount, Show, type JSXElement } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import Breadcrumbs from '~/components/Breadcrumbs'
 import Fa from '~/components/Fa'
 import Whiteboard from '~/components/Whiteboard'
-import { getBoardCount } from '~/lib/slideshow'
+import { getBoardCount, getBoardCounts } from '~/lib/slideshow'
 
 type SlideshowProps = {
   slides: (() => JSXElement)[]
@@ -23,10 +23,12 @@ type SlideshowProps = {
   url: string
   showBoard?: boolean
   onShowBoardChange?: (newVal: boolean) => void
+  print?: boolean
 }
 
 export default function Slideshow(props: SlideshowProps) {
   let container!: HTMLDivElement
+  const boardCounts = createAsync(() => getBoardCounts(props.url, 'ngy@ecam.be', props.board))
 
   const [smartphone, setSmartPhone] = createSignal(false)
   const [scale, setScale] = createSignal(1)
@@ -34,7 +36,7 @@ export default function Slideshow(props: SlideshowProps) {
   onMount(() => {
     const observer = new ResizeObserver((_entries) => {
       setSmartPhone(window.matchMedia('(max-width: 767px)').matches)
-      if (!smartphone()) {
+      if (!smartphone() && !props.print) {
         const scaleX = container.clientWidth / 1920
         const scaleY = container.clientHeight / 1080
         const scale = Math.min(scaleX, scaleY)
@@ -51,26 +53,69 @@ export default function Slideshow(props: SlideshowProps) {
   })
 
   return (
-    <div class="w-screen h-screen" ref={container!}>
+    <div ref={container!}>
       <div
         class="bg-white w-[1920px] h-[1080px] relative origin-top-left"
-        classList={{ 'overflow-hidden': !smartphone() }}
+        classList={{
+          'overflow-hidden': !smartphone() && !props.print,
+        }}
         style={{ transform: `scale(${scale()}) translate(${translation()})` }}
       >
-        <Dynamic component={props.slides[props.hIndex - 1]} />
-        <Show when={props.showBoard}>
-          <Whiteboard
-            class="absolute top-0 z-10"
-            width={1920}
-            height={1080}
-            toolbarPosition="bottom"
-            owner="ngy@ecam.be"
-            url={props.url}
-            name={`${props.board}-${props.hIndex}-${props.vIndex}`}
-            scale
-          />
+        <Show
+          when={!props.print}
+          fallback={
+            <For
+              each={[
+                ...Array(props.slides.length)
+                  .keys()
+                  .map((i) => i + 1),
+              ]}
+            >
+              {(i) => (
+                <For
+                  each={[
+                    ...Array(boardCounts()?.[i] ?? 1)
+                      .keys()
+                      .map((i) => i + 1),
+                  ]}
+                >
+                  {(j) => (
+                    <div class="relative h-[1080px]">
+                      <Dynamic component={props.slides[i - 1]} />
+                      <Show when={props.showBoard}>
+                        <Whiteboard
+                          class="absolute top-0 z-10"
+                          width={1920}
+                          height={1080}
+                          toolbarPosition="hidden"
+                          owner="ngy@ecam.be"
+                          url={props.url}
+                          name={`${props.board}-${i}-${j}`}
+                          scale
+                        />
+                      </Show>
+                    </div>
+                  )}
+                </For>
+              )}
+            </For>
+          }
+        >
+          <Dynamic component={props.slides[props.hIndex - 1]} />
+          <Show when={props.showBoard}>
+            <Whiteboard
+              class="absolute top-0 z-10"
+              width={1920}
+              height={1080}
+              toolbarPosition="bottom"
+              owner="ngy@ecam.be"
+              url={props.url}
+              name={`${props.board}-${props.hIndex}-${props.vIndex}`}
+              scale
+            />
+          </Show>
+          <Remote {...props} />
         </Show>
-        <Remote {...props} />
       </div>
     </div>
   )
