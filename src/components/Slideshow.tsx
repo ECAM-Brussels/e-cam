@@ -6,6 +6,7 @@ import {
   faChevronRight,
   faChevronUp,
   faEyeSlash,
+  faPrint,
 } from '@fortawesome/free-solid-svg-icons'
 import { A, createAsync } from '@solidjs/router'
 import { createSignal, For, onMount, Show, type JSXElement } from 'solid-js'
@@ -53,12 +54,9 @@ export default function Slideshow(props: SlideshowProps) {
   })
 
   return (
-    <div ref={container!}>
+    <div classList={{ 'w-screen h-screen': !props.print }} ref={container!}>
       <div
-        class="bg-white w-[1920px] h-[1080px] relative origin-top-left"
-        classList={{
-          'overflow-hidden': !smartphone() && !props.print,
-        }}
+        class="bg-white w-[1920px] h-[1080px] origin-top-left overflow-hidden"
         style={{ transform: `scale(${scale()}) translate(${translation()})` }}
       >
         <Show
@@ -128,12 +126,17 @@ function Remote(props: SlideshowProps) {
       <Arrow {...props} dir="left" />
       <div class="flex flex-col">
         <Arrow {...props} dir="up" />
-        <button
-          onClick={() => props.onShowBoardChange?.(!props.showBoard)}
-          title={props.showBoard ? 'Hide board' : 'Show board'}
-        >
-          <Fa icon={props.showBoard ? faEyeSlash : faBlackboard} />
-        </button>
+        <div class="flex flex-row">
+          <button title={props.showBoard ? 'Hide board' : 'Show board'}>
+            <Fa icon={faPrint} />
+          </button>
+          <button
+            onClick={() => props.onShowBoardChange?.(!props.showBoard)}
+            title="Version imprimable"
+          >
+            <Fa icon={props.showBoard ? faEyeSlash : faBlackboard} />
+          </button>
+        </div>
         <Arrow {...props} dir="down" />
       </div>
       <Arrow {...props} dir="right" />
