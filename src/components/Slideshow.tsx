@@ -11,9 +11,11 @@ import {
 import { A, createAsync } from '@solidjs/router'
 import { createSignal, For, onMount, Show, type JSXElement } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
+import z from 'zod'
 import Breadcrumbs from '~/components/Breadcrumbs'
 import Fa from '~/components/Fa'
 import Whiteboard from '~/components/Whiteboard'
+import { createSearchParam } from '~/lib/params'
 import { getBoardCount, getBoardCounts } from '~/lib/slideshow'
 
 type SlideshowProps = {
@@ -56,7 +58,8 @@ export default function Slideshow(props: SlideshowProps) {
   return (
     <div classList={{ 'w-screen h-screen': !props.print }} ref={container!}>
       <div
-        class="bg-white w-[1920px] h-[1080px] origin-top-left overflow-hidden"
+        class="bg-white w-[1920px] h-[1080px] origin-top-left"
+        classList={{ 'overflow-hidden': !props.print }}
         style={{ transform: `scale(${scale()}) translate(${translation()})` }}
       >
         <Show
@@ -78,7 +81,7 @@ export default function Slideshow(props: SlideshowProps) {
                   ]}
                 >
                   {(j) => (
-                    <div class="relative h-[1080px]">
+                    <div class="bg-white relative h-[1080px]">
                       <Dynamic component={props.slides[i - 1]} />
                       <Show when={props.showBoard}>
                         <Whiteboard
@@ -120,14 +123,18 @@ export default function Slideshow(props: SlideshowProps) {
 }
 
 function Remote(props: SlideshowProps) {
+  const [print, setPrint] = createSearchParam('print', z.boolean().default(false))
   return (
     <div class="absolute bottom-4 right-4 text-4xl z-20 flex gap-4 items-center print:hidden">
       <Breadcrumbs class="text-sm mr-8" />
       <Arrow {...props} dir="left" />
-      <div class="flex flex-col">
+      <div class="flex flex-col items-center">
         <Arrow {...props} dir="up" />
         <div class="flex flex-row">
-          <button title={props.showBoard ? 'Hide board' : 'Show board'}>
+          <button
+            title={props.showBoard ? 'Hide board' : 'Show board'}
+            onClick={() => setPrint(true)}
+          >
             <Fa icon={faPrint} />
           </button>
           <button
