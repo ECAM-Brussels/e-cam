@@ -361,7 +361,7 @@ function Toolbar(props: ToolbarProps) {
           <Fa icon={faFloppyDisk} />
         </Show>
         <Show when={props.status === 'saving'}>
-          <Spinner /> <span class="text-sm pl-2">Saving...</span>
+          <Spinner />
         </Show>
       </span>
     </div>
