@@ -28,17 +28,24 @@ type SlideshowProps = {
 export default function Slideshow(props: SlideshowProps) {
   let container!: HTMLDivElement
 
+  const [smartphone, setSmartPhone] = createSignal(false)
   const [scale, setScale] = createSignal(1)
   const [translation, setTranslation] = createSignal('0, 0')
   onMount(() => {
     const observer = new ResizeObserver((_entries) => {
-      const scaleX = container.clientWidth / 1920
-      const scaleY = container.clientHeight / 1080
-      const scale = Math.min(scaleX, scaleY)
-      setScale(scale)
-      const x = (container.clientWidth - 1920 * scale) / 2
-      const y = (container.clientHeight - 1080 * scale) / 2
-      setTranslation(`${x}px, ${y}px`)
+      setSmartPhone(window.matchMedia('(max-width: 767px)').matches)
+      if (!smartphone()) {
+        const scaleX = container.clientWidth / 1920
+        const scaleY = container.clientHeight / 1080
+        const scale = Math.min(scaleX, scaleY)
+        setScale(scale)
+        const x = (container.clientWidth - 1920 * scale) / 2
+        const y = (container.clientHeight - 1080 * scale) / 2
+        setTranslation(`${x}px, ${y}px`)
+      } else {
+        setScale(1)
+        setTranslation('0, 0')
+      }
     })
     observer.observe(container)
   })
@@ -46,7 +53,8 @@ export default function Slideshow(props: SlideshowProps) {
   return (
     <div class="w-screen h-screen" ref={container!}>
       <div
-        class="bg-white w-[1920px] h-[1080px] relative origin-top-left overflow-hidden"
+        class="bg-white w-[1920px] h-[1080px] relative origin-top-left"
+        classList={{ 'overflow-hidden': !smartphone() }}
         style={{ transform: `scale(${scale()}) translate(${translation()})` }}
       >
         <Dynamic component={props.slides[props.hIndex - 1]} />
