@@ -4,6 +4,13 @@
 @tailwind components;
 @tailwind utilities;
 
+@media print {
+  @page {
+    size: 1920px 1080px;
+    margin: 0;
+  }
+}
+
 @layer base {
   html {
     font-family: 'Fira Sans', sans-serif;
