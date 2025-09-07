@@ -100,7 +100,7 @@ const { Component, schema } = createExerciseType({
       const patch = state.results.length
         ? {}
         : {
-            answer: encrypt(state.answer),
+            answer: await encrypt(state.answer),
             results: await Promise.all(runTests(state.answer, tests)),
           }
       return { attempt: '', ...state, ...patch, tests }

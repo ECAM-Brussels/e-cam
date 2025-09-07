@@ -79,20 +79,19 @@ const { Component, schema, mark } = createExerciseType({
         attempt.length ? checkEqual(attempt[i], await decrypt(q.answer)) : false,
       ),
     )
-    return Promise.race([
-      Promise.all(parts).then((t) => t.every((v) => v)),
-      Promise.race(parts.map(async (t) => ((await t) ? new Promise<never>(() => {}) : false))),
-    ])
+    return parts.every((t) => t)
   },
   feedback: [
     async (remaining, question) => {
       'use server'
       if (!remaining) {
         return {
-          parts: question.parts.map((q) => ({
-            ...q,
-            answer: decrypt(q.answer),
-          })),
+          parts: await Promise.all(
+            question.parts.map(async (q) => ({
+              ...q,
+              answer: await decrypt(q.answer),
+            })),
+          ),
         }
       }
       return {}
