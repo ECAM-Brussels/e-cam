@@ -166,7 +166,11 @@ export default function Whiteboard(props: WhiteboardProps) {
   )
 
   onMount(() => {
-    canvasRef!.oncontextmenu = () => false
+    canvasRef!.oncontextmenu = () => {
+      if (!readOnly()) {
+        return false
+      }
+    }
   })
   const [erasing, setErasing] = createSignal(false)
 
