@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `User` MODIFY `score` INTEGER NOT NULL DEFAULT 1200;

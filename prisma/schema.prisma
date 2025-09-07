@@ -59,7 +59,7 @@ model User {
   firstName String
   lastName String
   role Role @default(STUDENT)
-  score Int @default(800)
+  score Int @default(1200)
 
   attempts Attempt[]
   strokes Stroke[]
