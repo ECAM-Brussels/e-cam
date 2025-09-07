@@ -29,27 +29,27 @@ const { Component, schema } = createExerciseType({
       answer: z.string().describe('Correct answer, should be part of the choices'),
       encrypted: z.boolean().default(false).describe("Whether the answer's been encrypted"),
     })
-    .transform((question) => {
+    .transform(async (question) => {
       const { encrypted, answer, ...info } = question
       if (!encrypted) {
         return {
           encrypted: true,
           ...info,
-          answer: encrypt(answer),
+          answer: await encrypt(answer),
         }
       }
       return question
     }),
   attempt: z.string().min(1),
-  mark: (question, attempt) => {
+  mark: async (question, attempt) => {
     'use server'
-    return attempt === decrypt(question.answer)
+    return attempt === (await decrypt(question.answer))
   },
   feedback: [
     async (remaining, question) => {
       'use server'
       if (!remaining) {
-        return { answer: decrypt(question.answer) }
+        return { answer: await decrypt(question.answer) }
       }
       return {}
     },

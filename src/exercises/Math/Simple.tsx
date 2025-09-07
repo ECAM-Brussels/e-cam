@@ -47,7 +47,7 @@ const { Component, schema, mark } = createExerciseType({
           .describe('List of question parts, with their own prompts, texts and answers.'),
       }),
     ])
-    .transform((state) => {
+    .transform(async (state) => {
       if ('answer' in state) {
         const { encrypted, ...part } = state
         state = {
@@ -56,10 +56,12 @@ const { Component, schema, mark } = createExerciseType({
         }
       }
       if (!state.encrypted) {
-        state.parts = state.parts.map((q) => ({
-          ...q,
-          answer: encrypt(q.answer),
-        }))
+        state.parts = await Promise.all(
+          state.parts.map(async (q) => ({
+            ...q,
+            answer: await encrypt(q.answer),
+          })),
+        )
         state.encrypted = true
       }
       return state
@@ -70,10 +72,12 @@ const { Component, schema, mark } = createExerciseType({
     .array()
     .or(z.string().transform((s) => [s]))
     .default([]),
-  mark: (question, attempt) => {
+  mark: async (question, attempt) => {
     'use server'
-    const parts = question.parts.map((q, i) =>
-      attempt.length ? checkEqual(attempt[i], decrypt(q.answer)) : false,
+    const parts = await Promise.all(
+      question.parts.map(async (q, i) =>
+        attempt.length ? checkEqual(attempt[i], await decrypt(q.answer)) : false,
+      ),
     )
     return Promise.race([
       Promise.all(parts).then((t) => t.every((v) => v)),

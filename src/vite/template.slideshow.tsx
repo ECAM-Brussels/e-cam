@@ -59,6 +59,7 @@ export default function () {
         onShowBoardChange={(value) => {
           setSearchParams({ showBoard: value ? 1 : 0 })
         }}
+        print={z.coerce.boolean().parse(searchParams.print)}
       />
     </MetaProvider>
   )
