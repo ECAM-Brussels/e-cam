@@ -55,6 +55,16 @@ Le livre "Calculus" sera utilisé dans tous vos cours de mathématiques.
 Il est vraiment nécéssaire d'obtenir une copie papier ou électronique.
 :::
 
+# Compétences du cours {.w-1--2}
+
+~~~ {.tsx .raw}
+<Graph
+  class="border rounded-xl w-full h-full"
+  query={{ courses: { some: { code: 'PM1C' } } }}
+  groups={['algebra', 'calculus', 'trigonometry', 'geometry']}
+/>
+~~~
+
 # À propos des séances d'exercices {.columns-2}
 
 ::: h-full
