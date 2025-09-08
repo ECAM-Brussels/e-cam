@@ -1,5 +1,5 @@
 import { Chart, ChartConfiguration } from 'chart.js/auto'
-import { onMount } from 'solid-js'
+import { createEffect, onCleanup, onMount } from 'solid-js'
 
 type LineChartProps = ChartConfiguration<'line', number[], string>['data'] & {
   class?: string
@@ -7,8 +7,9 @@ type LineChartProps = ChartConfiguration<'line', number[], string>['data'] & {
 
 export default function LineChart(props: LineChartProps) {
   let ref!: HTMLCanvasElement
+  let chart: Chart | undefined = undefined
   onMount(() => {
-    new Chart(ref, {
+    chart = new Chart(ref, {
       type: 'line',
       data: props,
       options: {
@@ -16,6 +17,15 @@ export default function LineChart(props: LineChartProps) {
         maintainAspectRatio: false,
       },
     })
+  })
+  createEffect(() => {
+    if (chart) {
+      chart.data = props
+      chart.update()
+    }
+  })
+  onCleanup(() => {
+    chart?.destroy()
   })
   return (
     <div class={props.class}>
