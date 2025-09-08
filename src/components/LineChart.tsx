@@ -20,7 +20,7 @@ export default function LineChart(props: LineChartProps) {
   })
   createEffect(
     on(
-      () => [props.datasets.length, props.datasets[0].label],
+      () => props.datasets.map((d) => d.label),
       () => {
         if (chart) {
           chart.data = props
