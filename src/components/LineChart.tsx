@@ -1,5 +1,5 @@
 import { Chart, ChartConfiguration } from 'chart.js/auto'
-import { createEffect, onCleanup, onMount } from 'solid-js'
+import { createEffect, on, onCleanup, onMount } from 'solid-js'
 
 type LineChartProps = ChartConfiguration<'line', number[], string>['data'] & {
   class?: string
@@ -18,12 +18,17 @@ export default function LineChart(props: LineChartProps) {
       },
     })
   })
-  createEffect(() => {
-    if (chart) {
-      chart.data = props
-      chart.update()
-    }
-  })
+  createEffect(
+    on(
+      () => [props.datasets.length, props.datasets[0].label],
+      () => {
+        if (chart) {
+          chart.data = props
+          chart.update()
+        }
+      },
+    ),
+  )
   onCleanup(() => {
     chart?.destroy()
   })
