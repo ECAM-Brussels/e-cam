@@ -27,7 +27,7 @@ et pleine de belles rencontres!
   - Droites et coniques
   - Nombres complexes
   - Fonctions et limites
-  - Dérivées
+  - Calcul de dérivées
 
 - **Pont math B**: examen en **janvier**
   - Application des dérivées
@@ -55,16 +55,6 @@ Le livre "Calculus" sera utilisé dans tous vos cours de mathématiques.
 Il est vraiment nécéssaire d'obtenir une copie papier ou électronique.
 :::
 
-# Compétences du cours {.w-1--2}
-
-~~~ {.tsx .raw}
-<Graph
-  class="border rounded-xl w-full h-full"
-  query={{ courses: { some: { code: 'PM1C' } } }}
-  groups={['algebra', 'calculus', 'trigonometry', 'geometry']}
-/>
-~~~
-
 # À propos des séances d'exercices {.columns-2}
 
 ::: h-full
@@ -91,25 +81,10 @@ Il est vraiment nécéssaire d'obtenir une copie papier ou électronique.
 :::
 
 ::: h-full
-#. Allez sur https://learning.ecam.be
+#. Allez sur [learning.ecam.be/](https://learning.ecam.be)
+#. Sélectionnez "Je suis étudiant.e à l'ECAM"
+#. Connectez-vous avec votre compte ECAM
 #. Cliquez sur "Pont maths"
-:::
-
-# Livres du baccalauréat britannique {.columns-2 .h-full}
-
-::: h-full
-<Iframe class="border rounded-xl shadow w-full h-full" src="https://www.physicsandmathstutor.com/maths-revision/solutionbanks/" />
-:::
-
-::: h-full
-Pour des exercices similaires **corrigés**,
-nous ferons référence aux livres Edexcel (édition 2017).
-
-- [Livres (Google drive)](https://drive.google.com/drive/folders/1qlM5jFw9kGTm45a8BtpQGopIivsvgH-4)
-- [Solutions](https://www.physicsandmathstutor.com/maths-revision/solutionbanks/)
-
-Étant un livre du secondaire,
-le rhythme y est un peu plus lent.
 :::
 
 # Rappels {.w-1--2} 
@@ -141,7 +116,7 @@ le rhythme y est un peu plus lent.
 
 # Cercle trigonométrique {.w-1--2}
 
-<Geogebra id="yyufnmy9" width={1000} height={850} />
+<Geogebra id="yyufnmy9" width={900} height={700} />
 
 - **Cercle trigonométrique**: rayon $1$ centré à l'origine.
 - $\alpha$: angle de $AM$ avec l'axe $O x$,
@@ -162,7 +137,7 @@ Quelques exercices automatiquement corrigés ont été préparés pour vous.
 Pour y accéder
 
 #. [Connectez-vous](/auth/login) à l'aide de votre compte ECAM.
-#. [Commencer l'exercice](/PM1C/practice/trigonometry/exact_values)
+#. [Exercices sur la plateforme](/skills/trigonometry/values)
 :::
 
 # Trouver les autres nombres trigonométriques (p. A27) {.w-1--2}
@@ -175,6 +150,7 @@ trouvez les autres nombres trigonométriques.
 ::: remark
 - Vous ferez un exercice très similaire en séance.
 - Exercices 29-34 (Appendice D)
+- [Exercices sur la plateforme](/skills/trigonometry/trigonometric-numbers)
 :::
 
 # Calculer des angles ou des longueurs (p. A27) {.w-1--2}
@@ -257,7 +233,6 @@ Prouvez les identités suivantes:
 
 ::: {.remark title="Exercices supplémentaires"}
 - Appendice D: 42-58
-- Pure Year 1: [10.3](https://activeteach-prod.resource.pearson-intl.com/r00/r0066/r006621/r00662110/current/alevelsb_p1_ex10c.pdf)
 :::
 
 # Équations trigonométriques (p. A30) {.w-1--2}
@@ -272,12 +247,26 @@ Réponse: $0$, $\frac \pi 3$, $\pi$, $\frac {5 \pi} 3$ et $2 \pi$
 
 ::: {.remark title="Exercices supplémentaires"}
 - Appendice D: 65-72
-- Pure year 1:
-  - [10.4](https://activeteach-prod.resource.pearson-intl.com/r00/r0066/r006621/r00662110/current/alevelsb_p1_ex10c.pdf) 
-  - [10.5](https://activeteach-prod.resource.pearson-intl.com/r00/r0066/r006621/r00662112/current/alevelsb_p1_ex10e.pdf)
-  - [10.6](https://activeteach-prod.resource.pearson-intl.com/r00/r0066/r006621/r00662113/current/alevelsb_p1_ex10f.pdf)
-- Pure year 2: 7.4, 7.5, 7.6
 :::
+
+# Exercice de niveau examen {.w-1--2}
+
+::: exercise
+Prouvez que
+$$
+1 - \cos 2\theta = \tan \theta \sin 2 \theta,
+\qquad \theta \neq \frac {(2n + 1) \pi} 2,
+\qquad n \in \Z.
+$$
+
+Ensuite, résolvez l'équation
+$$
+(\sec^2 x - 5) (1 - \cos 2x) = 3 \tan^2 x \sin {2x}
+$$
+sur $[-\frac \pi 2, \frac \pi 2]$
+:::
+
+<Calculator />
 
 # Exercices supplémentaires: identités trigonométriques {.w-1--2}
 
