@@ -243,9 +243,14 @@ Prouvez les identités suivantes:
 
 ::: {.example title="Exemple 7 p. A30"}
 Résolvez l'équation $\sin x = \sin 2x$ dans l'intervalle $[0, 2 \pi]$.
-
-Réponse: $0$, $\frac \pi 3$, $\pi$, $\frac {5 \pi} 3$ et $2 \pi$
 :::
+
+~~~ python {.run}
+from sympy import *
+x = Symbol("x")
+S = solveset(Eq(sin(x), sin(2*x)))
+S.intersect(Interval(0, 2*pi))
+~~~
 
 <Calculator />
 
@@ -317,14 +322,21 @@ $$
 \qquad n \in \Z.
 $$
 
-Ensuite, résolvez l'équation
+Ensuite, résolvez l'équation suivante sur $[-\frac \pi 2, \frac \pi 2]$
 $$
 (\sec^2 x - 5) (1 - \cos 2x) = 3 \tan^2 x \sin {2x}
 $$
-sur $[-\frac \pi 2, \frac \pi 2]$
 :::
 
-<Calculator />
+~~~ python {.run}
+from sympy import *
+x = Symbol("x")
+eq = Eq(
+    (tan(x) ** 2 - 4) * (1 - cos(2*x)),
+    3 * tan(x)**2 * sin(2*x)
+)
+solveset(eq).intersect(Interval(-pi/2, pi/2))
+~~~
 
 # Exercices supplémentaires: identités trigonométriques {.w-1--2}
 
