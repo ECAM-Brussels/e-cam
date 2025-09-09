@@ -65,6 +65,7 @@ export default function () {
       setExercise(assignment()!.body[0])
     }
   })
+  const hasGenerator = () => assignment()?.body.at(0)?.params
   return (
     <Page title={assignment()?.page.title ?? ''}>
       <h1 class="text-4xl my-4">{assignment()?.page.title}</h1>
@@ -82,6 +83,10 @@ export default function () {
                     }
                   }}
                 />
+                <Show when={hasGenerator()}>
+                  <hr class="my-4" />
+                  <button onclick={() => setExercise(null)}>Générer un autre exercice</button>
+                </Show>
               </Show>
             }
           >
