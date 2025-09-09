@@ -166,6 +166,10 @@ Appendice D: 35-38
 
 <Calculator />
 
+# Découverte: $\sin(a + b)$, $\cos(a + b)$
+
+<Geogebra id="t5zqcQ4z" width={1300} height={800} />
+
 # Découverte: $\sin(a + b)$, $\cos(a + b)$ {.w-1--2}
 
 ![](/images/addition_formulae_proofs.png){.w-3--4 .mx-auto}
@@ -249,6 +253,60 @@ Réponse: $0$, $\frac \pi 3$, $\pi$, $\frac {5 \pi} 3$ et $2 \pi$
 - Appendice D: 65-72
 :::
 
+# Graphes trigonométriques (pp. A32-A34) {.columns-2}
+
+::: h-full
+### $\sin x$
+~~~ yaml {.plot}
+height: 600
+width: 900
+yAxis:
+  domain: [-2, 2]
+xAxis:
+  domain: [-10, 10]
+data:
+  - fn: sin(x)
+~~~
+:::
+
+::: h-full
+### $\cos x$
+~~~ yaml {.plot}
+height: 600
+width: 900
+yAxis:
+  domain: [-2, 2]
+xAxis:
+  domain: [-10, 10]
+data:
+  - fn: cos(x)
+~~~
+:::
+
+# Graphes trigonométriques partie II {.columns-2}
+
+::: h-full
+### $\tan$
+
+~~~ yaml {.plot}
+height: 600
+width: 900
+data:
+  - fn: tan(x)
+~~~
+:::
+
+::: h-full
+### $\cot x$
+
+~~~ yaml {.plot}
+height: 600
+width: 900
+data:
+  - fn: cos(x) / sin(x)
+~~~
+:::
+
 # Exercice de niveau examen {.w-1--2}
 
 ::: exercise
@@ -275,31 +333,3 @@ sur $[-\frac \pi 2, \frac \pi 2]$
 # Exercices supplémentaires: équations trigonométriques {.w-1--2}
 
 <Iframe class="h-full w-full" src="https://pmt.physicsandmathstutor.com//download/Maths/A-level/Pure/Trigonometry-2/Edexcel-Set-B/Trigonometric%20Equations.pdf" />
-
-# Graphes trigonométriques (pp. A32-A34) {.columns-2}
-
-::: h-full
-### $\sin$ et $\cos$
-~~~ yaml {.plot}
-height: 600
-width: 900
-yAxis:
-  domain: [-2, 2]
-xAxis:
-  domain: [-10, 10]
-data:
-  - fn: sin(x)
-  - fn: cos(x)
-~~~
-:::
-
-::: h-full
-### $\tan$
-
-~~~ yaml {.plot}
-height: 600
-width: 900
-data:
-  - fn: tan(x)
-~~~
-:::
