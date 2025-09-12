@@ -24,6 +24,8 @@ courses:
     url: /courses/calculus
   - code: geometry
     title: Géométrie
+    image: /images/geometry.jpg
+    url: /courses/geometry
   - code: trigonometry
     title: Trigonométrie
   - code: 4MATH5
