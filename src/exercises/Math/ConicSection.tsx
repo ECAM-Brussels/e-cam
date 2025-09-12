@@ -280,7 +280,7 @@ const { Component, schema } = createExerciseType({
           s == 1 ? `(x - ${x0})^2 - 4 (${a}) (y - ${y0})` : `(y - ${y0})^2 - 4 (${a}) (x - ${x0})`,
       }[conicSection]
       return {
-        equation: `${exp ? await expand(equation) : await simplify(equation)} = 0`,
+        equation: `${exp ? await expand(equation, true) : await simplify(equation)} = 0`,
         type: params.classify ? (`conic` as const) : conicSection,
       }
     },
