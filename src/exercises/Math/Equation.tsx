@@ -1,12 +1,14 @@
 import { product } from './Factor'
+import { faPlus, faTrashCan } from '@fortawesome/free-solid-svg-icons'
 import { sample } from 'lodash-es'
-import { createEffect, createSignal, For, Show } from 'solid-js'
+import { createEffect, For, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { z } from 'zod'
+import Fa from '~/components/Fa'
 import Math from '~/components/Math'
 import MathSet, { MathJSON } from '~/components/MathSet'
 import { graphql } from '~/gql'
-import { createExerciseType } from '~/lib/exercises/base'
+import { createExerciseType, useExerciseContext } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
 import { narrow } from '~/lib/helpers'
 
@@ -14,8 +16,8 @@ const { Component, schema } = createExerciseType({
   name: 'Equation',
   Component: (props) => {
     const [attempt, setAttempt] = createStore<string[]>([])
-    const [focused, setFocused] = createSignal(false)
-    createEffect(() => setAttempt(props.attempt ?? []))
+    const exercise = useExerciseContext()
+    createEffect(() => setAttempt(props.attempt ?? ['']))
     return (
       <>
         <p>Résolvez l'équation</p>
@@ -26,42 +28,30 @@ const { Component, schema } = createExerciseType({
         <div class="flex gap-8">
           <For each={attempt}>
             {(sol, i) => (
-              <label
-                class="flex gap-2 items-center"
-                onMouseLeave={() => {
-                  if (!sol && !focused()) {
-                    setAttempt(attempt.filter((_, j) => j !== i()))
-                  }
-                }}
-              >
+              <label class="flex gap-2 items-center">
                 <Math value={`${props.question.x} =`} />
-                <Math
-                  editable
-                  value={sol}
-                  name="attempt"
-                  onfocus={() => setFocused(true)}
-                  onBlur={(e) => {
-                    setFocused(false)
-                    setAttempt(i(), e.target.value)
-                    if (!e.target.value) {
-                      setAttempt(attempt.filter((_, j) => j !== i()))
-                    }
-                  }}
-                />
+                <Math editable value={sol} name="attempt" />
+                <Show when={!exercise?.readOnly}>
+                  <button
+                    class="text-slate-200"
+                    type="button"
+                    onClick={() => setAttempt(attempt.filter((_, j) => j !== i()))}
+                  >
+                    <Fa icon={faTrashCan} />
+                  </button>
+                </Show>
               </label>
             )}
           </For>
-          <label
-            class="inline-flex gap-2 items-center opacity-25 hover:opacity-100"
-            onMouseEnter={() => {
-              if (!focused()) {
-                setAttempt(attempt.length, '')
-              }
-            }}
-          >
-            <Math value={`${props.question.x} =`} />
-            <Math class="border min-w-24 p-2" editable />
-          </label>
+          <Show when={!exercise?.readOnly}>
+            <button
+              class="text-sky-800 px-3 py-0"
+              type="button"
+              onClick={() => setAttempt(attempt.length, '')}
+            >
+              <Fa icon={faPlus} /> <span class="text-sm">Ajouter une solution</span>
+            </button>
+          </Show>
         </div>
       </>
     )
