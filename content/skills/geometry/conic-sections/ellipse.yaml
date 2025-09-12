@@ -3,6 +3,7 @@ title: "Équation de l'ellipse"
 prerequisites:
   - /skills/geometry/conic-sections/circle
   - /skills/geometry/conic-sections/ellipse-canonical
+  - /skills/geometry/pythagoras
 courses:
   - geometry
   - PM1C
