@@ -113,7 +113,7 @@ const { Component, schema } = createExerciseType({
       graphql(`
         query CheckComplex($expr: Math!, $attempt: Math!) {
           expression(expr: $attempt) {
-            isEqual(expr: $expr)
+            isEqual(expr: $expr, complex: true)
             isComplexRectangular(strict: false)
             isExponential
             isPolar(strict: true)
