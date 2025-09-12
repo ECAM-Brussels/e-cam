@@ -25,7 +25,7 @@ const { Component, schema } = createExerciseType({
         <Show when={props.question.S}>
           sur <MathSet value={props.question.S} />
         </Show>
-        <div class="flex gap-8">
+        <div class="flex flex-wrap gap-8">
           <For each={attempt}>
             {(sol, i) => (
               <label class="flex gap-2 items-center">
