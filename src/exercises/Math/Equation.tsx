@@ -69,12 +69,13 @@ const { Component, schema } = createExerciseType({
       graphql(`
         query CheckEquationSolution(
           $equation: Math!
+          $x: Math!
           $attempt: MathSet!
           $S: MathSet
           $complex: Boolean
         ) {
           equation: expression(expr: $equation) {
-            solveset(S: $S, complex: $complex) {
+            solveset(S: $S, x: $x, complex: $complex) {
               isSetEqual(S: $attempt)
             }
           }
@@ -90,9 +91,9 @@ const { Component, schema } = createExerciseType({
       if (!remaining) {
         const { equation } = await request(
           graphql(`
-            query SolveEquation($equation: Math!, $S: MathSet, $complex: Boolean) {
+            query SolveEquation($equation: Math!, $x: Math!, $S: MathSet, $complex: Boolean) {
               equation: expression(expr: $equation) {
-                solveset(S: $S, complex: $complex) {
+                solveset(S: $S, x: $x, complex: $complex) {
                   expr
                 }
               }
