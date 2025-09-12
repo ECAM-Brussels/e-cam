@@ -156,7 +156,9 @@ class Expression:
         )
 
     @strawberry.field(description="Perform equality check")
-    def is_equal(self, expr: Math, complex: Optional[bool] = False) -> bool:
+    def is_equal(
+        self, expr: Math, complex: Optional[bool] = False, modulo: Optional[Math] = None
+    ) -> bool:
         expand = sympy.expand_complex if complex else sympy.expand
         if isinstance(self.expr, sympy.Eq):
             if not isinstance(expr, sympy.Eq):
@@ -175,6 +177,8 @@ class Expression:
                 ]
             )
         result = expand(expr - self.expr)
+        if modulo:
+            return sympy.simplify(result / modulo).is_integer
         return sympy.simplify(result) == 0
 
     @strawberry.field(description="Check if a complex number is in exponential form")
