@@ -50,7 +50,7 @@ export default function Feedback<Q, A, F extends object>(props: {
             when={correct()}
             fallback={
               <summary class="text-red-800 font-bold text-2xl mb-4">
-                <Fa icon={faXmark} /> Réponse inconnecte
+                <Fa icon={faXmark} /> Réponse incorrecte
               </summary>
             }
           >
