@@ -32,7 +32,7 @@ const { Component, schema } = createExerciseType({
       ({
         conic: 'la conique',
         circle: 'le cercle',
-        ellipse: "l'ellipse'",
+        ellipse: "l'ellipse",
         hyperbola: "l'hyperbola'",
         parabola: 'la parabole',
       })[props.question.type]
