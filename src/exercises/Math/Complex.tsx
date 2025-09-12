@@ -193,7 +193,7 @@ const { Component, schema } = createExerciseType({
         const [n, r, theta] = [sample(params.N), sample(params.R), sample(params.Theta)]
         const z = await getRectangularForm(`(${r}) (\\cos(${theta}) + i \\sin(${theta}))`)
         return {
-          format: 'polar' as const,
+          format: 'exponential' as const,
           expr: String.raw`\left(${z}\right)^{${n}}`,
         }
       } else {
