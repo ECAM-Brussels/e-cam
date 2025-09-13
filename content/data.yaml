@@ -28,6 +28,8 @@ courses:
     url: /courses/geometry
   - code: trigonometry
     title: Trigonométrie
+    image: /images/trigonometry.jpg
+    url: /courses/trigonometry
   - code: 4MATH5
     title: 4ème maths 5
   - code: 5MATH4
