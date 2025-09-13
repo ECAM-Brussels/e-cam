@@ -1,4 +1,5 @@
 import { createAsyncStore, type RouteDefinition, useParams } from '@solidjs/router'
+import { Show } from 'solid-js'
 import Graph from '~/components/Graph'
 import Page from '~/components/Page'
 import { getUser } from '~/lib/auth/session'
@@ -17,8 +18,17 @@ export default function Course() {
   return (
     <Page title={course()?.title ?? ''}>
       <h1 class="text-3xl mb-4">{course()?.title}</h1>
+      <Show when={course()?.image}>
+        {(src) => (
+          <img
+            class="w-full lg:max-h-96 max-h-84 object-cover rounded-xl"
+            src={src()}
+            alt={course()?.title ?? ''}
+          />
+        )}
+      </Show>
       <Graph
-        class="bg-white border rounded-xl w-full h-[800px]"
+        class="mt-8 bg-white border rounded-xl w-full h-[800px]"
         query={{ courses: { some: { code: params.course } } }}
       />
     </Page>
