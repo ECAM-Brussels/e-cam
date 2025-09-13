@@ -74,7 +74,7 @@ class Vector:
     @strawberry.field
     def norm(self) -> "Expression":
         a = sympy.Matrix(self.coordinates)
-        return sympy.sqrt(a.dot(a))
+        return Expression(expr=sympy.sqrt(a.dot(a)))
 
     @strawberry.field
     def permute(self, swaps: list[tuple[int, int]]) -> "Vector":
@@ -82,3 +82,9 @@ class Vector:
         for [i, j] in swaps:
             coord[i], coord[j] = coord[j], coord[i]
         return Vector(coordinates=coord)
+
+    @strawberry.field
+    def unit_vector(self) -> "Vector":
+        v = sympy.Matrix(self.coordinates)
+        norm = sympy.sqrt(v.dot(v))
+        return Vector(coordinates=[c / norm for c in self.coordinates])
