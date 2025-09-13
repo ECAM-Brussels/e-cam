@@ -30,15 +30,15 @@ const { Component, schema } = createExerciseType({
     'use server'
     const { expression } = await request(
       graphql(`
-        query CheckArgument($attempt: Math!, $expr: Math!) {
+        query CheckArgument($attempt: Math!, $expr: Math!, $modulo: Math!) {
           expression(expr: $expr) {
             arg {
-              isEqual(expr: $attempt)
+              isEqual(expr: $attempt, modulo: $modulo)
             }
           }
         }
       `),
-      { ...question, attempt },
+      { ...question, attempt, modulo: `2 \\pi` },
     )
     return expression.arg.isEqual
   },
