@@ -94,10 +94,10 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
           <div class="lg:w-[392px]" classList={{ hidden: fullScreen() }}>
             <Sidebar fullScreen={fullScreen()} {...props} elo={user()?.score} eloDiff={eloDiff()} />
           </div>
-          <div class="grow">
+          <div class="grow max-w-full overflow-hidden">
             <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl">{props.children}</ErrorBoundary>
             <Show when={options().whiteboard}>
-              <div class="h-full border max-w-full relative" ref={boardContainer}>
+              <div class="h-full border max-w-full relative overflow-hidden" ref={boardContainer}>
                 <Whiteboard
                   class="bg-white"
                   requestFullScreen={() => {
