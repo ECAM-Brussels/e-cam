@@ -11,7 +11,16 @@ slideshow: true
 
 #. Appearance of a web page (CSS)
 
-# Requests and Responses
+# Requests and Responses {.w-1--2}
+
+~~~ mermaid
+sequenceDiagram
+  participant client as Client
+  participant server as Server
+  client ->> server: Request
+  server ->> server: Processing request
+  server ->> client: Response
+~~~
 
 # Hello world {.w-1--2}
 
@@ -84,3 +93,22 @@ slideshow: true
 - `li`: list item
 :::
 :::::
+
+# Formulaire
+
+~~~ html {.run}
+<form method="POST" action="/url">
+  <label>
+    Name:
+    <input name="name" />
+  </label>
+  <label>
+    Email:
+    <input type="email" name="email" />
+  </label>
+  <label>
+    Password:
+    <input type="password" name="password" />
+  </label>
+</form>
+~~~
