@@ -16,12 +16,12 @@ const { Component, schema } = createExerciseType({
   Component: (props) => (
     <>
       <p>
-        Calculez le volume du parallélépipède dont 4 des sommets sont
+        Calculez le volume du parallélépipède dont 4 des sommets sont{' '}
         <For each={props.question.points}>
           {(point, index) => (
             <>
-              <Math value={`\\begin{pmatrix}${point.join(' \\\\ ')}\\end{pmatrix}`} />
-              <Show when={index() < props.question.points.length - 2}>,</Show>
+              <Math value={`\\left(${point.join(', ')}\\right)`} />
+              <Show when={index() < props.question.points.length - 2}>, </Show>
               <Show when={index() === props.question.points.length - 2}>
                 <> et </>
               </Show>
