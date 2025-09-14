@@ -3,6 +3,34 @@ title: Trigonométrie I
 slideshow: true
 ---
 
+# Préparation {.columns-2}
+
+::: {.exercise title="Exercise 32"}
+Trouvez les autres nombres trigonométriques sachant que
+$$\cos x = -\frac 1 3, \quad \pi < x < \frac {3 \pi} 2$$
+
+::::: text-sm
+**Réponses**: $\sin x = -\frac 2 3 \sqrt 2$, $\tan x = 2 \sqrt 2$, $\cot x = \frac {\sqrt 2} 4$
+:::::
+:::
+
+::: {.exercise title="Exercise 36"}
+Trouvez la valeur de $x$.
+<RightTriangle c="25\text{cm}" a="x" B="40^{\circ}" width={275} height={275} />
+
+::::: text-sm
+Réponse: 19.15111 cm
+:::::
+:::
+
+::: {.exercise title="Exercise 46"}
+Prouvez que $(\sin x + \cos x)^2 = 1 + \sin 2x$.
+:::
+
+::: {.exercise title="Exercise 48"}
+Prouvez que $\tan^2 \alpha - \sin^2 \alpha = \tan^2 \alpha \sin^2 \alpha$.
+:::
+
 # Identités trigonométriques (pp. A28-A29) {.columns-2}
 
 ::: {.proposition title="Sécante, cosécante, cotangente"}
@@ -63,7 +91,7 @@ $$
 $$
 :::
 
-::: warning
+::: {.warning .text-sm}
 Vos réponses doivent être **exactes**.
 Il n'est donc pas permis de faire
 <Calculator value="\beta = \arctan(\frac{1}{3})" />
@@ -74,6 +102,10 @@ car vous perdrez en précision.
 - Exercice similaire: exemple 4 p. A27
 - Certaines formules (pp. A28-A30) relient $\cot$ à exactement un seul autre nombre trigonométrique.
   Essayez de les utiliser.
+:::
+
+::: text-sm
+**Réponse:** $\sin \beta = -\frac 1 {\sqrt {10}}$, $\cos \beta = -\frac 3 {\sqrt {10}}$, $\tan \beta = \frac 1 3$.
 :::
 
 # Exercice 51 p. A34 {.w-1--2}
