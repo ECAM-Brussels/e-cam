@@ -143,4 +143,4 @@ $$
 
 # Réponses
 
-<Iframe class="w-full h-full" src="/documents/pm1c-answers.pdf#page=3&zoom=page-fit" />
+<Iframe class="w-full h-full" src="/documents/pm1c-answers.pdf#page=3" />
