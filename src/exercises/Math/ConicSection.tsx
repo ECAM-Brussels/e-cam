@@ -74,6 +74,7 @@ const { Component, schema } = createExerciseType({
             <input
               type="checkbox"
               onChange={(e) => setConicSectionType(e.target.checked ? 'circle' : 'ellipse')}
+              checked={props.attempt?.type === 'circle'}
             />{' '}
             Ceci est un cercle
           </label>
