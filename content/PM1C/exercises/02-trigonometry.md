@@ -99,6 +99,9 @@ $$2 + \cos 2x = 3 \cos x$$
 Les arguments à gauche et à droite sont différents.
 Réfléchissez à quelle formule employer pour remplacer $\cos 2x$,
 essayez de limiter le nombre de fonctions trigonométriques en jeu!
+
+Si vous trouvez cette exercice difficile,
+essayez [ceux-ci sur la plateforme](/skills/trigonometry/simple-equations).
 :::
 
 # Exercice 76 p. A35 {.w-1--2}

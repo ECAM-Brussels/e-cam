@@ -256,6 +256,7 @@ S.intersect(Interval(0, 2*pi))
 
 ::: {.remark title="Exercices supplémentaires"}
 - Appendice D: 65-72
+- [Équations trigonométriques simples sur la plateforme](/skills/trigonometry/simple-equations)
 :::
 
 # Graphes trigonométriques (pp. A32-A34) {.columns-2}

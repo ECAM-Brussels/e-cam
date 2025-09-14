@@ -91,15 +91,15 @@ $$
 $$
 :::
 
-::: {.warning .text-sm}
+::: {.warning}
 Vos réponses doivent être **exactes**.
-Il n'est donc pas permis de faire
-<Calculator value="\beta = \arctan(\frac{1}{3})" />
+Il n'est donc pas permis d'employer `arctan` de votre calculatrice
 car vous perdrez en précision.
 :::
 
 ::: hint
 - Exercice similaire: exemple 4 p. A27
+- [Exercices sur la plateforme](/skills/trigonometry/trigonometric-numbers)
 - Certaines formules (pp. A28-A30) relient $\cot$ à exactement un seul autre nombre trigonométrique.
   Essayez de les utiliser.
 :::
