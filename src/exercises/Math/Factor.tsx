@@ -49,6 +49,7 @@ const { Component, schema } = createExerciseType({
   mark: (question, attempt) => checkFactorisation(attempt, question.expr),
   feedback: [
     async (remaining, question, attempt) => {
+      'use server'
       const data = await request(
         graphql(`
           query FactorisationFeedback($expr: Math!, $x: Math!, $attempt: Math!) {
@@ -113,22 +114,29 @@ const { Component, schema } = createExerciseType({
     (props) => (
       <Switch>
         <Match when={props.squaredSum || props.squareDiff}>
-          <Show when={props.remaining} fallback={<p>C'est bien un produit remarquable: <Math value={props.answer} /></p>}>
+          <Show
+            when={props.remaining}
+            fallback={
+              <p>
+                C'est bien un produit remarquable: <Math value={props.answer} />
+              </p>
+            }
+          >
             <p>Peux-tu vérifier si c'est un produit remarquable?</p>
           </Show>
         </Match>
         <Match when={props.correctRoots.length === 0}>
           <Show when={props.remaining} fallback={<p>hello</p>}>
             <Show
-            when={props.wrongSign.length}
-            fallback={<p>Est-ce que tu peux trouver une racine à vue?</p>}
-          >
-            <p>Vérifie le signe de tes racines.</p>
-          </Show>
-          <p>
-            Rappelle-toi que si <Math value={`${props.question.x} = a`} /> est une racine, alors{' '}
-            <Math value={`${props.question.x} - a`} /> est un facteur.
-          </p>
+              when={props.wrongSign.length}
+              fallback={<p>Est-ce que tu peux trouver une racine à vue?</p>}
+            >
+              <p>Vérifie le signe de tes racines.</p>
+            </Show>
+            <p>
+              Rappelle-toi que si <Math value={`${props.question.x} = a`} /> est une racine, alors{' '}
+              <Math value={`${props.question.x} - a`} /> est un facteur.
+            </p>
           </Show>
         </Match>
         <Match when={props.correctRoots.length === 1 && props.incorrectRoots}>
