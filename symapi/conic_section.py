@@ -66,9 +66,9 @@ class ConicSection:
             raise ValueError("This conic section is not a parabola")
         x, y = sympy.symbols("x y")
         if self.info.direction == "vertical":
-            return Expression(expr=sympy.Eq(y, -self.info.p))
+            return Expression(expr=sympy.Eq(y, self.info.y0 - self.info.p))
         else:
-            return Expression(expr=sympy.Eq(x, -self.info.p))
+            return Expression(expr=sympy.Eq(x, self.info.x0 - self.info.p))
 
     @strawberry.field
     def type(self) -> str:
@@ -124,6 +124,8 @@ class ConicSection:
 
     @strawberry.field
     def vertices(self) -> "Expression":
+        if self.info.type == "parabola":
+            return Expression(expr=sympy.FiniteSet((self.info.x0, self.info.y0)))
         if self.info.type in ["ellipse", "hyperbola"]:
             if self.info.direction == "horizontal":
                 return Expression(
