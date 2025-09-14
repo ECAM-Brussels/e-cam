@@ -200,7 +200,6 @@ const { Component, schema } = createExerciseType({
         `),
         { ...question, ...attempt },
       )
-      console.log(JSON.stringify(conicSection, null, 2))
       return (
         conicSection.type === 'ellipse' &&
         conicSection.center.isEqual &&
