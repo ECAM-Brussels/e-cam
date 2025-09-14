@@ -25,14 +25,14 @@ class ConicSection:
     equation: Math
 
     @strawberry.field
-    def asymptotes(self) -> "Expression":
-        result = set()
+    def asymptotes(self) -> list["Expression"]:
+        result = []
         x, y = sympy.symbols("x y")
         if self.info.type != "hyperbola":
-            return Expression(expr=result)
+            return result
         if self.info.direction == "horizontal":
-            result.update(
-                {
+            result.extend(
+                [
                     sympy.Eq(
                         y, self.info.b / self.info.a * (x - self.info.x0) + self.info.y0
                     ),
@@ -40,11 +40,11 @@ class ConicSection:
                         y,
                         -self.info.b / self.info.a * (x - self.info.x0) + self.info.y0,
                     ),
-                }
+                ]
             )
         else:
-            result.update(
-                {
+            result.extend(
+                [
                     sympy.Eq(
                         y, self.info.a / self.info.b * (x - self.info.x0) + self.info.y0
                     ),
@@ -52,9 +52,9 @@ class ConicSection:
                         y,
                         -self.info.a / self.info.b * (x - self.info.x0) + self.info.y0,
                     ),
-                }
+                ]
             )
-        return Expression(expr=result)
+        return [Expression(expr=expr) for expr in result]
 
     @strawberry.field
     def direction(self) -> str:

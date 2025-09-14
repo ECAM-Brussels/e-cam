@@ -1,5 +1,5 @@
 import { sample } from 'lodash-es'
-import { createEffect, createSignal, Show } from 'solid-js'
+import { createEffect, createSignal, For, Show } from 'solid-js'
 import { z } from 'zod'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
@@ -243,7 +243,8 @@ const { Component, schema } = createExerciseType({
             $equation: Math!
             $foci: MathSet!
             $vertices: MathSet!
-            $asymptotes: MathSet!
+            $asymptote: Math!
+            $asymptote2: Math!
           ) {
             conicSection(equation: $equation) {
               type
@@ -254,14 +255,32 @@ const { Component, schema } = createExerciseType({
                 isSetEqual(S: $foci)
               }
               asymptotes {
-                isSetEqual(S: $asymptotes)
+                one: isEqual(expr: $asymptote)
+                two: isEqual(expr: $asymptote2)
               }
             }
           }
         `),
-        { ...question, ...attempt },
+        {
+          ...question,
+          ...attempt,
+          asymptote: attempt.asymptotes[1],
+          asymptote2: attempt.asymptotes[2],
+        },
       )
-      return conicSection.type === 'hyperbola' && conicSection.foci.isSetEqual
+      const asymptotes = new Set(conicSection.asymptotes.map((a) => (a.one ? 1 : a.two ? 2 : 0)))
+      console.log(JSON.stringify(question, null, 2))
+      console.log(JSON.stringify(attempt, null, 2))
+      console.log(asymptotes)
+      console.log(JSON.stringify(conicSection, null, 2))
+      return (
+        conicSection.type === 'hyperbola' &&
+        conicSection.foci.isSetEqual &&
+        conicSection.vertices.isSetEqual &&
+        asymptotes.size == 2 &&
+        asymptotes.has(1) &&
+        asymptotes.has(2)
+      )
     }
     return false
   },
@@ -276,9 +295,6 @@ const { Component, schema } = createExerciseType({
               isCircle
               asymptotes {
                 expr
-                list {
-                  expr
-                }
               }
               center {
                 expr
@@ -315,10 +331,10 @@ const { Component, schema } = createExerciseType({
             Foyers: <Math value={props.foci.expr} />
           </li>
         </Show>
-        <Show when={props.asymptotes.list.length}>
+        <Show when={props.asymptotes.length}>
           <li>
-            Asymptotes:
-            <Math value={props.asymptotes.expr} />
+            Asymptotes: <Math value={props.asymptotes[0].expr} />,{' '}
+            <Math value={props.asymptotes[1].expr} />
           </li>
         </Show>
         <Show when={props.vertices.list.length}>
