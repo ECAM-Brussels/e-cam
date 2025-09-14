@@ -93,6 +93,39 @@ const { Component, schema } = createExerciseType({
       return system.check
     }
   },
+  feedback: [
+    async (remaining, question) => {
+      'use server'
+      const { system } = await request(
+        graphql(`
+          query SolveSystem($equations: [Math!]!, $variables: [Math!]!) {
+            system {
+              solve(equations: $equations, variables: $variables) {
+                expr
+              }
+            }
+          }
+        `),
+        question,
+      )
+      return {
+        remaining,
+        ...question,
+        answer: system.solve.map((sol) => sol.expr),
+      }
+    },
+    (props) => (
+      <Show when={props.answer.length} fallback={<p>Le système n'a pas de solution</p>}>
+        <For each={props.answer}>
+          {(val, i) => (
+            <p>
+              <Math value={`${props.variables[i()]} = ${val}`} displayMode />
+            </p>
+          )}
+        </For>
+      </Show>
+    ),
+  ],
   generator: {
     params: z.object({
       Variables: z
