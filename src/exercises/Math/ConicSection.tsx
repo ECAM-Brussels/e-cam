@@ -69,6 +69,15 @@ const { Component, schema } = createExerciseType({
             </select>
           </label>
         </Show>
+        <Show when={props.question.type === 'ellipse'}>
+          <label>
+            <input
+              type="checkbox"
+              onChange={(e) => setConicSectionType(e.target.checked ? 'circle' : 'ellipse')}
+            />{' '}
+            Ceci est un cercle
+          </label>
+        </Show>
         <ul>
           <Show when={['ellipse', 'circle', 'hyperbola'].includes(conicSectionType())}>
             <li>
