@@ -166,27 +166,32 @@ const { Component, schema } = createExerciseType({
     generate: async (params) => {
       'use server'
       if (params.type === 'simpleTrigonometric') {
+        // f(ax + b) = f(c)
         const f = sample(params.F)
         const a = sample(params.A)
         const b = sample(params.B)
         const c = sample(params.C)
         const x = sample(params.X)
         const S = sample(params.S)
-        const { expression } = await request(
+        const { lhs, rhs } = await request(
           graphql(`
-            query CalculateArg($expr: Math!) {
-              expression(expr: $expr) {
+            query CalculateSides($lhs: Math!, $rhs: Math!) {
+              lhs: expression(expr: $lhs) {
+                simplify {
+                  expr
+                }
+              }
+              rhs: expression(expr: $rhs) {
                 simplify {
                   expr
                 }
               }
             }
           `),
-          { expr: `(${a}) ${x} + ${b}` },
+          { lhs: `(${a}) ${x} + ${b}`, rhs: `\\${f}(${c})` },
         )
-        const arg = expression.simplify.expr
         return {
-          equation: `\\${f}\\left(${arg}\\right) = ${c}`,
+          equation: `\\${f}\\left(${lhs.simplify.expr}\\right) = ${rhs.simplify.expr}`,
           S,
           x,
         }
