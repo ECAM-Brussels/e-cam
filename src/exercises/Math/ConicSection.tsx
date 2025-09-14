@@ -70,13 +70,15 @@ const { Component, schema } = createExerciseType({
           </label>
         </Show>
         <ul>
-          <Show when={['ellipse', 'circle'].includes(conicSectionType())}>
+          <Show when={['ellipse', 'circle', 'hyperbola'].includes(conicSectionType())}>
             <li>
               Centre:{' '}
               <Math
                 name="attempt.center"
                 value={
-                  props.attempt?.type === 'circle' || props.attempt?.type === 'ellipse'
+                  props.attempt?.type === 'circle' ||
+                  props.attempt?.type === 'ellipse' ||
+                  props.attempt?.type === 'hyperbola'
                     ? props.attempt.center
                     : ''
                 }
@@ -146,6 +148,7 @@ const { Component, schema } = createExerciseType({
     }),
     z.object({
       type: z.literal('hyperbola'),
+      center: z.string().nonempty(),
       asymptotes: finiteSet,
       vertices: finiteSet,
       foci: finiteSet,
@@ -241,6 +244,7 @@ const { Component, schema } = createExerciseType({
         graphql(`
           query CheckHyperbola(
             $equation: Math!
+            $center: Math!
             $foci: MathSet!
             $vertices: MathSet!
             $asymptote: Math!
@@ -248,6 +252,9 @@ const { Component, schema } = createExerciseType({
           ) {
             conicSection(equation: $equation) {
               type
+              center {
+                isEqual(expr: $center)
+              }
               vertices {
                 isSetEqual(S: $vertices)
               }
@@ -269,14 +276,11 @@ const { Component, schema } = createExerciseType({
         },
       )
       const asymptotes = new Set(conicSection.asymptotes.map((a) => (a.one ? 1 : a.two ? 2 : 0)))
-      console.log(JSON.stringify(question, null, 2))
-      console.log(JSON.stringify(attempt, null, 2))
-      console.log(asymptotes)
-      console.log(JSON.stringify(conicSection, null, 2))
       return (
         conicSection.type === 'hyperbola' &&
         conicSection.foci.isSetEqual &&
         conicSection.vertices.isSetEqual &&
+        conicSection.center.isEqual &&
         asymptotes.size == 2 &&
         asymptotes.has(1) &&
         asymptotes.has(2)
