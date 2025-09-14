@@ -1,7 +1,6 @@
 import { sample } from 'lodash-es'
 import { Show } from 'solid-js'
 import { z } from 'zod'
-import EquationSteps from '~/components/EquationSteps'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
 import { createExerciseType } from '~/lib/exercises/base'
@@ -13,23 +12,14 @@ const { Component, schema } = createExerciseType({
   Component: (props) => (
     <>
       <p class="my-4">Complétez le carré dans l'expression suivante.</p>
-      <EquationSteps
-        lhs={(props) => (
-          <Math class="justify-self-end" value={`${props.i == 0 ? props.value : ''} =`} />
-        )}
-        rhs={(props) => <Math editable name="attempt" value={props.value} />}
-        values={(props.attempt ?? ['']).map((value) => [props.question.expr, value])}
-      />
+      <div class="flex justify-center items-center gap-2">
+        <Math value={`${props.question.expr}=`} displayMode />
+        <Math name="attempt" editable value={props.attempt} />
+      </div>
     </>
   ),
   question: z.object({ expr: z.string() }),
-  attempt: z.union([
-    z
-      .string()
-      .nonempty()
-      .transform((s) => [s]),
-    z.string().nonempty().array(),
-  ]),
+  attempt: z.string().nonempty(),
   mark: async (question, attempt) => {
     'use server'
     const data = await request(
@@ -41,7 +31,7 @@ const { Component, schema } = createExerciseType({
           }
         }
       `),
-      { expr: question.expr, attempt: attempt.at(-1) ?? '' },
+      { ...question, attempt },
     )
     return data.attempt.isEqual && data.attempt.count === 1
   },
