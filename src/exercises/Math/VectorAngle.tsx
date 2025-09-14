@@ -81,8 +81,8 @@ const { Component, schema } = createExerciseType({
           query RotateVectors($a: [Math!]!, $b: [Math!]!, $phi: Math!, $theta: Math!, $psi: Math!) {
             a: vector(coordinates: $a) {
               eulerRotate(phi: $phi, theta: $theta, psi: $psi) {
-                expr {
-                  simplify {
+                normalize {
+                  expr {
                     expr
                   }
                 }
@@ -90,8 +90,8 @@ const { Component, schema } = createExerciseType({
             }
             b: vector(coordinates: $b) {
               eulerRotate(phi: $phi, theta: $theta, psi: $psi) {
-                expr {
-                  simplify {
+                normalize {
+                  expr {
                     expr
                   }
                 }
@@ -102,8 +102,8 @@ const { Component, schema } = createExerciseType({
         { a, b, phi, theta, psi },
       )
       return {
-        a: data.a.eulerRotate.expr.map((e) => e.simplify.expr),
-        b: data.b.eulerRotate.expr.map((e) => e.simplify.expr),
+        a: data.a.eulerRotate.normalize.expr.map((e) => e.expr),
+        b: data.b.eulerRotate.normalize.expr.map((e) => e.expr),
         unit,
       }
     },

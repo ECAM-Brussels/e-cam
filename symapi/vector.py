@@ -77,6 +77,11 @@ class Vector:
         return Expression(expr=sympy.sqrt(a.dot(a)))
 
     @strawberry.field
+    def normalize(self) -> "Vector":
+        lcm = sympy.lcm([sympy.denom(sympy.factor(c)) for c in self.coordinates])
+        return Vector(coordinates=[sympy.simplify(lcm * c) for c in self.coordinates])
+
+    @strawberry.field
     def permute(self, swaps: list[tuple[int, int]]) -> "Vector":
         coord = self.coordinates
         for [i, j] in swaps:
