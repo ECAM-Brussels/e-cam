@@ -76,7 +76,7 @@ const { Component, schema } = createExerciseType({
         ) {
           equation: expression(expr: $equation) {
             solveset(S: $S, x: $x, complex: $complex) {
-              isSetEqual(S: $attempt)
+              isSetEqual(S: $attempt, complex: $complex)
             }
           }
         }

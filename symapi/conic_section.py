@@ -10,7 +10,7 @@ from symapi.expression import Expression
 
 @dataclasses.dataclass
 class Info:
-    type: Literal["ellipse", "hyperbola", "parabola"]
+    type: Literal["ellipse", "hyperbola", "parabola", "circle"]
     direction: Literal["horizontal", "vertical"]
     x0: Math
     y0: Math
@@ -146,6 +146,7 @@ class ConicSection:
         equation = self.equation
         if type(equation) == sympy.Eq:
             equation = equation.lhs - equation.rhs
+        equation = sympy.expand(equation)
 
         a, b = sympy.symbols("a b", positive=True)
         x, y, x0, y0, c, p = sympy.symbols("x y x0 y0 c p")
@@ -189,7 +190,7 @@ class ConicSection:
         data = coeff((x - x0) ** 2 / a**2 + (y - y0) ** 2 / b**2 - 1)
         if data:
             return Info(
-                type="ellipse",
+                type="ellipse" if data[a] != data[b] else "circle",
                 direction="horizontal" if data[a] >= data[b] else "vertical",
                 a=data[a],
                 b=data[b],

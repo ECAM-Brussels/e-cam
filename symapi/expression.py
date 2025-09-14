@@ -230,9 +230,16 @@ class Expression:
             """
         )
     )
-    def is_set_equal(self, S: MathSet) -> bool:
+    def is_set_equal(self, S: MathSet, complex: Optional[bool] = False) -> bool:
         x = sympy.Symbol("x")
-        sanitize = sympy.Lambda(x, sympy.expand_complex(sympy.simplify(x)))
+
+        def simplify(expr: Math):
+            expr = sympy.simplify(expr)
+            if complex:
+                expr = sympy.expand_complex(expr)
+            return expr
+
+        sanitize = sympy.Lambda(x, simplify(x))
         return (
             sympy.SymmetricDifference(
                 sympy.simplify(self.expr), sympy.simplify(sympy.ImageSet(sanitize, S))

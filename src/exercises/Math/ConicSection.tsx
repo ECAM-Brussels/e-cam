@@ -1,5 +1,5 @@
 import { sample } from 'lodash-es'
-import { createEffect, createSignal, Match, Show, Switch } from 'solid-js'
+import { createEffect, createSignal, Show } from 'solid-js'
 import { z } from 'zod'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
@@ -40,10 +40,15 @@ const { Component, schema } = createExerciseType({
       props.question.type,
     )
     createEffect(() => setConicSectionType(props.question.type))
-    const foci = () => (props.attempt && 'foci' in props.attempt ? props.attempt.foci : ['', ''])
+    const foci = () =>
+      props.attempt && 'foci' in props.attempt ? props.attempt.foci.slice(1) : ['', '']
     const radius = () => (props.attempt && 'radius' in props.attempt ? props.attempt.radius : '')
     const vertices = () =>
-      props.attempt && 'vertices' in props.attempt ? props.attempt.vertices : ['', '']
+      props.attempt && 'vertices' in props.attempt ? props.attempt.vertices.slice(1) : ['', '']
+    const asymptotes = () =>
+      props.attempt && 'asymptotes' in props.attempt ? props.attempt.asymptotes.slice(1) : ['', '']
+    const directrix = () =>
+      props.attempt && 'directrix' in props.attempt ? props.attempt.directrix.slice(1) : ''
     return (
       <>
         <p>Caractérisez {obj()} dont l'équation est donnée par</p>
@@ -79,36 +84,40 @@ const { Component, schema } = createExerciseType({
               />
             </li>
           </Show>
-          <Switch>
-            <Match when={conicSectionType() === 'circle'}>
-              <li>
-                Rayon: <Math name="attempt.radius" value={radius()} editable />
-              </li>
-            </Match>
-            <Match when={['ellipse', 'hyperbola', 'parabola'].includes(conicSectionType())}>
-              <li>
-                Foyer{conicSectionType() !== 'parabola' && 's'}:{' '}
-                <Math name="attempt.foci" value={foci()[0]} editable />
-                <Show when={conicSectionType() !== 'parabola'}>
-                  {' '}
-                  et <Math name="attempt.foci" value={foci()[1]} editable />
-                </Show>
-              </li>
-              <li>
-                Sommet{conicSectionType() !== 'parabola' && 's'}:{' '}
-                <Math name="attempt.vertices" value={vertices()[0]} editable />
-                <Show when={conicSectionType() !== 'parabola'}>
-                  {' '}
-                  et <Math name="attempt.vertices" value={vertices()[1]} editable />
-                </Show>
-              </li>
-            </Match>
-            <Match when={conicSectionType() === 'hyperbola'}>
-              <li>
-                Asymptotes: <Math name="attempt.asymptotes" editable />
-              </li>
-            </Match>
-          </Switch>
+          <Show when={conicSectionType() === 'circle'}>
+            <li>
+              Rayon: <Math name="attempt.radius" value={radius()} editable />
+            </li>
+          </Show>
+          <Show when={['ellipse', 'hyperbola', 'parabola'].includes(conicSectionType())}>
+            <li>
+              Foyer{conicSectionType() !== 'parabola' && 's'}:{' '}
+              <Math name="attempt.foci" value={foci()[0]} editable />
+              <Show when={conicSectionType() !== 'parabola'}>
+                {' '}
+                et <Math name="attempt.foci" value={foci()[1]} editable />
+              </Show>
+            </li>
+            <li>
+              Sommet{conicSectionType() !== 'parabola' && 's'}:{' '}
+              <Math name="attempt.vertices" value={vertices()[0]} editable />
+              <Show when={conicSectionType() !== 'parabola'}>
+                {' '}
+                et <Math name="attempt.vertices" value={vertices()[1]} editable />
+              </Show>
+            </li>
+          </Show>
+          <Show when={conicSectionType() === 'hyperbola'}>
+            <li>
+              Asymptotes: <Math name="attempt.asymptotes" value={asymptotes()[0]} editable /> et{' '}
+              <Math name="attempt.asymptotes" value={asymptotes()[0]} editable />
+            </li>
+          </Show>
+          <Show when={conicSectionType() === 'parabola'}>
+            <li>
+              Directrice: <Math name="attempt.directrix" value={directrix()} editable />
+            </li>
+          </Show>
         </ul>
       </>
     )
@@ -133,7 +142,7 @@ const { Component, schema } = createExerciseType({
       type: z.literal('parabola'),
       foci: finiteSet,
       vertices: finiteSet,
-      directrix: z.string(),
+      directrix: z.string().nonempty(),
     }),
     z.object({
       type: z.literal('hyperbola'),
@@ -191,6 +200,7 @@ const { Component, schema } = createExerciseType({
         `),
         { ...question, ...attempt },
       )
+      console.log(JSON.stringify(conicSection, null, 2))
       return (
         conicSection.type === 'ellipse' &&
         conicSection.center.isEqual &&
@@ -230,7 +240,12 @@ const { Component, schema } = createExerciseType({
     } else if (attempt.type === 'hyperbola') {
       const { conicSection } = await request(
         graphql(`
-          query CheckHyperbola($equation: Math!, $foci: MathSet!, $vertices: MathSet!) {
+          query CheckHyperbola(
+            $equation: Math!
+            $foci: MathSet!
+            $vertices: MathSet!
+            $asymptotes: MathSet!
+          ) {
             conicSection(equation: $equation) {
               type
               vertices {
@@ -238,6 +253,9 @@ const { Component, schema } = createExerciseType({
               }
               foci {
                 isSetEqual(S: $foci)
+              }
+              asymptotes {
+                isSetEqual(S: $asymptotes)
               }
             }
           }
@@ -248,6 +266,71 @@ const { Component, schema } = createExerciseType({
     }
     return false
   },
+  feedback: [
+    async (remaining, question) => {
+      'use server'
+      const { conicSection } = await request(
+        graphql(`
+          query GetConicSectionInfo($equation: Math!) {
+            conicSection(equation: $equation) {
+              type
+              isCircle
+              asymptotes {
+                expr
+                list {
+                  expr
+                }
+              }
+              center {
+                expr
+              }
+              vertices {
+                list {
+                  expr
+                }
+                expr
+              }
+              foci {
+                expr
+              }
+            }
+          }
+        `),
+        question,
+      )
+      return {
+        remaining,
+        ...question,
+        ...conicSection,
+        type: (conicSection.isCircle ? 'circle' : conicSection.type) as ConicSectionType,
+      }
+    },
+    (props) => (
+      <ul>
+        <li>Type de conique: {props.type}</li>
+        <li>
+          Centre: <Math value={props.center.expr} />
+        </li>
+        <Show when={props.type !== 'circle'}>
+          <li>
+            Foyers: <Math value={props.foci.expr} />
+          </li>
+        </Show>
+        <Show when={props.asymptotes.list.length}>
+          <li>
+            Asymptotes:
+            <Math value={props.asymptotes.expr} />
+          </li>
+        </Show>
+        <Show when={props.vertices.list.length}>
+          <li>
+            Sommets:
+            <Math value={props.vertices.expr} />
+          </li>
+        </Show>
+      </ul>
+    ),
+  ],
   generator: {
     params: z.object({
       Types: conicSectionType
