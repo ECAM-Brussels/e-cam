@@ -37,9 +37,9 @@ const { Component, schema } = createExerciseType({
         parabola: 'la parabole',
       })[props.question.type]
     const [conicSectionType, setConicSectionType] = createSignal<ConicSectionExerciseType>(
-      props.question.type,
+      props.attempt?.type ?? props.question.type,
     )
-    createEffect(() => setConicSectionType(props.question.type))
+    createEffect(() => setConicSectionType(props.attempt?.type ?? props.question.type))
     const foci = () =>
       props.attempt && 'foci' in props.attempt ? props.attempt.foci.slice(1) : ['', '']
     const radius = () => (props.attempt && 'radius' in props.attempt ? props.attempt.radius : '')
