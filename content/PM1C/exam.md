@@ -10,6 +10,8 @@ title: Examen
 [Compétences](/PM1C/skills)
 
 [Informations sur l'examen](/PM1C/exam)
+
+<a href="/documents/pm1c-answers.pdf" target="_blank">Réponses des exercices</a>
 :::
 
 ::::: {.bg-white .rounded-xl .border .p-8}

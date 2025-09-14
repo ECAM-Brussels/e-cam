@@ -12,6 +12,8 @@ title: Compétences de PM1C
 [Compétences](/PM1C/skills)
 
 [Informations sur l'examen](/PM1C/exam)
+
+<a href="/documents/pm1c-answers.pdf" target="_blank">Réponses des exercices</a>
 :::
 
 ~~~ {.tsx .raw}
