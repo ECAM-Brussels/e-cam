@@ -1,5 +1,5 @@
 import { sample } from 'lodash-es'
-import { createEffect, createSignal, For, Show } from 'solid-js'
+import { createEffect, createSignal, Show } from 'solid-js'
 import { z } from 'zod'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
