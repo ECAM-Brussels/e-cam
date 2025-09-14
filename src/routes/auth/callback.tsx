@@ -42,6 +42,7 @@ export async function GET(event: APIEvent) {
     codeVerifier: undefined,
     state: undefined,
     email: userInfo.email,
+    preferences: { ecam: userInfo.email.endsWith('@ecam.be') },
   })
   return new Response(null, {
     status: 302,
