@@ -3,6 +3,25 @@ title: Trigonométrie I
 slideshow: true
 ---
 
+# Préparation {.columns-2}
+
+::: {.exercise title="Exercice D.60"}
+Si $\sin x = \frac 1 3$ et $\sec y = \frac 5 4$, $0 \leq x, y \leq \pi/2$,
+évaluez $\cos(x + y)$.
+:::
+
+::: {.exercise title="Exercice D.69"}
+Résolvez l'équation $\sin 2x = \cos x$ sur $[0, 2\pi]$.
+:::
+
+::: {.exercise title="Exercice D.71"}
+Résolvez l'équation $\sin x = \tan x$ sur $[0, 2\pi]$.
+:::
+
+::: {.exercise title="Exercice D.75"}
+Résolvez l'inéquation $-1 < \tan x < 1$.
+:::
+
 # Identités trigonométriques (pp. A28-A29) {.columns-2}
 
 ::: {.proposition title="Sécante, cosécante, cotangente"}
@@ -121,3 +140,7 @@ $$
 - Tentez de réécrire le membre de gauche comme $A \cos(x + \varphi)$.
 - Résolvez l'équation avant l'inéquation
 :::
+
+# Réponses
+
+<Iframe class="w-full h-full" src="/documents/pm1c-answers.pdf#page=3&zoom=page-fit" />

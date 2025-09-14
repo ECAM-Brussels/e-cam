@@ -174,3 +174,7 @@ $$
 # Exercices supplémentaires corrigés {.w-1--2}
 
 <Iframe class="h-full w-full" src="https://pmt.physicsandmathstutor.com//download/Maths/A-level/Pure/Trigonometry-2/Edexcel-Set-B/Trigonometric%20Equations.pdf" />
+
+# Réponses
+
+<Iframe class="w-full h-full" src="/documents/pm1c-answers.pdf#page=3&zoom=page-fit" />
