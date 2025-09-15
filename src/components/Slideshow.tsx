@@ -125,7 +125,7 @@ export default function Slideshow(props: SlideshowProps) {
 function Remote(props: SlideshowProps) {
   const [print, setPrint] = createSearchParam('print', z.boolean().default(false))
   return (
-    <div class="absolute bottom-4 right-4 text-4xl z-20 flex gap-4 items-center print:hidden">
+    <div class="absolute bottom-4 right-4 text-4xl flex gap-4 items-center print:hidden">
       <Breadcrumbs class="text-sm mr-8" />
       <Arrow {...props} dir="left" />
       <div class="flex flex-col items-center">
@@ -190,7 +190,7 @@ function Arrow(props: SlideshowProps & { dir: keyof typeof arrows }) {
   })
 
   return (
-    <div>
+    <div class="z-30">
       <Show when={link()} fallback={<Fa icon={icon()} class="text-gray-200" />}>
         {(link) => (
           <A href={link()} noScroll ref={setArrow}>

@@ -23,7 +23,7 @@ export default function Breadcrumbs(props: BreadcrumbsProps) {
     <nav class={props.class ?? 'container mx-auto my-4 text-slate-500'}>
       <ol class="inline-flex">
         <li>
-          <a href="/" class="hover:text-blue-600">
+          <a href="/" class="hover:text-blue-600 z-30">
             e·cam
           </a>
         </li>
@@ -31,7 +31,9 @@ export default function Breadcrumbs(props: BreadcrumbsProps) {
           {(crumb) => (
             <li class="flex items-center">
               <Separator />
-              <a href={crumb.url}>{crumb.title}</a>
+              <a class="z-30" href={crumb.url}>
+                {crumb.title}
+              </a>
             </li>
           )}
         </For>
