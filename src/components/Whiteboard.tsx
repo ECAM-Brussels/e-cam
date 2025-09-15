@@ -10,7 +10,7 @@ import {
 import { createAsyncStore } from '@solidjs/router'
 import { cloneDeep, debounce } from 'lodash-es'
 import { getStroke } from 'perfect-freehand'
-import { createEffect, createSignal, For, on, onMount, Show } from 'solid-js'
+import { createEffect, createSignal, For, on, onCleanup, onMount, Show } from 'solid-js'
 import { createStore, SetStoreFunction, unwrap } from 'solid-js/store'
 import Fa from '~/components/Fa'
 import Spinner from '~/components/Spinner'
@@ -74,11 +74,15 @@ export default function Whiteboard(props: WhiteboardProps) {
       setHeight(props.container.clientHeight)
     }
   }, 10)
+  let resizeObserver: ResizeObserver | undefined = undefined
   onMount(() => {
     if (props.container) {
-      const resizeObserver = new ResizeObserver((_entries) => resize())
+      resizeObserver = new ResizeObserver((_entries) => resize())
       resizeObserver.observe(props.container)
     }
+  })
+  onCleanup(() => {
+    resizeObserver?.disconnect()
   })
 
   const user = createAsyncStore(() => getUser())
