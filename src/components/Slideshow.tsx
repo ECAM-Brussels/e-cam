@@ -9,7 +9,7 @@ import {
   faPrint,
 } from '@fortawesome/free-solid-svg-icons'
 import { A, createAsync } from '@solidjs/router'
-import { createSignal, For, onMount, Show, type JSXElement } from 'solid-js'
+import { createSignal, For, onCleanup, onMount, Show, type JSXElement } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import z from 'zod'
 import Breadcrumbs from '~/components/Breadcrumbs'
@@ -180,13 +180,18 @@ function Arrow(props: SlideshowProps & { dir: keyof typeof arrows }) {
   }
 
   const [arrow, setArrow] = createSignal<HTMLAnchorElement | undefined>(undefined)
+  const handleKeyDown = (event: KeyboardEvent) => {
+    const arr = arrow()
+    if (event.key === arrows[props.dir][2] && arr && link()) {
+      arr.click()
+    }
+  }
   onMount(() => {
-    window.addEventListener('keydown', (event) => {
-      const arr = arrow()
-      if (event.key === arrows[props.dir][2] && arr && link()) {
-        arr.click()
-      }
-    })
+    window.addEventListener('keydown', handleKeyDown)
+  })
+
+  onCleanup(() => {
+    window.removeEventListener('keydown', handleKeyDown)
   })
 
   return (
