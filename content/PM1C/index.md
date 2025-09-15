@@ -60,7 +60,7 @@ title: 'Pont vers le supérieur: mathématiques'
   <ChapterInfo title="Droites et Coniques" query={{
     "page": {
       OR: [
-        { "title": { contains: "interpolation" } },
+        { "title": { contains: "premier degré" } },
         { "title": { contains: "hyperbole" } },
         { "title": { contains: "parabole" } },
         { "title": { contains: "ellipse" } },
