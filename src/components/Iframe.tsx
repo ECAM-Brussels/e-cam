@@ -8,7 +8,10 @@ export default function Iframe(props: IframeProps) {
     const safari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
     const pdf = /\.pdf($|[?#])/i.test(props.src)
     if (safari && pdf) {
-      const [base, hash] = props.src.split('#')
+      let [base, hash] = props.src.split('#')
+      if (base.startsWith('/')) {
+        base = `https://learning.ecam.be${base}`
+      }
       return `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(base)}${hash ? `#${hash}` : ''}`
     }
     return props.src
