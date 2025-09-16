@@ -140,7 +140,7 @@ $$
 :::
 
 ::: hint
-- Tentez de réécrire le membre de gauche comme $A \cos(x + \varphi)$.
+- Tentez de réécrire le membre de gauche comme $A \sin(x - \varphi)$.
 - Résolvez l'équation avant l'inéquation
 :::
 
