@@ -130,7 +130,7 @@ function Remote(props: SlideshowProps) {
       <Arrow {...props} dir="left" />
       <div class="flex flex-col items-center">
         <Arrow {...props} dir="up" />
-        <div class="flex flex-row">
+        <div class="flex flex-row z-50">
           <button
             title={props.showBoard ? 'Hide board' : 'Show board'}
             onClick={() => setPrint(true)}
