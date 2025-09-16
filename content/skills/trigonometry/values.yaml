@@ -8,6 +8,8 @@ courses:
 options:
   streak: 999
   initialElo: 800
+prerequisites:
+  - /skills/geometry/pythagoras
 body:
   - type: Calculate
     params:
