@@ -6,7 +6,7 @@ title: 'Pont vers le supérieur: mathématiques'
 
 ![Pont mathématiques](/images/PM1C.png){.w-full .lg:max-h-96 .max-h-84 .object-cover .rounded-xl}
 
-::: {.flex .gap-4 .justify-center}
+::: {.flex .flex-wrap .gap-4 .justify-center}
 [Ressources](/PM1C/)
 
 [Compétences](/PM1C/skills)
