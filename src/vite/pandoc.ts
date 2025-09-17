@@ -29,7 +29,7 @@ async function extractMetadata(file: string) {
   }
 }
 
-async function generatePage(file: string, prisma: PrismaClient) {
+async function generatePage(file: string, prisma: PrismaClient, force: boolean = false) {
   const relativePath = relative(resolve('content'), file)
   let outputPath = resolve('src/routes/(generated)', relativePath.replace(/\.md$/, '.tsx'))
   await mkdir(dirname(outputPath), { recursive: true })
@@ -68,7 +68,7 @@ async function generatePage(file: string, prisma: PrismaClient) {
 
   try {
     const [inStat, outStat] = await Promise.all([stat(file), stat(outputPath)])
-    if (outStat.mtime >= inStat.mtime) {
+    if (!force && outStat.mtime >= inStat.mtime) {
       return
     }
   } catch {}
@@ -104,10 +104,10 @@ async function generateImports() {
   return imports
 }
 
-async function buildAll(prisma: PrismaClient) {
+async function buildAll(prisma: PrismaClient, force = false) {
   const pages = await glob.glob('content/**/*.md')
   for (const file of pages) {
-    generatePage(file, prisma)
+    generatePage(file, prisma, force)
   }
 }
 
@@ -116,14 +116,16 @@ const pandocPlugin = (): Plugin => {
   return {
     name: 'pandoc-plugin',
     buildStart() {
+      console.log('Hello', process.env.NODE_ENV)
       prisma = new PrismaClient({
         datasources: { db: { url: process.env.DATABASE_URL } },
       })
-      buildAll(prisma)
+      const force = process.env.NODE_ENV !== 'development'
+      buildAll(prisma, force)
     },
     async handleHotUpdate({ file }) {
       if (file.endsWith('.md') && file.startsWith(resolve('content'))) {
-        generatePage(file, prisma)
+        generatePage(file, prisma, true)
       }
     },
   }
