@@ -119,6 +119,10 @@ norm = sqrt(a.dot(a))
 unit = a / norm
 ~~~
 
+::: remark
+Exercices sur la [plateforme](/skills/geometry/vectors/unit-vector)
+:::
+
 # Produit scalaire: visualisation
 
 <Geogebra id="G2yWterN" />
@@ -127,21 +131,67 @@ unit = a / norm
 - produit scalair nul: angle droit
 - produit scalaire positif: angle aigu
 
-# Produit scalaire p. 885 {.w-1--2}
+# Produit scalaire en coordonnées cartésiennes {.w-1--2}
 
-![](/images/dot_product.svg){.block .m-auto .h-44}
-
-::: {.definition title="Produit scalaire"}
+::: {.proposition title="Produits scalaires canoniques"}
 $$
-\vec a \cdot \vec b = \|\vec a\| \|\vec b\| \cos \theta
-\qquad
-\vec a \cdot \vec b = a_1 b_1 + a_2 b_2 + a_3 b_3
+\vec i \cdot \vec i = 1, \quad \vec i \cdot \vec j = 0, \quad \vec i \cdot \vec k = 0\\
+\vec j \cdot \vec i = 0, \quad \vec j \cdot \vec j = 1, \quad \vec j \cdot \vec k = 0\\
+\vec k \cdot \vec i = 0, \quad \vec k \cdot \vec j = 0, \quad \vec k \cdot \vec k = 1
+$$
+:::
+
+Sachant que le produit scalaire se distribue
+comme la multiplication classique,
+on montre que
+
+::: {.definition title="Produit scalaire en coordonnées cartésiennes"}
+$$
+\begin{pmatrix}
+x_1 \\ y_1 \\ z_1
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+x_2 \\ y_2 \\ z_2
+\end{pmatrix}
+= x_1 x_2 + y_1 y_2 + z_1 z_2
+$$
+:::
+
+# Norme {.w-1--2}
+
+$$
+\vec a =
+\begin{pmatrix}
+a_1 \\ a_2 \\ a_3
+\end{pmatrix}
+\quad \implies \quad
+\vec a \cdot \vec a
+= a_1^2 + a_2^2 + a_3^2
+$$
+
+::: {.definition title="Norme d'un vecteur"}
+$$
+\|\vec a\| = \vec a \cdot \vec a
 $$
 :::
 
 ::: remark
-$$\|\vec a\| = \sqrt{\vec a \cdot \vec a}$$
+- La norme n'est rien d'autre que la **longueur** d'un vecteur.
+- Exercices sur la [plateforme](/skills/geometry/vectors/norm)
 :::
+
+# Produit scalaire p. 885 {.w-1--2}
+
+![](/images/dot_product.svg){.block .m-auto .h-72}
+
+::: {.definition title="Produit scalaire (point de vue géométrique)"}
+$$
+\vec a \cdot \vec b = \|\vec a\| \|\vec b\| \cos \theta
+$$
+:::
+
+# Produit scalaire: exemples p. 885 {.w-1--2}
 
 ::: example
 $$
@@ -156,17 +206,28 @@ from sympy import *
 Matrix([-1, 7, 4]).dot(Matrix([6, 2, -1/2]))
 ~~~
 
+~~~ python {.run}
+from sympy import *
+Matrix([1, 2, -3]).dot(Matrix([0, 2, -1]))
+~~~
+
+::: remark
+Exercices sur la [plateforme](/skills/geometry/vectors/dot-product)
+:::
+
 # Angle entre deux vecteurs p. 887 {.w-1--2}
 
-![](/images/dot_product.svg){.block .m-auto .h-60}
+::::: {.flex .justify-center .items-center .gap-4}
+![](/images/dot_product.svg){.block .m-auto .h-44}
 
 $$
 \vec v \cdot \vec w = \|\vec v\| \|\vec w\| \cos \theta
-\quad \implies \quad
+\implies
 \boxed{
   \cos \theta = \frac {\vec v \cdot \vec w} {\|\vec v\| \|\vec w\|}
 }
 $$
+:::::
 
 ::: example
 Trouvez l'angle entre $\vec a = (2, 2, -1)$ et $\vec b = (5, -3, 2)$
@@ -179,6 +240,10 @@ b = Matrix([5, -3, 2])
 cosine = a.dot(b) / sqrt(a.dot(a) * b.dot(b))
 theta = acos(cosine).evalf()
 ~~~
+
+::: remark
+Plus d'exercices sur la [plateforme](/skills/geometry/vectors/angle)
+:::
 
 # Perpendicularité p. 887 {.w-1--2}
 
@@ -207,6 +272,41 @@ a.dot(b)
 
 ![](/images/right-hand_rule.png){.h-56 .block .m-auto}
 
+# Produit vectoriel: base canonique {.w-1--2}
+
+::: proposition
+$$
+\vec i \times \vec j = \vec k, \quad
+\vec j \times \vec k = \vec i, \quad
+\vec k \times \vec i = \vec j
+$$
+
+$$\vec a \times \vec a = \vec 0$$
+
+$$\vec a \times \vec b = -\vec b \times \vec a$$
+:::
+
+Sachant que le produit vectoriel se distribue
+comme la multiplication classique,
+on montre que
+
+::: {.definition title="Produit scalaire en coordonnées cartésiennes"}
+$$
+\begin{pmatrix}
+a_1 \\ a_2 \\ a_3
+\end{pmatrix}
+\times
+\begin{pmatrix}
+b_1 \\ b_2 \\ b_3
+\end{pmatrix} =
+\begin{pmatrix}
+a_2 b_3 - a_3 b_2\\
+a_3 b_1 - a_1 b_3\\
+a_1 b_2 - a_2 b_1
+\end{pmatrix}
+$$
+:::
+
 # Produit vectoriel p. 893 {.w-1--2}
 
 ::: {.definition title="Produit vectoriel"}
@@ -223,7 +323,7 @@ $$
 :::
 
 ::: remark
-Exercez-vous sur [la plateforme](/PM1C/practice/vectors/cross-product).
+Exercez-vous sur [la plateforme](/skills/geometry/vectors/cross-product).
 :::
 
 ::: example
@@ -278,10 +378,10 @@ n = (Q - P).cross(R - P)
 area = sqrt(n.dot(n)) / 2
 ~~~
 
-# Volume de parallélépipède p. 898 {.w-1--2}
+# Volume de parallélépipède p. 898 {.w-3--5}
 
-::::: {.flex .items-center .gap-8}
-![](/images/parallelepiped_volume.svg){.h-56 .block}
+::::: {.flex .justify-center .items-center .gap-4}
+![](/images/parallelepiped_volume.svg){.h-36}
 
 $$
 V = \left|\vec a \cdot (\vec b \times \vec c)\right|
@@ -289,16 +389,20 @@ $$
 :::::
 
 ::: example
-Montrez que les vecteurs $\vec a = (1, 4, -7)$, $\vec b = (2, -1, 4)$ et $\vec c = (0, -9, 18)$ sont coplanaires.
+Montrez que $\vec a = (1, 4, -7)$, $\vec b = (2, -1, 4)$ et $\vec c = (0, -9, 18)$ sont coplanaires.
 :::
 
-~~~ python {.run}
+~~~ python {.run .text-sm}
 from sympy import *
 a = Matrix([1, 4, -7])
 b = Matrix([2, -1, 4])
 c = Matrix([0, -9, 18])
 a.dot(b.cross(c))
 ~~~
+
+::: remark
+Exercices sur la [plateforme](/skills/geometry/vectors/triple-product)
+:::
 
 # Exercices supplémentaires {.w-1--2}
 
