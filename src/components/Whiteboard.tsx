@@ -190,6 +190,7 @@ export default function Whiteboard(props: WhiteboardProps) {
             setErasing={setErasing}
             board={board}
             position={props.toolbarPosition || 'top'}
+            readOnly={readOnly()}
           />
         </Show>
         <canvas
@@ -265,6 +266,7 @@ type ToolbarProps = {
   erasing: boolean
   setErasing: (nextVal: boolean) => void
   position: 'top' | 'bottom' | 'left' | 'hidden'
+  readOnly?: boolean
 }
 
 function Toolbar(props: ToolbarProps) {
@@ -284,50 +286,52 @@ function Toolbar(props: ToolbarProps) {
         'flex-col': props.position === 'left',
       }}
     >
-      <For each={pens}>
-        {(color) => (
-          <button
-            class="rounded-lg px-2 py-1 text-2xl border z-20"
-            classList={{ border: props.currentStroke.color === color && !props.erasing }}
-            style={{ color, 'border-color': color }}
-            onClick={() => {
-              props.setter('color', color)
-              props.setter('lineWidth', 2)
-              props.setErasing(false)
-            }}
-          >
-            <Fa icon={faPen} />
-          </button>
-        )}
-      </For>
-      <For each={highlighters}>
-        {(color) => (
-          <button
-            class="rounded-lg px-2 py-1 text-2xl border z-20"
-            classList={{ border: props.currentStroke.color === color && !props.erasing }}
-            style={{ color, 'border-color': color }}
-            onClick={() => {
-              props.setter('color', color)
-              props.setter('lineWidth', 30)
-              props.setErasing(false)
-            }}
-          >
-            <Fa icon={faHighlighter} />
-          </button>
-        )}
-      </For>
-      <button
-        class="rounded-lg px-2 py-1 text-2xl z-20"
-        classList={{ border: props.erasing }}
-        onClick={() => {
-          props.setErasing(true)
-        }}
-      >
-        <Fa icon={faEraser} />
-      </button>
-      <button class="rounded-lg px-2 py-1 text-2xl z-20" onClick={() => props.board.clearBoard()}>
-        <Fa icon={faBroom} />
-      </button>
+      <Show when={!props.readOnly}>
+        <For each={pens}>
+          {(color) => (
+            <button
+              class="rounded-lg px-2 py-1 text-2xl border z-20"
+              classList={{ border: props.currentStroke.color === color && !props.erasing }}
+              style={{ color, 'border-color': color }}
+              onClick={() => {
+                props.setter('color', color)
+                props.setter('lineWidth', 2)
+                props.setErasing(false)
+              }}
+            >
+              <Fa icon={faPen} />
+            </button>
+          )}
+        </For>
+        <For each={highlighters}>
+          {(color) => (
+            <button
+              class="rounded-lg px-2 py-1 text-2xl border z-20"
+              classList={{ border: props.currentStroke.color === color && !props.erasing }}
+              style={{ color, 'border-color': color }}
+              onClick={() => {
+                props.setter('color', color)
+                props.setter('lineWidth', 30)
+                props.setErasing(false)
+              }}
+            >
+              <Fa icon={faHighlighter} />
+            </button>
+          )}
+        </For>
+        <button
+          class="rounded-lg px-2 py-1 text-2xl z-20"
+          classList={{ border: props.erasing }}
+          onClick={() => {
+            props.setErasing(true)
+          }}
+        >
+          <Fa icon={faEraser} />
+        </button>
+        <button class="rounded-lg px-2 py-1 text-2xl z-20" onClick={() => props.board.clearBoard()}>
+          <Fa icon={faBroom} />
+        </button>
+      </Show>
       <button
         class="rounded-lg px-2 py-1 text-2xl z-20"
         onClick={() => {
