@@ -6,6 +6,7 @@ import {
   useSubmissions,
   createAsyncStore,
   useAction,
+  json,
 } from '@solidjs/router'
 import { createMemo } from 'solid-js'
 import { z } from 'zod'
@@ -45,6 +46,11 @@ export const loadBoard = query(async (board: Board) => {
   const data = await prisma.stroke.findMany({ where })
   return data
 }, 'loadBoard')
+
+export const reloadBoard = action(async (board: Board) => {
+  'use server'
+  return json(null, { revalidate: loadBoard.keyFor(board) })
+})
 
 export const addStroke = action(async (board: Board, stroke: Stroke) => {
   'use server'
@@ -101,6 +107,7 @@ export default function useBoard(board: () => Board) {
   const addStrokeMethod = useAction(addStroke)
   const removeStrokeMethod = useAction(removeStroke)
   const clearBoardMethod = useAction(clearBoard)
+  const reloadBoardMethod = useAction(reloadBoard)
   return {
     get strokes() {
       return allStrokes()
@@ -118,6 +125,9 @@ export default function useBoard(board: () => Board) {
     },
     clearBoard() {
       return clearBoardMethod(board())
+    },
+    reload() {
+      return reloadBoardMethod(board())
     },
   }
 }
