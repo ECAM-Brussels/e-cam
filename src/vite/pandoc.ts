@@ -116,7 +116,6 @@ const pandocPlugin = (): Plugin => {
   return {
     name: 'pandoc-plugin',
     buildStart() {
-      console.log('Hello', process.env.NODE_ENV)
       prisma = new PrismaClient({
         datasources: { db: { url: process.env.DATABASE_URL } },
       })
