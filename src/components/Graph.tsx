@@ -1,8 +1,10 @@
+import { faMagnifyingGlassMinus, faMagnifyingGlassPlus } from '@fortawesome/free-solid-svg-icons'
 import { createAsync, useNavigate, usePreloadRoute } from '@solidjs/router'
 import { type Core } from 'cytoscape'
 import cytoscape from 'cytoscape'
 import dagre from 'cytoscape-dagre'
 import { createEffect, createSignal, onCleanup, onMount } from 'solid-js'
+import Fa from '~/components/Fa'
 import { getAssignmentGraph } from '~/lib/exercises/assignment'
 
 export default function Graph(props: {
@@ -137,5 +139,36 @@ export default function Graph(props: {
     ro?.disconnect()
   })
 
-  return <div class={props.class} ref={container} />
+  const zoom = (inc: number) => {
+    cy()?.zoom({
+      level: cy()!.zoom() + inc,
+      renderedPosition: { x: cy()!.width() / 2, y: cy()!.height() / 2 },
+    })
+  }
+
+  return (
+    <div class={`${props.class} relative`}>
+      <div class="w-full h-full" ref={container} />
+      <div class="absolute right-4 bottom-2 flex gap-2 z-50">
+        <button
+          class="opacity-30 hover:opacity-100"
+          onclick={(e) => {
+            e.stopPropagation()
+            zoom(0.2)
+          }}
+        >
+          <Fa icon={faMagnifyingGlassPlus} />
+        </button>
+        <button
+          class="opacity-30 hover:opacity-100"
+          onclick={(e) => {
+            e.stopPropagation()
+            zoom(-0.2)
+          }}
+        >
+          <Fa icon={faMagnifyingGlassMinus} />
+        </button>
+      </div>
+    </div>
+  )
 }
