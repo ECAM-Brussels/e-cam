@@ -1,7 +1,7 @@
 import { json } from '@solidjs/router'
 import { createMiddleware } from '@solidjs/start/middleware'
 
-const TRUSTED_ORIGINS = ['https:learning.ecam.be', 'https://mozilla.github.io']
+const TRUSTED_ORIGINS = ['https://learning.ecam.be', 'https://mozilla.github.io']
 
 export default createMiddleware({
   onBeforeResponse: ({ request, response }) => {
