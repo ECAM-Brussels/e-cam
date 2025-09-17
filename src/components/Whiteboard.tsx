@@ -1,7 +1,6 @@
 import {
   faBroom,
   faEraser,
-  faFloppyDisk,
   faHighlighter,
   faPen,
   faUpRightAndDownLeftFromCenter,
