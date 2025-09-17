@@ -264,13 +264,13 @@ a.dot(b)
 
 # Produit vectoriel: introduction {.w-1--2}
 
-<Geogebra id="mkzzm8hh" height={500} />
+<Geogebra id="mkzzm8hh" height={475} />
 
 - $\vec u \times \vec v \perp \vec u, \vec v$
 - norme: aire du parallélogramme engendré par $\vec u$ et $\vec v$
 - direction: règle main droite
 
-![](/images/right-hand_rule.png){.h-56 .block .m-auto}
+![](/images/right-hand_rule.png){.h-52 .block .m-auto}
 
 # Produit vectoriel: base canonique {.w-1--2}
 
