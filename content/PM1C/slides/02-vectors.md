@@ -6,12 +6,12 @@ slideshow: true
 # Rappels {.w-1--2}
 
 1. Addition (loi du parallélogramme)
-   ![](/images/vector_addition.svg){.block .m-auto .h-60}
+   ![](/images/vector_addition.svg){.block .m-auto .h-56}
 2. Multiplication scalaire
-   ![](/images/vector_scalar_multiplication.svg){.block .m-auto .h-60}
+   ![](/images/vector_scalar_multiplication.svg){.block .m-auto .h-56}
 3. Soustraction: $\vec a - \vec b$
 4. Relation de Chasles $\vec {PR} = \vec {PQ} + \vec {QR}$
-   ![](/images/chasles.svg){.block .m-auto .h-60}
+   ![](/images/chasles.svg){.block .m-auto .h-56}
 
 # Composantes d'un vecteur p. 876 {.w-1--2}
 
