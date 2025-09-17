@@ -4,7 +4,6 @@ import {
   faFloppyDisk,
   faHighlighter,
   faPen,
-  faPlus,
   faUpRightAndDownLeftFromCenter,
 } from '@fortawesome/free-solid-svg-icons'
 import { createAsyncStore } from '@solidjs/router'
@@ -19,7 +18,6 @@ import useBoard, { type Stroke } from '~/lib/board'
 import { round } from '~/lib/helpers'
 
 type Mode = 'draw' | 'erase' | 'read'
-type Status = 'unsaved' | 'saving' | 'saved'
 
 type WhiteboardProps = {
   name: string
@@ -28,7 +26,6 @@ type WhiteboardProps = {
   readOnly?: boolean
   scale?: boolean
   toolbarPosition?: 'top' | 'bottom' | 'left' | 'hidden'
-  onAdd?: () => void
   owner: string
   url: string
 } & (
@@ -190,11 +187,9 @@ export default function Whiteboard(props: WhiteboardProps) {
             currentStroke={currentStroke}
             requestFullScreen={props.requestFullScreen}
             setter={setCurrentStroke}
-            status={board.status}
             erasing={erasing()}
             setErasing={setErasing}
-            onDelete={() => board.clearBoard()}
-            onAdd={props.onAdd}
+            board={board}
             position={props.toolbarPosition || 'top'}
           />
         </Show>
@@ -266,10 +261,8 @@ export default function Whiteboard(props: WhiteboardProps) {
 type ToolbarProps = {
   currentStroke: Stroke
   requestFullScreen?: () => void
-  onAdd?: () => void
-  onDelete?: () => void
+  board: ReturnType<typeof useBoard>
   setter: SetStoreFunction<Stroke>
-  status: Status
   erasing: boolean
   setErasing: (nextVal: boolean) => void
   position: 'top' | 'bottom' | 'left' | 'hidden'
@@ -333,24 +326,9 @@ function Toolbar(props: ToolbarProps) {
       >
         <Fa icon={faEraser} />
       </button>
-      <button
-        class="rounded-lg px-2 py-1 text-2xl z-20"
-        onClick={() => {
-          props.onDelete?.()
-        }}
-      >
+      <button class="rounded-lg px-2 py-1 text-2xl z-20" onClick={() => props.board.clearBoard()}>
         <Fa icon={faBroom} />
       </button>
-      <Show when={props.onAdd}>
-        <button
-          class="rounded-lg px-2 py-1 text-2xl z-20"
-          onClick={() => {
-            props.onAdd?.()
-          }}
-        >
-          <Fa icon={faPlus} />
-        </button>
-      </Show>
       <button
         class="rounded-lg px-2 py-1 text-2xl z-20"
         onClick={() => {
@@ -364,10 +342,7 @@ function Toolbar(props: ToolbarProps) {
         <Fa icon={faUpRightAndDownLeftFromCenter} />
       </button>
       <span class="px-2 py-1 text-2xl z-20 flex flex-row items-center">
-        <Show when={props.status === 'unsaved'}>
-          <Fa icon={faFloppyDisk} />
-        </Show>
-        <Show when={props.status === 'saving'}>
+        <Show when={props.board.status === 'saving'}>
           <Spinner />
         </Show>
       </span>
