@@ -5,30 +5,30 @@ slideshow: true
 
 # Préparation {.columns-2}
 
-::: {.exercise title="Exercices 8, 10 p. 891"}
+::: {.exercise title="Exercices 12.3.8, 12.3.10 p. 891"}
 Calculez $\vec a \cdot \vec b$ lorsque
 
 - $\vec a = 3 \vec i + 2 \vec j - \vec k$ et $\vec b = 4 \vec i + 5 \vec k$
 - $\|\vec a\| = 80$, $\|\vec b\| = 50$, $\theta = 3 \pi / 4$
 :::
 
-::: {.exercise title="Exercice 15 p. 891"}
+::: {.exercise title="Exercice 12.3.15 p. 891"}
 Trouvez l'angle entre $\vec u = (5, 1)$ et $\vec v = (3, 2)$.
 :::
 
-::: {.exercise title="Exercice 25 p. 891"}
+::: {.exercise title="Exercice 12.3.25 p. 891"}
 Utilisez les vecteurs pour déterminer
 si le triangle formé par les sommets $P(1, -3, -2)$, $Q(2, 0, -4)$ et $R(6, -2, -5)$ est rectangle.
 :::
 
-::: {.exercise title="Exercise 51 p. 891"}
+::: {.exercise title="Exercise 12.3.51 p. 891"}
 Une luge est tirée le long d'un chemin par une corde.
 Une force de $30$ N agissant à un angle de $40^\circ$ par rapport à l'horizontale
 bouge la luge de $80$ m.
 Calculez le travail effectué par cette force.
 :::
 
-# Exercice 20 {.w-1--2}
+# Exercice 12.3.20 {.w-1--2}
 
 $$
 \cos \theta = \frac {\vec v \cdot \vec w} {\|\vec v\| \|\vec w\|}
@@ -52,7 +52,7 @@ theta.evalf()
 Exemple similaire: exemple 5 p. 888
 :::
 
-# Exercice 37 {.w-1--2}
+# Exercice 12.3.37 {.w-1--2}
 
 ::: {.definition title="Cosinus directeurs"}
 $$
@@ -68,22 +68,21 @@ $$
 Trouvez les cosinus directeurs du vecteur $(c, c, c)$ où $c > 0$.
 :::
 
-~~~ python {.run}
+~~~ python {.run .text-sm}
 from sympy import *
 c = Symbol("c", positive=True)
 v = Matrix([c, c, c])
 i, j, k = Matrix([1, 0, 0]), Matrix([0, 1, 0]), Matrix([0, 0, 1])
 cosines = [v.dot(w)/sqrt(v.dot(v)) for w in [i, j, k]]
 angles = [N(acos(c) * 180 / pi) for c in cosines]
-# Changez à 'angles' pour voir les angles
-cosines
+cosines # ou 'angles' pour voir les angles
 ~~~
 
 ::: hint
 Voir exemple 5 pp. 888-889.
 :::
 
-# Exercice 44 {.columns-2}
+# Exercice 12.3.44 {.columns-2}
 
 ::::: break-inside-avoid-column
 ::: definition
@@ -111,7 +110,7 @@ Exemple similaire: exemple 6 p. 889
 
 ![](/images/projection.png)
 
-# Exercice 53 {.w-1--2}
+# Exercice 12.3.53 {.w-1--2}
 
 ::: exercise
 En utilisant la projection, montrez que la distance entre un point $P(x_1, y_1)$ et une droite $ax + by + c = 0$ est donnée par
@@ -133,7 +132,7 @@ a, b, c = 3, -4, 5
 dist = Abs((a*x1 + b*x2 + c) / sqrt(a**2 + b**2))
 ~~~
 
-# Exercice 56 {.w-1--2}
+# Exercice 12.3.56 {.w-1--2}
 
 ::: exercise
 Trouvez l'angle, en degrés arrondis à une décimale,
@@ -152,7 +151,7 @@ angle = acos(v.dot(w) / sqrt(v.dot(v) * w.dot(w))) * 180 / pi
 angle.evalf()
 ~~~
 
-# Exercice 57 {.w-1--2}
+# Exercice 12.3.57 {.w-1--2}
 
 ::: exercise
 Une molécule de méthane ($CH_4$) est structurée avec quatre atomes d'hydrogène aux sommets d'un tétraèdre régulier.
@@ -162,10 +161,14 @@ Montrez qu'il vaut environ $109.5^\circ$.
 :::
 
 ::: hint
-![](/images/exercises/12.3.57.png){.w-96 .block .m-auto}
+![](/images/exercises/12.3.57.png){.w-64 .block .m-auto}
 Placez vous dans un repère où les atomes d'hydrogène ont pour coordonnées
 $$
 (1, 0, 0), \quad (0, 1, 0), \quad (0, 0, 1), \quad (1, 1, 1).
 $$
 Le centre de masse aura alors pour coordonnées $(1/2, 1/2, 1/2)$.
 :::
+
+# Réponses
+
+<Iframe class="w-full h-full" src="/documents/pm1c-answers.pdf#page=4" />
