@@ -22,7 +22,7 @@ const { Component, schema } = createExerciseType({
   name: 'Expand',
   Component: (props) => (
     <>
-      <p class="my-4">Distribuez au maximum l'expression suivante.</p>
+      <p class="my-4">Distribuez au maximum l'expression suivante:</p>
       <div class="flex justify-center items-center gap-2">
         <Math value={`${props.question.expr}=`} />
         <Math name="attempt" editable value={props.attempt} />
