@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
 title: "Distributivité: produits remarquables"
+video: https://www.youtube.com/embed/u6SN53ykxNs
 courses:
   - algebra
   - 2MATH5
