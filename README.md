@@ -12,7 +12,7 @@
 # Install homebrew
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-# Install dependecies
+# Install dependencies
 brew install node python poetry mariadb pandoc
 
 # Start MariaDB
