@@ -62,21 +62,21 @@ export const addStroke = action(async (board: Board, stroke: Stroke) => {
   if (count.id === 1) {
     revalidate.push(getBoardCount.key)
   }
-  return reload({ revalidate })
+  return json(null, { revalidate: loadBoard.keyFor(board) })
 })
 
 export const removeStroke = action(async (board: Board, id: string) => {
   'use server'
   board = await writeBoard.parseAsync(board)
   await prisma.stroke.delete({ where: { ...board, id: String(id) } })
-  return reload({ revalidate: loadBoard.keyFor(board) })
+  return json(null, { revalidate: loadBoard.keyFor(board) })
 })
 
 export const clearBoard = action(async (board: Board) => {
   'use server'
   const where = await writeBoard.parseAsync(board)
   await prisma.stroke.deleteMany({ where })
-  return reload({ revalidate: loadBoard.keyFor(where) })
+  return json(null, { revalidate: loadBoard.keyFor(where) })
 })
 
 export default function useBoard(board: () => Board) {
