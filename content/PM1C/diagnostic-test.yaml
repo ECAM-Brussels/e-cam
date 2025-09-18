@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: "Test diagnostique"
+description: |
+  Bonjour
+
+  Deuxieme paragraphe **gras** $x^2$.
+# courses:
+#  - PM1C
+body:
+  - type: CompleteSquare
+    params:
+      A: [2]
+      Alpha: [-9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      Beta: [-9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  - type: Calculate
+    params:
+      type: trigonometricValues
+      text: |
+        À l'aide des formules trigonométriques d'addition et de soustraction,
+        déterminez la valeur exacte de
+      exercises:
+        - F:
+           - cos
+           - sin
+          Alpha:
+           - \frac{\pi}{12}
+           - \frac{\pi}{8}
+           - \frac{5\pi}{12}
+          K: [0]
+
