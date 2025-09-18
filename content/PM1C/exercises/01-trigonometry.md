@@ -5,7 +5,7 @@ slideshow: true
 
 # Préparation {.columns-2}
 
-::: {.exercise title="Exercise 32"}
+::: {.exercise title="Exercice 32"}
 Trouvez les autres nombres trigonométriques sachant que
 $$\cos x = -\frac 1 3, \quad \pi < x < \frac {3 \pi} 2$$
 
@@ -14,7 +14,7 @@ $$\cos x = -\frac 1 3, \quad \pi < x < \frac {3 \pi} 2$$
 :::::
 :::
 
-::: {.exercise title="Exercise 36"}
+::: {.exercise title="Exercice 36"}
 Trouvez la valeur de $x$.
 <RightTriangle c="25\text{cm}" a="x" B="40^{\circ}" width={275} height={275} />
 
@@ -23,11 +23,11 @@ Réponse: 19.15111 cm
 :::::
 :::
 
-::: {.exercise title="Exercise 46"}
+::: {.exercise title="Exercice 46"}
 Prouvez que $(\sin x + \cos x)^2 = 1 + \sin 2x$.
 :::
 
-::: {.exercise title="Exercise 48"}
+::: {.exercise title="Exercice 48"}
 Prouvez que $\tan^2 \alpha - \sin^2 \alpha = \tan^2 \alpha \sin^2 \alpha$.
 :::
 
@@ -84,7 +84,7 @@ $$
 # Exercice 33 p. A34 {.w-1--2}
 
 ::: exercise
-Trouvez les valeurs exactes des autres nombres trigonométriques.
+Déterminez les valeurs exactes des autres nombres trigonométriques.
 
 $$
 \cot \beta = 3, \quad \pi < \beta < \frac {3 \pi} 2
@@ -144,7 +144,7 @@ $$
 :::
 
 ::: hint
-Il y a trop de fonctions trigonométriques différentes
+Il y a trop de fonctions trigonométriques différentes.
 :::
 
 # Exercice 56 p. A34 {.w-1--2}

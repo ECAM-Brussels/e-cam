@@ -6,8 +6,8 @@ slideshow: true
 # Préparation {.columns-2}
 
 ::: {.exercise title="Exercice D.60"}
-Si $\sin x = \frac 1 3$ et $\sec y = \frac 5 4$, $0 \leq x, y \leq \pi/2$,
-évaluez $\cos(x + y)$.
+Si $\sin x = \frac 1 3$ et $\sec y = \frac 5 4$,
+déterminez la valeur de $$\cos(x + y)$$ sachant que $x$ et $y$ sont au premier quadrant.
 :::
 
 ::: {.exercise title="Exercice D.69"}
@@ -76,8 +76,7 @@ $$
 
 ::: exercise
 Si $\sin x = \frac 1 3$ et $\sec y = \frac 5 4$,
-et si $0 \leq x, y \leq \frac \pi 2$, évaluez l'expression
-$$\sin (x - y)$$
+déterminez la valeur de $$\sin (x - y)$$ sachant que $x$ et $y$ sont au premier quadrant.
 :::
 
 ::: hint
