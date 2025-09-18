@@ -14,7 +14,7 @@ const { Component, schema } = createExerciseType({
   Component: (props) => (
     <>
       <p class="my-4">
-        Trouvez la valeur de <Math value={props.question[props.question.unknown]} />
+        Déterminez la valeur de <Math value={props.question[props.question.unknown]} />
       </p>
       <RightTriangle
         a={props.question.a}
