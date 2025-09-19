@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
 title: "Équations du second degré"
 prerequisites:
-  - /skills/algebra/factor/monic-quadratics
+  - /skills/algebra/factor/quadratics
   - /skills/algebra/complete-square
 courses:
   - algebra
