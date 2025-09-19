@@ -1,7 +1,7 @@
 ---
 title: Droites et coniques
 slideshow: true
-...
+---
 
 # Distance p. A12 {.w-1--2}
 
