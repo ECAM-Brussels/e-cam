@@ -7,6 +7,12 @@ slideshow: true
 
 <Iframe src="https://www.stewartcalculus.com/data/ESSENTIAL%20CALCULUS%20Early%20Transcendentals/upfiles/ess-reviewofalgebra.pdf" class="w-full h-full" />
 
+# Identités remarquables {.columns-2}
+
+![](/images/binomial_formula.png){.h-4--5}
+
+![](/images/binomial_formula_2.png){.h-4--5}
+
 # Identités remarquables {.w-1--2}
 
 ::: proposition
