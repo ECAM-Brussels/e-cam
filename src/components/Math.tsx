@@ -72,6 +72,9 @@ export default function Math(props: MathProps) {
         }}
         onblur={extra.onBlur}
         onkeydown={(event: KeyboardEvent) => {
+          if (event.key.startsWith('Arrow')) {
+            event.stopPropagation()
+          }
           if (props.name && event.key === 'Enter') {
             field.closest('form')?.requestSubmit()
           }
