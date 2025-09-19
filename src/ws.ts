@@ -9,9 +9,10 @@ export default eventHandler({
       peers.add(peer)
     },
     async message(peer, msg) {
-      console.log('Message received: ', msg.text())
       for (const p of peers) {
-        ;(p as typeof peer).send(msg.text())
+        if (p !== peer) {
+          ;(p as typeof peer).send(msg.text())
+        }
       }
     },
     async close(peer) {
