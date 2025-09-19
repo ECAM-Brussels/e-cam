@@ -121,6 +121,15 @@ async function loadData(prisma: PrismaClient) {
   }
 }
 
+async function cleanAssignments(prisma: PrismaClient, assignments: string[]) {
+  const urls = assignments.map((path) => {
+    const relativePath = relative(resolve('content'), path)
+    return '/' + relativePath.replace(/\.ya?ml$/, '')
+  })
+  await prisma.attempt.deleteMany({ where: { url: { notIn: urls } } })
+  await prisma.assignment.deleteMany({ where: { url: { notIn: urls } } })
+}
+
 export default function (): Plugin {
   let prisma: PrismaClient
   return {
@@ -130,6 +139,7 @@ export default function (): Plugin {
         datasources: { db: { url: process.env.DATABASE_URL } },
       })
       const assignments = await glob.glob('content/**/*.yaml', { ignore: ['content/data.yaml'] })
+      await cleanAssignments(prisma, assignments)
       await createEmptyAssignments(prisma, assignments)
       await Promise.all([
         ...assignments.map((file) => createAssignment(file, prisma)),
