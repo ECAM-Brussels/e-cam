@@ -10,4 +10,3 @@ def interpunct(el: pf.Element, doc: pf.Doc):
 
 
 pf.run_filter(interpunct)
-
