@@ -7,6 +7,12 @@ slideshow: true
 
 <Iframe src="https://www.stewartcalculus.com/data/ESSENTIAL%20CALCULUS%20Early%20Transcendentals/upfiles/ess-reviewofalgebra.pdf" class="w-full h-full" />
 
+# Identités remarquables {.columns-2}
+
+![](/images/binomial_formula.png){.h-4--5}
+
+![](/images/binomial_formula_2.png){.h-4--5}
+
 # Identités remarquables {.w-1--2}
 
 ::: proposition
@@ -19,7 +25,7 @@ $$
 :::
 
 ::: exercise
-[Produits remarquables](/PM1C/practice/algebra/binomial-identity)
+[Produits remarquables](/skills/algebra/binomial-formulas)
 :::
 
 # Factorisation: introduction {.w-1--2}
@@ -53,10 +59,9 @@ x = Symbol("x")
 factor(x**2 + 5*x - 24)
 ~~~
 
-::: exercise
-- Factorisation 2ème degré: [Facile](/PM1C/practice/algebra/factorisation-deg2-easy) [Moyen](/PM1C/practice/algebra/factorisation-deg2-medium) [Difficile](/PM1C/practice/algebra/factorisation-deg2-hard)
-- [Factorisation 3ème degré](/PM1C/practice/algebra/factorisation-deg3)
-:::
+~~~ {.tsx .raw}
+<Graph query={{ "page": { title: { contains: "factorisation"} } }} class="border rounded-xl w-full h-72" />
+~~~
 
 # Simplification {.w-1--2}
 
@@ -87,9 +92,9 @@ subs = solve(Eq(x**2 + x + 1, expr), [alpha, beta, gamma])
 expr.subs(subs)
 ~~~
 
-::: exercise
-[Carré parfait](/PM1C/practice/algebra/complete-square)
-:::
+~~~ {.tsx .raw}
+<Graph query={{ "page": { title: { contains: "complétion"} } }} class="border rounded-xl w-full h-72" />
+~~~
 
 # Le discriminant {.w-1--2}
 
@@ -107,6 +112,14 @@ $$
     x = \frac {-b} {2 a}
   $$
 - Si $\Delta < 0$, pas de solutions réelles.
+
+::: warning
+Si vous employez $\Delta$ pour factoriser,
+n'oubliez pas le $a$:
+$$
+ax^2 + bx + c = a (x - x_1) (x - x_2)
+$$
+:::
 
 # Inéquations {.w-1--2}
 
@@ -160,10 +173,9 @@ system = [Eq(x - 3*y - 6*z, -16), Eq(2*x + 3*y + 5*z, 0), Eq(-4*x + 3*y + 4*z, 2
 solve(system)
 ~~~
 
-::: exercise
-- Systèmes à [2 inconnues](/PM1C/practice/algebra/systems-2-vars)
-- Systèmes à [3 inconnues](/PM1C/practice/algebra/systems-3-vars)
-:::
+~~~ {.tsx .raw}
+<Graph query={{ "page": { title: { contains: "système"} } }} class="border rounded-xl w-full h-72" />
+~~~
 
 # Infinité de solutions et systèmes impossibles {.w-1--2}
 

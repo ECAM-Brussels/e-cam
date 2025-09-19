@@ -172,7 +172,7 @@ $$
 
 ::: {.definition title="Norme d'un vecteur"}
 $$
-\|\vec a\| = \vec a \cdot \vec a
+\|\vec a\| = \sqrt {\vec a \cdot \vec a}
 $$
 :::
 

@@ -3,6 +3,10 @@ title: Algèbre
 slideshow: true
 ---
 
+# Review of Algebra
+
+<Iframe src="https://www.stewartcalculus.com/data/ESSENTIAL%20CALCULUS%20Early%20Transcendentals/upfiles/ess-reviewofalgebra.pdf#page=12" class="w-full h-full" />
+
 # Préparation {.columns-2}
 
 ::::: break-inside-avoid-column
@@ -101,3 +105,7 @@ x = Symbol("x")
 solveset(Eq(Abs(x + 3), Abs(2*x + 1)), x, S.Reals)
 # solveset(Abs(x + 5) >= 2, x, S.Reals)
 ~~~
+
+# Réponses
+
+<Iframe src="https://www.stewartcalculus.com/data/ESSENTIAL%20CALCULUS%20Early%20Transcendentals/upfiles/ess-reviewofalgebra.pdf#page=16" class="w-full h-full" />
