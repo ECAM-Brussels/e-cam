@@ -162,3 +162,7 @@ system = [
 ]
 solve(system)
 ~~~
+
+# Réponses
+
+<Iframe class="w-full h-full" src="/documents/simultaneous-equations.pdf#page=4" />
