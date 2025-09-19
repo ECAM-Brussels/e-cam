@@ -9,7 +9,7 @@ const { Component, schema } = createExerciseType({
   Component: (props) => (
     <>
       <Markdown value={props.question.text} />
-      <div class="flex gap-4">
+      <div class="flex gap-4 my-4">
         <For each={props.question.choices}>
           {(choice) => (
             <button type="button">
