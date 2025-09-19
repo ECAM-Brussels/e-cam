@@ -21,5 +21,14 @@ export default defineConfig({
         target: 'esnext',
       },
     },
+    experimental: {
+      websocket: true,
+    },
   },
+}).addRouter({
+  name: 'ws',
+  type: 'http',
+  handler: './src/ws.ts',
+  target: 'server',
+  base: '/ws',
 })

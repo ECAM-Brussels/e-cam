@@ -8,13 +8,15 @@ import {
   faEyeSlash,
   faPrint,
 } from '@fortawesome/free-solid-svg-icons'
-import { A, createAsync } from '@solidjs/router'
+import { A, createAsync, revalidate, useBeforeLeave } from '@solidjs/router'
 import { createSignal, For, onCleanup, onMount, Show, type JSXElement } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import z from 'zod'
 import Breadcrumbs from '~/components/Breadcrumbs'
 import Fa from '~/components/Fa'
 import Whiteboard from '~/components/Whiteboard'
+import { getUser } from '~/lib/auth/session'
+import { loadBoard } from '~/lib/board'
 import { createSearchParam } from '~/lib/params'
 import { getBoardCount, getBoardCounts } from '~/lib/slideshow'
 
@@ -53,6 +55,28 @@ export default function Slideshow(props: SlideshowProps) {
       }
     })
     observer.observe(container)
+  })
+
+  const user = createAsync(() => getUser())
+  const boardName = () => `${props.board}-${props.hIndex}-${props.vIndex}`
+  type Message = { url: string; board: string }
+  let ws: WebSocket | null = null
+  onMount(() => {
+    ws = new WebSocket(`${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/ws`)
+    ws.addEventListener('message', (event) => {
+      const data = JSON.parse(event.data) as Message
+      if (data.url === props.url && data.board === boardName()) {
+        revalidate(loadBoard.keyFor({ ...data, ownerEmail: 'ngy@ecam.be' }))
+        revalidate(getBoardCounts.keyFor(props.url, 'ngy@ecam.be', props.board))
+        revalidate(getBoardCount.keyFor(props.url, 'ngy@ecam.be', props.board, props.hIndex))
+      }
+    })
+  })
+  onCleanup(() => ws?.close())
+  useBeforeLeave(() => {
+    if (ws && user()?.email === 'ngy@ecam.be') {
+      ws.send(JSON.stringify({ url: props.url, board: boardName() }))
+    }
   })
 
   return (
@@ -111,7 +135,7 @@ export default function Slideshow(props: SlideshowProps) {
               toolbarPosition="bottom"
               owner="ngy@ecam.be"
               url={props.url}
-              name={`${props.board}-${props.hIndex}-${props.vIndex}`}
+              name={boardName()}
               scale
             />
           </Show>
