@@ -345,6 +345,10 @@ class Expression:
 
     @strawberry.field
     def simplify(self) -> "Expression":
+        if isinstance(self.expr, sympy.Eq):
+            lhs, rhs = self.expr.args
+            lhs, rhs = sympy.simplify(lhs), sympy.simplify(rhs)
+            return Expression(expr=sympy.Eq(lhs, rhs))
         return Expression(expr=sympy.simplify(self.expr))
 
     @strawberry.field(

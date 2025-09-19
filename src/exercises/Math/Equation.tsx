@@ -11,6 +11,7 @@ import { graphql } from '~/gql'
 import { createExerciseType, useExerciseContext } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
 import { narrow } from '~/lib/helpers'
+import { simplify } from '~/queries/algebra'
 
 const { Component, schema } = createExerciseType({
   name: 'Equation',
@@ -182,6 +183,7 @@ const { Component, schema } = createExerciseType({
           z.string().nonempty(),
           z.string().nonempty().or(z.number().transform(String)).array().nonempty(),
         ),
+        simplify: z.boolean().default(true),
       }),
     ]),
     generate: async (params) => {
@@ -277,6 +279,9 @@ const { Component, schema } = createExerciseType({
         Object.entries(params.subs).forEach(([symbol, choices]) => {
           question.equation = question.equation.replaceAll(`{${symbol}}`, `{${sample(choices)}}`)
         })
+        if (params.simplify) {
+          question.equation = await simplify(question.equation)
+        }
         return question
       } else {
         throw new Error('Type params has incorrect value')
