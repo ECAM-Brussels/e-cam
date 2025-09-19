@@ -46,7 +46,7 @@ Trouvez un vecteur unitaire qui a la même direction que $8 \vec i - \vec j + 4 
 :::
 
 ::: {.exercise title="12.2.27"}
-Quel est l'angle entre $\vec i + \sqrt 3 j$ et la direction positive de l'axe $x$?
+Quel est l'angle entre $\vec i + \sqrt 3 \vec j$ et la direction positive de l'axe $x$?
 :::
 
 ::: {.exercise title="12.2.29"}
