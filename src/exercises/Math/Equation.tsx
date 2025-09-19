@@ -162,6 +162,27 @@ const { Component, schema } = createExerciseType({
         Theta: z.string().nonempty().array().nonempty(),
         Z: z.string().nonempty().array().nonempty().default(['z']),
       }),
+      z.object({
+        type: z.literal('withParams'),
+        questions: z
+          .union([
+            z
+              .string()
+              .transform((equation) => ({ equation, x: 'x', complex: false, S: undefined })),
+            z.object({
+              x: z.string().default('x').describe('Unknown value to solve for'),
+              equation: z.string().describe('Equation'),
+              S: z.tuple([z.string()]).rest(z.any()).optional(),
+              complex: z.boolean().default(false).describe('Solve over C or R'),
+            }),
+          ])
+          .array()
+          .nonempty(),
+        subs: z.record(
+          z.string().nonempty(),
+          z.string().nonempty().or(z.number().transform(String)).array().nonempty(),
+        ),
+      }),
     ]),
     generate: async (params) => {
       'use server'
@@ -251,6 +272,12 @@ const { Component, schema } = createExerciseType({
           complex: true,
           x: z,
         }
+      } else if (params.type === 'withParams') {
+        const question = sample(params.questions)
+        Object.entries(params.subs).forEach(([symbol, choices]) => {
+          question.equation = question.equation.replaceAll(`{${symbol}}`, `{${sample(choices)}}`)
+        })
+        return question
       } else {
         throw new Error('Type params has incorrect value')
       }
