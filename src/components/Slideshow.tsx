@@ -126,7 +126,7 @@ function Remote(props: SlideshowProps) {
   const [print, setPrint] = createSearchParam('print', z.boolean().default(false))
   return (
     <div class="absolute bottom-4 right-4 text-4xl flex gap-4 items-center print:hidden">
-      <Breadcrumbs class="text-sm mr-8" />
+      <Breadcrumbs class="bg-white border rounded-lg text-sm mr-8 z-50 p-2 px-4" />
       <Arrow {...props} dir="left" />
       <div class="flex flex-col items-center">
         <Arrow {...props} dir="up" />
