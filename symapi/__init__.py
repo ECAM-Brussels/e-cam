@@ -5,6 +5,7 @@ import strawberry.fastapi
 import sympy
 from typing import Optional
 
+from symapi.chemistry import Chemistry
 from symapi.conic_section import ConicSection
 from symapi.core import Math, MathSet
 from symapi.expression import Expression
@@ -14,6 +15,10 @@ from symapi.vector import Vector
 
 @strawberry.type
 class Query:
+
+    @strawberry.field
+    def chemistry(self) -> "Chemistry":
+        return Chemistry()
 
     @strawberry.field
     def conic_section(self, equation: Math) -> "ConicSection":
@@ -42,7 +47,7 @@ class Query:
         line: Optional[Math] = None,
         perpendicular: Optional[bool] = False,
         x: Math = sympy.Symbol("x"),
-        y: Math = sympy.Symbol("y")
+        y: Math = sympy.Symbol("y"),
     ) -> "Expression":
         if line is not None:
             m = sympy.solve(line, y)[0].coeff(x)
@@ -71,6 +76,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(graphql, prefix="/graphql")
+
 
 @app.head("/health")
 async def health_check():
