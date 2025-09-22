@@ -1,6 +1,6 @@
 import { faCheck, faFile, faUser, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { createAsync, type RouteDefinition, useParams } from '@solidjs/router'
-import { For } from 'solid-js'
+import { createSignal, For } from 'solid-js'
 import Fa from '~/components/Fa'
 import Page from '~/components/Page'
 import Table from '~/components/Table'
@@ -16,6 +16,7 @@ export const route = {
 
 export default function () {
   const params = useParams()
+  const [page, setPage] = createSignal(1)
   const data = createAsync(() => getAssignmentResults('/' + params.url), { initialValue: [] })
   return (
     <Page title="Résultats">
@@ -26,6 +27,8 @@ export default function () {
         <h1 class="font-bold text-3xl">Résultats</h1>
         <Table
           search
+          page={page()}
+          setPage={setPage}
           data={data()}
           columns={[
             {
