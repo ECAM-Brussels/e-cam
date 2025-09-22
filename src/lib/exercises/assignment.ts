@@ -387,6 +387,11 @@ export const getAssignmentGraph = query(
 export const getAssignmentResults = query(async (url: string) => {
   'use server'
   const data = await prisma.user.findMany({
+    where: {
+      attempts: {
+        some: { url, correct: { not: null } },
+      },
+    },
     select: {
       firstName: true,
       lastName: true,
@@ -394,13 +399,13 @@ export const getAssignmentResults = query(async (url: string) => {
       score: true,
       attempts: {
         select: { correct: true },
-        where: { url },
+        where: { url, correct: { not: null } },
         orderBy: { position: 'desc' },
         take: 10,
       },
     },
   })
-  return data.filter((r) => r.attempts.filter((a) => a.correct !== null).length > 0)
+  return data.map((user) => ({ ...user, attempts: user.attempts.reverse() }))
 }, 'getAssignmentResults')
 
 export const getAssignmentList = query(
