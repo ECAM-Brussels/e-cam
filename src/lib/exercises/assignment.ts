@@ -395,11 +395,12 @@ export const getAssignmentResults = query(async (url: string) => {
       attempts: {
         select: { correct: true },
         where: { url },
-        orderBy: { position: 'asc' },
+        orderBy: { position: 'desc' },
+        take: 10,
       },
     },
   })
-  return data.filter((r) => r.attempts.length > 0)
+  return data.filter((r) => r.attempts.filter((a) => a.correct !== null).length > 0)
 }, 'getAssignmentResults')
 
 export const getAssignmentList = query(
