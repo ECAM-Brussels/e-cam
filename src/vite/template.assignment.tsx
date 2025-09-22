@@ -1,5 +1,6 @@
 import { createAsync, query, useLocation, useParams, type RouteDefinition } from '@solidjs/router'
 import { createEffect, createSignal, Show } from 'solid-js'
+import { z } from 'zod'
 import Assignment, { ExerciseUI, getGraphQuery } from '~/components/Assignment'
 import Page from '~/components/Page'
 import { getUser } from '~/lib/auth/session'
@@ -11,6 +12,7 @@ import {
   getExercise,
   getPaginationInfo,
 } from '~/lib/exercises/assignment'
+import { createSearchParam } from '~/lib/params'
 import { getUserInfo } from '~/lib/user'
 
 const getOriginalAssignment = query((url?: string) => {
@@ -58,6 +60,7 @@ export default function () {
   const info = () => getInfo(params.index, location.pathname)
   const user = createAsync(() => getUser())
   const assignment = createAsync(() => getOriginalAssignment(info().url))
+  const [userEmail] = createSearchParam('userEmail', z.string().email().optional())
 
   const [exercise, setExercise] = createSignal<null | Exercise>(null)
   createEffect(() => {
@@ -94,7 +97,7 @@ export default function () {
               <Assignment
                 url={info().url}
                 data={assignment()}
-                userEmail={user().email}
+                userEmail={userEmail() ?? user().email}
                 index={info().index}
               />
             )}
