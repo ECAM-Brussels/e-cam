@@ -399,7 +399,7 @@ export const getAssignmentResults = query(async (url: string) => {
       },
     },
   })
-  return data
+  return data.filter((r) => r.attempts.length > 0)
 }, 'getAssignmentResults')
 
 export const getAssignmentList = query(
