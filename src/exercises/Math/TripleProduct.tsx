@@ -47,8 +47,12 @@ const { Component, schema } = createExerciseType({
           vector(coordinates: $a) {
             cross(coordinates: $b) {
               dot(coordinates: $c) {
-                abs {
-                  isEqual(expr: $attempt)
+                expand {
+                  simplify {
+                    abs {
+                      isEqual(expr: $attempt)
+                    }
+                  }
                 }
               }
             }
@@ -62,7 +66,7 @@ const { Component, schema } = createExerciseType({
         attempt,
       },
     )
-    return vector.cross.dot.abs.isEqual
+    return vector.cross.dot.expand.simplify.abs.isEqual
   },
   generator: {
     params: z.object({
