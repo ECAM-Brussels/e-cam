@@ -7,7 +7,7 @@ from symapi.expression import Expression
 
 Formula = strawberry.scalar(
     typing.NewType("Formula", chempy.Substance),
-    serialize=lambda s: s.latex_name,
+    serialize=lambda s: str(s),
     parse_value=lambda s: chempy.Substance.from_formula(s),
 )
 
@@ -33,6 +33,10 @@ class Substance:
     @strawberry.field
     def mass(self) -> "Expression":
         return Expression(expr=self.formula.mass)
+
+    @strawberry.field
+    def latex(self) -> str:
+        return self.formula.latex_name
 
 
 @strawberry.type
