@@ -38,34 +38,30 @@ sequenceDiagram
 </html>
 ~~~
 
-# Headings and paragraphs
+# Text and content
+
+From now on,
+we shall assume the code fragments
+to be placed within the page's `<body>`.
 
 ~~~ html {.run .columns .columns-2}
 <h1>Heading of level 1 (title)</h1>
 <h2>Heading of level 2 (subtitle)</h2>
-<h3>Heading of level 3</h3>
-<h4>Heading of level 4</h4>
-<h5>Heading of level 5</h5>
 <h6>Heading of level 6</h6>
 <p>This is a paragraph</p>
 <p>This is another paragraph</p>
-~~~
-
-# Emphasis
-
-~~~ html {.run .columns .columns-2}
 <p>
   This may be <em>important</em>,
   but some things are
   <strong>even more important</strong>.
 </p>
+<p>
+  This is a link to
+  <a href="https://google.com">Google</a>,
+  but within the same website,
+  we tend to use <a href="/">relative links</a>.
+</p>
 ~~~
-
-::::: w-1--2
-::: {.remark}
-- *em* is short for *emphasis*
-:::
-:::::
 
 # Lists
 
@@ -94,9 +90,32 @@ sequenceDiagram
 :::
 :::::
 
-# Formulaire
+# Table
 
-~~~ html {.run}
+~~~ html {.run .columns-2}
+<table>
+  <thead>
+    <tr>
+      <th>Header cell 1</th>
+      <th>Header cell 2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>A</td>
+      <td>B</td>
+    </tr>
+    <tr>
+      <td>C</td>
+      <td>D</td>
+    </tr>
+  </body>
+</table>
+~~~
+
+# Forms and inputs
+
+~~~ html {.run .columns .columns-2}
 <form method="POST" action="/url">
   <label>
     Name:
@@ -110,5 +129,28 @@ sequenceDiagram
     Password:
     <input type="password" name="password" />
   </label>
+  <label>
+    Bored:
+    <select name="bored">
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+  </label>
+  <label>
+    Biography: <textarea name="biography" />
+  </label>
+  <button>Submit</button>
 </form>
 ~~~
+
+# Semantic and layout
+
+- `<header>` – Page or section header.
+- `<footer>` – Page or section footer.
+- `<nav>` – Navigation section.
+- `<main>` – Main content of the page.
+- `<section>` – Thematic grouping of content.
+- `<article>` – Self-contained content.
+- `<aside>` – Sidebar content.
+- `<figure>` – Media with caption.
+- `<figcaption>` – Caption for figure.
