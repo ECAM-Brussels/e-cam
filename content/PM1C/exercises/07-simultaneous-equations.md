@@ -6,7 +6,7 @@ slideshow: true
 # Préparation
 
 ::: {.columns-2 .h-full}
-<Iframe class="w-full h-full" src="/documents/simultaneous-equations.pdf" />
+<Iframe class="w-full h-full" src="/documents/simultaneous-equations.pdf#page=2" />
 
 ::::: exercise
 Préparation: 1a, 2a, 2b, 2c
@@ -15,65 +15,16 @@ Séance: 2d, 2e, 2g, 2h
 :::::
 :::
 
-# Conseil pour la session {.columns-2}
-
-::: question
-Que faire si je n'ai pas la bonne solution?
-:::
-
-Vous pouvez changer le code pour vérifier
-quand votre système cesse d'être équivalent à l'original.
-
-::: example
-Imaginons que pour le système
-$$
-\begin{cases}
-2x - y + z = 4\\
-x + y + z = -1\\
-x - y + z = 3
-\end{cases}
-$$
-j'obtienne la matrice
-$$
-\left(\hspace{-5pt}\begin{array}{ccc|c}
-2 & -1 & 1 & 4\\
-1 & 1 & 1 & -1 \\
-0 & 0 & 0 & -2
-\end{array}\hspace{-5pt}\right)
-$$
-
-Est-elle correcte?
-:::
-
-### Solution du système original
-
-~~~ python {.run}
-from sympy import *
-x, y, z = symbols("x y z")
-system = [
-    2*x - y + z - 4,
-    x + y + z + 1,
-    x - y + z - 3,
-]
-solve(system)
-~~~
-
-### Solution du système associé à votre matrice
-
-~~~ python {.run}
-from sympy import *
-x, y, z = symbols("x y z")
-system = [
-    2*x - y + z - 4,
-    x + y + z + 1,
-    2,
-]
-solve(system)
-~~~
 
 # Exercice 2d {.w-1--2}
 
 ::: exercise
+::::: text-base
+a. Utiliser la méthode de Gauss pour déterminer de quelle type de système il s’agit.
+b. Donner (si possible) une formulation de la solution du système.
+c. Préciser la position des 3 plans.
+:::::
+
 $$
 \begin{cases}
 5x + 5y + 5z = -20\\
@@ -97,6 +48,12 @@ solve(system)
 # Exercice 2e {.w-1--2}
 
 ::: exercise
+::::: text-base
+a. Utiliser la méthode de Gauss pour déterminer de quelle type de système il s’agit.
+b. Donner (si possible) une formulation de la solution du système.
+c. Préciser la position des 3 plans.
+:::::
+
 $$
 \begin{cases}
 2x - y + z = 4\\
@@ -120,6 +77,12 @@ solve(system)
 # Exercice 2g {.w-1--2}
 
 ::: exercise
+::::: text-base
+a. Utiliser la méthode de Gauss pour déterminer de quelle type de système il s’agit.
+b. Donner (si possible) une formulation de la solution du système.
+c. Préciser la position des 3 plans.
+:::::
+
 $$
 \begin{cases}
 -x + 4y + 3z = 1\\
@@ -143,6 +106,12 @@ solve(system)
 # Exercice 2h {.w-1--2}
 
 ::: exercise
+::::: text-base
+a. Utiliser la méthode de Gauss pour déterminer de quelle type de système il s’agit.
+b. Donner (si possible) une formulation de la solution du système.
+c. Préciser la position des 3 plans.
+:::::
+
 $$
 \begin{cases}
 3x + y - z = -2\\
