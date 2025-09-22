@@ -74,7 +74,7 @@ export default function () {
                   <a href={`/users/${info.row.original.email}`} class="mx-2">
                     <Fa icon={faUser} />
                   </a>
-                  <a href={`/${params.url}`} class="mx-2">
+                  <a href={`/${params.url}?userEmail=${info.row.original.email}`} class="mx-2">
                     <Fa icon={faFile} />
                   </a>
                 </>
