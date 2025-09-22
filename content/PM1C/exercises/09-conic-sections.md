@@ -78,3 +78,7 @@ b. Trouvez le diamètre de l'ouverture $|CD|$, situé à $11$ cm du sommet.
 
 ![](/images/exercises/10.5.52.png){.m-auto .h-128}
 :::
+
+# Réponses
+
+<Iframe class="w-full h-full" src="/documents/pm1c-answers.pdf#page=9" />

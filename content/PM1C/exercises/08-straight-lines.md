@@ -114,3 +114,7 @@ median([P, Q], R)
 # solve([median([P, Q], R), median([R, P], Q)])
 ~~~
 :::::
+
+# Réponses
+
+<Iframe class="w-full h-full" src="/documents/pm1c-answers.pdf#page=8" />
