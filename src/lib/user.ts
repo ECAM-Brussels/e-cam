@@ -16,7 +16,7 @@ export const getUserInfo = query(async (email?: string) => {
   if (!user) {
     throw redirect('/auth/login')
   }
-  if (user.role !== 'ADMIN' && user.email != email) {
+  if (user.role === 'STUDENT' && user.email != email) {
     throw new Error('You do not have the rights to see this')
   }
   return record

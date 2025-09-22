@@ -129,7 +129,7 @@ export type AssignmentInput = z.input<typeof assignmentSchema>
 async function check(email: string) {
   'use server'
   const user = await getUser()
-  if (!user || (user.role !== 'ADMIN' && user.email !== email)) {
+  if (!user || (user.role === 'STUDENT' && user.email !== email)) {
     throw redirect('/auth/login')
   }
 }
