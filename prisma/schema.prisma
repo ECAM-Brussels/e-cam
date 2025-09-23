@@ -27,6 +27,7 @@ model Assignment {
   hash String?
   lastModified DateTime @default(now())
   video String?
+  score Int?
 
   attempts Attempt[]
   page Page @relation(fields: [url], references: [url])

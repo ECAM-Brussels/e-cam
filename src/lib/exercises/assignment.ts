@@ -277,6 +277,10 @@ export async function saveExercise(
             where: { hash },
             data: { score: { increment: -Math.floor(payload.gain / 4) } },
           }),
+          tx.assignment.update({
+            where: { url },
+            data: { score: { increment: -Math.ceil(payload.gain / 12) } },
+          }),
         )
       }
       await Promise.all(queries)
@@ -299,6 +303,9 @@ export const getAssignment = async (data: z.input<typeof assignmentSchema>) => {
     if (page && hashObject(page.body) !== hashObject(assignment.body)) {
       await prisma.attempt.deleteMany({ where })
     }
+  }
+  if (page.score === null && data.options?.adjustElo !== false) {
+    await prisma.assignment.update({ where, data: { score: data.options?.initialElo ?? 1200 } })
   }
   return page
 }
