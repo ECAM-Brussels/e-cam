@@ -197,6 +197,10 @@ class Expression:
             and self.expr.args[1].args[1].is_imaginary
         )
 
+    @strawberry.field
+    def is_finite(self) -> bool:
+        return self.expr.is_finite is True
+
     @strawberry.field(description="Check if a number is nonnegative")
     def is_nonnegative(self) -> bool:
         return self.expr.is_nonnegative
