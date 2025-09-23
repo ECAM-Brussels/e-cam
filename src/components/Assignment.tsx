@@ -204,13 +204,14 @@ function Navigation(props: AssignmentProps) {
         current={props.index}
         url={(index) => {
           const parts: string[] = [props.url]
-          if (props.userEmail !== realUser()?.email) {
-            parts.push(props.userEmail)
-          }
+          const params: { [key: string]: string } = {}
+          if (fullscreen()) params.fullscreen = 'true'
+          if (props.userEmail !== realUser()?.email) params.userEmail = props.userEmail
+          const query = new URLSearchParams(params).toString()
           if (index > 1) {
             parts.push(`${index}`)
           }
-          return parts.join('/') + (fullscreen() ? '?fullscreen=true' : '')
+          return parts.join('/') + (query ? `?${query}` : '')
         }}
         max={pagination().length || 0}
         classList={(i) => ({
