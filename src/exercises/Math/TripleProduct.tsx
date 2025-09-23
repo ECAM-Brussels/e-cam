@@ -5,6 +5,7 @@ import Math from '~/components/Math'
 import { graphql } from '~/gql'
 import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
+import { narrow } from '~/lib/helpers'
 
 function vec(A: string[], B: string[]): string[] {
   if (A.length !== B.length) throw new Error('Arrays should have the same length')
@@ -68,6 +69,50 @@ const { Component, schema } = createExerciseType({
     )
     return vector.cross.dot.expand.simplify.abs.isEqual
   },
+  feedback: [
+    async (remaining, question) => {
+      'use server'
+      const { vector } = await request(
+        graphql(`
+          query CalculateVolume($a: [Math!]!, $b: [Math!]!, $c: [Math!]!) {
+            vector(coordinates: $a) {
+              cross(coordinates: $b) {
+                dot(coordinates: $c) {
+                  expand {
+                    simplify {
+                      abs {
+                        expr
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        `),
+        {
+          a: vec(question.points[0], question.points[1]),
+          b: vec(question.points[0], question.points[2]),
+          c: vec(question.points[0], question.points[3]),
+        },
+      )
+      if (!remaining) {
+        return { ...question, answer: vector.cross.dot.expand.simplify.abs.expr }
+      } else {
+        return question
+      }
+    },
+    (props) => (
+      <Show
+        when={narrow(
+          () => props,
+          (p) => 'answer' in p,
+        )}
+      >
+        {(p) => <Math value={`V = ${p().answer}`} displayMode />}
+      </Show>
+    ),
+  ],
   generator: {
     params: z.object({
       Components: z.number().transform(String).or(z.string().nonempty()).array().nonempty(),
