@@ -34,7 +34,7 @@ f. $(\vec a \times \vec b) \cdot (\vec c \times \vec d)$
 :::
 
 ::: {.exercise title="Exercice 12.4.14 p. 900"}
-Trouvez $\|\vec u \times \vec v\|$ et déterminez si $\vec u \times \vec v$ pointe dans la page ou hors de la page.
+Trouvez $\|\vec u \times \vec v\|$ et déterminez si $\vec u \times \vec v$ pointe dans la page ou hors de la page (vers vous).
 ![](/images/exercises/12.4.14.png){.w-70 .block .m-auto}
 :::
 
@@ -66,7 +66,7 @@ Calculez $(\vec i + \vec j) \times (\vec i - \vec j)$ en n'utilisant que les pro
 # Exercice 12.4.15 {.w-1--2}
 
 ::: {.exercise title="Exercice 15 p. 900"}
-Trouvez $\|\vec u \times \vec v\|$ et déterminez si $\vec u \times \vec v$ pointe dans la page ou hors de la page.
+Trouvez $\|\vec u \times \vec v\|$ et déterminez si $\vec u \times \vec v$ pointe dans la page ou hors de la page (vers vous).
 ![](/images/exercises/12.4.15.png){.w-70 .block .m-auto}
 :::
 
