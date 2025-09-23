@@ -1,5 +1,7 @@
+import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { For, Show } from 'solid-js'
 import { z } from 'zod'
+import Fa from '~/components/Fa'
 import Markdown from '~/components/Markdown'
 import Math from '~/components/Math'
 import { decrypt, encrypt } from '~/lib/cryptography'
@@ -12,6 +14,7 @@ const part = {
   text: z.string().describe('Text of the question or part, written in markdown'),
   answer: z
     .string()
+    .or(z.number().transform(String))
     .describe('Answer as a LaTeX string, will automatically be encrypted before reaching the user'),
   label: z
     .string()
@@ -29,7 +32,7 @@ const { Component, schema, mark } = createExerciseType({
           <Markdown value={part.text} />
           <div class="flex items-center gap-2 my-4">
             <Markdown value={part.label} />
-            <Math name="attempts" value={props.attempt?.[index()]} editable />
+            <Math name="attempt" value={props.attempt?.[index()]} editable />
             <Markdown value={part.unit} />
           </div>
         </>
@@ -82,34 +85,68 @@ const { Component, schema, mark } = createExerciseType({
     return parts.every((t) => t)
   },
   feedback: [
-    async (remaining, question) => {
+    async (remaining, question, attempt) => {
       'use server'
       if (!remaining) {
         return {
-          parts: await Promise.all(
+          question,
+          attempt,
+          answers: await Promise.all(
             question.parts.map(async (q) => ({
               ...q,
               answer: await decrypt(q.answer),
             })),
           ),
         }
+      } else {
+        const feedback = await Promise.all(
+          question.parts.map(async (q, i) =>
+            attempt.length ? checkEqual(attempt[i], await decrypt(q.answer)) : false,
+          ),
+        )
+        return {
+          question,
+          attempt,
+          feedback,
+        }
       }
-      return {}
     },
     (props) => (
-      <Show when={props.parts}>
-        <p>La réponses sont:</p>
-        <ul>
-          <For each={props.parts}>
-            {(part) => (
-              <li class="flex items-center">
-                <Math value={part.answer} />
-                <Markdown value={part.unit} />
-              </li>
-            )}
-          </For>
-        </ul>
-      </Show>
+      <>
+        <Show when={props.feedback}>
+          <ul class="list-disc px-8">
+            <For each={props.feedback}>
+              {(part, i) => (
+                <li>
+                  <div
+                    class="flex items-center gap-2"
+                    classList={{ 'text-green-800': part, 'text-red-800': !part }}
+                  >
+                    <Math value={props.attempt[i()]} />
+                    <Markdown value={props.question.parts[i()].unit} />
+                    <Fa icon={part ? faCheck : faXmark} />
+                  </div>
+                </li>
+              )}
+            </For>
+          </ul>
+        </Show>
+        <Show when={props.answers}>
+          <p>La réponses sont:</p>
+          <ul class="list-disc px-8">
+            <For each={props.answers}>
+              {(part) => (
+                <li>
+                  <div class="flex items-center gap-2">
+                    <Math value={part.answer} />
+                    <Markdown value={part.unit} />
+                  </div>
+                </li>
+              )}
+            </For>
+          </ul>
+        </Show>
+      </>
     ),
   ],
 })
