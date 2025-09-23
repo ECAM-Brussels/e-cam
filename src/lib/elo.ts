@@ -10,7 +10,7 @@ function logistic(x: number) {
 
 const K = 32
 
-export const getEloDiff = query(async (email?: string) => {
+export const getEloDiff = query(async (url: string, email: string, position: number) => {
   'use server'
   if (!email) {
     const user = await getUser()
@@ -19,10 +19,9 @@ export const getEloDiff = query(async (email?: string) => {
     }
     email = user.email
   }
-  const data = await prisma.attempt.findFirst({
-    where: { email, gain: { not: 0 } },
+  const data = await prisma.attempt.findUnique({
+    where: { url_email_position: { url, email, position } },
     select: { gain: true },
-    orderBy: { date: 'desc' },
   })
   return data?.gain ?? 0
 }, 'getEloDiff')

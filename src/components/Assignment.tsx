@@ -50,7 +50,9 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
     })
   const user = createAsync(() => getUserInfo(props.userEmail))
   const currentUser = createAsync(() => getUser())
-  const eloDiff = createAsync(() => getEloDiff(props.userEmail), { initialValue: 0 })
+  const eloDiff = createAsync(() => getEloDiff(props.url, props.userEmail, props.index), {
+    initialValue: 0,
+  })
   const [fullScreen, setFullScreen] = createSearchParam(
     'fullscreen',
     z.coerce.boolean().default(false),
