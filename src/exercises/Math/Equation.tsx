@@ -207,14 +207,16 @@ const { Component, schema } = createExerciseType({
               rhs: expression(expr: $rhs) {
                 simplify {
                   expr
+                  isFinite
                 }
               }
             }
           `),
           { lhs: `(${a}) ${x} + ${b}`, rhs: `\\${f}(${c})` },
         )
+        const finalRhs = rhs.simplify.isFinite ? rhs.simplify.expr : '0'
         return {
-          equation: `\\${f}\\left(${lhs.simplify.expr}\\right) = ${rhs.simplify.expr}`,
+          equation: `\\${f}\\left(${lhs.simplify.expr}\\right) = ${finalRhs}`,
           S,
           x,
         }
