@@ -256,7 +256,7 @@ export async function saveExercise(
       position,
       correct: exercise.attempts.at(0)?.correct ?? null,
       ...(options.adjustElo && exercise.attempts.length === 1
-        ? { gain: await getEloGain(email, hash, exercise.attempts[0].correct) }
+        ? { gain: await getEloGain(email, url, exercise.attempts[0].correct) }
         : {}),
     } satisfies Prisma.AttemptUpsertArgs['update']
     await prisma.$transaction(async (tx) => {
@@ -272,10 +272,6 @@ export async function saveExercise(
           tx.user.update({
             where: { email },
             data: { score: { increment: payload.gain } },
-          }),
-          tx.question.update({
-            where: { hash },
-            data: { score: { increment: -Math.floor(payload.gain / 4) } },
           }),
           tx.assignment.update({
             where: { url },

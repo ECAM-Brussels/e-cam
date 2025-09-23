@@ -27,13 +27,13 @@ export const getEloDiff = query(async (email?: string) => {
   return data?.gain ?? 0
 }, 'getEloDiff')
 
-export async function getEloGain(email: string, hash: string, correct: boolean) {
+export async function getEloGain(email: string, url: string, correct: boolean) {
   'use server'
-  const [user, exercise] = await Promise.all([
+  const [user, assignment] = await Promise.all([
     prisma.user.findUniqueOrThrow({ where: { email }, select: { score: true } }),
-    prisma.question.findUniqueOrThrow({ where: { hash }, select: { score: true } }),
+    prisma.assignment.findUniqueOrThrow({ where: { url }, select: { score: true } }),
   ])
-  return Math.round(K * ((correct ? 1 : 0) - logistic(user.score - exercise.score)))
+  return Math.round(K * ((correct ? 1 : 0) - logistic(user.score - (assignment.score ?? 1200))))
 }
 
 export const getEloGraph = query(async (email?: string) => {
