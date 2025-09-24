@@ -43,6 +43,12 @@ export default function Graph(props: {
     }
   }
   let ro: ResizeObserver | undefined = undefined
+  const url = (base: string) => {
+    const params: { [key: string]: string } = {}
+    if (props.userEmail) params.userEmail = props.userEmail
+    const query = new URLSearchParams(params).toString()
+    return base + (query ? `?${query}` : '')
+  }
 
   onMount(async () => {
     cytoscape.use(dagre)
@@ -114,12 +120,12 @@ export default function Graph(props: {
     )
     cy()!.on('tap', 'node', function (event) {
       if (event.target.data('id').startsWith('/')) {
-        navigate(event.target.data('id'))
+        navigate(url(event.target.data('id')))
       }
     })
     cy()!.on('mouseover', 'node', function (event) {
       if (event.target.data('id').startsWith('/')) {
-        preload(event.target.data('id'), { preloadData: true })
+        preload(url(event.target.data('id')), { preloadData: true })
         cy()!.container()!.style.cursor = 'pointer'
         event.target.addClass('hovered')
       }
