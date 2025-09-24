@@ -69,7 +69,7 @@ export default function () {
             },
             {
               header: 'Réponses correctes (%)',
-              accessorFn: (row) => (row.correct / row.attempted) * 100,
+              accessorFn: (row) => Math.round((row.correct / row.attempted) * 100),
             },
             {
               header: 'Actions',
