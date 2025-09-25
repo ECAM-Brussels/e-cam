@@ -107,6 +107,7 @@ export default function useBoard(board: () => Board) {
   const removeStrokeMethod = useAction(removeStroke)
   const clearBoardMethod = useAction(clearBoard)
   const reloadBoardMethod = useAction(reloadBoard)
+  const bounds: Record<string, number[]> = {}
   return {
     get strokes() {
       return allStrokes()
@@ -115,6 +116,21 @@ export default function useBoard(board: () => Board) {
       return adding.pending || removing.pending || clearing.pending
         ? ('saving' as const)
         : ('saved' as const)
+    },
+    getBounds({ id, ...data }: Stroke) {
+      const hash = hashObject(data)
+      if (hash in bounds) {
+        return bounds[hash]
+      }
+      let box = [Infinity, Infinity, -Infinity, -Infinity]
+      for (const [x, y] of data.points) {
+        box[0] = Math.min(box[0], x)
+        box[1] = Math.min(box[0], y)
+        box[2] = Math.max(box[0], x)
+        box[3] = Math.max(box[0], y)
+      }
+      bounds[hash] = box
+      return box
     },
     addStroke(stroke: Stroke) {
       return addStrokeMethod(board(), stroke)
