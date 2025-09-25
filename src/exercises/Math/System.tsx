@@ -39,7 +39,7 @@ const { Component, schema } = createExerciseType({
             onChange={(e) => setImpossible(e.target.checked)}
           />{' '}
           {props.question.geometric
-            ? `Il n'y a pas d'intensection`
+            ? `Il n'y a pas d'intersection`
             : `Ce système d'équations n'a pas de solution.`}
         </label>
         <ul class="flex gap-8">
