@@ -13,6 +13,7 @@ import Fa from '~/components/Fa'
 import FullScreen from '~/components/FullScreen'
 import Graph from '~/components/Graph'
 import Pagination from '~/components/Pagination'
+import Suspense from '~/components/Suspense'
 import Whiteboard from '~/components/Whiteboard'
 import Youtube from '~/components/Youtube'
 import { getUser } from '~/lib/auth/session'
@@ -111,7 +112,9 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
             onTouchStart={() => setDisabled(false)}
             onTouchEnd={() => setDisabled(true)}
           >
-            <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl">{props.children}</ErrorBoundary>
+            <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl">
+              <Suspense>{props.children}</Suspense>
+            </ErrorBoundary>
             <Show when={options().whiteboard}>
               <div class="h-full border max-w-full relative overflow-hidden" ref={boardContainer}>
                 <Whiteboard
