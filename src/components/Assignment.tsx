@@ -8,6 +8,7 @@ import { createAsync, createAsyncStore, json, reload } from '@solidjs/router'
 import { Component, createEffect, createSignal, type JSXElement, Show } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import { z } from 'zod'
+import Calculator from '~/components/Calculator'
 import ErrorBoundary from '~/components/ErrorBoundary'
 import Fa from '~/components/Fa'
 import FullScreen from '~/components/FullScreen'
@@ -115,6 +116,9 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
             <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl">
               <Suspense>{props.children}</Suspense>
             </ErrorBoundary>
+            <Show when={options().calculator}>
+              <Calculator />
+            </Show>
             <Show when={options().whiteboard}>
               <div class="h-full border max-w-full relative overflow-hidden" ref={boardContainer}>
                 <Whiteboard
