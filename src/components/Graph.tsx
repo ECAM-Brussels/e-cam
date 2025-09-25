@@ -153,7 +153,7 @@ export default function Graph(props: {
   }
 
   return (
-    <div class="relative">
+    <div class="relative z-30">
       <div class={props.class} ref={container} />
       <div class="absolute right-4 bottom-2 flex gap-2 z-50">
         <button
