@@ -103,13 +103,15 @@ export default function Whiteboard(props: WhiteboardProps) {
         setCurrentStroke('points', currentStroke.points.length, [x, y])
       }
     } else if (mode() === 'erase') {
-      for (let i = 0; i < board.strokes.length; i++) {
-        for (const p of board.strokes[i].points) {
+      for (const stroke of board.strokes) {
+        const bounds = board.getBounds(stroke)
+        if (x < bounds[0] - 10 || x > bounds[2] + 10 || y < bounds[1] - 10 || y > bounds[3] + 10) {
+          continue
+        }
+        for (const p of stroke.points) {
           const dist = (p[0] - x) ** 2 + (p[1] - y) ** 2
-          const stroke = board.strokes[i]
           if (dist <= 5 && stroke.id) {
-            await board.removeStroke(stroke.id)
-            return
+            return await board.removeStroke(stroke.id)
           }
         }
       }

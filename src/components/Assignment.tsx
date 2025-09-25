@@ -108,6 +108,8 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
             class="grow max-w-full overflow-hidden"
             onPointerEnter={() => setDisabled(false)}
             onPointerLeave={() => setDisabled(true)}
+            onTouchStart={() => setDisabled(false)}
+            onTouchEnd={() => setDisabled(true)}
           >
             <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl">{props.children}</ErrorBoundary>
             <Show when={options().whiteboard}>
