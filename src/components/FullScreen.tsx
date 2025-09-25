@@ -6,6 +6,7 @@ export default function FullScreen(props: {
   classList?: { [key: string]: boolean }
   children: JSXElement
   onChange?: (fullScreen: boolean) => void
+  disabled?: boolean
 }) {
   let container!: HTMLDivElement
   const [fullScreen, setFullScreen] = createSignal(false)
@@ -15,7 +16,7 @@ export default function FullScreen(props: {
   onMount(() => {
     const observer = new IntersectionObserver(
       async ([entry]) => {
-        if (entry.isIntersecting && container) {
+        if (entry.isIntersecting && container && !props.disabled) {
           container.scrollIntoView({
             behavior: 'smooth',
             block: 'start',
@@ -28,7 +29,7 @@ export default function FullScreen(props: {
       observer.observe(container)
     }
     window.onscroll = () => {
-      if (Math.abs(window.scrollY - container.offsetTop) < 5) {
+      if (Math.abs(window.scrollY - container.offsetTop) < 5 && !props.disabled) {
         setFullScreen(true)
       } else {
         setFullScreen(false)

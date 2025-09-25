@@ -57,6 +57,7 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
     'fullscreen',
     z.coerce.boolean().default(false),
   )
+  const [disabled, setDisabled] = createSignal(false)
   const [zoom, setZoom] = createSignal(1)
   let boardContainer!: HTMLDivElement
 
@@ -82,7 +83,11 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
           </Show>
         </Show>
       </div>
-      <FullScreen class="bg-slate-50 h-screen w-full overflow-hidden" onChange={setFullScreen}>
+      <FullScreen
+        class="bg-slate-50 h-screen w-full overflow-hidden"
+        onChange={setFullScreen}
+        disabled={disabled()}
+      >
         <div classList={{ 'grid grid-cols-3 p-4': fullScreen(), 'mb-8': !fullScreen() }}>
           <h2 class="text-2xl" classList={{ hidden: !fullScreen() }}>
             {props.data.page.title}
@@ -99,7 +104,11 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
           <div class="lg:w-[392px]" classList={{ hidden: fullScreen() }}>
             <Sidebar fullScreen={fullScreen()} {...props} elo={user()?.score} eloDiff={eloDiff()} />
           </div>
-          <div class="grow max-w-full overflow-hidden">
+          <div
+            class="grow max-w-full overflow-hidden"
+            onPointerEnter={() => setDisabled(false)}
+            onPointerLeave={() => setDisabled(true)}
+          >
             <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl">{props.children}</ErrorBoundary>
             <Show when={options().whiteboard}>
               <div class="h-full border max-w-full relative overflow-hidden" ref={boardContainer}>
