@@ -83,7 +83,7 @@ export default function Slideshow(props: SlideshowProps) {
     <div classList={{ 'w-screen h-screen': !props.print }} ref={container!}>
       <div
         class="bg-white w-[1920px] h-[1080px] origin-top-left"
-        classList={{ 'overflow-hidden': !props.print }}
+        classList={{ 'overflow-hidden': !props.print, 'select-none': props.showBoard }}
         style={{ transform: `scale(${scale()}) translate(${translation()})` }}
       >
         <Show
