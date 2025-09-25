@@ -87,6 +87,21 @@ const { Component, schema } = createExerciseType({
           .array()
           .nonempty(),
       }),
+      z.object({
+        type: z.literal('withParams'),
+        text: z.string().default(''),
+        questions: z
+          .union([
+            z.string().transform((expr) => ({ expr, text: undefined })),
+            z.object({ text: z.string(), expr: z.string().nonempty() }),
+          ])
+          .array()
+          .nonempty(),
+        subs: z.record(
+          z.string().nonempty(),
+          z.string().nonempty().or(z.number().transform(String)).array().nonempty(),
+        ),
+      }),
     ]),
     generate: async (params) => {
       'use server'
@@ -97,6 +112,15 @@ const { Component, schema } = createExerciseType({
         alpha = { I: alpha, II: `\\pi - ${alpha}`, III: `\\pi + ${alpha}`, IV: `-${alpha}` }[q]
         alpha = await simplify(`${alpha} + 2 \\times ${k} \\pi`)
         return { expr: `\\${f}\\left(${alpha}\\right)`, text: params.text }
+      } else if (params.type === 'withParams') {
+        const question = sample(params.questions)
+        Object.entries(params.subs).forEach(([symbol, choices]) => {
+          question.expr = question.expr.replaceAll(`{${symbol}}`, `{${sample(choices)}}`)
+        })
+        return {
+          text: question.text ?? params.text,
+          expr: question.expr,
+        }
       } else {
         throw new Error('params.type has incorrect value')
       }
