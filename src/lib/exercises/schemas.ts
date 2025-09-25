@@ -3,6 +3,7 @@ import { z } from 'zod'
 
 export const optionsSchema = z.object({
   adjustElo: z.boolean().default(true),
+  calculator: z.boolean().default(false),
   initialElo: z.number().default(1200),
   save: z.union([z.literal('all'), z.literal('lastAttempt')]).default('all'),
   maxAttempts: z.null().or(z.number()).default(1),

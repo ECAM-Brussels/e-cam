@@ -1,0 +1,81 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: Présentation FGS
+options:
+  adjustElo: false
+body:
+  - type: MolarMass
+    question:
+      substance: H2O
+  - type: MolarMass
+    question:
+      substance: NaOH
+  - type: MolarMass
+    question:
+      substance: NaCl
+  - type: Balance
+    question:
+      reactants:
+        - Na
+        - H2O
+      products:
+        - NaOH
+        - H2
+  - type: Factor
+    question:
+      expr: (x - 3)(x - 2)(x - 1)
+      expand: true
+  - type: Calculate
+    options:
+      calculator: true
+    params:
+      type: withParams
+      questions:
+        - text: |
+            Deux points matériels ont comme masse ${m1}$ kg et ${m2}$ kg,
+            et se trouvent à une distance de ${d}$ mètres.
+
+            Trouvez l'intensité de la force gravitationnelle
+            entre ces deux objets.
+          label: F
+          unit: N
+          expr: \frac {(6.6743 \cdot 10^{-11}) ({m1}) ({m2})} {{d}^2}
+          error: 0.1
+      subs:
+        m1: [200, 300]
+        m2: [500, 700]
+        d: [25, 50]
+  - type: Python
+    options:
+      whiteboard: false
+      maxAttempts: null
+      save: lastAttempt
+    question:
+      wrap: true
+      text: |
+        Écrire un programme qui demande un entier
+        et qui affiche
+
+        - `pair` si ce nombre est pair
+        - `impair` si ce nombre est impair
+      answer: |
+        n = int(input(""))
+        print("impair" if n % 2 else "pair")
+      tests:
+        - test: main([0])
+          desc: Entrer 0 devrait donner 'pair'
+        - test: main([1])
+          desc: Entrer 1 devrait donner 'impair'
+        - test: main([2])
+          desc: Entrer 2 devrait donner 'pair'
+        - test: main([3])
+          desc: Entrer 3 devrait donner 'impair'
+        - test: main([4])
+          desc: Entrer 4 devrait donner 'pair'
+        - test: main([5])
+          desc: Entrer 5 devrait donner 'impair'
+        - test: main([6])
+          desc: Entrer 6 devrait donner 'pair'
+        - test: main([7])
+          desc: Entrer 7 devrait donner 'impair'
+        - test: main([8])
+          desc: Entrer 8 devrait donner 'pair'
