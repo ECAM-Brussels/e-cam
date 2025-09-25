@@ -47,7 +47,7 @@ const { Component, schema } = createExerciseType({
             <Math value={`\\| \\vec u \\| = ${question().norms[0]}`} />,{' '}
             <Math value={`\\| \\vec v \\| = ${question().norms[1]}`} />, et que l'angle entre ces deux
             vecteurs est <Math value={question().theta} />{' '}
-            {question().unit === 'degrees' && 'degrés'}
+            {question().unit === 'degrees' && 'degrés'}{'.'}
           </p>
           <div class="flex justify-center items-center gap-2">
             <Math value="\vec u \cdot \vec v = " displayMode />
