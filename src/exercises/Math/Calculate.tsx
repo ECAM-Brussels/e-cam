@@ -1,6 +1,7 @@
 import { sample } from 'lodash-es'
 import { Show } from 'solid-js'
 import { z } from 'zod'
+import Markdown from '~/components/Markdown'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
 import { createExerciseType } from '~/lib/exercises/base'
@@ -17,36 +18,50 @@ const trigFunction = z.union([
 
 const quadrant = z.union([z.literal('I'), z.literal('II'), z.literal('III'), z.literal('IV')])
 
+const question = z.object({
+  text: z.string().optional(),
+  expr: z.string().nonempty(),
+  label: z.string().nonempty().optional(),
+  unit: z.string().optional(),
+  error: z.number().default(0),
+})
+
 const { Component, schema } = createExerciseType({
   name: 'Calculate',
   Component: (props) => (
     <>
-      <p class="my-4">{props.question.text ?? 'Calculez'}</p>
+      <p class="my-4">
+        <Markdown value={props.question.text ?? 'Calculez'} />
+      </p>
       <div class="flex justify-center items-center gap-2">
-        <Math value={`${props.question.expr}=`} displayMode />
+        <Math value={`${props.question.label ?? props.question.expr}=`} displayMode />
         <Math name="attempt" editable value={props.attempt} />
+        {props.question.unit}
       </div>
     </>
   ),
-  question: z.object({
-    text: z.string().optional(),
-    expr: z.string().nonempty(),
-  }),
+  question,
   attempt: z.string().nonempty(),
   mark: async (question, attempt) => {
     'use server'
     const { expression } = await request(
       graphql(`
-        query CheckCalculation($expr: Math!, $attempt: Math!) {
+        query CheckCalculation($expr: Math!, $attempt: Math!, $approx: Boolean!, $error: Float!) {
           expression(expr: $attempt) {
-            isEqual(expr: $expr)
+            simplify {
+              isEqual(expr: $expr) @skip(if: $approx)
+              isApproximatelyEqual(expr: $expr, error: $error) @include(if: $approx)
+            }
             isNumber
           }
         }
       `),
-      { ...question, attempt },
+      { ...question, approx: question.error > 0, attempt },
     )
-    return expression.isEqual && expression.isNumber
+    return (
+      ((expression.simplify.isEqual || expression.simplify.isApproximatelyEqual) &&
+        expression.isNumber) === true
+    )
   },
   feedback: [
     async (remaining, question, _attempt) => {
@@ -68,7 +83,15 @@ const { Component, schema } = createExerciseType({
           (p) => 'answer' in p,
         )}
       >
-        {(p) => <Math value={`${p().expr} = ${p().answer}`} displayMode />}
+        {(p) => (
+          <div class="flex items-center justify-center">
+            <Math
+              value={`${p().label ? `${p().label} =` : ''} ${p().expr} = ${p().answer}`}
+              displayMode
+            />
+            {p().unit}
+          </div>
+        )}
       </Show>
     ),
   ],
@@ -89,12 +112,8 @@ const { Component, schema } = createExerciseType({
       }),
       z.object({
         type: z.literal('withParams'),
-        text: z.string().default(''),
         questions: z
-          .union([
-            z.string().transform((expr) => ({ expr, text: undefined })),
-            z.object({ text: z.string(), expr: z.string().nonempty() }),
-          ])
+          .union([z.string().transform((expr) => question.parse({ expr })), question])
           .array()
           .nonempty(),
         subs: z.record(
@@ -115,12 +134,11 @@ const { Component, schema } = createExerciseType({
       } else if (params.type === 'withParams') {
         const question = sample(params.questions)
         Object.entries(params.subs).forEach(([symbol, choices]) => {
-          question.expr = question.expr.replaceAll(`{${symbol}}`, `{${sample(choices)}}`)
+          const choice = sample(choices)
+          question.expr = question.expr.replaceAll(`{${symbol}}`, `{${choice}}`)
+          question.text = question.text?.replaceAll(`{${symbol}}`, `{${choice}}`)
         })
-        return {
-          text: question.text ?? params.text,
-          expr: question.expr,
-        }
+        return question
       } else {
         throw new Error('params.type has incorrect value')
       }
