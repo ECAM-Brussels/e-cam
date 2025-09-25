@@ -6,17 +6,52 @@ description: |
   Deuxieme paragraphe **gras** $x^2$.
 # courses:
 #  - PM1C
+options:
+  adjustElo: false
 body:
-  - type: CompleteSquare
-    params:
-      A: [2]
-      Alpha: [-9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-      Beta: [-9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  - type: MultipleChoice
+    question:
+      text: "Vrai ou faux: $\\sin\\left(\\frac{\\pi}{2}-x\\right)=\\cos x$"
+      choices:
+        - Vrai
+        - Faux
+      answer: Vrai
+  - type: MultipleChoice
+    question:
+      text: "Vrai ou faux: si $\\vec{a}\\cdot(\\vec{b}\\times\\vec{c}) = 0$, cela veut dire que les vecteurs $\\vec{a}, \\vec{b}$ et $\\vec{c}$ sont perpendiculaires  "
+      choices:
+        - Vrai
+        - Faux
+      answer: Faux
+  - type: MultipleChoice
+    question:
+      text: "Vrai ou faux: $\\sqrt{x^2+9}=x+3$"
+      choices:
+        - Vrai
+        - Faux
+      answer: Faux
+  - type: MultipleChoice
+    question:
+      text: "Vrai ou faux: si $x=a$ est une racine d'un polynôme, alors $x-a$ est un facteur du polynôme."
+      choices:
+        - Vrai
+        - Faux
+      answer: Vrai
+  - type: MultipleChoice
+    question:
+      text: "Vrai ou faux: lors de la résolution d'un sytème linéaire à trois équations et trois inconnus,
+        on obtient par la méthode de Gauss la forme réduite suivante :
+        $$\\left(\\begin{array}{ccc|c} 1 & 2 & -1 & 5 \\\\ 0 & -1 & 3 & 4 \\\\ 0 & 0 & 0 & 0 \\end{array}\\right)$$
+        Cela veut dire que $z = 0$."
+      choices:
+        - Vrai
+        - Faux
+      answer: Faux
   - type: Calculate
     params:
       type: trigonometricValues
       text: |
-        À l'aide des formules trigonométriques d'addition et de soustraction,
+        À l'aide des formules trigonométriques,
         déterminez la valeur exacte de
       exercises:
         - F:
@@ -27,4 +62,38 @@ body:
            - \frac{\pi}{8}
            - \frac{5\pi}{12}
           K: [0]
-
+  - type: CompleteSquare
+    params:
+      A: [2]
+      Alpha: [-9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      Beta: [-9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  - type: Equation
+    params:
+      type: withParams
+      subs:
+        a: [2, 3, 4, -2, -3]
+        b: [1, 2, 3, 4, 5, -1, -2, -3, -4, -5]
+        c: [2, 3, 4, 5]
+        k: [1, 2, -1, -2]
+      questions:
+        - \sqrt{({k})x^2 - (({a})({k}) + {b}) x + (({a})({b}) + ({c})^2)} = {c}
+  - type: System
+    params:
+      Variables: [['x', 'y']]
+      L: [-1, 1]
+      U: [-1, 1]
+      X: [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5]
+      geometricProbability: 0
+  - type: DotProduct
+    params:
+      Norms: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      Theta:
+        - 0
+        - \frac{\pi}{6}
+        - \frac{\pi}{4}
+        - \frac{\pi}{3}
+        - \frac{\pi}{2}
+        - \frac{2 \pi}{3}
+        - \frac{3 \pi}{4}
+        - \frac{5 \pi}{6}
+        - \pi
