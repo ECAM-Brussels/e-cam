@@ -43,14 +43,14 @@ const { Component, schema } = createExerciseType({
       {(question) => (
         <>
           <p>
-            Calculez le produit scalaire <Math value="\vec u \cdot \vec v" /> sachat que{' '}
-            <Math value={`\\| u \\| = ${question().norms[0]}`} />,{' '}
-            <Math value={`\\| v \\| = ${question().norms[1]}`} />, et que l'angle entre ces deux
+            Calculez le produit scalaire <Math value="\vec u \cdot \vec v" /> sachant que{' '}
+            <Math value={`\\| \\vec u \\| = ${question().norms[0]}`} />,{' '}
+            <Math value={`\\| \\vec v \\| = ${question().norms[1]}`} />, et que l'angle entre ces deux
             vecteurs est <Math value={question().theta} />{' '}
             {question().unit === 'degrees' && 'degrés'}
           </p>
           <div class="flex justify-center items-center gap-2">
-            <Math value="\vec u \cdot \vec v" displayMode />
+            <Math value="\vec u \cdot \vec v = " displayMode />
             <Math name="attempt" value={props.attempt} editable displayMode />
           </div>
         </>
