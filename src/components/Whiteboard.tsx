@@ -279,7 +279,7 @@ function Toolbar(props: ToolbarProps) {
   ]
   return (
     <div
-      class="absolute flex gap-1 p-2 z-30 print:hidden"
+      class="absolute flex gap-1 p-2 z-30 print:hidden select-none"
       classList={{
         'top-0': props.position === 'top',
         'bottom-0': props.position === 'bottom',
