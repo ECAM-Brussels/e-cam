@@ -44,7 +44,7 @@ export const route = {
           getExercise(info.url, user.email, info.index)
           getPaginationInfo(info.url, user.email)
         }),
-        getEloDiff(user.email),
+        getEloDiff(info.url, user.email, info.index),
         loadBoard({ url: info.url, ownerEmail: user.email, board: `${info.index}` }),
         getAssignmentGraph(getGraphQuery(info.url)),
       ])

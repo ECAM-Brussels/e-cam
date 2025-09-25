@@ -18,7 +18,7 @@ title: Compétences de PM1C
 
 ~~~ {.tsx .raw}
 <Graph
-  class="border rounded-xl w-full h-[2000px]"
+  class="bg-white border rounded-xl w-full h-[2000px]"
   query={{ courses: { some: { code: 'PM1C' } } }}
   groups={['algebra', 'calculus', 'trigonometry', 'geometry']}
 />

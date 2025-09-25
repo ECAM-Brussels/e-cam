@@ -50,11 +50,14 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
     })
   const user = createAsync(() => getUserInfo(props.userEmail))
   const currentUser = createAsync(() => getUser())
-  const eloDiff = createAsync(() => getEloDiff(props.userEmail), { initialValue: 0 })
+  const eloDiff = createAsync(() => getEloDiff(props.url, props.userEmail, props.index), {
+    initialValue: 0,
+  })
   const [fullScreen, setFullScreen] = createSearchParam(
     'fullscreen',
     z.coerce.boolean().default(false),
   )
+  const [disabled, setDisabled] = createSignal(false)
   const [zoom, setZoom] = createSignal(1)
   let boardContainer!: HTMLDivElement
 
@@ -80,7 +83,11 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
           </Show>
         </Show>
       </div>
-      <FullScreen class="bg-slate-50 h-screen w-full overflow-hidden" onChange={setFullScreen}>
+      <FullScreen
+        class="bg-slate-50 h-screen w-full overflow-hidden"
+        onChange={setFullScreen}
+        disabled={disabled()}
+      >
         <div classList={{ 'grid grid-cols-3 p-4': fullScreen(), 'mb-8': !fullScreen() }}>
           <h2 class="text-2xl" classList={{ hidden: !fullScreen() }}>
             {props.data.page.title}
@@ -97,7 +104,11 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
           <div class="lg:w-[392px]" classList={{ hidden: fullScreen() }}>
             <Sidebar fullScreen={fullScreen()} {...props} elo={user()?.score} eloDiff={eloDiff()} />
           </div>
-          <div class="grow max-w-full overflow-hidden">
+          <div
+            class="grow max-w-full overflow-hidden"
+            onPointerEnter={() => setDisabled(false)}
+            onPointerLeave={() => setDisabled(true)}
+          >
             <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl">{props.children}</ErrorBoundary>
             <Show when={options().whiteboard}>
               <div class="h-full border max-w-full relative overflow-hidden" ref={boardContainer}>
@@ -202,13 +213,14 @@ function Navigation(props: AssignmentProps) {
         current={props.index}
         url={(index) => {
           const parts: string[] = [props.url]
-          if (props.userEmail !== realUser()?.email) {
-            parts.push(props.userEmail)
-          }
+          const params: { [key: string]: string } = {}
+          if (fullscreen()) params.fullscreen = 'true'
+          if (props.userEmail !== realUser()?.email) params.userEmail = props.userEmail
+          const query = new URLSearchParams(params).toString()
           if (index > 1) {
             parts.push(`${index}`)
           }
-          return parts.join('/') + (fullscreen() ? '?fullscreen=true' : '')
+          return parts.join('/') + (query ? `?${query}` : '')
         }}
         max={pagination().length || 0}
         classList={(i) => ({

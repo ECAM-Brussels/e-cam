@@ -48,7 +48,7 @@ export default function () {
               accessorKey: 'score',
             },
             {
-              header: 'Feedback',
+              header: 'Derniers résultats',
               accessorFn: (row) => row.attempts.filter((a) => a.correct === true).length,
               cell: (info) => (
                 <For each={info.row.original.attempts}>
@@ -66,6 +66,10 @@ export default function () {
                   )}
                 </For>
               ),
+            },
+            {
+              header: 'Réponses correctes (%)',
+              accessorFn: (row) => Math.round((row.correct / row.attempted) * 100),
             },
             {
               header: 'Actions',

@@ -389,26 +389,43 @@ export const getAssignmentGraph = query(
 
 export const getAssignmentResults = query(async (url: string) => {
   'use server'
-  const data = await prisma.user.findMany({
-    where: {
-      attempts: {
-        some: { url, correct: { not: null } },
+  const [data, attempted, correct] = await Promise.all([
+    prisma.user.findMany({
+      where: {
+        attempts: {
+          some: { url, correct: { not: null } },
+        },
       },
-    },
-    select: {
-      firstName: true,
-      lastName: true,
-      email: true,
-      score: true,
-      attempts: {
-        select: { correct: true },
-        where: { url, correct: { not: null } },
-        orderBy: { position: 'desc' },
-        take: 10,
+      select: {
+        firstName: true,
+        lastName: true,
+        email: true,
+        score: true,
+        attempts: {
+          select: { correct: true },
+          where: { url, correct: { not: null } },
+          orderBy: { position: 'desc' },
+          take: 10,
+        },
       },
-    },
-  })
-  return data.map((user) => ({ ...user, attempts: user.attempts.reverse() }))
+    }),
+    prisma.attempt.groupBy({
+      by: ['email'],
+      where: { url, correct: { not: null } },
+      _count: { _all: true },
+    }),
+    prisma.attempt.groupBy({
+      by: ['email'],
+      where: { url, correct: true },
+      _count: { _all: true },
+    }),
+  ])
+  return data.map((user) => ({
+    ...user,
+    attempts: user.attempts.reverse(),
+    correct: correct.filter((res) => res.email === user.email).at(0)?._count._all ?? 0,
+    attempted: attempted.filter((res) => res.email === user.email).at(0)?._count._all ?? 0,
+  }))
 }, 'getAssignmentResults')
 
 export const getAssignmentList = query(
