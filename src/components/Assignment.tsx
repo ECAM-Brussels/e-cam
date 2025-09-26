@@ -225,7 +225,6 @@ function Navigation(props: AssignmentProps) {
   const [fullscreen] = createSearchParam('fullscreen', z.coerce.boolean().default(false))
   const options = () => optionsSchema.parse({ ...props.data.options })
   const showFeedback = () => {
-    console.log(options().showFeedback)
     if (options().showFeedback === true) return true
     if (options().showFeedback === false) return false
     return new Date() >= options().showFeedback
