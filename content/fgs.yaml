@@ -2,6 +2,7 @@
 title: Présentation FGS
 options:
   adjustElo: false
+  showSidebar: false
 body:
   - type: MolarMass
     options:
@@ -20,6 +21,27 @@ body:
     question:
       expr: (x - 3)(x - 2)(x - 1)
       expand: true
+  - type: MultipleChoice
+    question:
+      text: |
+        Que vaut $\sqrt{x^2}$?
+      choices:
+        - $x$
+        - $-x$
+        - $|x|$
+      answer: $|x|$
+  - type: Simple
+    question:
+      parts:
+        - text: Donnez la formule du facteur de Lorentz
+          label: $\gamma =$
+          answer: \frac 1 {\sqrt{1 - \frac{v^2}{c^2}}}
+        - text: |
+            Donnez la formule de la loi de gravitation universelle,
+            pour deux masses $m_1$, $m_2$ situées à une distance $r$ l'une de l'autre.
+          label: $F =$
+          unit: N
+          answer: $\frac {G m_1 m_2} {r^2}$
   - type: Calculate
     options:
       calculator: true
