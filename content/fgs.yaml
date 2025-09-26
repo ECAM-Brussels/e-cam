@@ -30,7 +30,7 @@ body:
             Deux points matériels ont comme masse ${m1}$ kg et ${m2}$ kg,
             et se trouvent à une distance de ${d}$ mètres.
 
-            Trouvez l'intensité de la force gravitationnelle
+            Déterminez l'intensité de la force gravitationnelle
             entre ces deux objets.
           label: F
           unit: N

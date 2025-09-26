@@ -17,13 +17,13 @@ const { Component, schema } = createExerciseType({
           value={`\\lim_{${props.question.x} \\to ${props.question.x0}} ${props.question.expr}=`}
           displayMode
         />
-        <Math name="attempt.value" editable value={props.attempt?.value} displayMode />.
+        <Math name="attempt.value" editable value={props.attempt?.value} displayMode />
       </div>
       <Show when={props.question.differentialQuotient}>
         <p>
-          Cette limite est la dérivée de{' '}
+          Cette limite est la dérivée de la fonction{' '}
           <Math name="attempt.fct" editable value={props.attempt?.fct} />
-          en <Math name="attempt.a" editable value={props.attempt?.a} />
+          {' '}en <Math value={`x =`}/> <Math name="attempt.a" editable value={props.attempt?.a} />
         </p>
       </Show>
     </>
