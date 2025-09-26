@@ -30,7 +30,7 @@ export default function Gauss() {
   return (
     <>
       <form class="my-4" method="post" action={checkRowEquivalence}>
-        <div class="columns columns-2">
+        <div class="grid grid-cols-2">
           <div>
             <h3 class="font-bold text-2xl">Énoncé</h3>
             <Matrix name="A" />
