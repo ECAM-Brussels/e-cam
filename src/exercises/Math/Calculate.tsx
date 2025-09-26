@@ -35,8 +35,8 @@ const { Component, schema } = createExerciseType({
       </p>
       <div class="flex justify-center items-center gap-2">
         <Math value={`${props.question.label ?? props.question.expr}=`} displayMode />
-        <Math name="attempt" editable value={props.attempt} />
-        {props.question.unit}
+        <Math name="attempt" editable value={props.attempt} displayMode />
+        <Markdown value={props.question.unit ?? ''} />
       </div>
     </>
   ),
@@ -118,7 +118,18 @@ const { Component, schema } = createExerciseType({
           .nonempty(),
         subs: z.record(
           z.string().nonempty(),
-          z.string().nonempty().or(z.number().transform(String)).array().nonempty(),
+          z
+            .string()
+            .nonempty()
+            .or(z.number().transform(String))
+            .array()
+            .nonempty()
+            .or(
+              z
+                .string()
+                .or(z.number().transform(String))
+                .transform((s) => [s]),
+            ),
         ),
       }),
     ]),
@@ -135,7 +146,7 @@ const { Component, schema } = createExerciseType({
         const question = sample(params.questions)
         Object.entries(params.subs).forEach(([symbol, choices]) => {
           const choice = sample(choices)
-          question.expr = question.expr.replaceAll(`{${symbol}}`, `{${choice}}`)
+          question.expr = question.expr.replaceAll(`{${symbol}}`, `\\left({${choice}}\\right)`)
           question.text = question.text?.replaceAll(`{${symbol}}`, `{${choice}}`)
         })
         return question
