@@ -224,8 +224,8 @@ class Expression:
         return True
 
     @strawberry.field
-    def is_row_equivalent(self, B: list[list[Math]]) -> bool:
-        return self.expr.rref() == sympy.Matrix(B).rref()
+    def is_row_equivalent(self, entries: list[list[Math]]) -> bool:
+        return self.expr.rref() == sympy.Matrix(entries).rref()
 
     @strawberry.field(description="")
     def is_symmetric_set(self) -> bool:
