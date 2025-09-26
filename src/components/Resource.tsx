@@ -1,18 +1,19 @@
 import Fa from './Fa'
 import { faSlideshare } from '@fortawesome/free-brands-svg-icons'
-import { faCalculator, faPrint } from '@fortawesome/free-solid-svg-icons'
+import { faCalculator, faHammer, faPrint } from '@fortawesome/free-solid-svg-icons'
 import { type JSXElement } from 'solid-js'
 
 type ResourceProps = {
   children: JSXElement
   href: string
-  type: 'theory' | 'exercise' | 'handout'
+  type: 'theory' | 'exercise' | 'tool' | 'handout'
 }
 
 const icons = {
   theory: faSlideshare,
   exercise: faCalculator,
   handout: faPrint,
+  tool: faHammer,
 } as const
 
 export default function Resource(props: ResourceProps) {

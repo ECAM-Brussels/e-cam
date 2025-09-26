@@ -56,6 +56,7 @@ title: 'Pont vers le supérieur: mathématiques'
     <Resource type="handout" href="/PM1C/slides/03-algebra?print=true">CT 3</Resource>
     <Resource type="exercise" href="/PM1C/exercises/06-algebra">EX 6</Resource>
     <Resource type="exercise" href="/PM1C/exercises/07-simultaneous-equations">EX 7</Resource>
+    <Resource type="tool" href="/PM1C/gauss">Vérificateur pour systèmes</Resource>
   </ChapterInfo>
   <ChapterInfo title="Droites et Coniques" query={{
     "page": {
