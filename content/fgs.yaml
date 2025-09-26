@@ -3,6 +3,7 @@ title: Présentation FGS
 options:
   adjustElo: false
   showSidebar: false
+  showFeedback: 2025-09-26 16:18
 body:
   - type: MolarMass
     options:

@@ -127,6 +127,11 @@ export function createExerciseType<
       return useSave({ attempts }, 'submit')
     }, `exercise-${hash()}`)
     const submission = useSubmission(submit)
+    const showFeedback = () => {
+      if (props.options.showFeedback === true) return true
+      if (props.options.showFeedback === false) return false
+      return new Date() >= props.options.showFeedback
+    }
 
     return (
       <Suspense fallback="Génération d'un exercice...">
@@ -150,14 +155,14 @@ export function createExerciseType<
               <Show when={!readOnly() && !submission.pending}>
                 <div class="mb-2">
                   <Button type="submit" color="green">
-                    Corriger
+                    {props.options.showFeedback ? 'Corriger' : 'Soumettre'}
                   </Button>
                 </div>
               </Show>
             </fieldset>
             <ZodError error={submission.error} />
           </form>
-          <Show when={props.attempts.length > 0 && question()}>
+          <Show when={props.attempts.length > 0 && question() && showFeedback()}>
             <Suspense fallback="Calcul du feedback...">
               <Feedback
                 attempts={props.attempts}

@@ -223,6 +223,13 @@ function Navigation(props: AssignmentProps) {
   })
   const realUser = createAsync(() => getUser())
   const [fullscreen] = createSearchParam('fullscreen', z.coerce.boolean().default(false))
+  const options = () => optionsSchema.parse({ ...props.data.options })
+  const showFeedback = () => {
+    console.log(options().showFeedback)
+    if (options().showFeedback === true) return true
+    if (options().showFeedback === false) return false
+    return new Date() >= options().showFeedback
+  }
   return (
     <div class="text-center">
       <Pagination
@@ -240,8 +247,9 @@ function Navigation(props: AssignmentProps) {
         }}
         max={pagination().length || 0}
         classList={(i) => ({
-          'bg-green-100': pagination()[i - 1] === true,
-          'bg-red-100': pagination()[i - 1] === false,
+          'bg-green-100': pagination()[i - 1] === true && showFeedback(),
+          'bg-red-100': pagination()[i - 1] === false && showFeedback(),
+          'bg-slate-200': pagination()[i - 1] !== null && !showFeedback(),
           'bg-white': pagination()[i - 1] === null,
         })}
       />

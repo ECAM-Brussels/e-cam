@@ -11,6 +11,11 @@ export const optionsSchema = z.object({
   note: z.string().default(''),
   whiteboard: z.boolean().default(true),
   streak: z.number().default(0),
+  showFeedback: z
+    .boolean()
+    .or(z.date())
+    .or(z.string().transform((s) => new Date(s)))
+    .default(true),
 })
 export type Options = z.infer<typeof optionsSchema>
 
