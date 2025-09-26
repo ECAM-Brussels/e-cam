@@ -4,14 +4,10 @@ options:
   adjustElo: false
 body:
   - type: MolarMass
+    options:
+      calculator: true
     question:
       substance: H2O
-  - type: MolarMass
-    question:
-      substance: NaOH
-  - type: MolarMass
-    question:
-      substance: NaCl
   - type: Balance
     question:
       reactants:
