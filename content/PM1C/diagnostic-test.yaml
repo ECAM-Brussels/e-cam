@@ -2,6 +2,7 @@
 title: "Test diagnostique"
 description: |
   Bonjour
+
   Deuxieme paragraphe **gras** $x^2$.
 # courses:
 #  - PM1C
@@ -53,7 +54,7 @@ body:
       text: |
         Vrai ou faux: 
         
-        Lors de la résolution d'un sytème linéaire à trois équations et trois inconnus,
+        Lors de la résolution d'un sytème linéaire à trois équations et trois inconnues,
         supposons qu'on obtient par la méthode de Gauss la forme réduite suivante :
 
         $$\left(\begin{array}{ccc|c} 1 & 2 & -1 & 5 \\ 0 & -1 & 3 & 4 \\ 0 & 0 & 0 & 0 \end{array}\right)$$
