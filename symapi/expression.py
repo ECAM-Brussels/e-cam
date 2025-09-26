@@ -223,6 +223,10 @@ class Expression:
             return all(map(lambda x: x.is_real or x.is_imaginary, u.args))
         return True
 
+    @strawberry.field
+    def is_row_equivalent(self, B: list[list[Math]]) -> bool:
+        return self.expr.rref() == sympy.Matrix(B).rref()
+
     @strawberry.field(description="")
     def is_symmetric_set(self) -> bool:
         x = sympy.Symbol("x")
@@ -346,6 +350,10 @@ class Expression:
     def real(self) -> "Expression":
         a, _ = self.expr.as_real_imag()
         return Expression(expr=a)
+
+    @strawberry.field
+    def rref(self) -> "Expression":
+        return Expression(expr=self.expr.rref())
 
     @strawberry.field
     def simplify(self) -> "Expression":

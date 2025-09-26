@@ -29,6 +29,10 @@ class Query:
         return Expression(expr=expr)
 
     @strawberry.field
+    def matrix(self, entries: list[list[Math]]) -> "Expression":
+        return Expression(expr=sympy.Matrix(entries))
+
+    @strawberry.field
     def vector(self, coordinates: list[Math]) -> "Vector":
         return Vector(coordinates=coordinates)
 
