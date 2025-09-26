@@ -21,7 +21,8 @@ export default function Statistics() {
       <main class="bg-white rounded-xl border p-8">
         <h2 class="text-2xl font-bold my-4">Statistiques générales</h2>
         <ul class="list-disc px-8">
-          <li>{stats()?.userCount ?? 0} utilisateurs</li>
+          <li>{stats()?.count.users ?? 0} utilisateurs</li>
+          <li>{stats()?.count.activeUsers ?? 0} utilisateurs actifs</li>
           <li>{stats()?.attempts.correct} exercices corrects</li>
           <li>{stats()?.attempts.total} exercices tentés</li>
         </ul>

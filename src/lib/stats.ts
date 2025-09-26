@@ -6,11 +6,12 @@ export const getStats = query(async () => {
   'use server'
   const user = await getUser()
   if (!user || user.role === 'STUDENT') throw redirect('/auth/login')
-  const [users, assignments, userCount, totalAttempts, correctAttempts, ...info] =
+  const [users, assignments, userCount, activeUserCount, totalAttempts, correctAttempts, ...info] =
     await Promise.all([
       prisma.user.findMany({ orderBy: { score: 'desc' }, take: 10 }),
       prisma.assignment.findMany({ include: { page: true }, orderBy: { score: 'desc' }, take: 10 }),
       prisma.user.count(),
+      prisma.user.count({ where: { attempts: { some: { correct: { not: null } } } } }),
       prisma.attempt.count({ where: { correct: { not: null } } }),
       prisma.attempt.count({ where: { correct: true } }),
       prisma.user.aggregate({
@@ -22,7 +23,6 @@ export const getStats = query(async () => {
     ])
   return {
     users,
-    userCount,
     assignments,
     averages: {
       userScore: info[0]._avg.score,
@@ -31,6 +31,10 @@ export const getStats = query(async () => {
     attempts: {
       total: totalAttempts,
       correct: correctAttempts,
+    },
+    count: {
+      users: userCount,
+      activeUsers: activeUserCount,
     },
   }
 }, 'getStats')
