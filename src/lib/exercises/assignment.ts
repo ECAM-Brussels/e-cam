@@ -275,7 +275,7 @@ export async function saveExercise(
           }),
           tx.assignment.update({
             where: { url },
-            data: { score: { increment: -Math.ceil(payload.gain / 12) } },
+            data: { score: { increment: -Math.ceil(payload.gain / 8) } },
           }),
         )
       }
