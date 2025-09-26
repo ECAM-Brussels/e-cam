@@ -14,7 +14,13 @@ const { Component, schema } = createExerciseType({
           {(choice) => (
             <button type="button">
               <label class="border rounded-xl bg-white shadow cursor-pointer px-4 py-2 flex gap-4 items-center">
-                <input type="radio" name="attempt" value={choice} /> <Markdown value={choice} />
+                <input
+                  type="radio"
+                  name="attempt"
+                  value={choice}
+                  checked={props.attempt === choice}
+                />{' '}
+                <Markdown value={choice} />
               </label>
             </button>
           )}
