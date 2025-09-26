@@ -6,6 +6,7 @@ export const optionsSchema = z.object({
   calculator: z.boolean().default(false),
   initialElo: z.number().default(1200),
   save: z.union([z.literal('all'), z.literal('lastAttempt')]).default('all'),
+  showSidebar: z.boolean().default(true),
   maxAttempts: z.null().or(z.number()).default(1),
   note: z.string().default(''),
   whiteboard: z.boolean().default(true),

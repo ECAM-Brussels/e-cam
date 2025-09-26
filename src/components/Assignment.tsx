@@ -103,9 +103,16 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
           />
         </div>
         <div class="h-full max-w-full lg:flex flex-row-reverse gap-8">
-          <div class="lg:w-[392px]" classList={{ hidden: fullScreen() }}>
-            <Sidebar fullScreen={fullScreen()} {...props} elo={user()?.score} eloDiff={eloDiff()} />
-          </div>
+          <Show when={options().showSidebar}>
+            <div class="lg:w-[392px]" classList={{ hidden: fullScreen() }}>
+              <Sidebar
+                fullScreen={fullScreen()}
+                {...props}
+                elo={user()?.score}
+                eloDiff={eloDiff()}
+              />
+            </div>
+          </Show>
           <div
             class="grow max-w-full overflow-hidden"
             onPointerEnter={() => setDisabled(false)}
