@@ -105,15 +105,17 @@ export default function Table<Row extends object>(props: TableProps<Row>) {
         <Button
           color="blue"
           onClick={() => {
-            const ws = XLSX.utils.json_to_sheet(props.data)
-            const wb = XLSX.utils.book_new()
-            XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
+            if (window) {
+              const ws = XLSX.utils.json_to_sheet(props.data)
+              const wb = XLSX.utils.book_new()
+              XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
 
-            const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
-            const blob = new Blob([excelBuffer], {
-              type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            })
-            saveAs(blob, 'export.xlsx')
+              const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+              const blob = new Blob([excelBuffer], {
+                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+              })
+              saveAs(blob, 'export.xlsx')
+            }
           }}
         >
           Exporter vers Excel <Fa icon={faFileExport} /> <Fa icon={faFileExcel} />
