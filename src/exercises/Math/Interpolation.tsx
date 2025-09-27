@@ -14,7 +14,7 @@ const { Component, schema } = createExerciseType({
     return (
       <>
         <p>
-          Trouvez l'équation {line() ? 'de la droite' : 'du polynôme'} passant par
+          Déterminez l'équation {line() ? 'de la droite' : 'du polynôme'} passant par
           <For each={props.question.points}>
             {(coordinates, pos) => (
               <>
