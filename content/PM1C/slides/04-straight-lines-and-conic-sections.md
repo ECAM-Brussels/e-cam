@@ -65,12 +65,16 @@ Trouvez l'équation d'une droite passant par $(5, 2)$ qui est parallèle à la d
 Montrez que les droites $2x + 3y = 1$ et $6x - 4y - 1 = 0$ sont perpendiculaires.
 :::
 
-# Paraboles (10.5, p. 741) {.w-3--5}
+# Paraboles {.w-1--2}
 
 ::: definition
 Lieu des points équidistants entre un point (le **foyer**)
 et une droite (la **directrice**).
 :::
+
+<Geogebra id="HJAnUrNN" />
+
+# Paraboles (10.5, p. 741) {.w-3--5}
 
 Nous nous concentrons sur le cas où la directrice est parallèle aux axes.
 
@@ -179,11 +183,17 @@ $$
 - Esquissez le graphe de l'équation $x^2 + y^2 + 2x - 6y + 7 = 0$.
 :::
 
-# Ellipse (p. 743) {.w-3--5}
+# Ellipse (p. 743)
 
+::::: w-1--2
 ::: definition
 Lieu des points tels que la somme des distance à deux points (appelés **foyers**) est constante.
 :::
+:::::
+
+<Geogebra id="kPBYDVfZ" width={1200} />
+
+# Ellipse (p. 743) {.w-2--3}
 
 $$
 \boxed{
@@ -251,11 +261,17 @@ data:
 Trouvez une équation de l'ellipse avec foyers $(0, \pm 2)$ et sommets $(0, \pm 3)$.
 :::
 
-# Hyperboles (p. 744) {.w-3--5}
+# Hyperboles
 
+::::: w-1--2
 ::: definition
 Lieu des points tels que la différence des distance à deux points (appelés **foyers**) est constante.
 :::
+:::::
+
+<Geogebra id="tqD3PMzy" width={1200} />
+
+# Hyperboles (p. 744) {.w-3--5}
 
 ::::: {.flex .gap-4}
 ::: column
