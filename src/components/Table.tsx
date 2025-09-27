@@ -1,6 +1,8 @@
 import {
   faChevronDown,
   faChevronUp,
+  faFileExcel,
+  faFileExport,
   faSort,
   faSortDown,
   faSortUp,
@@ -17,9 +19,12 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
 } from '@tanstack/solid-table'
+import { saveAs } from 'file-saver'
 import { debounce } from 'lodash-es'
 import { createSignal, For, type JSXElement, Show } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
+import * as XLSX from 'xlsx'
+import Button from '~/components/Button'
 import Fa from '~/components/Fa'
 import { hashObject } from '~/lib/helpers'
 
@@ -96,6 +101,24 @@ export default function Table<Row extends object>(props: TableProps<Row>) {
           placeholder="Rechercher dans toutes les colonnes..."
         />
       </Show>
+      <div class="text-right">
+        <Button
+          color="blue"
+          onClick={() => {
+            const ws = XLSX.utils.json_to_sheet(props.data)
+            const wb = XLSX.utils.book_new()
+            XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
+
+            const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+            const blob = new Blob([excelBuffer], {
+              type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            })
+            saveAs(blob, 'export.xlsx')
+          }}
+        >
+          Exporter vers Excel <Fa icon={faFileExport} /> <Fa icon={faFileExcel} />
+        </Button>
+      </div>
       <table class={props.class ?? 'border bg-white text-gray-600 mx-auto my-4'}>
         <thead class="border text-gray-900 uppercase bg-gray-50">
           <For each={table.getHeaderGroups()}>
