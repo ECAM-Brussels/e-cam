@@ -32,7 +32,7 @@ export default function Statistics() {
         </ul>
         <h2 class="text-2xl font-bold my-4">Utilisation de la plateforme</h2>
         <Show when={dataset()}>
-          {(dataset) => <LineChart class="p-4 lg:p-12" {...dataset()} />}
+          {(dataset) => <LineChart class="p-4 lg:p-12 h-96" {...dataset()} />}
         </Show>
         <section class="lg:grid lg:grid-cols-2">
           <div>
