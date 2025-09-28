@@ -4,7 +4,7 @@ import {
   faUpRightAndDownLeftFromCenter,
   faWindowMinimize,
 } from '@fortawesome/free-solid-svg-icons'
-import { createAsync, createAsyncStore, json, reload } from '@solidjs/router'
+import { createAsync, json, reload } from '@solidjs/router'
 import { Component, createEffect, createSignal, type JSXElement, Show } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import { z } from 'zod'
@@ -44,7 +44,7 @@ export const getGraphQuery = (url: string) => ({
 })
 
 function Shell(props: AssignmentProps & { children: JSXElement }) {
-  const exercise = createAsyncStore(() => getExercise(props.url, props.userEmail, props.index))
+  const exercise = createAsync(() => getExercise(props.url, props.userEmail, props.index))
   const options = () =>
     optionsSchema.parse({
       ...props.data.options,
@@ -218,7 +218,7 @@ function Sidebar(props: AssignmentProps & { eloDiff: number; elo?: number; fullS
 }
 
 function Navigation(props: AssignmentProps) {
-  const pagination = createAsyncStore(() => getPaginationInfo(props.url, props.userEmail), {
+  const pagination = createAsync(() => getPaginationInfo(props.url, props.userEmail), {
     initialValue: [],
   })
   const realUser = createAsync(() => getUser())
@@ -272,7 +272,7 @@ export function ExerciseUI(props: ExerciseUIProps) {
 }
 
 export default function Assignment(props: AssignmentProps) {
-  const exercise = createAsyncStore(() => getExercise(props.url, props.userEmail, props.index))
+  const exercise = createAsync(() => getExercise(props.url, props.userEmail, props.index))
   const key = () => [props.url, props.userEmail, props.index] as const
   const options = () =>
     optionsSchema.parse({
