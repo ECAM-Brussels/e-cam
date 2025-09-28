@@ -33,7 +33,7 @@ const { Component, schema } = createExerciseType({
         conic: 'la conique',
         circle: 'le cercle',
         ellipse: "l'ellipse",
-        hyperbola: "l'hyperbola'",
+        hyperbola: "l'hyperbole",
         parabola: 'la parabole',
       })[props.question.type]
     const [conicSectionType, setConicSectionType] = createSignal<ConicSectionExerciseType>(
