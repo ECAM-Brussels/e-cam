@@ -6,6 +6,7 @@ import {
   faSortUp,
 } from '@fortawesome/free-solid-svg-icons'
 import { action, json } from '@solidjs/router'
+import { clientOnly } from '@solidjs/start'
 import {
   type ColumnDef,
   type SortingState,
@@ -34,6 +35,8 @@ type TableProps<Row> = {
   pageSize?: number
   setPage?: (page: number) => void
 }
+
+const Excel = clientOnly(() => import('~/components/Excel'))
 
 export default function Table<Row extends object>(props: TableProps<Row>) {
   const [sorting, setSorting] = createSignal<SortingState>([])
@@ -96,6 +99,9 @@ export default function Table<Row extends object>(props: TableProps<Row>) {
           placeholder="Rechercher dans toutes les colonnes..."
         />
       </Show>
+      <div class="text-right">
+        <Excel data={props.data} />
+      </div>
       <table class={props.class ?? 'border bg-white text-gray-600 mx-auto my-4'}>
         <thead class="border text-gray-900 uppercase bg-gray-50">
           <For each={table.getHeaderGroups()}>

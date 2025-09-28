@@ -65,12 +65,16 @@ Trouvez l'équation d'une droite passant par $(5, 2)$ qui est parallèle à la d
 Montrez que les droites $2x + 3y = 1$ et $6x - 4y - 1 = 0$ sont perpendiculaires.
 :::
 
-# Paraboles (10.5, p. 741) {.w-3--5}
+# Paraboles {.w-1--2}
 
 ::: definition
 Lieu des points équidistants entre un point (le **foyer**)
 et une droite (la **directrice**).
 :::
+
+<Geogebra id="HJAnUrNN" />
+
+# Paraboles (10.5, p. 741) {.w-3--5}
 
 Nous nous concentrons sur le cas où la directrice est parallèle aux axes.
 
@@ -80,35 +84,7 @@ $$
 \quad \text{foyer}: (0, p)
 $$
 
-::: {.flex .items-center}
-::::: column
-### $p > 0$
-
-~~~ yaml {.plot}
-data:
-  - fn: x^2 / 4
-  - fn: '-1'
-  - points:
-      - [0, 1]
-    fnType: 'points'
-    graphType: scatter
-~~~
-:::::
-
-::::: column
-### $p < 0$
-
-~~~ yaml {.plot}
-data:
-  - fn: -x^2 / 4
-  - fn: '1'
-  - points:
-      - [0, -1]
-    fnType: 'points'
-    graphType: scatter
-~~~
-:::::
-:::
+![](/images/vertical_parabolas.png)
 
 # Paraboles (p. 742) {.w-3--5}
 
@@ -120,39 +96,7 @@ $$
 \quad \text{foyer}: (p, 0)
 $$
 
-::: {.flex .items-center}
-::::: column
-### $p > 0$
-
-~~~ yaml {.plot}
-data:
-  - fn: 'y^2 - 4x'
-    fnType: implicit
-  - fn: 'x + 1'
-    fnType: implicit
-  - points:
-      - [1, 0]
-    fnType: 'points'
-    graphType: scatter
-~~~
-:::::
-
-::::: column
-### $p < 0$
-
-~~~ yaml {.plot}
-data:
-  - fn: 'y^2 + 4x'
-    fnType: implicit
-  - fn: 'x - 1'
-    fnType: implicit
-  - points:
-      - [-1, 0]
-    fnType: 'points'
-    graphType: scatter
-~~~
-:::::
-:::
+![](/images/horizontal_parabolas.png)
 
 # Parabole: exemple p. 742 {.w-1--2}
 
@@ -179,11 +123,17 @@ $$
 - Esquissez le graphe de l'équation $x^2 + y^2 + 2x - 6y + 7 = 0$.
 :::
 
-# Ellipse (p. 743) {.w-3--5}
+# Ellipse (p. 743)
 
+::::: w-1--2
 ::: definition
 Lieu des points tels que la somme des distance à deux points (appelés **foyers**) est constante.
 :::
+:::::
+
+<Geogebra id="kPBYDVfZ" width={1200} />
+
+# Ellipse (p. 743) {.w-2--3}
 
 $$
 \boxed{
@@ -201,16 +151,7 @@ $$
 \text{sommets:} (\pm a, 0)
 $$
 
-~~~ yaml {.plot}
-data:
-  - fn: 'x^2/9 + y^2/4 - 1'
-    fnType: implicit
-  - points:
-      - [-2.236, 0]
-      - [2.236, 0]
-    fnType: 'points'
-    graphType: scatter
-~~~
+![](/images/horizontal_ellipse.png)
 :::
 
 ::: column
@@ -222,16 +163,7 @@ $$
 \text{sommets:} (0, \pm b)
 $$
 
-~~~ yaml {.plot}
-data:
-  - fn: 'x^2/4 + y^2/9 - 1'
-    fnType: implicit
-  - points:
-      - [0, -2.236]
-      - [0, 2.236]
-    fnType: 'points'
-    graphType: scatter
-~~~
+![](/images/vertical_ellipse.png)
 :::
 :::::
 
@@ -251,11 +183,17 @@ data:
 Trouvez une équation de l'ellipse avec foyers $(0, \pm 2)$ et sommets $(0, \pm 3)$.
 :::
 
-# Hyperboles (p. 744) {.w-3--5}
+# Hyperboles
 
+::::: w-1--2
 ::: definition
 Lieu des points tels que la différence des distance à deux points (appelés **foyers**) est constante.
 :::
+:::::
+
+<Geogebra id="tqD3PMzy" width={1200} />
+
+# Hyperboles (p. 744) {.w-3--5}
 
 ::::: {.flex .gap-4}
 ::: column
@@ -265,16 +203,7 @@ Lieu des points tels que la différence des distance à deux points (appelés **
 - Sommets: $(\pm a, 0)$
 - Asymptotes: $y = \pm \frac b a x$
 
-~~~ yaml {.plot}
-data:
-  - fn: 'x^2/9 - y^2/4 - 1'
-    fnType: implicit
-  - points:
-      - [-3.606, 0]
-      - [3.606, 0]
-    fnType: 'points'
-    graphType: scatter
-~~~
+![](/images/horizontal_hyperbola.png)
 :::
 
 ::: column
@@ -284,16 +213,7 @@ data:
 - Sommets: $(0, \pm a)$
 - Asymptotes: $y = \pm \frac a b x$
 
-~~~ yaml {.plot}
-data:
-  - fn: 'y^2/4 - x^2/9 - 1'
-    fnType: implicit
-  - points:
-      - [0, -3.606]
-      - [0, 3.606]
-    fnType: 'points'
-    graphType: scatter
-~~~
+![](/images/vertical_hyperbola.png)
 :::
 :::::
 
@@ -324,3 +244,20 @@ pour foyer $(2, -2)$, $(4, -2)$ et comme sommets $(1, -2)$ et $(5, -2)$.
 ::: example
 Dessinez la conique $9 x^2 - 4y^2 - 72x + 8y + 176 = 0$.
 :::
+
+# Exercices sur la plateforme {.w-1--2}
+
+~~~ tsx {.raw}
+<Graph class="border rounded-xl w-full h-[800px] shadow-md" query={{
+    "page": {
+      OR: [
+        { "title": { contains: "hyperbole" } },
+        { "title": { contains: "parabole" } },
+        { "title": { contains: "ellipse" } },
+        { "title": { contains: "cercle" } },
+        { "title": { contains: "conique" } },
+      ]
+    }
+  }}
+/>
+~~~
