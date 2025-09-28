@@ -2,7 +2,7 @@
 title: Volume d'un parallélépipède
 prerequisites:
   - /skills/geometry/vectors/cross-product
-  - /skills/geometry/vectors/dot-product
+  - /skills/geometry/vectors/dot-product-analytic
 courses:
   - geometry
   - PM1C

@@ -6,8 +6,8 @@ courses:
   - 5MATH4
   - MATH
 prerequisites:
-  - /skills/geometry/vectors/dot-product
-  - /skills/trigonometry/values
+  - /skills/geometry/vectors/dot-product-analytic
+  - /skills/geometry/vectors/dot-product-geometric
 options:
   streak: 999
   initialElo: 1600

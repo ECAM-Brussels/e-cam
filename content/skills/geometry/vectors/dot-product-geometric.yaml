@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: 'Produit scalaire: définition géométrique'
+courses:
+  - geometry
+  - PM1C
+  - 5MATH4
+  - MATH
+prerequisites:
+  - /skills/trigonometry/values
+options:
+  streak: 999
+  initialElo: 800
+body:
+  - type: DotProduct
+    params:
+      Norms: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      Theta:
+        - 0
+        - \frac{\pi}{6}
+        - \frac{\pi}{4}
+        - \frac{\pi}{3}
+        - \frac{\pi}{2}
+        - \frac{2 \pi}{3}
+        - \frac{3 \pi}{4}
+        - \frac{5 \pi}{6}
+        - \pi
