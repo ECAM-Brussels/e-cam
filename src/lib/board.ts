@@ -125,9 +125,9 @@ export default function useBoard(board: () => Board) {
       let box = [Infinity, Infinity, -Infinity, -Infinity]
       for (const [x, y] of data.points) {
         box[0] = Math.min(box[0], x)
-        box[1] = Math.min(box[0], y)
-        box[2] = Math.max(box[0], x)
-        box[3] = Math.max(box[0], y)
+        box[1] = Math.min(box[1], y)
+        box[2] = Math.max(box[2], x)
+        box[3] = Math.max(box[3], y)
       }
       bounds[hash] = box
       return box
