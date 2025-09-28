@@ -38,6 +38,14 @@ Quelle serait la pente de $3 x - 5y = 15$?
 Cette notion recevra une généralisation puissante (la dérivée) plus tard.
 :::
 
+# Équations de droite {.w-1--2}
+
+|                   | $y = mx + p$                         | $ax + by + c = d$                    |
+|-------------------|--------------------------------------|--------------------------------------|
+| pente             | $m$                                  | $-\frac a b$                         |
+| vecteur directeur | $\begin{pmatrix}1\\ m\end{pmatrix}$  | $\begin{pmatrix}b\\ -a\end{pmatrix}$ |
+| vecteur normal    | $\begin{pmatrix}m\\ -1\end{pmatrix}$ | $\begin{pmatrix}a\\ b\end{pmatrix}$  |
+
 # Trouver une équation de droite p. A13 {.w-1--2}
 
 ::: {.example title="Exemples 3, 4 p. A13"}
