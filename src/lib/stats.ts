@@ -53,7 +53,7 @@ export const getAttemptGraph = query(async () => {
   let cumulatedCount = attempts.length
   let correctCount = attempts.filter((a) => a.correct === true).length
   const labels = []
-  for (let i = 0; i < 14; i++) {
+  for (let i = 0; i < 30; i++) {
     const start = subDays(startOfToday(), i)
     const end = addDays(start, 1)
     const dayAttempts = attempts.filter((a) => a.date >= start && a.date <= end)

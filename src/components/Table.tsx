@@ -99,7 +99,7 @@ export default function Table<Row extends object>(props: TableProps<Row>) {
           placeholder="Rechercher dans toutes les colonnes..."
         />
       </Show>
-      <div class="text-right">
+      <div class="text-center text-sm">
         <Excel data={props.data} />
       </div>
       <table class={props.class ?? 'border bg-white text-gray-600 mx-auto my-4'}>
