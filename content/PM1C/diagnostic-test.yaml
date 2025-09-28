@@ -8,6 +8,8 @@ description: |
 #  - PM1C
 options:
   adjustElo: false
+  showSidebar: false
+# showFeedback: 2025-10-07 12:00
 body:
   - type: MultipleChoice
     question:
@@ -71,9 +73,9 @@ body:
         - text: |
             Si $\cos(\alpha) = {a}$, calculez $\cos(2\alpha)$.
           label: \cos(2\alpha)
-          expr: 2*({a})^2 - 1
+          expr: 2\cdot({a})^2 - 1
       subs:
-        a: [0.6]
+        a: [0.2,0.3,0.4,0.6,0.7,0.8]
   - type: DotProduct
     params:
       Norms: [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -104,7 +106,21 @@ body:
   - type: System
     params:
       Variables: [['x', 'y']]
-      L: [-1, 1]
+      L: [-3, 2, 4]
       U: [-1, 1]
       X: [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5]
       geometricProbability: 0
+  - type: Calculate
+    params:
+      type: withParams
+      questions:
+        - text: |
+            Déterminez l'équation de la droite $d$ passant par $({a},{b})$ et perpendiculaire à la droite ${c}x+{d}y+{e}=0$.
+          label: d \equiv
+          expr: ({d})(x-{a})-{c}(y-{b})=0
+      subs:
+        a: [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5]
+        b: [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5]
+        c: [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5]
+        d: [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5]
+        e: [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5]
