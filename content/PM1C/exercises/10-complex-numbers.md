@@ -93,3 +93,7 @@ Esquissez les solutions sur le plan complexes:
 ::: hint
 Passez en coordonnées polaires
 :::
+
+# Réponses
+
+<Iframe class="w-full h-full" src="/documents/pm1c-answers.pdf#page=10" />
