@@ -51,20 +51,22 @@ export default function () {
               header: 'Derniers résultats',
               accessorFn: (row) => row.attempts.filter((a) => a.correct === true).length,
               cell: (info) => (
-                <For each={info.row.original.attempts}>
-                  {(attempt) => (
-                    <span
-                      class="px-1"
-                      classList={{
-                        'text-green-700': attempt.correct === true,
-                        'text-red-700': attempt.correct === false,
-                      }}
-                    >
-                      {attempt.correct && <Fa icon={faCheck} />}
-                      {attempt.correct === false && <Fa icon={faXmark} />}
-                    </span>
-                  )}
-                </For>
+                <div class="text-right">
+                  <For each={info.row.original.attempts}>
+                    {(attempt) => (
+                      <span
+                        class="px-1"
+                        classList={{
+                          'text-green-700': attempt.correct === true,
+                          'text-red-700': attempt.correct === false,
+                        }}
+                      >
+                        {attempt.correct && <Fa icon={faCheck} />}
+                        {attempt.correct === false && <Fa icon={faXmark} />}
+                      </span>
+                    )}
+                  </For>
+                </div>
               ),
             },
             {
