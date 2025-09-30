@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: "Calcul d'un angle ou d'une longueur dans un triangle rectangle"
+options:
+  initialElo: 800
+  streak: 999
+courses:
+  - trigonometry
+  - PM1C
+  - 4MATH5
+  - MATH
+prerequisites:
+  - /skills/trigonometry/values
+body:
+  - type: RightTriangle
+    params:
+      Angles:
+        - \frac{\pi}{6}
+        - \frac{\pi}{4}
+        - \frac{\pi}{3}
+      Hypothenuses: [3, 4, 5, 6, 7, 8, 9, 10]
