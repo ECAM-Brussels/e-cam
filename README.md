@@ -1,3 +1,6 @@
+- Main: [![Run Tests](https://github.com/ECAM-Brussels/e-cam/actions/workflows/pytest.yaml/badge.svg?branch=main)](https://github.com/ECAM-Brussels/e-cam/actions/workflows/pytest.yaml)
+- Next: [![Run Tests](https://github.com/ECAM-Brussels/e-cam/actions/workflows/pytest.yaml/badge.svg)](https://github.com/ECAM-Brussels/e-cam/actions/workflows/pytest.yaml)
+
 ## Dependencies
 
 - [Node.js](https://nodejs.org/en)
