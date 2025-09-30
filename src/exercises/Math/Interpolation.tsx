@@ -103,6 +103,7 @@ const { Component, schema } = createExerciseType({
         .nonempty()
         .default([['x', 'y']]),
       line: z.number().min(0).max(1).default(0.5),
+      perpendicularProbability: z.number().min(0).max(1).default(0.5),
     }),
     generate: async (params) => {
       'use server'
@@ -161,7 +162,7 @@ const { Component, schema } = createExerciseType({
       const y1 = data.y1.subs.solveset.list[0].expr
       const y2 = data.y2.subs.solveset.list[0].expr
       if (line) {
-        const perpendicular = random(0, 1, true) <= 0.5
+        const perpendicular = random(0, 1, true) <= params.perpendicularProbability
         return {
           points: [[x1, y1]] as [[string, string]],
           line: perpendicular ? data.perpendicular.simplify.expr : data.parallel.simplify.expr,

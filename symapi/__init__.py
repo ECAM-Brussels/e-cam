@@ -60,7 +60,7 @@ class Query:
                     eq = sympy.Eq(x, points[0][0])
                     return Expression(expr=eq)
                 else:
-                    m = 1 / m
+                    m = -1 / m
             x0, y0 = points[0]
             eq = sympy.Eq(y, m * (x - x0) + y0)
         else:
