@@ -86,6 +86,34 @@ def test_is_equal(expr: str, attempt: str, expected: bool):
 
 
 @pytest.mark.parametrize(
+    "expr,expected",
+    [
+        ("3x + 2", True),
+        ("a^2 + 2ab + b^2", True),
+        ("3(2a + b)", False),
+        ("(3x + 1)(x - 2)", False),
+        ("-b^3 + 3b^2c - 3bc^2 + c^3", True),
+    ],
+)
+def test_is_expanded(expr: str, expected: bool):
+    result = schema.execute_sync(
+        """
+            query ($expr: Math!) {
+                expression(expr: $expr) {
+                    isExpanded
+                }
+            }
+        """,
+        variable_values={"expr": expr},
+    )
+
+    assert result.data is not None
+    assert result.data["expression"] == {
+        "isExpanded": expected,
+    }
+
+
+@pytest.mark.parametrize(
     "expr,strict,expected",
     [
         ("3", False, True),

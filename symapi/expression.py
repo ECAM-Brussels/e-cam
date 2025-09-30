@@ -264,13 +264,18 @@ class Expression:
         if expr.func != sympy.Add:
             expr = sympy.Add(0, expr, evaluate=False)
 
-        terms = []
-        for term in expr.args:
-            if term.func == sympy.Add:
-                terms += term.args
-            else:
-                terms.append(term)
+        def flatten(expr):
+            if expr.func != sympy.Add:
+                return expr
+            terms = []
+            for term in expr.args:
+                if term.func == sympy.Add:
+                    terms += flatten(term)
+                else:
+                    terms.append(term)
+            return terms
 
+        terms = flatten(expr)
         for term in terms:
             if sympy.expand(term).func == sympy.Add:
                 return False
