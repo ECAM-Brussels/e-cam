@@ -3,15 +3,15 @@ title: Coniques
 slideshow: true
 ---
 
-# Préparation: 9, 18, 19, 27, 23, 29, 47 {.columns-2}
+# Préparation: 9, 18, 19, 27, 23, 29, 47 {.columns-3}
 
 ::: {.exercise title="Exercice 10.5.9"}
-Trouvez le sommet, le foyer et la directrice de la parabole $9x = y^2$ et esquissez son graphe.
+Déterminez l'équation de la parabole, le foyer et la directrice.
+![](/images/exercises/10.5.9.png)
 :::
 
 ::: {.exercise title="Exercice 10.5.18"}
 Trouvez l'équation de l'ellipse et son foyer.
-
 ![](/images/exercises/10.5.18.png)
 :::
 
