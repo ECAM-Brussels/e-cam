@@ -12,7 +12,7 @@ def parse_latex(expr: str):
     expr = expr.replace("\\exponentialE", "e")
     expr = expr.replace("\\imaginaryI", "i")
     coordinates = re.search(
-        r"^(?:\\left\s*)?\(([^\(\)]*,[^\(\)]*)(?:\s*\\right)?\)$", expr
+        r"^(?:\\left\s*)?\(([^\(\)]*[,;][^\(\)]*)(?:\s*\\right)?\)$", expr
     )
     if coordinates:
         return sympy.Tuple(*[parse_latex(e) for e in coordinates.group(1).split(",")])
