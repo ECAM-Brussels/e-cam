@@ -1,5 +1,5 @@
-- Main: [![Run Tests](https://github.com/ECAM-Brussels/e-cam/actions/workflows/pytest.yaml/badge.svg?branch=main)](https://github.com/ECAM-Brussels/e-cam/actions/workflows/pytest.yaml)
-- Next: [![Run Tests](https://github.com/ECAM-Brussels/e-cam/actions/workflows/pytest.yaml/badge.svg)](https://github.com/ECAM-Brussels/e-cam/actions/workflows/pytest.yaml)
+- Main: [![Python Tests](https://github.com/ECAM-Brussels/e-cam/actions/workflows/pytest.yaml/badge.svg?branch=main)](https://github.com/ECAM-Brussels/e-cam/actions/workflows/pytest.yaml)
+- Next: [![Python Tests](https://github.com/ECAM-Brussels/e-cam/actions/workflows/pytest.yaml/badge.svg)](https://github.com/ECAM-Brussels/e-cam/actions/workflows/pytest.yaml)
 
 ## Dependencies
 
