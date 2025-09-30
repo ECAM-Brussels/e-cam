@@ -45,9 +45,10 @@ const { Component, schema } = createExerciseType({
           <p>
             Calculez le produit scalaire <Math value="\vec u \cdot \vec v" /> sachant que{' '}
             <Math value={`\\| \\vec u \\| = ${question().norms[0]}`} />,{' '}
-            <Math value={`\\| \\vec v \\| = ${question().norms[1]}`} />, et que l'angle entre ces deux
-            vecteurs est <Math value={question().theta} />{' '}
-            {question().unit === 'degrees' && 'degrés'}{'.'}
+            <Math value={`\\| \\vec v \\| = ${question().norms[1]}`} />, et que l'angle entre ces
+            deux vecteurs est <Math value={question().theta} />{' '}
+            {question().unit === 'degrees' && 'degrés'}
+            {'.'}
           </p>
           <div class="flex justify-center items-center gap-2">
             <Math value="\vec u \cdot \vec v = " displayMode />
@@ -87,9 +88,10 @@ const { Component, schema } = createExerciseType({
       )
       return vector.dot.isEqual
     } else {
+      const angle = `(${question.theta}) \\cdot ${question.unit === 'radians' ? 1 : '\\frac{180}{\\pi}'}`
       return await checkEqual(
         attempt,
-        `(${question.norms[0]}) (${question.norms[1]}) \\cos(${question.theta})`,
+        `(${question.norms[0]}) (${question.norms[1]}) \\cos(${angle})`,
       )
     }
   },
@@ -112,12 +114,11 @@ const { Component, schema } = createExerciseType({
           )
           return { remaining, cartesian: true, ...question, answer: vector.dot.expr }
         } else {
+          const angle = `(${question.theta}) \\cdot ${question.unit === 'radians' ? 1 : '\\frac{180}{\\pi}'}`
           return {
             remaining,
             ...question,
-            answer: await simplify(
-              `(${question.norms[0]}) (${question.norms[1]}) \\cos(${question.theta})`,
-            ),
+            answer: await simplify(`(${question.norms[0]}) (${question.norms[1]}) \\cos(${angle})`),
           }
         }
       }
