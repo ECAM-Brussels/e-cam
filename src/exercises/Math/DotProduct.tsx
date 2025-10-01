@@ -88,7 +88,7 @@ const { Component, schema } = createExerciseType({
       )
       return vector.dot.isEqual
     } else {
-      const angle = `(${question.theta}) \\cdot ${question.unit === 'radians' ? 1 : '\\frac{180}{\\pi}'}`
+      const angle = `(${question.theta}) \\cdot ${question.unit === 'radians' ? 1 : '\\frac{\\pi}{180}'}`
       return await checkEqual(
         attempt,
         `(${question.norms[0]}) (${question.norms[1]}) \\cos(${angle})`,
@@ -114,7 +114,7 @@ const { Component, schema } = createExerciseType({
           )
           return { remaining, cartesian: true, ...question, answer: vector.dot.expr }
         } else {
-          const angle = `(${question.theta}) \\cdot ${question.unit === 'radians' ? 1 : '\\frac{180}{\\pi}'}`
+          const angle = `(${question.theta}) \\cdot ${question.unit === 'radians' ? 1 : '\\frac{\\pi}{180}'}`
           return {
             remaining,
             ...question,
