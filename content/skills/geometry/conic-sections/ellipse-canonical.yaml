@@ -5,6 +5,9 @@ courses:
   - PM1C
   - 6MATH6
   - MATH
+prerequisites:
+  - /skills/geometry/conic-sections/circle
+  - /skills/geometry/pythagoras
 options:
   streak: 999
   initialElo: 1200
