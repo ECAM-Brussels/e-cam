@@ -53,36 +53,38 @@ export default function Math(props: MathProps) {
     })
   const [extra, others] = splitProps(props, ['onInput', 'onBlur', 'name'])
   return (
-    <Show
-      when={props.editable && !disabled()}
-      fallback={
-        <span
-          innerHTML={html()}
-          class={props.class}
-          classList={{ 'border px-2': !props.class && props.name !== undefined }}
+    <>
+      <Show
+        when={props.editable && !disabled()}
+        fallback={
+          <span
+            innerHTML={html()}
+            class={props.class}
+            classList={{ 'border px-2': !props.class && props.name !== undefined }}
+          />
+        }
+      >
+        <math-field
+          className={props.class ?? 'border min-w-24 py-2'}
+          {...others}
+          oninput={(event: MathInputEvent) => {
+            extra.onInput?.(event)
+            setValue(event.target.value)
+          }}
+          onblur={extra.onBlur}
+          onkeydown={(event: KeyboardEvent) => {
+            if (event.key.startsWith('Arrow')) {
+              event.stopPropagation()
+            }
+            if (props.name && event.key === 'Enter') {
+              field.closest('form')?.requestSubmit()
+            }
+          }}
         />
-      }
-    >
-      <math-field
-        className={props.class ?? 'border min-w-24 py-2'}
-        {...others}
-        oninput={(event: MathInputEvent) => {
-          extra.onInput?.(event)
-          setValue(event.target.value)
-        }}
-        onblur={extra.onBlur}
-        onkeydown={(event: KeyboardEvent) => {
-          if (event.key.startsWith('Arrow')) {
-            event.stopPropagation()
-          }
-          if (props.name && event.key === 'Enter') {
-            field.closest('form')?.requestSubmit()
-          }
-        }}
-      />
+      </Show>
       <Show when={props.name}>
         <input type="hidden" name={props.name} value={value() || ''} ref={field} />
       </Show>
-    </Show>
+    </>
   )
 }
