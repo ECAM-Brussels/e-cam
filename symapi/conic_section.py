@@ -63,7 +63,7 @@ class ConicSection:
     @strawberry.field
     def directrix(self) -> "Expression":
         if self.info.type != "parabola":
-            raise ValueError("This conic section is not a parabola")
+            return Expression(expr=sympy.S.EmptySet)
         x, y = sympy.symbols("x y")
         if self.info.direction == "vertical":
             return Expression(expr=sympy.Eq(y, self.info.y0 - self.info.p))
@@ -119,7 +119,7 @@ class ConicSection:
     @strawberry.field
     def radius(self) -> "Expression":
         if not self.is_circle:
-            raise ValueError("This conic section is not a circle")
+            return Expression(expr=sympy.S.EmptySet)
         return Expression(expr=self.info.a)
 
     @strawberry.field

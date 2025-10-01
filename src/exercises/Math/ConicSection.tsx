@@ -48,7 +48,7 @@ const { Component, schema } = createExerciseType({
     const asymptotes = () =>
       props.attempt && 'asymptotes' in props.attempt ? props.attempt.asymptotes.slice(1) : ['', '']
     const directrix = () =>
-      props.attempt && 'directrix' in props.attempt ? props.attempt.directrix.slice(1) : ''
+      props.attempt && 'directrix' in props.attempt ? props.attempt.directrix : ''
     return (
       <>
         <p>Caractérisez {obj()} dont l'équation est donnée par</p>
@@ -184,9 +184,7 @@ const { Component, schema } = createExerciseType({
         { ...question, ...attempt },
       )
       return (
-        conicSection.type === 'ellipse' &&
-        conicSection.center.isEqual &&
-        conicSection.radius.isEqual
+        conicSection.type === 'circle' && conicSection.center.isEqual && conicSection.radius.isEqual
       )
     } else if (attempt.type === 'ellipse') {
       const { conicSection } = await request(
@@ -322,6 +320,12 @@ const { Component, schema } = createExerciseType({
               foci {
                 expr
               }
+              directrix {
+                expr
+              }
+              radius {
+                expr
+              }
             }
           }
         `),
@@ -337,10 +341,26 @@ const { Component, schema } = createExerciseType({
     (props) => (
       <ul>
         <li>Type de conique: {props.type}</li>
-        <li>
-          Centre: <Math value={props.center.expr} />
-        </li>
-        <Show when={props.type !== 'circle'}>
+        <Show
+          when={props.type !== 'parabola'}
+          fallback={
+            <li>
+              Directrice: <Math value={props.directrix.expr} />
+            </li>
+          }
+        >
+          <li>
+            Centre: <Math value={props.center.expr} />
+          </li>
+        </Show>
+        <Show
+          when={props.type !== 'circle'}
+          fallback={
+            <li>
+              Rayon: <Math value={props.radius.expr} />
+            </li>
+          }
+        >
           <li>
             Foyers: <Math value={props.foci.expr} />
           </li>
