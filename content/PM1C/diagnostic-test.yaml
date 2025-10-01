@@ -94,7 +94,7 @@ body:
         - $-\frac{y}{5}$
         - $y-5$
         - $y+5$
-      answer: $(2,6)$
+      answer: $y+5$
   - type: Calculate
     params:
       type: withParams
