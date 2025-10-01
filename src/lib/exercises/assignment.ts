@@ -251,6 +251,7 @@ export async function saveExercise(
   'use server'
   try {
     await check(email)
+    exercise = await exerciseSchema.parseAsync(exercise)
     const key = { url, email, position }
     let correction = 0
     if (action === 'remark') {
