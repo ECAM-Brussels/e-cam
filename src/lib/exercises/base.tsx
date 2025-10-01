@@ -119,7 +119,10 @@ export function createExerciseType<
     const hash = () => hashObject({ type: props.type, question: question() })
     const submit = action(async (remark: boolean, form: FormData) => {
       const attempt: z.infer<Attempt> = exercise.attempt.parse(extractFormData(form).attempt)
-      const correct = await mark(question(), attempt)
+      // The schema could have changed
+      // if the exercise was generated a long time ago
+      const q = exercise.question.parse(question())
+      const correct = await mark(q, attempt)
       const attempts = remark
         ? [...props.attempts.slice(0, -1), { correct, attempt }]
         : props.options.save === 'lastAttempt'
