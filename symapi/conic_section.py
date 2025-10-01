@@ -101,11 +101,11 @@ class ConicSection:
 
     @strawberry.field
     def is_circle(self) -> bool:
-        return self.info.type == "ellipse" and self.info.c == 0
+        return self.info.type == "circle"
 
     @strawberry.field
     def radius(self) -> "Expression":
-        if self.info.type != "ellipse" or self.info.c != 0:
+        if self.info.type != "circle":
             return Expression(expr=sympy.S.EmptySet)
         return Expression(expr=self.info.a)
 
