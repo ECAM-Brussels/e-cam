@@ -15,6 +15,7 @@ const { Component, schema } = createExerciseType({
       <p>
         Déterminez la valeur de <Math value={props.question[props.question.unknown]} />
         <Show when={props.question.unknown === 'angle'}>
+          {' '}
           en {props.question.angleUnit === 'rad' ? 'radians' : 'degrés'}
         </Show>
       </p>
