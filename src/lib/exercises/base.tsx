@@ -18,7 +18,7 @@ export type ExerciseProps<Name, Question, Attempt, Params, Feedback> = {
     > & {
       question: Question
     },
-    action: 'generate' | 'submit',
+    action: 'generate' | 'submit' | 'remark',
   ) => Promise<unknown> | void
   options: Options
   attempts: { correct: boolean; attempt: Attempt }[]
@@ -81,7 +81,7 @@ export function createExerciseType<
     const save = action(
       async (
         data: Omit<Partial<typeof props>, 'params' | 'onChange'>,
-        action: 'generate' | 'submit',
+        action: 'generate' | 'submit' | 'remark',
       ) => {
         const { params: _params, onChange, ...current } = props
         return await onChange?.({ ...current, question: question(), ...data }, action)
@@ -117,14 +117,15 @@ export function createExerciseType<
     }, `mark-${exercise.name}`)
 
     const hash = () => hashObject({ type: props.type, question: question() })
-    const submit = action(async (form: FormData) => {
+    const submit = action(async (remark: boolean, form: FormData) => {
       const attempt: z.infer<Attempt> = exercise.attempt.parse(extractFormData(form).attempt)
       const correct = await mark(question(), attempt)
-      const attempts =
-        props.options.save === 'lastAttempt'
+      const attempts = remark
+        ? [...props.attempts.slice(0, -1), { correct, attempt }]
+        : props.options.save === 'lastAttempt'
           ? [{ correct, attempt }]
           : [...props.attempts, { correct, attempt }]
-      return useSave({ attempts }, 'submit')
+      return useSave({ attempts }, remark ? 'remark' : 'submit')
     }, `exercise-${hash()}`)
     const submission = useSubmission(submit)
     const showFeedback = () => {
@@ -142,8 +143,8 @@ export function createExerciseType<
             },
           }}
         >
-          <form method="post" action={submit}>
-            <fieldset disabled={readOnly()} class="flex items-end gap-8">
+          <form method="post" action={submit.with(false)}>
+            <fieldset class="flex items-end gap-8">
               <Show when={question()}>
                 <div>
                   <exercise.Component
@@ -160,6 +161,11 @@ export function createExerciseType<
                 </div>
               </Show>
             </fieldset>
+            <Show when={props.attempts.at(-1)?.correct === false}>
+              <Button type="submit" color="blue" formAction={submit.with(true)}>
+                Recorriger
+              </Button>
+            </Show>
             <ZodError error={submission.error} />
           </form>
           <Show when={props.attempts.length > 0 && question() && showFeedback()}>

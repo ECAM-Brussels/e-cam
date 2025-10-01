@@ -257,7 +257,10 @@ function Navigation(props: AssignmentProps) {
 }
 
 type ExerciseUIProps = Exercise & {
-  onChange?: (exercise: Exercise, action: 'generate' | 'submit') => Promise<unknown> | void
+  onChange?: (
+    exercise: Exercise,
+    action: 'generate' | 'submit' | 'remark',
+  ) => Promise<unknown> | void
 }
 
 export function ExerciseUI(props: ExerciseUIProps) {
@@ -287,7 +290,7 @@ export default function Assignment(props: AssignmentProps) {
             {...exercise()}
             options={options()}
             onChange={async (event, action) => {
-              await saveExercise(...key(), event as Exercise)
+              await saveExercise(...key(), event as Exercise, action)
               if (action === 'submit') reload({ revalidate: 'nothing' })
               return json(null, { revalidate: getExercise.keyFor(...key()) })
             }}

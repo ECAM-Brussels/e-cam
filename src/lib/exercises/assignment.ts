@@ -246,11 +246,22 @@ export async function saveExercise(
   email: string,
   position: number,
   exercise: Exercise,
+  action: 'remark' | 'submit' | 'generate',
 ) {
   'use server'
   try {
     await check(email)
     const key = { url, email, position }
+    let correction = 0
+    if (action === 'remark') {
+      if (exercise.attempts.at(-1)?.correct !== true) {
+        return
+      }
+      const attempt = await prisma.attempt.findUniqueOrThrow({
+        where: { url_email_position: { url, email, position } },
+      })
+      correction = -(attempt.gain ?? 0)
+    }
     const hash = await upsertExercise(exercise)
     const options = optionsSchema.parse(exercise.options)
     const payload = {
@@ -259,7 +270,7 @@ export async function saveExercise(
       position,
       correct: exercise.attempts.at(0)?.correct ?? null,
       ...(options.adjustElo && exercise.attempts.length === 1
-        ? { gain: await getEloGain(email, url, exercise.attempts[0].correct) }
+        ? { gain: await getEloGain(email, url, exercise.attempts[0].correct, correction) }
         : {}),
     } satisfies Prisma.AttemptUpsertArgs['update']
     await prisma.$transaction(async (tx) => {
@@ -274,11 +285,11 @@ export async function saveExercise(
         queries.push(
           tx.user.update({
             where: { email },
-            data: { score: { increment: payload.gain } },
+            data: { score: { increment: payload.gain + correction } },
           }),
           tx.assignment.update({
             where: { url },
-            data: { score: { increment: -Math.ceil(payload.gain / 8) } },
+            data: { score: { decrement: Math.ceil((payload.gain + correction) / 8) } },
           }),
         )
       }
