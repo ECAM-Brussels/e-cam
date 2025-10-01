@@ -31,6 +31,9 @@ const { Component, schema } = createExerciseType({
       <div class="flex justify-center items-center gap-2">
         <Math value={`${props.question[props.question.unknown]} =`} displayMode />
         <Math name="attempt" editable value={props.attempt} />
+        <Show when={props.question.unknown === 'angle' && props.question.angleUnit === 'deg'}>
+          <Math value={`^\\circ`} />
+        </Show>
       </div>
     </>
   ),
