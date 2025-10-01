@@ -10,7 +10,7 @@ body:
       text: |
        Vrai ou faux:
        
-       $\sin\left(\frac{\pi}{2}-x\right)=\cos x$
+       $$\sin\left(\frac{\pi}{2}-x\right)=\cos x$$
       choices:
         - Vrai
         - Faux
