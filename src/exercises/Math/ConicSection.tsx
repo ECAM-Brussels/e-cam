@@ -64,8 +64,8 @@ const { Component, schema } = createExerciseType({
             >
               <option value="circle">Cercle</option>
               <option value="ellipse">Ellipse</option>
-              <option value="parabola">Parabola</option>
-              <option value="hyperbola">Hyperbola</option>
+              <option value="parabola">Parabole</option>
+              <option value="hyperbola">Hyperbole</option>
             </select>
           </label>
         </Show>
