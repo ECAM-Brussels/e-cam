@@ -1,9 +1,8 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
 title: "Équation de l'ellipse"
 prerequisites:
-  - /skills/geometry/conic-sections/circle
+  - /skills/algebra/complete-square
   - /skills/geometry/conic-sections/ellipse-canonical
-  - /skills/geometry/pythagoras
 courses:
   - geometry
   - PM1C
