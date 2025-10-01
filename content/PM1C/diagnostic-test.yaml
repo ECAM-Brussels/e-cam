@@ -1,15 +1,9 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
 title: "Test diagnostique"
-description: |
-  Bonjour
-
-  Deuxieme paragraphe **gras** $x^2$.
-# courses:
-#  - PM1C
 options:
   adjustElo: false
   showSidebar: false
-  #showFeedback: 2025-10-07 12:00
+  showFeedback: 2025-10-07 12:00
 body:
   - type: MultipleChoice
     question:
