@@ -1,4 +1,5 @@
 import { sample } from 'lodash-es'
+import { Show } from 'solid-js'
 import z from 'zod'
 import Math from '~/components/Math'
 import RightTriangle from '~/components/RightTriangle'
@@ -13,6 +14,10 @@ const { Component, schema } = createExerciseType({
     <>
       <p>
         Déterminez la valeur de <Math value={props.question[props.question.unknown]} />
+        <Show when={props.question.unknown === 'angle'}>
+          {' '}
+          en {props.question.angleUnit === 'rad' ? 'radians' : 'degrés'}
+        </Show>
       </p>
       <RightTriangle
         a={props.question.angleLocation === 'A' ? props.question.opposite : props.question.adjacent}
@@ -26,6 +31,9 @@ const { Component, schema } = createExerciseType({
       <div class="flex justify-center items-center gap-2">
         <Math value={`${props.question[props.question.unknown]} =`} displayMode />
         <Math name="attempt" editable value={props.attempt} />
+        <Show when={props.question.unknown === 'angle' && props.question.angleUnit === 'deg'}>
+          <Math value={`^\\circ`} />
+        </Show>
       </div>
     </>
   ),
