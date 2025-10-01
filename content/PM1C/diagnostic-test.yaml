@@ -3,7 +3,7 @@ title: "Test diagnostique"
 options:
   adjustElo: false
   showSidebar: false
-  showFeedback: 2025-10-07 12:00
+  # showFeedback: 2025-10-07 12:00
 body:
   - type: MultipleChoice
     question:
@@ -30,7 +30,10 @@ body:
       text:  |
        En utilisant la distributivité, calculez:
        
-       $\left(\vec{1_x} - \vec{1_z}\right)\times\left(\vec{1_y} \times \vec{1_z}\right)$
+       $$
+       \left(\vec{1_x} - \vec{1_z}\right)\times\left(\vec{1_y} \times \vec{1_z}\right),
+       \qquad \vec{1_x} = \vec i,\ \vec{1_y} = \vec j,\ \vec{1_z} = \vec k
+       $$
 
        Cochez la bonne réponse:
       choices:
@@ -45,7 +48,7 @@ body:
       text: |
        Vrai ou faux:
        
-       $\sqrt{x^2+9}=x+3$
+       $$\sqrt{x^2+9}=x+3$$
       choices:
         - Vrai
         - Faux
@@ -55,7 +58,7 @@ body:
       text: | 
        Vrai ou faux:
        
-       si $x=a$ est une racine d'un polynôme, alors $x-a$ est un facteur du polynôme.
+       Si $x=a$ est une racine d'un polynôme, alors $x-a$ est un facteur du polynôme.
       choices:
         - Vrai
         - Faux
@@ -101,10 +104,20 @@ body:
       questions:
         - text: |
             Si $\cos(\alpha) = {a}$, calculez $\cos(2\alpha)$.
+            
+            *Remarque*.
+            Si vous entrez la réponse sous forme décimale,
+            utilisez "." au lieu de "," comme séparateur décimal.
           label: \cos(2\alpha)
           expr: 2\cdot({a})^2 - 1
       subs:
-        a: [0.2,0.3,0.4,0.6,0.7,0.8]
+        a:
+          - \frac{2}{10}
+          - \frac{3}{10}
+          - \frac{4}{10}
+          - \frac{6}{10}
+          - \frac{7}{10}
+          - \frac{8}{10}
   - type: DotProduct
     params:
       Norms: [1, 2, 3, 4, 5, 6, 7, 8, 9]
