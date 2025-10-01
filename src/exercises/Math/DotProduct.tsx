@@ -181,7 +181,7 @@ const { Component, schema } = createExerciseType({
         return {
           norms: [sample(params.Norms), sample(params.Norms)] as [string, string],
           unit: unit as 'degrees' | 'radians',
-          theta: unit === 'degrees' ? await simplify(`\\frac{(${theta}) \\pi} {180}`) : theta,
+          theta: unit === 'degrees' ? await simplify(`\\frac{(${theta}) 180} {\\pi}`) : theta,
         }
       }
     },
