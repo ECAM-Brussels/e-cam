@@ -30,30 +30,17 @@ class ConicSection:
         x, y = sympy.symbols("x y")
         if self.info.type != "hyperbola":
             return result
-        if self.info.direction == "horizontal":
-            result.extend(
-                [
-                    sympy.Eq(
-                        y, self.info.b / self.info.a * (x - self.info.x0) + self.info.y0
-                    ),
-                    sympy.Eq(
-                        y,
-                        -self.info.b / self.info.a * (x - self.info.x0) + self.info.y0,
-                    ),
-                ]
-            )
-        else:
-            result.extend(
-                [
-                    sympy.Eq(
-                        y, self.info.a / self.info.b * (x - self.info.x0) + self.info.y0
-                    ),
-                    sympy.Eq(
-                        y,
-                        -self.info.a / self.info.b * (x - self.info.x0) + self.info.y0,
-                    ),
-                ]
-            )
+        result.extend(
+            [
+                sympy.Eq(
+                    y, self.info.b / self.info.a * (x - self.info.x0) + self.info.y0
+                ),
+                sympy.Eq(
+                    y,
+                    -self.info.b / self.info.a * (x - self.info.x0) + self.info.y0,
+                ),
+            ]
+        )
         return [Expression(expr=expr) for expr in result]
 
     @strawberry.field
