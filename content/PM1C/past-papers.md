@@ -1,8 +1,6 @@
 ---
-title: Compétences de PM1C
+title: Examens des années précédentes
 ---
-
-# Compétences du pont maths
 
 ![Pont mathématiques](/images/PM1C.png){.w-full .lg:max-h-96 .max-h-84 .object-cover .rounded-xl}
 
@@ -18,10 +16,7 @@ title: Compétences de PM1C
 [Examens des années précédentes](/PM1C/past-papers)
 :::
 
-~~~ {.tsx .raw}
-<Graph
-  class="bg-white border rounded-xl w-full h-[2000px]"
-  query={{ courses: { some: { code: 'PM1C' } } }}
-  groups={['algebra', 'calculus', 'trigonometry', 'geometry']}
-/>
-~~~
+- <a href="/documents/pm1c-2025-september.md.pdf" target="_blank">Septembre 2025</a>
+- <a href="/documents/pm1c-2025-april.md.pdf" target="_blank">Avril 2025</a>
+- <a href="/documents/pm1c-2024-november.md.pdf" target="_blank">Novembre 2024</a>
+- <a href="/documents/pm1c-2024-september.md.pdf" target="_blank">Septembre 2024</a>

@@ -14,6 +14,8 @@ title: 'Pont vers le supérieur: mathématiques'
 [Informations sur l'examen](/PM1C/exam)
 
 <a href="/documents/pm1c-answers.pdf" target="_blank">Réponses des exercices</a>
+
+[Examens des années précédentes](/PM1C/past-papers)
 :::
 
 ~~~ {.tsx .raw}
