@@ -104,20 +104,20 @@ const { Component, schema } = createExerciseType({
             </li>
           </Show>
           <Show when={['ellipse', 'hyperbola', 'parabola'].includes(conicSectionType())}>
+              <li>
+              Sommet{conicSectionType() !== 'parabola' && 's'}:{' '}
+              <Math name="attempt.vertices" value={vertices()[0]} editable />
+              <Show when={conicSectionType() !== 'parabola'}>
+                {' '}
+                et <Math name="attempt.vertices" value={vertices()[1]} editable />
+              </Show>
+            </li>
             <li>
               Foyer{conicSectionType() !== 'parabola' && 's'}:{' '}
               <Math name="attempt.foci" value={foci()[0]} editable />
               <Show when={conicSectionType() !== 'parabola'}>
                 {' '}
                 et <Math name="attempt.foci" value={foci()[1]} editable />
-              </Show>
-            </li>
-            <li>
-              Sommet{conicSectionType() !== 'parabola' && 's'}:{' '}
-              <Math name="attempt.vertices" value={vertices()[0]} editable />
-              <Show when={conicSectionType() !== 'parabola'}>
-                {' '}
-                et <Math name="attempt.vertices" value={vertices()[1]} editable />
               </Show>
             </li>
           </Show>
