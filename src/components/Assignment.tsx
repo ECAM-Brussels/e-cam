@@ -1,17 +1,10 @@
-import {
-  faArrowDown,
-  faArrowUp,
-  faUpRightAndDownLeftFromCenter,
-  faWindowMinimize,
-} from '@fortawesome/free-solid-svg-icons'
+import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons'
 import { createAsync, json, reload } from '@solidjs/router'
-import { Component, createEffect, createSignal, type JSXElement, Show } from 'solid-js'
+import { Component, type JSXElement, Show } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
-import { z } from 'zod'
 import Calculator from '~/components/Calculator'
 import ErrorBoundary from '~/components/ErrorBoundary'
 import Fa from '~/components/Fa'
-import FullScreen from '~/components/FullScreen'
 import Graph from '~/components/Graph'
 import Pagination from '~/components/Pagination'
 import Suspense from '~/components/Suspense'
@@ -29,7 +22,6 @@ import {
   getPaginationInfo,
 } from '~/lib/exercises/assignment'
 import { optionsSchema } from '~/lib/exercises/schemas'
-import { createSearchParam } from '~/lib/params'
 import { getUserInfo } from '~/lib/user'
 
 type AssignmentProps = {
@@ -55,122 +47,48 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
   const eloDiff = createAsync(() => getEloDiff(props.url, props.userEmail, props.index), {
     initialValue: 0,
   })
-  const [fullScreen, setFullScreen] = createSearchParam(
-    'fullscreen',
-    z.coerce.boolean().default(false),
-  )
-  const [disabled, setDisabled] = createSignal(false)
-  const [zoom, setZoom] = createSignal(1)
-  let boardContainer!: HTMLDivElement
-
-  // Whiteboard doesn't shrink properly when leaving full screen
-  createEffect(() => {
-    if (!fullScreen() && boardContainer) {
-      boardContainer.style.width = '0'
-      setTimeout(() => {
-        boardContainer.style.width = '100%'
-      }, 20)
-    }
-  })
 
   return (
     <ErrorBoundary>
       <div class="flex items-center justify-between text-small">
-        <Show
-          when={!fullScreen() && (currentUser()?.role === 'TEACHER' || user()?.role === 'ADMIN')}
-        >
+        <Show when={currentUser()?.role === 'TEACHER' || user()?.role === 'ADMIN'}>
           <a href={`/results${props.url}`}>Voir les résultats</a>
           <Show when={props.data.score}>
             <p class="text-lg font-bold">ELO: {props.data.score}</p>
           </Show>
         </Show>
       </div>
-      <FullScreen
-        class="bg-slate-50 h-screen w-full overflow-hidden"
-        onChange={setFullScreen}
-        disabled={disabled()}
-      >
-        <div classList={{ 'grid grid-cols-3 p-4': fullScreen(), 'mb-8': !fullScreen() }}>
-          <h2 class="text-2xl" classList={{ hidden: !fullScreen() }}>
-            {props.data.page.title}
-          </h2>
-          <Navigation {...props} />
-          <Elo
-            class="font-semibold text-xl text-right"
-            classList={{ hidden: !fullScreen() }}
-            elo={user()?.score}
-            eloDiff={eloDiff()}
-          />
-        </div>
-        <div class="h-full max-w-full lg:flex flex-row-reverse gap-8">
-          <Show when={options().showSidebar}>
-            <div class="lg:w-[392px]" classList={{ hidden: fullScreen() }}>
-              <Sidebar
-                fullScreen={fullScreen()}
-                {...props}
-                elo={user()?.score}
-                eloDiff={eloDiff()}
+      <div class="mb-8">
+        <Navigation {...props} />
+      </div>
+      <div class="h-full max-w-full lg:flex flex-row-reverse gap-8">
+        <Show when={options().showSidebar}>
+          <div class="lg:w-[392px]">
+            <Sidebar {...props} elo={user()?.score} eloDiff={eloDiff()} />
+          </div>
+        </Show>
+        <div class="grow max-w-full overflow-hidden">
+          <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl">
+            <Suspense>{props.children}</Suspense>
+          </ErrorBoundary>
+          <Show when={options().calculator}>
+            <Calculator />
+          </Show>
+          <Show when={options().whiteboard}>
+            <div class="h-full border max-w-full relative overflow-hidden">
+              <Whiteboard
+                class="bg-white"
+                width={1920}
+                height={1080}
+                url={props.url}
+                owner={props.userEmail}
+                name={`${props.index}`}
+                toolbarPosition="left"
               />
             </div>
           </Show>
-          <div
-            class="grow max-w-full overflow-hidden"
-            onPointerEnter={() => setDisabled(false)}
-            onPointerLeave={() => setDisabled(true)}
-            onTouchStart={() => setDisabled(false)}
-            onTouchEnd={() => setDisabled(true)}
-          >
-            <ErrorBoundary class="px-4 bg-slate-50 rounded-t-xl">
-              <Suspense>{props.children}</Suspense>
-            </ErrorBoundary>
-            <Show when={options().calculator}>
-              <Calculator />
-            </Show>
-            <Show when={options().whiteboard}>
-              <div class="h-full border max-w-full relative overflow-hidden" ref={boardContainer}>
-                <Whiteboard
-                  class="bg-white"
-                  requestFullScreen={() => {
-                    setFullScreen(true)
-                    const parent = boardContainer.parentNode!.parentNode!.parentNode as HTMLElement
-                    parent.requestFullscreen()
-                  }}
-                  url={props.url}
-                  owner={props.userEmail}
-                  name={`${props.index}`}
-                  container={boardContainer}
-                  toolbarPosition="left"
-                />
-              </div>
-            </Show>
-            <Show when={fullScreen() && props.data.video}>
-              {(src) => (
-                <div class="fixed bottom-5 right-5 mb-4 z-50">
-                  <p class="flex gap-4 mb-2 justify-end">
-                    <Show when={zoom() > 0}>
-                      <button onClick={() => setZoom(0)}>
-                        <Fa icon={faWindowMinimize} />
-                      </button>
-                    </Show>
-                    <button onClick={() => setZoom(zoom() !== 1 ? 1 : 2)}>
-                      <Fa
-                        icon={
-                          zoom() !== 1
-                            ? faUpRightAndDownLeftFromCenter
-                            : faUpRightAndDownLeftFromCenter
-                        }
-                      />
-                    </button>
-                  </p>
-                  <Show when={zoom() > 0}>
-                    <Youtube src={src()} zoom={zoom()} />
-                  </Show>
-                </div>
-              )}
-            </Show>
-          </div>
         </div>
-      </FullScreen>
+      </div>
     </ErrorBoundary>
   )
 }
@@ -197,11 +115,11 @@ function Elo(props: {
   )
 }
 
-function Sidebar(props: AssignmentProps & { eloDiff: number; elo?: number; fullScreen: boolean }) {
+function Sidebar(props: AssignmentProps & { eloDiff: number; elo?: number }) {
   const graphQuery = () => getGraphQuery(props.url)
   return (
     <>
-      <Show when={!props.fullScreen && props.data.video}>
+      <Show when={props.data.video}>
         {(src) => <Youtube class="mb-4" src={src()} zoom={0.7} />}
       </Show>
       <Elo
@@ -222,7 +140,6 @@ function Navigation(props: AssignmentProps) {
     initialValue: [],
   })
   const realUser = createAsync(() => getUser())
-  const [fullscreen] = createSearchParam('fullscreen', z.coerce.boolean().default(false))
   const options = () => optionsSchema.parse({ ...props.data.options })
   const showFeedback = () => {
     if (options().showFeedback === true) return true
@@ -236,7 +153,6 @@ function Navigation(props: AssignmentProps) {
         url={(index) => {
           const parts: string[] = [props.url]
           const params: { [key: string]: string } = {}
-          if (fullscreen()) params.fullscreen = 'true'
           if (props.userEmail !== realUser()?.email) params.userEmail = props.userEmail
           const query = new URLSearchParams(params).toString()
           if (index > 1) {
