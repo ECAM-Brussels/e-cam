@@ -30,10 +30,9 @@ body:
       text:  |
        En utilisant la distributivité, calculez:
        
-       $$
-       \left(\vec{1_x} - \vec{1_z}\right)\times\left(\vec{1_y} \times \vec{1_z}\right),
-       \qquad \vec{1_x} = \vec i,\ \vec{1_y} = \vec j,\ \vec{1_z} = \vec k
-       $$
+       $$\left(\vec{1_x} - \vec{1_z}\right)\times\left(\vec{1_y} \times \vec{1_z}\right)$$
+
+       *Pour rappel:* $\vec{1_x} = \vec i,\ \vec{1_y} = \vec j,\ \vec{1_z} = \vec k$
 
        Cochez la bonne réponse:
       choices:
@@ -105,8 +104,8 @@ body:
         - text: |
             Si $\cos(\alpha) = {a}$, calculez $\cos(2\alpha)$.
             
-            *Remarque*.
-            Si vous entrez la réponse sous forme décimale,
+            *Remarque:*
+            si vous entrez la réponse sous forme décimale,
             utilisez "." au lieu de "," comme séparateur décimal.
           label: \cos(2\alpha)
           expr: 2\cdot({a})^2 - 1
