@@ -6,7 +6,7 @@ courses:
   - 4MATH5
   - MATH
 prerequisites:
-  - /skills/geometry/vectors/norm
+  - /skills/geometry/pythagoras
 options:
   streak: 999
   initialElo: 800
