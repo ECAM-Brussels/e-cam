@@ -1,4 +1,5 @@
 import { createExerciseType } from './base'
+import { optionsSchema } from './schemas'
 import { createMemoryHistory, MemoryRouter, Route } from '@solidjs/router'
 import { render, waitFor } from '@solidjs/testing-library'
 import userEvent from '@testing-library/user-event'
@@ -7,31 +8,32 @@ import { z } from 'zod'
 
 const { Component } = createExerciseType({
   name: 'Test',
-  schema: z.object({
-    expr: z.string(),
-    attempt: z.string().default(''),
+  question: z.object({
+    expr: z.string().nonempty(),
   }),
-  mark: (state) => state.expr === state.attempt,
-  solve: (state) => ({ ...state, attempt: state.expr }),
+  attempt: z.string().nonempty(),
+  mark: (question, attempt) => question.expr === attempt,
   Component: (props) => (
     <>
-      <p>Copy the expression {props.expr} exactly as is</p>
+      <p>Copy the expression {props.question.expr} exactly as is</p>
       <label>
         Your attempt:
         <input name="attempt" value={props.attempt} required />
       </label>
     </>
   ),
-  params: z.object({
-    words: z.string().array(),
-  }),
-  generator: (params) => {
-    return { expr: params.words[0] }
+  generator: {
+    params: z.object({
+      words: z.string().array(),
+    }),
+    generate: (params) => {
+      return { expr: params.words[0] }
+    },
   },
 })
 
 const user = userEvent.setup()
-const eventHandler = vi.fn((event: { state: any }) => {
+const eventHandler = vi.fn((event: any) => {
   console.log(event)
 })
 const history = createMemoryHistory()
@@ -43,7 +45,13 @@ test('exercise type creation works', async () => {
       <Route
         path="/"
         component={() => (
-          <Component state={{ expr: 'hello', attempt: '' }} onSubmit={eventHandler} />
+          <Component
+            type="Test"
+            options={optionsSchema.parse({})}
+            attempts={[]}
+            question={{ expr: 'hello' }}
+            onChange={eventHandler}
+          />
         )}
       />
     </MemoryRouter>
@@ -74,7 +82,7 @@ test('triggers generator', async () => {
       <Route
         path="/"
         component={() => (
-          <Component params={{ words: ['hola', 'hello', 'ciao'] }} onGenerate={eventHandler} />
+          <Component params={{ words: ['hola', 'hello', 'ciao'] }} onChange={eventHandler} />
         )}
       />
     </MemoryRouter>

@@ -25,13 +25,17 @@ from sympy import *
 expand((-1 + 3*I) * (2 - 5*I))
 ~~~
 
+::: exercise
+[Exercice sur la plateforme](/skills/algebra/complex/multiplication)
+:::
+
 # Plan de Gauss {.w-1--2}
 
 On identifie le nombre complexe $a + bi$ au vecteur $(a, b)$.
 En particulier, cela permet de placer un nombre complexe sur le plan $\mathbb R^2$.
 
 ~~~ yaml {.plot}
-height: 600
+height: 400
 width: 800
 data:
   - fnType: vector
@@ -46,6 +50,8 @@ data:
 Dans le plan de Gauss,
 une multiplication par $i$ revient à une **rotation** de $90^\circ$ dans le sens anti-horloger.
 :::
+
+[Exercice sur la plateforme](/skills/algebra/complex/powers-of-i)
 
 # Complexe conjugué {.w-1--2}
 
@@ -100,6 +106,10 @@ from sympy import *
 simplify((-1 + 3*I) / (2 + 5*I))
 ~~~
 
+::: exercise
+[Exercices sur la plateforme](/skills/algebra/complex/division)
+:::
+
 # Racine carrée {.w-1--2}
 
 ::: {.example title="Exemple 3 p. A58"}
@@ -114,7 +124,6 @@ solveset(z**2 + z + 1)
 ~~~
 
 # Forme polaire p. A59 {.w-1--2}
-
 
 ::::: {.flex .items-center .justify-between}
 ![](/images/complex_polar_form.svg){.w-64}
@@ -139,11 +148,22 @@ L'équation $\tan \theta = \frac b a$ a **plusieurs solutions possibles**.
 Et si $a = 0$?
 :::
 
+::: exercise
+- [Trouver le module](/skills/algebra/complex/modulus)
+- [Trouver l'argument](/skills/algebra/complex/argument)
+:::
+
+# Forme polaire: intérêt {.w-1--2}
+
 ::: {.remark title="Interprétation de la multiplication complexe"}
 Multiplier par $z = a + b i = r(\cos \theta + i \sin \theta)$ revient à
 
 - une homothétie d'un facteur $r$
 - une rotation d'angle $\theta$
+:::
+
+::: exercise
+[Convertir en forme polaire](/skills/algebra/complex/polar)
 :::
 
 # Formule d'Euler {.w-1--2}
@@ -156,7 +176,11 @@ $$
 
 ::: remark
 - La formule d'Euler unifie la trigonométrie et l'exponentiation
-- On appelera dorénavant $r e^{i \theta}$ la *forme polaire*.
+- On appelera $r e^{i \theta}$ la *forme exponentielle*.
+:::
+
+::: exercise
+[Convertir en forme exponentielle](/skills/algebra/complex/exponential)
 :::
 
 # Multiplication {.w-1--2}
@@ -173,11 +197,11 @@ $$
 # Forme polaire: exemples {.w-1--2}
 
 ::: {.example title="Exemple 4 p. A59"}
-Ecrivez $z = 1 + i$ et $w = \sqrt 3 - i$ sous forme polaire.
+Ecrivez $z = 1 + i$ et $w = \sqrt 3 - i$ sous forme polaire et exponentielle.
 :::
 
 ::: {.example title="Exemple 5 p. A60"}
-Trouvez le produit des nombres complexes $1 + i$ et $\sqrt 3 - i$ sous forme polaire.
+Trouvez le produit des nombres complexes $1 + i$ et $\sqrt 3 - i$ sous forme polaire et exponentielle.
 :::
 
 ~~~ python {.run}
@@ -210,6 +234,11 @@ simplify(((1 + I) / 2) ** 10)
 ::: {.example title="Exemple 7 p. A62"}
 Calculez les 6 solutions de $z^6 = -8$ et
 représentez-les sur le plan de Gauss.
+:::
+
+::: exercise
+- [Calculer une puissance d'un nombre complexe](/skills/algebra/complex/powers)
+- [Calculer une racine n-ème complexe](/skills/algebra/complex/roots)
 :::
 
 # Application: électricité {.w-1--2}

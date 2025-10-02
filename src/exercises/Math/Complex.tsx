@@ -14,14 +14,16 @@ async function getRectangularForm(expr: string) {
       query GetComplexRectangularForm($expr: Math!) {
         expression(expr: $expr) {
           expand {
-            expr
+            simplify {
+              expr
+            }
           }
         }
       }
     `),
     { expr },
   )
-  return expression.expand.expr
+  return expression.expand.simplify.expr
 }
 
 const { Component, schema } = createExerciseType({
