@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: 'Produit vectoriel: définition'
+courses:
+  - geometry
+  - PM1C
+  - MATH
+prerequisites:
+  - /skills/trigonometry/right-triangle
+video: https://youtube.com/embed/4wwoBhDlA1E
+options:
+  streak: 999
+  initialElo: 800
+body:
+  - type: CrossProduct
+    params:
+      numbers: [-1, 0, 1]
