@@ -23,7 +23,7 @@ const finiteSet = z
   .array()
   .nonempty()
   .or(z.string().transform((el) => [el]))
-  .transform((elements) => ['FiniteSet', ...elements])
+  .transform((elements) => (elements[0] === 'FiniteSet' ? elements : ['FiniteSet', ...elements]))
 
 const { Component, schema } = createExerciseType({
   name: 'ConicSection',
@@ -104,7 +104,7 @@ const { Component, schema } = createExerciseType({
             </li>
           </Show>
           <Show when={['ellipse', 'hyperbola', 'parabola'].includes(conicSectionType())}>
-              <li>
+            <li>
               Sommet{conicSectionType() !== 'parabola' && 's'}:{' '}
               <Math name="attempt.vertices" value={vertices()[0]} editable />
               <Show when={conicSectionType() !== 'parabola'}>
