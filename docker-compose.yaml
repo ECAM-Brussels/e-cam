@@ -1,0 +1,11 @@
+services:
+  symapi:
+    build:
+      context: .
+      dockerfile: symapi.Dockerfile
+    command: fastapi dev --host 0.0.0.0 symapi
+    volumes:
+      - .:/app
+    restart: always
+    ports:
+      - "8000:8000"
