@@ -1,4 +1,12 @@
 services:
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: hello
+      MYSQL_DATABASE: ecam
+    networks:
+     - internal
   symapi:
     build:
       context: .
@@ -9,3 +17,8 @@ services:
     restart: always
     ports:
       - "8000:8000"
+    networks:
+     - internal
+networks:
+  internal:
+    driver: bridge
