@@ -7,6 +7,7 @@ courses:
   - MATH
 prerequisites:
   - /skills/algebra/complete-monic-square
+video: https://youtube.com/embed/MkkAsX8KFSA
 options:
   streak: 999
   initialElo: 1600
