@@ -140,7 +140,7 @@ async function check(email: string) {
 export const getExercise = query(async (url: string, email: string, position: number) => {
   'use server'
   const sequence = await getExercises(url, email)
-  return sequence[position - 1]
+  return await exerciseSchema.parseAsync(sequence[position - 1])
 }, 'getExercise')
 
 export const getPaginationInfo = query(async (url: string, email: string) => {
