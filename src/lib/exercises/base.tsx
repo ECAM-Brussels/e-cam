@@ -121,7 +121,7 @@ export function createExerciseType<
       const attempt: z.infer<Attempt> = exercise.attempt.parse(extractFormData(form).attempt)
       // The schema could have changed
       // if the exercise was generated a long time ago
-      const q = exercise.question.parse(question())
+      const q = await exercise.question.parseAsync(question())
       const correct = await mark(q, attempt)
       const attempts = remark
         ? [...props.attempts.slice(0, -1), { correct, attempt }]
