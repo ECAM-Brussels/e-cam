@@ -40,6 +40,7 @@ type TableProps<Row> = {
 const Excel = clientOnly(() => import('~/components/Excel'))
 
 export default function Table<Row extends object>(props: TableProps<Row>) {
+  const [page, setPage] = createSignal(1)
   const [sorting, setSorting] = createSignal<SortingState>(props.sorting ?? [])
   const [globalFilter, setGlobalFilter] = createSignal('')
   const debounceSetGlobalFilter = debounce((value: string) => setGlobalFilter(value), 50)
@@ -55,7 +56,7 @@ export default function Table<Row extends object>(props: TableProps<Row>) {
         return globalFilter()
       },
       get pagination() {
-        return { pageIndex: (props.page ?? 1) - 1, pageSize: props.pageSize ?? 30 }
+        return { pageIndex: (props.page ?? page()) - 1, pageSize: props.pageSize ?? 30 }
       },
     },
     get columns() {
@@ -184,7 +185,7 @@ export default function Table<Row extends object>(props: TableProps<Row>) {
                   method="post"
                   action={action(
                     async (form: FormData) => {
-                      props.setPage?.(Number(form.get('page')))
+                      ;(props.setPage ?? setPage)(Number(form.get('page')))
                       return json(null, { revalidate: 'nothing' })
                     },
                     `change-page-${hashObject(props.data)}`,
