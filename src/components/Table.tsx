@@ -34,12 +34,13 @@ type TableProps<Row> = {
   page?: number
   pageSize?: number
   setPage?: (page: number) => void
+  sorting?: SortingState
 }
 
 const Excel = clientOnly(() => import('~/components/Excel'))
 
 export default function Table<Row extends object>(props: TableProps<Row>) {
-  const [sorting, setSorting] = createSignal<SortingState>([])
+  const [sorting, setSorting] = createSignal<SortingState>(props.sorting ?? [])
   const [globalFilter, setGlobalFilter] = createSignal('')
   const debounceSetGlobalFilter = debounce((value: string) => setGlobalFilter(value), 50)
   const table = createSolidTable({

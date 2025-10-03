@@ -10,7 +10,7 @@ export const getStats = query(async () => {
   const [users, assignments, userCount, activeUserCount, totalAttempts, correctAttempts, ...info] =
     await Promise.all([
       prisma.user.findMany({ orderBy: { score: 'desc' }, take: 10 }),
-      prisma.assignment.findMany({ include: { page: true }, orderBy: { score: 'desc' }, take: 10 }),
+      prisma.assignment.findMany({ include: { page: true }, orderBy: { score: 'desc' } }),
       prisma.user.count(),
       prisma.user.count({ where: { attempts: { some: { correct: { not: null } } } } }),
       prisma.attempt.count({ where: { correct: { not: null } } }),

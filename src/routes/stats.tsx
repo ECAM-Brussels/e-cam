@@ -69,6 +69,7 @@ export default function Statistics() {
             <p>ELO moyen: {stats()?.averages.assignmentScore}</p>
             <Table
               data={stats()?.assignments ?? []}
+              sorting={[{ id: 'eloGain', desc: true }]}
               columns={[
                 {
                   header: 'Title',
@@ -77,6 +78,12 @@ export default function Statistics() {
                 {
                   header: 'ELO',
                   accessorKey: 'score',
+                },
+                {
+                  header: 'Gain ELO',
+                  id: 'eloGain',
+                  accessorFn: (row) =>
+                    row.score && row.options?.initialElo ? row.score - row.options?.initialElo : 0,
                 },
                 {
                   header: 'Actions',
