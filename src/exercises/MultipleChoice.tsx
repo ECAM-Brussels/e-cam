@@ -9,7 +9,7 @@ const { Component, schema } = createExerciseType({
   Component: (props) => {
     const exercise = useExerciseContext()
     return (
-      <fieldset disabled={exercise?.readOnly}>
+      <>
         <Markdown value={props.question.text} />
         <div class="flex gap-4 my-4">
           <For each={props.question.choices}>
@@ -21,6 +21,7 @@ const { Component, schema } = createExerciseType({
                     name="attempt"
                     value={choice}
                     checked={props.attempt === choice}
+                    readOnly={exercise?.readOnly}
                   />{' '}
                   <Markdown value={choice} />
                 </label>
@@ -28,7 +29,7 @@ const { Component, schema } = createExerciseType({
             )}
           </For>
         </div>
-      </fieldset>
+      </>
     )
   },
   question: z
