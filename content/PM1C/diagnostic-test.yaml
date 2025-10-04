@@ -3,7 +3,7 @@ title: "Test diagnostique"
 options:
   adjustElo: false
   showSidebar: false
-  # showFeedback: 2025-10-07 12:00
+  showFeedback: 2025-10-07 12:00
 body:
   - type: MultipleChoice
     question:
