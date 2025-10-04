@@ -21,7 +21,7 @@ const { Component, schema } = createExerciseType({
                     name="attempt"
                     value={choice}
                     checked={props.attempt === choice}
-                    readOnly={exercise?.readOnly}
+                    disabled={exercise?.readOnly}
                   />{' '}
                   <Markdown value={choice} />
                 </label>
