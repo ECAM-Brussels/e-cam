@@ -9,7 +9,7 @@ body:
     question:
       text: |
        Vrai ou faux:
-       
+
        $$\sin\left(\frac{\pi}{2}-x\right)=\cos x$$
       choices:
         - Vrai
@@ -29,7 +29,7 @@ body:
     question:
       text:  |
        En utilisant la distributivité, calculez:
-       
+
        $$\left(\vec{1_x} - \vec{1_z}\right)\times\left(\vec{1_y} \times \vec{1_z}\right)$$
 
        *Pour rappel:* $\vec{1_x} = \vec i,\ \vec{1_y} = \vec j,\ \vec{1_z} = \vec k$
@@ -46,7 +46,7 @@ body:
     question:
       text: |
        Vrai ou faux:
-       
+
        $$\sqrt{x^2+9}=x+3$$
       choices:
         - Vrai
