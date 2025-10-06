@@ -1,0 +1,41 @@
+services:
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: hello
+      MYSQL_DATABASE: ecam
+    networks:
+     - internal
+  symapi:
+    build:
+      context: .
+      dockerfile: symapi.Dockerfile
+    command: fastapi dev --host 0.0.0.0 symapi
+    volumes:
+      - .:/app
+    restart: always
+    ports:
+      - "8000:8000"
+    networks:
+     - internal
+  web:
+    build:
+      context: .
+      dockerfile: web.Dockerfile
+    environment:
+      DATABASE_URL: mysql://root:hello@db:3306/ecam
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    networks:
+     - internal
+    depends_on:
+      db:
+        condition: service_started
+      symapi:
+        condition: service_started
+networks:
+  internal:
+    driver: bridge
