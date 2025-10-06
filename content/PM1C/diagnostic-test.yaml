@@ -3,7 +3,7 @@ title: "Test diagnostique"
 options:
   adjustElo: false
   showSidebar: false
-  # showFeedback: 2025-10-07 12:00
+  showFeedback: 2025-10-07 09:25
 body:
   - type: MultipleChoice
     question:
@@ -97,26 +97,48 @@ body:
         - $y-5$
         - $y+5$
       answer: $y+5$
-  - type: Calculate
+  - type: Equation
     params:
-      type: withParams
-      questions:
-        - text: |
-            Si $\cos(\alpha) = {a}$, calculez $\cos(2\alpha)$.
-            
-            *Remarque:*
-            si vous entrez la réponse sous forme décimale,
-            utilisez "." au lieu de "," comme séparateur décimal.
-          label: \cos(2\alpha)
-          expr: 2\cdot({a})^2 - 1
-      subs:
-        a:
-          - \frac{2}{10}
-          - \frac{3}{10}
-          - \frac{4}{10}
-          - \frac{6}{10}
-          - \frac{7}{10}
-          - \frac{8}{10}
+      type: simpleTrigonometric
+      F:
+        - sin
+        - cos
+        - tan
+        - cot
+      A: [1, -1, 2, -2, 3, -3]
+      B:
+        - \pi
+        - -\pi
+        - \frac{\pi}{2}
+        - -\frac{\pi}{2}
+        - \frac{\pi}{3}
+        - -\frac{\pi}{3}
+        - \frac{\pi}{4}
+        - -\frac{\pi}{4}
+        - \frac{\pi}{6}
+        - -\frac{\pi}{6}
+        - \frac{\pi}{12}
+        - -\frac{\pi}{12}
+      C:
+        - 0
+        - \frac{\pi}{6}
+        - \frac{\pi}{4}
+        - \frac{\pi}{3}
+        - \frac{\pi}{2}
+        - \frac{2 \pi}{3}
+        - \frac{3 \pi}{4}
+        - \frac{5 \pi}{6}
+        - \pi
+        - \frac{7 \pi}{6}
+        - \frac{5 \pi}{4}
+        - \frac{4 \pi}{3}
+        - \frac{3 \pi}{2}
+        - \frac{5 \pi}{3}
+        - \frac{7 \pi}{4}
+        - \frac{11 \pi}{6}
+      S:
+        - ['Interval', '0', '2 \pi']
+        - ['Interval', '-\pi', '\pi']
   - type: DotProduct
     params:
       Norms: [1, 2, 3, 4, 5, 6, 7, 8, 9]
