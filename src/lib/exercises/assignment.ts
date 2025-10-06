@@ -404,6 +404,12 @@ export const getAssignmentGraph = query(
 
 export const getAssignmentResults = query(async (url: string) => {
   'use server'
+  const { body, options } = await prisma.assignment.findUniqueOrThrow({
+    select: { body: true, options: true },
+    where: { url },
+  })
+  const opts = (index: number) => optionsSchema.parse({ ...options, ...body[index].options })
+  const generated = body.length === 1 && opts(0).streak > 0
   const [data, attempted, correct] = await Promise.all([
     prisma.user.findMany({
       where: {
@@ -417,10 +423,10 @@ export const getAssignmentResults = query(async (url: string) => {
         email: true,
         score: true,
         attempts: {
-          select: { correct: true },
+          select: { correct: true, position: true },
           where: { url, correct: { not: null } },
           orderBy: { position: 'desc' },
-          take: 10,
+          take: generated ? 15 : undefined,
         },
       },
     }),
@@ -437,7 +443,16 @@ export const getAssignmentResults = query(async (url: string) => {
   ])
   return data.map((user) => ({
     ...user,
-    attempts: user.attempts.reverse(),
+    get attempts() {
+      const attempts = user.attempts.reverse()
+      if (generated) return attempts
+      const completedAttempts: typeof attempts = []
+      for (let i = 0; i < (attempts.at(-1)?.position ?? 0); i++) {
+        const attempt = attempts.filter((a) => a.position === i + 1).at(0)
+        completedAttempts.push(attempt ?? { correct: null, position: i + 1 })
+      }
+      return completedAttempts
+    },
     correct: correct.filter((res) => res.email === user.email).at(0)?._count._all ?? 0,
     attempted: attempted.filter((res) => res.email === user.email).at(0)?._count._all ?? 0,
   }))
