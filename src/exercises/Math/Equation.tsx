@@ -24,7 +24,7 @@ const { Component, schema } = createExerciseType({
         <p>Résolvez l'équation</p>
         <Math value={props.question.equation} displayMode />
         <Show when={props.question.S}>
-          sur <MathSet value={props.question.S} />
+          sur <MathSet value={props.question.S}/>.
         </Show>
         <div class="flex flex-wrap gap-8">
           <For each={attempt}>
