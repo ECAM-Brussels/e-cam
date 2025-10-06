@@ -91,7 +91,7 @@ const { Component, schema } = createExerciseType({
       const answers = {
         polar: `${r} \\left(\\cos\\left(${theta}\\right) + i \\sin\\left(${theta}\\right)\\right)`,
         exponential: `${r} e^{i\\left(${theta}\\right)}`,
-        rectangular: `\\left(${a}\\right) + i \\left(${b}\\right)`,
+        rectangular: `\\left(${a}\\right) + \\left(${b}\\right) i`,
       } as const
       if (!remaining) {
         return { remaining, ...question, answer: answers[question.format] }
