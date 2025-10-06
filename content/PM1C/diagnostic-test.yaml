@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: "Test diagnostique"
+title: "Test diagnostique (Groupe 1)"
 options:
   adjustElo: false
   showSidebar: false
