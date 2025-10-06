@@ -19,6 +19,23 @@ services:
       - "8000:8000"
     networks:
      - internal
+  web:
+    build:
+      context: .
+      dockerfile: web.Dockerfile
+    environment:
+      DATABASE_URL: mysql://root:hello@db:3306/ecam
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    networks:
+     - internal
+    depends_on:
+      db:
+        condition: service_started
+      symapi:
+        condition: service_started
 networks:
   internal:
     driver: bridge

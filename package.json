@@ -4,7 +4,6 @@
   "scripts": {
     "codegen": "wait-on http://localhost:8000/health && graphql-codegen",
     "dev": "prisma migrate dev && concurrently 'poetry run fastapi dev symapi' 'npm run codegen && vinxi dev'",
-    "postinstall": "poetry install",
     "reset": "prisma migrate reset",
     "build": "NODE_OPTIONS='--max-old-space-size=4096' vinxi build",
     "start": "vinxi start",
@@ -84,7 +83,7 @@
     "wait-on": "^8.0.4"
   },
   "graphql": {
-    "schema": "http://localhost:8000/graphql",
+    "schema": "http://symapi:8000/graphql",
     "documents": "**/*.{graphql,js,ts,jsx,tsx}"
   }
 }
