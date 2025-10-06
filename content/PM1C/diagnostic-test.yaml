@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: "Test diagnostique (Groupe 1)"
+title: 'Test diagnostique (Groupe 1)'
 options:
   adjustElo: false
   showSidebar: false
@@ -8,33 +8,33 @@ body:
   - type: MultipleChoice
     question:
       text: |
-       Vrai ou faux:
+        Vrai ou faux:
 
-       $$\sin\left(\frac{\pi}{2}-x\right)=\cos x$$
+        $$\sin\left(\frac{\pi}{2}-x\right)=\cos x$$
       choices:
         - Vrai
         - Faux
       answer: Vrai
   - type: MultipleChoice
     question:
-      text:  |
-       Vrai ou faux:
+      text: |
+        Vrai ou faux:
 
-       Si $\vec{a}\cdot(\vec{b}\times\vec{c}) = 0$, cela veut dire que les vecteurs $\vec{a}, \vec{b}$ et $\vec{c}$ sont perpendiculaires.
+        Si $\vec{a}\cdot(\vec{b}\times\vec{c}) = 0$, cela veut dire que les vecteurs $\vec{a}, \vec{b}$ et $\vec{c}$ sont perpendiculaires.
       choices:
         - Vrai
         - Faux
       answer: Faux
   - type: MultipleChoice
     question:
-      text:  |
-       En utilisant la distributivité, calculez:
+      text: |
+        En utilisant la distributivité, calculez:
 
-       $$\left(\vec{1_x} - \vec{1_z}\right)\times\left(\vec{1_y} \times \vec{1_z}\right)$$
+        $$\left(\vec{1_x} - \vec{1_z}\right)\times\left(\vec{1_y} \times \vec{1_z}\right)$$
 
-       *Pour rappel:* $\vec{1_x} = \vec i,\ \vec{1_y} = \vec j,\ \vec{1_z} = \vec k$
+        *Pour rappel:* $\vec{1_x} = \vec i,\ \vec{1_y} = \vec j,\ \vec{1_z} = \vec k$
 
-       Cochez la bonne réponse:
+        Cochez la bonne réponse:
       choices:
         - $\vec{1_y}$
         - $-\vec{1_y}$
@@ -45,19 +45,19 @@ body:
   - type: MultipleChoice
     question:
       text: |
-       Vrai ou faux:
+        Vrai ou faux:
 
-       $$\sqrt{x^2+9}=x+3$$
+        $$\sqrt{x^2+9}=x+3$$
       choices:
         - Vrai
         - Faux
       answer: Faux
   - type: MultipleChoice
     question:
-      text: | 
-       Vrai ou faux:
-       
-       Si $x=a$ est une racine d'un polynôme, alors $x-a$ est un facteur du polynôme.
+      text: |
+        Vrai ou faux:
+
+        Si $x=a$ est une racine d'un polynôme, alors $x-a$ est un facteur du polynôme.
       choices:
         - Vrai
         - Faux
@@ -66,12 +66,12 @@ body:
     question:
       text: |
         Vrai ou faux: 
-        
+
         Lors de la résolution d'un sytème linéaire à trois équations et trois inconnues,
         supposons qu'on obtient par la méthode de Gauss la forme réduite suivante :
 
         $$\left(\begin{array}{ccc|c} 1 & 2 & -1 & 5 \\ 0 & -1 & 3 & 4 \\ 0 & 0 & 0 & 0 \end{array}\right)$$
-        
+
         Cela veut dire que $z = 0$.
       choices:
         - Vrai
@@ -185,7 +185,7 @@ body:
   - type: ConicSection
     params:
       Types:
-       - parabola
+        - parabola
       classify: false
       X0: [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6]
       Y0: [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6]

@@ -21,9 +21,25 @@ export const getStats = query(async () => {
       prisma.assignment.aggregate({
         _avg: { score: true },
       }),
+      prisma.attempt.groupBy({
+        by: ['email'],
+        where: { correct: true },
+        _count: { id: true },
+      }),
+      prisma.attempt.groupBy({
+        by: ['email'],
+        where: { correct: { not: null } },
+        _count: { id: true },
+      }),
     ])
   return {
-    users,
+    users: users.map((u) => ({
+      ...u,
+      attempts: {
+        correct: info[2].find((c) => c.email === u.email)?._count.id ?? 0,
+        total: info[3].find((c) => c.email === u.email)?._count.id ?? 0,
+      },
+    })),
     assignments,
     averages: {
       userScore: info[0]._avg.score,

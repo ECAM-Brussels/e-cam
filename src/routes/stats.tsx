@@ -50,6 +50,14 @@ export default function Statistics() {
                   accessorFn: (row) => `${row.lastName} ${row.firstName}`,
                 },
                 {
+                  header: 'Correct',
+                  accessorFn: (row) => row.attempts.correct,
+                },
+                {
+                  header: 'Total',
+                  accessorFn: (row) => row.attempts.total,
+                },
+                {
                   header: 'ELO',
                   accessorKey: 'score',
                 },

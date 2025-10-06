@@ -1,4 +1,4 @@
-import { faCheck, faFile, faUser, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faFile, faQuestion, faUser, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { createAsync, type RouteDefinition, useParams } from '@solidjs/router'
 import { createSignal, For } from 'solid-js'
 import Fa from '~/components/Fa'
@@ -51,22 +51,22 @@ export default function () {
               header: 'Derniers résultats',
               accessorFn: (row) => row.attempts.filter((a) => a.correct === true).length,
               cell: (info) => (
-                <div class="text-right">
-                  <For each={info.row.original.attempts}>
-                    {(attempt) => (
-                      <span
-                        class="px-1"
-                        classList={{
-                          'text-green-700': attempt.correct === true,
-                          'text-red-700': attempt.correct === false,
-                        }}
-                      >
-                        {attempt.correct && <Fa icon={faCheck} />}
-                        {attempt.correct === false && <Fa icon={faXmark} />}
-                      </span>
-                    )}
-                  </For>
-                </div>
+                <For each={info.row.original.attempts}>
+                  {(attempt) => (
+                    <span
+                      title={`Question ${attempt.position}`}
+                      class="px-1"
+                      classList={{
+                        'text-green-700': attempt.correct === true,
+                        'text-red-700': attempt.correct === false,
+                      }}
+                    >
+                      {attempt.correct && <Fa icon={faCheck} />}
+                      {attempt.correct === null && <Fa icon={faQuestion} />}
+                      {attempt.correct === false && <Fa icon={faXmark} />}
+                    </span>
+                  )}
+                </For>
               ),
             },
             {

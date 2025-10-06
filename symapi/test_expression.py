@@ -190,6 +190,33 @@ def test_is_polar(expr: str, expected: bool):
 @pytest.mark.parametrize(
     "expr,expected",
     [
+        ("3 e^{i \\frac {\\pi}{3}}", True),
+        ("3 e^{i \\frac {\\pi}{2}}", True),
+        ("3 e^{-i \\frac {\\pi}{2}}", True),
+        ("1 e^{i(-\\frac{\\pi}{2})}", True),
+        ("3 e^{i (-\\frac {\\pi}{2})}", True),
+    ],
+)
+def test_is_exponential(expr: str, expected: bool):
+    result = schema.execute_sync(
+        """
+            query ($expr: Math!) {
+                expression(expr: $expr) {
+                    isExponential
+                }
+            }
+        """,
+        variable_values={"expr": expr},
+    )
+    assert result.data is not None
+    assert result.data["expression"] == {
+        "isExponential": expected,
+    }
+
+
+@pytest.mark.parametrize(
+    "expr,expected",
+    [
         ("x^2 - x", False),
         ("(x - 1)^2", True),
         ("2x + 1", True),
