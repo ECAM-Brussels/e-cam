@@ -98,6 +98,12 @@ const dataSchema = z.object({
       ecam: z.boolean().default(false),
     })
     .array(),
+  page: z
+    .object({
+      url: z.string(),
+      title: z.string(),
+    })
+    .array(),
   admins: z.string().email().array().default([]),
 })
 
@@ -108,6 +114,10 @@ async function loadData(prisma: PrismaClient) {
       const { code, ...update } = create
       await prisma.course.upsert({ where: { code }, update, create })
     }
+    for (const page of data.page) {
+      const { url, ...update } = page
+      await prisma.page.upsert({ where: { url }, update, create: page })
+    }
     await Promise.all(
       data.admins.map((email) => {
         prisma.user.updateMany({
@@ -116,8 +126,8 @@ async function loadData(prisma: PrismaClient) {
         })
       }),
     )
-  } catch {
-    console.log(`Error when loading data.yaml`)
+  } catch (error) {
+    console.log(`Error when loading data.yaml: ${error}`)
   }
 }
 
