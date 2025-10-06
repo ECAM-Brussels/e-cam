@@ -38,6 +38,8 @@ def parse_latex(expr: str):
 def remove_funcs(expr: sympy.Basic) -> sympy.Basic:
     if isinstance(expr.func, sympy.core.function.UndefinedFunction):
         x = sympy.Symbol(str(expr.func))
+        if str(expr.func) == "i":
+            x = sympy.I
         return sympy.Mul(x, *expr.args, evaluate=False)
     if expr.func and expr.args:
         with sympy.evaluate(False):
