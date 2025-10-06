@@ -441,21 +441,22 @@ export const getAssignmentResults = query(async (url: string) => {
       _count: { _all: true },
     }),
   ])
-  return data.map((user) => ({
-    ...user,
-    get attempts() {
-      const attempts = user.attempts.reverse()
-      if (generated) return attempts
-      const completedAttempts: typeof attempts = []
+  return data.map((user) => {
+    const attempts = user.attempts.reverse()
+    const completedAttempts: typeof attempts = []
+    if (!generated) {
       for (let i = 0; i < (attempts.at(-1)?.position ?? 0); i++) {
         const attempt = attempts.filter((a) => a.position === i + 1).at(0)
         completedAttempts.push(attempt ?? { correct: null, position: i + 1 })
       }
-      return completedAttempts
-    },
-    correct: correct.filter((res) => res.email === user.email).at(0)?._count._all ?? 0,
-    attempted: attempted.filter((res) => res.email === user.email).at(0)?._count._all ?? 0,
-  }))
+    }
+    return {
+      ...user,
+      attempts: generated ? attempts : completedAttempts,
+      correct: correct.filter((res) => res.email === user.email).at(0)?._count._all ?? 0,
+      attempted: attempted.filter((res) => res.email === user.email).at(0)?._count._all ?? 0,
+    }
+  })
 }, 'getAssignmentResults')
 
 export const getAssignmentList = query(
