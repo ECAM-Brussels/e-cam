@@ -2,32 +2,36 @@ import { For, Show } from 'solid-js'
 import { z } from 'zod'
 import Markdown from '~/components/Markdown'
 import { decrypt, encrypt } from '~/lib/cryptography'
-import { createExerciseType } from '~/lib/exercises/base'
+import { createExerciseType, useExerciseContext } from '~/lib/exercises/base'
 
 const { Component, schema } = createExerciseType({
   name: 'MultipleChoice',
-  Component: (props) => (
-    <>
-      <Markdown value={props.question.text} />
-      <div class="flex gap-4 my-4">
-        <For each={props.question.choices}>
-          {(choice) => (
-            <button type="button">
-              <label class="border rounded-xl bg-white shadow cursor-pointer px-4 py-2 flex gap-4 items-center">
-                <input
-                  type="radio"
-                  name="attempt"
-                  value={choice}
-                  checked={props.attempt === choice}
-                />{' '}
-                <Markdown value={choice} />
-              </label>
-            </button>
-          )}
-        </For>
-      </div>
-    </>
-  ),
+  Component: (props) => {
+    const exercise = useExerciseContext()
+    return (
+      <>
+        <Markdown value={props.question.text} />
+        <div class="flex gap-4 my-4">
+          <For each={props.question.choices}>
+            {(choice) => (
+              <button type="button">
+                <label class="border rounded-xl bg-white shadow cursor-pointer px-4 py-2 flex gap-4 items-center">
+                  <input
+                    type="radio"
+                    name="attempt"
+                    value={choice}
+                    checked={props.attempt === choice}
+                    disabled={exercise?.readOnly}
+                  />{' '}
+                  <Markdown value={choice} />
+                </label>
+              </button>
+            )}
+          </For>
+        </div>
+      </>
+    )
+  },
   question: z
     .object({
       text: z.string().describe('Question, entered as markdown'),

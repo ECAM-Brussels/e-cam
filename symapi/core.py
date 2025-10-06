@@ -15,7 +15,9 @@ def parse_latex(expr: str):
         r"^(?:\\left\s*)?\(([^\(\)]*[,;][^\(\)]*)(?:\s*\\right)?\)$", expr
     )
     if coordinates:
-        return sympy.Tuple(*[parse_latex(e) for e in coordinates.group(1).split(",")])
+        return sympy.Tuple(
+            *[parse_latex(e) for e in re.split(r"[;,]", coordinates.group(1))]
+        )
     if "=" in expr:
         return sympy.Eq(*[parse_latex(s) for s in expr.split("=")])
     parsed = sympy.parsing.latex.parse_latex(expr)
