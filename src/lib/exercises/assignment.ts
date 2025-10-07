@@ -252,6 +252,14 @@ export async function saveExercise(
   try {
     await check(email)
     exercise = await exerciseSchema.parseAsync(exercise)
+    if (action === 'generate') {
+      const attempt = await prisma.attempt.findUniqueOrThrow({
+        where: { url_email_position: { url, email, position } },
+      })
+      if (attempt && attempt.exercise.question) {
+        return null
+      }
+    }
     const key = { url, email, position }
     let correction = 0
     if (action === 'remark') {
