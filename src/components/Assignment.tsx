@@ -6,6 +6,7 @@ import Calculator from '~/components/Calculator'
 import ErrorBoundary from '~/components/ErrorBoundary'
 import Fa from '~/components/Fa'
 import Graph from '~/components/Graph'
+import Markdown from '~/components/Markdown'
 import Pagination from '~/components/Pagination'
 import Suspense from '~/components/Suspense'
 import Whiteboard from '~/components/Whiteboard'
@@ -50,7 +51,7 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
 
   return (
     <ErrorBoundary>
-      <div class="flex items-center justify-between text-small">
+      <div class="flex items-center justify-between text-small text-slate-500">
         <Show when={currentUser()?.role === 'TEACHER' || user()?.role === 'ADMIN'}>
           <a href={`/results${props.url}`}>Voir les résultats</a>
           <Show when={props.data.score}>
@@ -61,6 +62,7 @@ function Shell(props: AssignmentProps & { children: JSXElement }) {
       <div class="mb-8">
         <Navigation {...props} />
       </div>
+      <Markdown value={props.data.page.description ?? ''} />
       <div class="h-full max-w-full lg:flex flex-row-reverse gap-8">
         <Show when={options().showSidebar}>
           <div class="lg:w-[392px]">
