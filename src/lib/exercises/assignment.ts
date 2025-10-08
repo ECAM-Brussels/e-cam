@@ -312,7 +312,7 @@ export const getAssignment = async (data: z.input<typeof assignmentSchema>) => {
       await assignmentSchema.parseAsync(data)
     await registerAssignment(prisma, data, { ...assignment, hash })
     if (page && hashObject(page.body) !== hashObject(assignment.body)) {
-      await prisma.attempt.deleteMany({ where })
+      // await prisma.attempt.deleteMany({ where })
     }
   }
   if (page.score === null && data.options?.adjustElo !== false) {
