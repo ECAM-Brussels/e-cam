@@ -296,7 +296,10 @@ class Expression:
 
         for term in expr.args:
             if sympy.factor(term).func == sympy.Mul:
-                return False
+                # Exclude 1/k * (x - a)
+                k = sympy.factor(term).args[0] ** (-1)
+                if not k.is_integer:
+                    return False
             if term.func != sympy.Pow and sympy.factor(term).func == sympy.Pow:
                 return False
         return True
