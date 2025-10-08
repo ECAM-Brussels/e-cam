@@ -1,24 +1,15 @@
 name: Vitest
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
+  - push
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-      - name: Build API image
-        run: docker build -t symapi:local -f symapi.Dockerfile .
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-      - name: Install dependencies
-        run: npm ci
-      - name: Wait for API to be healthy
-        run: |
+      - uses: actions/checkout@v5
+      - run: docker build -t symapi:local -f symapi.Dockerfile .
+      - uses: actions/setup-node@v5
+      - run: npm ci
+      - run: |
           docker run -d --name symapi -p 8000:8000 symapi:local
           for i in {1..20}; do
             if curl -fsI http://localhost:8000/health > /dev/null; then
@@ -26,5 +17,4 @@ jobs:
             fi
             sleep 3
           done
-      - name: Run Vitest
-        run: npm run test -- --run
+      - run: npm run test -- --run
