@@ -1,6 +1,6 @@
 import type { CodegenConfig } from '@graphql-codegen/cli'
 
-const url = 'http://symapi:8000/graphql'
+let url = process.env.VITE_GRAPHQL_URL ?? 'http://symapi:8000/graphql'
 
 const config: CodegenConfig = {
   overwrite: true,

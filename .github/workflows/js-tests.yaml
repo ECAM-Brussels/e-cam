@@ -4,6 +4,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      VITE_GRAPHQL_URL: http://localhost:8000/graphql
     steps:
       - uses: actions/checkout@v5
       - run: docker build -t symapi:local -f symapi.Dockerfile .
