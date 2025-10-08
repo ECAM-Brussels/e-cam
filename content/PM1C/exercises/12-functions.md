@@ -79,4 +79,8 @@ P = P.subs({a: solve(Eq(P.subs(x, 1), 6))[0]})
 
 # Exercice 1.2.18 {.w-1--2}
 
-![](/images/exercises/1.2.18.png)
+![](/images/exercises/1.2.18.png){.h-4--5}
+
+# Réponses
+
+<Iframe class="w-full h-full" src="/documents/pm1c-answers.pdf#page=12" />
