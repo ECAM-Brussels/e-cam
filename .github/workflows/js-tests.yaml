@@ -17,4 +17,5 @@ jobs:
             fi
             sleep 3
           done
+      - run: npx graphql-codegen
       - run: npm run test -- --run
