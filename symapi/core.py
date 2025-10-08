@@ -9,8 +9,8 @@ from typing import NewType
 
 def parse_latex(expr: str):
     expr = re.sub(r"\\sqrt(\d+)", r"\\sqrt{\1}", expr)
-    expr = expr.replace("\\exponentialE", "e")
-    expr = expr.replace("\\imaginaryI", "i")
+    expr = expr.replace("\\exponentialE", "{e}")
+    expr = expr.replace("\\imaginaryI", "{i}")
     coordinates = re.search(
         r"^(?:\\left\s*)?\(([^\(\)]*[,;][^\(\)]*)(?:\s*\\right)?\)$", expr
     )

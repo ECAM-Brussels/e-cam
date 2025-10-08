@@ -98,6 +98,12 @@ const dataSchema = z.object({
       ecam: z.boolean().default(false),
     })
     .array(),
+  page: z
+    .object({
+      url: z.string(),
+      title: z.string(),
+    })
+    .array(),
   admins: z.string().email().array().default([]),
 })
 
@@ -108,6 +114,10 @@ async function loadData(prisma: PrismaClient) {
       const { code, ...update } = create
       await prisma.course.upsert({ where: { code }, update, create })
     }
+    for (const page of data.page) {
+      const { url, ...update } = page
+      await prisma.page.upsert({ where: { url }, update, create: page })
+    }
     await Promise.all(
       data.admins.map((email) => {
         prisma.user.updateMany({
@@ -116,8 +126,8 @@ async function loadData(prisma: PrismaClient) {
         })
       }),
     )
-  } catch {
-    console.log(`Error when loading data.yaml`)
+  } catch (error) {
+    console.log(`Error when loading data.yaml: ${error}`)
   }
 }
 
@@ -126,7 +136,7 @@ async function cleanAssignments(prisma: PrismaClient, assignments: string[]) {
     const relativePath = relative(resolve('content'), path)
     return '/' + relativePath.replace(/\.ya?ml$/, '')
   })
-  await prisma.attempt.deleteMany({ where: { url: { notIn: urls } } })
+  // await prisma.attempt.deleteMany({ where: { url: { notIn: urls } } })
   await prisma.assignment.deleteMany({ where: { url: { notIn: urls } } })
 }
 
@@ -139,7 +149,7 @@ export default function (): Plugin {
         datasources: { db: { url: process.env.DATABASE_URL } },
       })
       const assignments = await glob.glob('content/**/*.yaml', { ignore: ['content/data.yaml'] })
-      await cleanAssignments(prisma, assignments)
+      // await cleanAssignments(prisma, assignments)
       await createEmptyAssignments(prisma, assignments)
       await Promise.all([
         ...assignments.map((file) => createAssignment(file, prisma)),

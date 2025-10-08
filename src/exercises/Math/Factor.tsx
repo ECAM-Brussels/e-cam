@@ -19,7 +19,7 @@ export function product<T>(...allEntries: T[][]): T[][] {
 
 const math = z.number().or(z.string())
 
-const { Component, schema } = createExerciseType({
+const { Component, schema, mark } = createExerciseType({
   name: 'Factor',
   Component: (props) => (
     <>
@@ -185,4 +185,4 @@ const { Component, schema } = createExerciseType({
   },
 })
 
-export { Component as default, schema }
+export { Component as default, schema, mark }

@@ -1,6 +1,33 @@
 admins:
   - ngy@ecam.be
   - hil@ecam.be
+page:
+  - url: /skills
+    title: Compétences
+  - url: /skills/algebra
+    title: Algèbre
+  - url: /skills/algebra/complex
+    title: Nombres complexes
+  - url: /skills/algebra/equations
+    title: Équations
+  - url: /skills/algebra/equations/simultaneous
+    title: Systèmes d'équations
+  - url: /skills/algebra/factor
+    title: Factorisation
+  - url: /skills/calculus
+    title: Analyse
+  - url: /skills/calculus/differentiate
+    title: Dérivation
+  - url: /skills/calculus/limits
+    title: Limites
+  - url: /skills/geometry
+    title: Géométrie
+  - url: /skills/geometry/conic-sections
+    title: Coniques
+  - url: /skills/geometry/vectors
+    title: Vectors
+  - url: /skills/trigonometry
+    title: Trigonométrie
 courses:
   - code: MATH
     title: Mathématiques

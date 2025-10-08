@@ -190,11 +190,17 @@ class Expression:
             return False
         return (
             self.expr.args[1].func == sympy.exp
-            and self.expr.args[1].args[0].is_imaginary
+            and (
+                self.expr.args[1].args[0].is_imaginary
+                or sympy.simplify(self.expr.args[1].args[0]) == 0
+            )
         ) or (
             self.expr.args[1].func == sympy.Pow
             and self.expr.args[1].args[0] == sympy.E
-            and self.expr.args[1].args[1].is_imaginary
+            and (
+                self.expr.args[1].args[1].is_imaginary
+                or sympy.simplify(self.expr.args[1].args[1]) == 0
+            )
         )
 
     @strawberry.field

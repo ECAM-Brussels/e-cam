@@ -312,7 +312,7 @@ export const getAssignment = async (data: z.input<typeof assignmentSchema>) => {
       await assignmentSchema.parseAsync(data)
     await registerAssignment(prisma, data, { ...assignment, hash })
     if (page && hashObject(page.body) !== hashObject(assignment.body)) {
-      await prisma.attempt.deleteMany({ where })
+      // await prisma.attempt.deleteMany({ where })
     }
   }
   if (page.score === null && data.options?.adjustElo !== false) {
@@ -404,6 +404,12 @@ export const getAssignmentGraph = query(
 
 export const getAssignmentResults = query(async (url: string) => {
   'use server'
+  const { body, options } = await prisma.assignment.findUniqueOrThrow({
+    select: { body: true, options: true },
+    where: { url },
+  })
+  const opts = (index: number) => optionsSchema.parse({ ...options, ...body[index].options })
+  const generated = body.length === 1 && opts(0).streak > 0
   const [data, attempted, correct] = await Promise.all([
     prisma.user.findMany({
       where: {
@@ -417,10 +423,10 @@ export const getAssignmentResults = query(async (url: string) => {
         email: true,
         score: true,
         attempts: {
-          select: { correct: true },
+          select: { correct: true, position: true },
           where: { url, correct: { not: null } },
           orderBy: { position: 'desc' },
-          take: 10,
+          take: generated ? 15 : undefined,
         },
       },
     }),
@@ -435,12 +441,22 @@ export const getAssignmentResults = query(async (url: string) => {
       _count: { _all: true },
     }),
   ])
-  return data.map((user) => ({
-    ...user,
-    attempts: user.attempts.reverse(),
-    correct: correct.filter((res) => res.email === user.email).at(0)?._count._all ?? 0,
-    attempted: attempted.filter((res) => res.email === user.email).at(0)?._count._all ?? 0,
-  }))
+  return data.map((user) => {
+    const attempts = user.attempts.reverse()
+    const completedAttempts: typeof attempts = []
+    if (!generated) {
+      for (let i = 0; i < (attempts.at(-1)?.position ?? 0); i++) {
+        const attempt = attempts.filter((a) => a.position === i + 1).at(0)
+        completedAttempts.push(attempt ?? { correct: null, position: i + 1 })
+      }
+    }
+    return {
+      ...user,
+      attempts: generated ? attempts : completedAttempts,
+      correct: correct.filter((res) => res.email === user.email).at(0)?._count._all ?? 0,
+      attempted: attempted.filter((res) => res.email === user.email).at(0)?._count._all ?? 0,
+    }
+  })
 }, 'getAssignmentResults')
 
 export const getAssignmentList = query(

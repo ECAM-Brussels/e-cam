@@ -195,6 +195,9 @@ def test_is_polar(expr: str, expected: bool):
         ("3 e^{-i \\frac {\\pi}{2}}", True),
         ("1 e^{i(-\\frac{\\pi}{2})}", True),
         ("3 e^{i (-\\frac {\\pi}{2})}", True),
+        ("6\\cdot\\exponentialE^{i \\cdot (-\\frac {\\pi}{2})}", True),
+        ("3 e^{i 0}", True),
+        ("-3 e^{i 0}", False),
     ],
 )
 def test_is_exponential(expr: str, expected: bool):
