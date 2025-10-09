@@ -43,7 +43,7 @@ test('test factorisation check', async () => {
     { expr: 'x^2 - 4', attempt: '1\\cdot\\left(x-2\\right)\\left(x+2\\right)', correct: true },
     { expr: 'x^2 - 4', attempt: '1\\cdot\\left(x-2\\right)\\cdot1\\cdot\\left(x+2\\right)', correct: true },
   
-    { expr: 'x^2 + 4', attempt: 'x^2 + 4', correct: true }, // this is not ok if we work in C
+    { expr: 'x^2 + 4', attempt: 'x^2 + 4', correct: true }, // this is not ok if we work on C
     { expr: 'x^2 + 4', attempt: '\\left(x-2i\\right)\\left(x+2i\\right)', correct: true }, 
 
     { expr: 'x^2 + 4', attempt: '\\left(x-2\\right)\\left(x+2\\right)', correct: false },
