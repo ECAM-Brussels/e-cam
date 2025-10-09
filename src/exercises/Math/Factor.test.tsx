@@ -2,89 +2,87 @@ import { mark } from './Factor'
 import { expect, test } from 'vitest'
 
 test('test factorisation check', async () => {
-  // 5x+10 : test correct answers 
-  expect(await mark({ expr: '5x + 10', x: 'x', expand: false }, '5(x+2)')).toBe(true)
-  expect(await mark({ expr: '5x + 10', x: 'x', expand: false }, '5\\left(x+2\\right)')).toBe(true)
-  expect(await mark({ expr: '5x + 10', x: 'x', expand: false }, '\\left(x+2\\right)5')).toBe(true)
-  expect(await mark({ expr: '5x + 10', x: 'x', expand: false }, '5\\cdot\\left(x+2\\right)')).toBe(true)
-  expect(await mark({ expr: '5x + 10', x: 'x', expand: false }, '\\left(x+2\\right)\\cdot5')).toBe(true)
-  expect(await mark({ expr: '5x + 10', x: 'x', expand: false }, '-5\\left(-x- 2\\right)')).toBe(true)
-  expect(await mark({ expr: '5x + 10', x: 'x', expand: false }, '\\left(-5\\right)\\left(-x- 2\\right)')).toBe(true)
-  expect(await mark({ expr: '5x + 10', x: 'x', expand: false }, '\\left(-5\\right)\\cdot\\left(-x- 2\\right)')).toBe(true)
-  expect(await mark({ expr: '5x + 10', x: 'x', expand: false }, '10\\left(\\frac{x}{2}+1\\right)')).toBe(true)
+  const tests: { expr: string, attempt: string, correct: boolean }[] = [
+    { expr: '5x + 10', attempt: '5(x + 2)', correct: true },
+    { expr: '5x + 10', attempt: '5\\left(x+2\\right)', correct: true },
+    { expr: '5x + 10', attempt: '\\left(x+2\\right)5', correct: true },
+    { expr: '5x + 10', attempt: '5\\cdot\\left(x+2\\right)', correct: true },
+    { expr: '5x + 10', attempt: '\\left(x+2\\right)\\cdot5', correct: true },
+    { expr: '5x + 10', attempt: '-5\\left(-x- 2\\right)', correct: true },
+    { expr: '5x + 10', attempt: '\\left(-5\\right)\\left(-x- 2\\right)', correct: true },
+    { expr: '5x + 10', attempt: '\\left(-5\\right)\\cdot\\left(-x- 2\\right)', correct: true },
+    { expr: '5x + 10', attempt: '10\\left(\\frac{x}{2}+1\\right)', correct: true },
+
+    { expr: '5x + 10', attempt: '5x+10', correct: false },
+
+    { expr: 'x^2 - 4', attempt: '(x - 2)(x + 2)', correct: true },
+    { expr: 'x^2 - 4', attempt: '(x + 2)(x - 2)', correct: true },
+    { expr: 'x^2 - 4', attempt: '-(2 - x)(2 + x)', correct: true },
+    { expr: 'x^2 - 4', attempt: '-(2 + x)(2 - x)', correct: true },
+    { expr: 'x^2 - 4', attempt: '2(x/2 - 1)(x + 2)', correct: true },
+    { expr: 'x^2 - 4', attempt: '2(x - 2)(x/2 + 1)', correct: true },
+
+    { expr: 'x^2 - 4', attempt: 'x^2 - 4', correct: false },
+    { expr: 'x^2 - 4', attempt: 'x\\cdot x - 4', correct: false },
+    { expr: 'x^2 - 4', attempt: '-\\left(4-x^2\\right))', correct: false },
+    { expr: 'x^2 - 4', attempt: '(x - 2)(x - 2)', correct: false },
+    { expr: 'x^2 - 4', attempt: '(x - 2)(x - 3)', correct: false },
+
+    { expr: 'x^2 - 4', attempt: '\\left(x-2\\right)\\left(x+2\\right)', correct: true },
+    { expr: 'x^2 - 4', attempt: '\\left(x+2\\right)\\left(x-2\\right)', correct: true },
+    { expr: 'x^2 - 4', attempt: '-\\left(2-x\\right)\\left(2+x\\right)', correct: true },
+    { expr: 'x^2 - 4', attempt: '-\\left(2+x\\right)\\left(2-x\\right)', correct: true },
+    { expr: 'x^2 - 4', attempt: '\\left(x-2\\right)\\cdot\\left(x+2\\right)', correct: true },
+    { expr: 'x^2 - 4', attempt: '\\left(x+2\\right)\\cdot\\left(x-2\\right)', correct: true },
+    { expr: 'x^2 - 4', attempt: '-\\left(2-x\\right)\\cdot\\left(2+x\\right)', correct: true },
+    { expr: 'x^2 - 4', attempt: '-\\left(2+x\\right)\\cdot\\left(2-x\\right)', correct: true },
+
+    { expr: 'x^2 - 4', attempt: '(-1)\\cdot\\left(2-x\\right)\\cdot\\left(2+x\\right)', correct: true },
+    { expr: 'x^2 - 4', attempt: '\\left(2+x\\right)\\cdot(-1)\\cdot\\left(2-x\\right)', correct: true },
+    { expr: 'x^2 - 4', attempt: '2\\left(\\frac{x}{2}-1\\right)\\left(x+2\\right)', correct: true },
+    { expr: 'x^2 - 4', attempt: '1\\cdot\\left(x-2\\right)\\left(x+2\\right)', correct: true },
+    { expr: 'x^2 - 4', attempt: '1\\cdot\\left(x-2\\right)\\cdot1\\cdot\\left(x+2\\right)', correct: true },
   
-  // 5x+10 : test wrong answers
-  expect(await mark({ expr: '5x + 10', x: 'x', expand: false }, '5x + 10)')).toBe(false)
+    { expr: 'x^2 + 4', attempt: 'x^2 + 4', correct: true }, // this is not ok if we work in C
+    { expr: 'x^2 + 4', attempt: '\\left(x-2i\\right)\\left(x+2i\\right)', correct: true }, 
 
-  // x^2-4 : math test correct answers 
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, '(x - 2)(x + 2)')).toBe(true)
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, '(x + 2)(x - 2)')).toBe(true)
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, '-(2 - x)(2 + x)')).toBe(true)
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, '-(2 + x)(2 - x)')).toBe(true)
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, '2(x/2 - 1)(x + 2)')).toBe(true)
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, '2(x - 2)(x/2 + 1)')).toBe(true)
-
-  // x^2-4 : math test wrong answers
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, 'x^2 - 4')).toBe(false)
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, 'x\\cdot x - 4')).toBe(false)
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, '-\\left(4-x^2\\right))')).toBe(false)
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, '(x - 2)(x - 2)')).toBe(false)
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, '(x - 2)(x - 3)')).toBe(false)
-
-  // x^2-4 : computer/virtual keyboard test correct answers
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, '\\left(x-2\\right)\\left(x+2\\right)')).toBe(true)
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, '\\left(x+2\\right)\\left(x-2\\right)')).toBe(true)
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, '-\\left(2-x\\right)\\left(2+x\\right)')).toBe(true)
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, '-\\left(2+x\\right)\\left(2-x\\right)')).toBe(true)
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, '\\left(x-2\\right)\\cdot\\left(x+2\\right)')).toBe(true)
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, '\\left(x+2\\right)\\cdot\\left(x-2\\right)')).toBe(true)
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, '-\\left(2-x\\right)\\cdot\\left(2+x\\right)')).toBe(true)
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, '-\\left(2+x\\right)\\cdot\\left(2-x\\right)')).toBe(true)
-
-  // x^2-4 : weird ways of entering correct answer on keyboard 
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, '(-1)\\cdot\\left(2-x\\right)\\cdot\\left(2+x\\right)')).toBe(true)
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, '\\left(2+x\\right)\\cdot(-1)\\cdot\\left(2-x\\right)')).toBe(true)
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, '2\\left(\\frac{x}{2}-1\\right)\\left(x+2\\right)')).toBe(true)
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, '1\\cdot\\left(x-2\\right)\\left(x+2\\right)')).toBe(true)
-  expect(await mark({ expr: 'x^2 - 4', x: 'x', expand: false }, '1\\cdot\\left(x-2\\right)\\cdot1\\cdot\\left(x+2\\right)')).toBe(true)
+    { expr: 'x^2 + 4', attempt: '\\left(x-2\\right)\\left(x+2\\right)', correct: false },
+    { expr: 'x^2 + 4', attempt: '\\left(x+2\\right)\\left(x-2\\right)', correct: false },
   
-  // x^2+4 : test correct answers 
-  expect(await mark({ expr: 'x^2 + 4', x: 'x', expand: false }, 'x^2 + 4')).toBe(true) // this is not ok if we work in C
-  expect(await mark({ expr: 'x^2 + 4', x: 'x', expand: false }, '\\left(x-2i\\right)\\left(x+2i\\right)')).toBe(true) 
+    { expr: '4x^2', attempt: '4x^2', correct: true },
+    { expr: '4x^2', attempt: '\\left(2x\\right)\\left(2x\\right)', correct: true },
+    { expr: '4x^2', attempt: '2x\\cdot2x', correct: true },
+    { expr: '4x^2', attempt: '4\\cdot x^2', correct: true },
+    // { expr: '4x^2', attempt: '2x2x', correct: true }, // this doesn't pass the test, this is interpreted as 2 \\cdot 2 x by Sympy  
 
-  // x^2+4 : test wrong answers
-  expect(await mark({ expr: 'x^2 + 4', x: 'x', expand: false }, '\\left(x-2\\right)\\left(x+2\\right)')).toBe(false)
-  expect(await mark({ expr: 'x^2 + 4', x: 'x', expand: false }, '\\left(x+2\\right)\\left(x-2\\right)')).toBe(false)
+    { expr: '3x^2 - 6x + 3', attempt: '3\\left(x-1\\right)^2', correct: true },
+    { expr: '3x^2 - 6x + 3', attempt: '3\\cdot\\left(x-1\\right)^2', correct: true },
+    { expr: '3x^2 - 6x + 3', attempt: '3\\left(x-1\\right)\\left(x-1\\right)', correct: true },
+    { expr: '3x^2 - 6x + 3', attempt: '3\\cdot\\left(x-1\\right)\\cdot\\left(x-1\\right)', correct: true },
+
+    { expr: '3x^2 - 6x + 3', attempt: '3x^2-6x+3', correct: false },
+    { expr: '3x^2 - 6x + 3', attempt: '\\left(x-1\\right)^2', correct: false },
+
+    { expr: 'x^2 - 5x + 6', attempt: '\\left(x - 2\\right)\\left(x - 3\\right)', correct: true },
+    { expr: 'x^2 - 5x + 6', attempt: '\\left(x - 3\\right)\\left(x - 2\\right)', correct: true },
+    { expr: 'x^2 - 5x + 6', attempt: '\\left(2 - x\\right)\\left(3 - x\\right)', correct: true },
+    { expr: 'x^2 - 5x + 6', attempt: '\\left(3 - x\\right)\\left(2 - x\\right)', correct: true },
+    { expr: 'x^2 - 5x + 6', attempt: '\\left(x - 3\\right)\\cdot\\left(x - 2\\right)', correct: true },
+
+    { expr: 'x^2 - 5x + 6', attempt: 'x^2 - 5x + 6', correct: false },
+    { expr: 'x^2 - 5x + 6', attempt: '\\left(x-\\frac52\\right)^2-\\frac14', correct: false },
+    { expr: 'x^2 - 5x + 6', attempt: '\\left(x - 2\\right)^2', correct: false },
+    { expr: 'x^2 - 5x + 6', attempt: '\\left(x - 2\\right)\\left(x + 2\\right)', correct: false },
+    { expr: 'x^2 - 5x + 6', attempt: '\\left(x-2\\right).\\left(x-3\\right)', correct: false },
+
+    { expr: '3x^2 - 10x + 3', attempt: '\\left(x - 3\\right)\\left(3x - 1\\right)', correct: true },
+    { expr: '3x^2 - 10x + 3', attempt: '\\left(3x - 1\\right)\\left(x - 3\\right)', correct: true },
+    { expr: '3x^2 - 10x + 3', attempt: '3\\left(x-3\\right)\\left(x-\\frac13\\right)', correct: true },
   
-  // 4x^2 : test correct answers
-  expect(await mark({ expr: '4x^2', x: 'x', expand: false }, '4x^2')).toBe(true)
-  expect(await mark({ expr: '4x^2', x: 'x', expand: false }, '\\left(2x\\right)\\left(2x\\right)')).toBe(true)
-  expect(await mark({ expr: '4x^2', x: 'x', expand: false }, '2x\\cdot2x')).toBe(true)
-  expect(await mark({ expr: '4x^2', x: 'x', expand: false }, '4\\cdot x^2')).toBe(true)
-  // expect(await mark({ expr: '4x^2', x: 'x', expand: false }, '2x2x')).toBe(true) // this doesn't pass the test, this is interpreted as 2 \\cdot 2 x by Sympy  
-
-  // x^2 - 5x + 6 : test correct answers 
-  expect(await mark({ expr: 'x^2 - 5x + 6', x: 'x', expand: false }, '\\left(x - 2\\right)\\left(x - 3\\right)')).toBe(true)
-  expect(await mark({ expr: 'x^2 - 5x + 6', x: 'x', expand: false }, '\\left(x - 3\\right)\\left(x - 2\\right)')).toBe(true)
-  expect(await mark({ expr: 'x^2 - 5x + 6', x: 'x', expand: false }, '\\left(2 - x\\right)\\left(3 - x\\right)')).toBe(true)
-  expect(await mark({ expr: 'x^2 - 5x + 6', x: 'x', expand: false }, '\\left(3 - x\\right)\\left(2 - x\\right)')).toBe(true)
-  expect(await mark({ expr: 'x^2 - 5x + 6', x: 'x', expand: false }, '\\left(x - 3\\right)\\cdot\\left(x - 2\\right)')).toBe(true)
-
-  // x^2 - 5x + 6 : test wrong answers 
-  expect(await mark({ expr: 'x^2 - 5x + 6', x: 'x', expand: false }, 'x^2 - 5x + 6')).toBe(false)
-  expect(await mark({ expr: 'x^2 - 5x + 6', x: 'x', expand: false }, '\\left(x-\\frac52\\right)^2-\\frac14')).toBe(false)
-  expect(await mark({ expr: 'x^2 - 5x + 6', x: 'x', expand: false }, '\\left(x - 2\\right)^2')).toBe(false)
-  expect(await mark({ expr: 'x^2 - 5x + 6', x: 'x', expand: false }, '\\left(x - 2\\right)\\left(x + 2\\right)')).toBe(false)
-  expect(await mark({ expr: 'x^2 - 5x + 6', x: 'x', expand: false }, '\\left(x-2\\right).\\left(x-3\\right)')).toBe(false)
-
-
-  // 3x^2 - 10x + 3 : test correct answers 
-  expect(await mark({ expr: '3x^2 - 10x + 3', x: 'x', expand: false }, '\\left(x - 3\\right)\\left(3x - 1\\right)')).toBe(true)
-  expect(await mark({ expr: '3x^2 - 10x + 3', x: 'x', expand: false }, '\\left(3x - 1\\right)\\left(x - 3\\right)')).toBe(true)
-  expect(await mark({ expr: '3x^2 - 10x + 3', x: 'x', expand: false }, '3\\left(x-3\\right)\\left(x-\\frac13\\right)')).toBe(true)
-  
-  // 3x^2 - 10x + 3 : test wrong answers 
-  expect(await mark({ expr: '3x^2 - 10x + 3', x: 'x', expand: false }, '\\left(x - 3\\right)\\left(3x - 2\\right)')).toBe(false)
-  expect(await mark({ expr: '3x^2 - 10x + 3', x: 'x', expand: false }, '\\left(x-3\\right)\\left(x-\\frac13\\right)')).toBe(false)
-
+    { expr: '3x^2 - 10x + 3', attempt: '\\left(x - 3\\right)\\left(3x - 2\\right)', correct: false },
+    { expr: '3x^2 - 10x + 3', attempt: '\\left(x-3\\right)\\left(x-\\frac13\\right)', correct: false }
+  ]
+  for (const { expr, attempt, correct } of tests) {
+    expect(await mark({ expr, x: 'x', expand: false }, attempt)).toBe(correct)
+  }
 })
