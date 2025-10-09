@@ -1,41 +1,25 @@
 services:
-  db:
-    image: mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: hello
-      MYSQL_DATABASE: ecam
-    networks:
-      - internal
   symapi:
     build:
       context: .
       dockerfile: symapi.Dockerfile
-    volumes:
-      - .:/app
     restart: always
     ports:
       - '8000:8000'
     networks:
       - internal
-  web:
+  web_tests:
     build:
       context: .
       dockerfile: web.Dockerfile
     environment:
-      DATABASE_URL: mysql://root:hello@db:3306/ecam
-    volumes:
-      - .:/app
-    ports:
-      - '3000:3000'
+      VITE_GRAPHQL_URL: http://symapi:8000/graphql
     networks:
       - internal
-    restart: always
     depends_on:
-      db:
-        condition: service_started
       symapi:
         condition: service_started
+    command: test -- --run
 networks:
   internal:
     driver: bridge

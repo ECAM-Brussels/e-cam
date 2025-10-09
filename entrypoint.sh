@@ -2,6 +2,10 @@
 set -e 
 
 npm install
-npx prisma migrate deploy
+
+if ! [ "$1" = "test" ]; then
+  npx prisma migrate deploy
+fi
+
 npx graphql-codegen
-npx vinxi dev --host 0.0.0.0
+npm run $@

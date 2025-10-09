@@ -9,6 +9,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-COPY symapi .
+COPY symapi symapi
 
 CMD ["fastapi", "run", "--host", "0.0.0.0", "symapi"]

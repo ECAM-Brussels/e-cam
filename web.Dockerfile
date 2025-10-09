@@ -21,3 +21,4 @@ COPY . .
 
 # set the entrypoint
 ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["dev", "--", "--host", "0.0.0.0"]

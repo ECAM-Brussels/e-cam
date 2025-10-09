@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "codegen": "wait-on http://localhost:8000/health && graphql-codegen",
-    "dev": "prisma migrate dev && concurrently 'poetry run fastapi dev symapi' 'npm run codegen && vinxi dev'",
+    "dev": "vinxi dev",
     "reset": "prisma migrate reset",
     "build": "NODE_OPTIONS='--max-old-space-size=4096' vinxi build",
     "start": "vinxi start",
