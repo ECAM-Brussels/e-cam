@@ -4,20 +4,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      VITE_GRAPHQL_URL: http://localhost:8000/graphql
     steps:
       - uses: actions/checkout@v5
-      - run: docker build -t symapi:local -f symapi.Dockerfile .
-      - uses: actions/setup-node@v5
-      - run: npm ci
-      - run: |
-          docker run -d --name symapi -p 8000:8000 symapi:local
-          for i in {1..20}; do
-            if curl -fs http://localhost:8000/graphql > /dev/null; then
-              break
-            fi
-            sleep 3
-          done
-      - run: npx graphql-codegen
-      - run: npm run test -- --run
+      - run: docker compose -f docker-compose.test.yaml run --rm web_test
