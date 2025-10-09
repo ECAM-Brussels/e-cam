@@ -23,6 +23,13 @@ services:
       context: .
       dockerfile: web.Dockerfile
     environment:
+      VITE_AZURE_CLIENT_ID: af790946-79b3-435e-a2a1-f566e09a63f7
+      VITE_AZURE_TENANT_ID: e3d6f09e-9ba9-4a36-ad75-d9039be4fe29
+      VITE_AZURE_CLIENT_SECRET: cG-8Q~o_.-xtYPosirjAEZJu5alUccUrsVM2xas1
+      VITE_AZURE_REDIRECT_URI: http://localhost:3000/auth/callback
+      VITE_GRAPHQL_URL: http://symapi:8000/graphql
+      VITE_PASSPHRASE: hello
+      VITE_SESSION_SECRET: Kr2vM0bSdsPYd0cfuCul7RzWCZR0f34v
       DATABASE_URL: mysql://root:hello@db:3306/ecam
     volumes:
       - .:/app
