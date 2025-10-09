@@ -7,3 +7,4 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - run: docker compose -f docker-compose.test.yaml run --rm web_tests
+      - run: docker compose -f docker-compose.test.yaml run --rm symapi python -m pytest
