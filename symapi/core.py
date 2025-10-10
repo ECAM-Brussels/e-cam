@@ -7,16 +7,33 @@ import sympy.parsing.latex
 from typing import NewType
 
 
+def split_coordinates(s):
+    s = s.replace("\\left", "").replace("\\right", "")
+    parts = []
+    level = 0
+    current = []
+    for char in s:
+        if char == "(":
+            level += 1
+        elif char == ")":
+            level -= 1
+        elif char in ",;" and level == 0:
+            parts.append("".join(current).strip())
+            current = []
+            continue
+        current.append(char)
+    parts.append("".join(current).strip())
+    return parts
+
+
 def parse_latex(expr: str):
     expr = re.sub(r"\\sqrt(\d+)", r"\\sqrt{\1}", expr)
     expr = expr.replace("\\exponentialE", "{e}")
     expr = expr.replace("\\imaginaryI", "{i}")
-    coordinates = re.search(
-        r"^(?:\\left\s*)?\(([^\(\)]*[,;][^\(\)]*)(?:\s*\\right)?\)$", expr
-    )
+    coordinates = re.search(r"^(?:\\left\s*)?\((.*)\)(?:\s*\\right)?$", expr)
     if coordinates:
         return sympy.Tuple(
-            *[parse_latex(e) for e in re.split(r"[;,]", coordinates.group(1))]
+            *[parse_latex(e) for e in split_coordinates(coordinates.group(1))]
         )
     if "=" in expr:
         return sympy.Eq(*[parse_latex(s) for s in expr.split("=")])
