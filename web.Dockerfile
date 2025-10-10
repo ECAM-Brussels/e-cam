@@ -1,4 +1,4 @@
-FROM node:slim
+FROM node:slim AS base
 WORKDIR /app
 
 RUN apt-get update && \
@@ -16,6 +16,11 @@ RUN npm install
 
 COPY . .
 
-# set the entrypoint
+EXPOSE 3000
 ENTRYPOINT ["sh", "/app/entrypoint.sh"]
+
+FROM base AS dev
 CMD ["dev", "--", "--host", "0.0.0.0"]
+
+FROM base AS prod
+CMD ["build"]
