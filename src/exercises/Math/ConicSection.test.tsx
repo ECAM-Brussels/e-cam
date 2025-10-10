@@ -320,14 +320,85 @@ const tests: { equation: string; attempt: Parameters<typeof mark>[1]; correct: b
     },
     correct: true,
   },
+  {
+    equation: '-9(x-1)^2 + 4(y+2)^2 = 36',
+    attempt: {
+      type: 'hyperbola',
+      center: '\\left(1, -2\\right)',
+      asymptotes: ['FiniteSet', 'y=1.5x-3.5', 'y=-1.5x-0.5'],
+      vertices: ['FiniteSet', '\\left(1,1\\right)', '\\left(1,-5\\right)'],
+      foci: ['FiniteSet', '\\left(1,-2+\\sqrt{13}\\right)', '\\left(1,-2-\\sqrt{13}\\right)'],
+    },
+    correct: true,
+  },
 
   {
     equation: 'x^2 = 4y',
     attempt: {
       type: 'parabola',
-      vertices: ['FiniteSet', '(0,0)'],
-      foci: ['FiniteSet', '(0,1)'],
+      vertices: ['FiniteSet', '\\left(0,0\\right)'],
+      foci: ['FiniteSet', '\\left(0,1\\right)'],
       directrix: 'y=-1',
+    },
+    correct: true,
+  },
+  {
+    equation: 'x^2 = -4y',
+    attempt: {
+      type: 'parabola',
+      vertices: ['FiniteSet', '\\left(0,0\\right)'],
+      foci: ['FiniteSet', '\\left(0,-1\\right)'],
+      directrix: 'y=1',
+    },
+    correct: true,
+  },
+  {
+    equation: 'x^2 = -4y',
+    attempt: {
+      type: 'parabola',
+      vertices: ['FiniteSet', '\\left(0,0\\right)'],
+      foci: ['FiniteSet', '\\left(0,\\left(-1\\right)\\right)'],
+      directrix: 'y=1',
+    },
+    correct: true,
+  },
+  {
+    equation: 'y^2 = 4x',
+    attempt: {
+      type: 'parabola',
+      vertices: ['FiniteSet', '\\left(0,0\\right)'],
+      foci: ['FiniteSet', '\\left(1,0\\right)'],
+      directrix: 'x=-1',
+    },
+    correct: true,
+  },
+  {
+    equation: 'y^2 = -4x',
+    attempt: {
+      type: 'parabola',
+      vertices: ['FiniteSet', '\\left(0,0\\right)'],
+      foci: ['FiniteSet', '\\left(-1,0\\right)'],
+      directrix: 'x=1',
+    },
+    correct: true,
+  },
+  {
+    equation: '(x-3)^2 = 4(y+1)',
+    attempt: {
+      type: 'parabola',
+      vertices: ['FiniteSet', '\\left(3,-1\\right)'],
+      foci: ['FiniteSet', '\\left(3,0\\right)'],
+      directrix: 'y=-2',
+    },
+    correct: true,
+  },
+  {
+    equation: '(y-3)^2 = 4(x+1)',
+    attempt: {
+      type: 'parabola',
+      vertices: ['FiniteSet', '\\left(-1,3\\right)'],
+      foci: ['FiniteSet', '\\left(0,3\\right)'],
+      directrix: 'x=-2',
     },
     correct: true,
   },
