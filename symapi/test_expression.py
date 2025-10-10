@@ -228,6 +228,7 @@ def test_is_exponential(expr: str, expected: bool):
         ("x^2 + 1", True),
         ("-x (x + 1)", True),
         ("x^2 - 14x + 49", False),
+        ("3\\left(x-3\\right)\\left(x-\\frac13\\right)", True),
     ],
 )
 def test_is_factored(expr: str, expected: bool):
