@@ -8,7 +8,7 @@ services:
     networks:
       - internal
     volumes:
-      - ./data:/var/lib/mysql
+      - db_data:/var/lib/mysql
   symapi:
     build:
       context: .
@@ -48,3 +48,5 @@ services:
 networks:
   internal:
     driver: bridge
+volumes:
+  db_data:
