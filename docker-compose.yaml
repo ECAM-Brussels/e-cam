@@ -13,6 +13,7 @@ services:
     build:
       context: .
       dockerfile: symapi.Dockerfile
+      target: dev
     volumes:
       - .:/app
     restart: always
