@@ -33,7 +33,7 @@ def parse_latex(expr: str):
     if coordinates:
         parts = split_coordinates(coordinates.group(1))
         if len(parts) > 1:
-            return sympy.Tuple(*[parse_latex(e) for e in split_coordinates(parts)])
+            return sympy.Tuple(*[parse_latex(e) for e in parts])
     if "=" in expr:
         return sympy.Eq(*[parse_latex(s) for s in expr.split("=")])
     parsed = sympy.parsing.latex.parse_latex(expr)
