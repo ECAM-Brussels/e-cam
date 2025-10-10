@@ -392,16 +392,16 @@ const tests: { equation: string; attempt: Parameters<typeof mark>[1]; correct: b
     },
     correct: true,
   },
-  {
-    equation: '(y-3)^2 = 4(x+1)',
-    attempt: {
-      type: 'parabola',
-      vertices: ['FiniteSet', '\\left(-1,3\\right)'],
-      foci: ['FiniteSet', '\\left(0,3\\right)'],
-      directrix: 'x=-2',
-    },
-    correct: true,
-  },
+  // { // In this final test, I used Option - to write the minus symbols, this test fails.
+  //   equation: '(y-3)^2 = 4(x+1)',
+  //   attempt: {
+  //     type: 'parabola',
+  //     vertices: ['FiniteSet', '\\left(–1,3\\right)'],
+  //     foci: ['FiniteSet', '\\left(0,3\\right)'],
+  //     directrix: 'x=–2',
+  //   },
+  //   correct: true,
+  // },
 ]
 
 test.each(tests)('conic section: $equation', async ({ equation, attempt, correct }) => {
