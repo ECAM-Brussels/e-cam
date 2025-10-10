@@ -64,6 +64,9 @@ def test_expand(expr: str, expected: str):
         ("e", "\\exp(1)", True),
         ("\\pi", "2*\\arcsin(1)", True),
         ("x^2 - 4x", "x(x - 4)", True),
+        ("((2) \\cdot \\sqrt{2}, 3)", "(2 \\sqrt{2}; 3)", True),
+        ("(\\left(2\\right) \\cdot \\sqrt{2}, 3)", "(2 \\sqrt{2}; 3)", True),
+        ("2^0.5", "\\sqrt{2}", True),
         ("1 + i", "\\sqrt{2} e^{i \\frac{\\pi}{4}}", True),
     ],
 )

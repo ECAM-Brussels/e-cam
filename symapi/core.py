@@ -8,7 +8,6 @@ from typing import NewType
 
 
 def split_coordinates(s):
-    s = s.replace("\\left", "").replace("\\right", "")
     parts = []
     level = 0
     current = []
@@ -30,11 +29,11 @@ def parse_latex(expr: str):
     expr = re.sub(r"\\sqrt(\d+)", r"\\sqrt{\1}", expr)
     expr = expr.replace("\\exponentialE", "{e}")
     expr = expr.replace("\\imaginaryI", "{i}")
-    coordinates = re.search(r"^(?:\\left\s*)?\((.*)\)(?:\s*\\right)?$", expr)
+    coordinates = re.fullmatch(r"(?:\\left\s*)?\((.*)\)(?:\s*\\right)?", expr)
     if coordinates:
-        return sympy.Tuple(
-            *[parse_latex(e) for e in split_coordinates(coordinates.group(1))]
-        )
+        parts = split_coordinates(coordinates.group(1))
+        if len(parts) > 1:
+            return sympy.Tuple(*[parse_latex(e) for e in split_coordinates(parts)])
     if "=" in expr:
         return sympy.Eq(*[parse_latex(s) for s in expr.split("=")])
     parsed = sympy.parsing.latex.parse_latex(expr)

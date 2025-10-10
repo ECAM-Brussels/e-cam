@@ -179,7 +179,7 @@ class Expression:
                     for i in range(len(expr.args))
                 ]
             )
-        result = expand(expr - self.expr)
+        result = expand(sympy.nsimplify(expr - self.expr))
         if modulo:
             return sympy.simplify(result / modulo).is_integer
         return sympy.simplify(result) == 0
