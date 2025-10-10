@@ -76,7 +76,7 @@ async function createAssignment(file: string, prisma: PrismaClient) {
     const assignment = yaml.load(await readFile(file, 'utf-8')) as Omit<AssignmentInput, 'url'>
     const url = '/' + relativePath.replace(/\.ya?ml$/, '')
     await registerAssignment(prisma, { ...assignment, url }, {})
-    if (outStat.mtime >= inStat.mtime) {
+    if (outStat.mtime !== 0 && outStat.mtime >= inStat.mtime) {
       return
     }
     const template = await readFile(resolve('src/vite/template.assignment.tsx'), 'utf-8')
