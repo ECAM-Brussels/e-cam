@@ -25,7 +25,7 @@ const finiteSet = z
   .or(z.string().transform((el) => [el]))
   .transform((elements) => ['FiniteSet', ...elements.filter((el) => el !== 'FiniteSet')])
 
-const { Component, schema } = createExerciseType({
+const { Component, schema, mark } = createExerciseType({
   name: 'ConicSection',
   Component: (props) => {
     const exercise = useExerciseContext()
@@ -421,4 +421,4 @@ const { Component, schema } = createExerciseType({
   },
 })
 
-export { Component as default, schema }
+export { Component as default, schema, mark }
