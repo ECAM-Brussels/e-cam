@@ -1,0 +1,27 @@
+services:
+  symapi:
+    build:
+      context: .
+      dockerfile: symapi.Dockerfile
+      target: dev
+    restart: always
+    ports:
+      - '8000:8000'
+    networks:
+      - internal
+  web_tests:
+    build:
+      context: .
+      dockerfile: web.Dockerfile
+      target: dev
+    environment:
+      VITE_GRAPHQL_URL: http://symapi:8000/graphql
+    networks:
+      - internal
+    depends_on:
+      symapi:
+        condition: service_started
+    command: test -- --run
+networks:
+  internal:
+    driver: bridge

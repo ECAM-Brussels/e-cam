@@ -17,6 +17,7 @@
 /node_modules
 Thumbs.db
 __pycache__
+data
 dist
 gitignore
 src/gql

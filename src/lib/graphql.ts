@@ -1,11 +1,7 @@
 import type { ResultOf, VariablesOf } from '@graphql-typed-document-node/core'
 import { request as gRequest } from 'graphql-request'
-import { isServer } from 'solid-js/web'
 
-let url = 'http://127.0.0.1:8000/graphql'
-if (!isServer) {
-  url = import.meta.env.VITE_GRAPHQL_URL || url
-}
+let url = process.env.VITE_GRAPHQL_URL ?? 'http://symapi:8000/graphql'
 
 type Args = Parameters<typeof gRequest>
 export function request<T extends Args[1]>(

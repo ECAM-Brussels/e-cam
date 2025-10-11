@@ -52,7 +52,7 @@ async function generatePage(file: string, prisma: PrismaClient, force: boolean =
   }
 
   let cmd = [
-    `poetry run pandoc "${file}"`,
+    `pandoc "${file}"`,
     `-o "${outputPath}"`,
     '-t html5',
     `--template src/vite/${template}`,
