@@ -1,7 +1,8 @@
+import { safeStat } from './assignments'
 import { PrismaClient } from '@prisma/client'
 import { exec as execWithCallback } from 'child_process'
 import glob from 'fast-glob'
-import { mkdir, readFile, stat } from 'fs/promises'
+import { mkdir, readFile } from 'fs/promises'
 import yaml from 'js-yaml'
 import { dirname, relative, resolve } from 'path'
 import { promisify } from 'util'
@@ -67,8 +68,8 @@ async function generatePage(file: string, prisma: PrismaClient, force: boolean =
   }
 
   try {
-    const [inStat, outStat] = await Promise.all([stat(file), stat(outputPath)])
-    if (!force && outStat.mtime >= inStat.mtime) {
+    const [inStat, outStat] = await Promise.all([safeStat(file), safeStat(outputPath)])
+    if (!force && outState.mtime !== 0 && outStat.mtime >= inStat.mtime) {
       return
     }
   } catch {}

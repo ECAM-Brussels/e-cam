@@ -56,7 +56,7 @@ export async function registerAssignment(
   await prisma.assignment.update({ where: { url: assignment.url }, data })
 }
 
-async function safeStat(path: string) {
+export async function safeStat(path: string) {
   try {
     return await stat(path)
   } catch (err) {
