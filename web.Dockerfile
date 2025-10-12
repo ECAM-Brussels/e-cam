@@ -1,5 +1,6 @@
 FROM node:slim AS base
 WORKDIR /app
+EXPOSE 3000
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -11,16 +12,16 @@ RUN apt-get update && \
 COPY requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt --break-system-packages
 
-COPY package*.json ./
-RUN npm install
-
-COPY . .
-
-EXPOSE 3000
 ENTRYPOINT ["sh", "/app/entrypoint.sh"]
 
 FROM base AS dev
 CMD ["dev", "--", "--host", "0.0.0.0"]
 
 FROM base AS prod
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
 CMD ["build"]
