@@ -16,6 +16,8 @@ COPY entrypoint.sh .
 ENTRYPOINT ["sh", "/app/entrypoint.sh"]
 
 FROM base AS dev
+
+COPY . .
 CMD ["dev", "--", "--host", "0.0.0.0"]
 
 FROM base AS prod
