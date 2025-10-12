@@ -1,9 +1,11 @@
 import { sample } from 'lodash-es'
+import { Show } from 'solid-js'
 import { z } from 'zod'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
 import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
+import { narrow } from '~/lib/helpers'
 
 function vector(components: (string | number)[]) {
   return `\\begin{pmatrix}${components.join(' \\\\')}\\end{pmatrix}`
@@ -52,6 +54,42 @@ const { Component, schema } = createExerciseType({
     )
     return vector.angle.isEqual
   },
+  feedback: [
+    async (remaining, question) => {
+      'use server'
+      const { vector } = await request(
+        graphql(`
+          query GetAngle($a: [Math!]!, $b: [Math!]!, $degrees: Boolean!) {
+            vector(coordinates: $a) {
+              angle(coordinates: $b, degrees: $degrees) {
+                simplify {
+                  expr
+                }
+              }
+            }
+          }
+        `),
+        { ...question, degrees: question.unit === 'degrees' },
+      )
+      if (!remaining) return { ...question, answer: vector.angle.simplify.expr }
+      else return question
+    },
+    (props) => (
+      <Show
+        when={narrow(
+          () => props,
+          (p) => 'answer' in p,
+        )}
+      >
+        {(p) => (
+          <Math
+            value={`\\measuredangle(\\vec a, \\vec b) = ${p().answer} ${p().unit === 'degrees' ? `{\ }^\\circ` : ''}`}
+            displayMode
+          />
+        )}
+      </Show>
+    ),
+  ],
   generator: {
     params: z.object({
       Angles: z.string().or(z.number().transform(String)).array().nonempty(),
