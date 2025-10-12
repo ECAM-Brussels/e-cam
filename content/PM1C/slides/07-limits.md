@@ -11,7 +11,7 @@ $$
 $$
 :::
 
-<Geogebra id="vhsrfnng" height={500} />
+<Geogebra id="vhsrfnng" height={450} />
 
 ::: question
 Reconnaissez-vous cette limite?
@@ -25,7 +25,7 @@ $$
 
 ~~~ yaml {.plot}
 width: 800
-height: 600
+height: 500
 xAxis:
   domain: [-3, 3]
 data:
@@ -70,6 +70,22 @@ from sympy import *
 x = Symbol("x")
 limit(sin(7*x) / (4*x), x, 0)
 ~~~
+
+# Questions d'examens {.w-1--2}
+
+::: exercise
+*(Septembre 2025)* Calculez la limite
+$$
+\lim_{x \to -1} \frac {3x^3 + 5x^2 + x - 1} {(x^2 + 3x + 2) \sin (x + 1)}
+$$
+sans employer la règle de l'Hospital.
+
+*(Avril 2025)* Calculez la limite
+$$
+\lim_{x \to 1} \frac {2x^3 - 3x^2 + 1} {(x^2 + x - 2) \sin (x - 1)}
+$$
+sans employer la règle de l'Hospital.
+:::
 
 # Limites infinies en un réel p. 57 {.w-1--2}
 
@@ -164,7 +180,7 @@ f(x) = \frac {x^2 - 1} {x^2 + 1}
 $$
 
 ~~~ yaml {.plot}
-height: 600
+height: 500
 width: 800
 data:
   - fn: (x^2 - 1) / (x^2 + 1)
@@ -255,7 +271,7 @@ Trouvez les limites infinies, les limites à l'infini et les asymptotes de la fo
 le graphe est donné ci-dessous.
 :::
 
-![](/images/example-3.4.1.png){.block .mx-auto}
+![](/images/example-3.4.1.png){.block .mx-auto .h-96}
 
 # Évaluation de limites a l'infini p. 241 {.w-1--2}
 
@@ -350,7 +366,7 @@ en trouvant les interceptions avec les graphes et les limites aux infinis.
 
 ~~~ yaml {.plot}
 width: 800
-height: 600
+height: 500
 data:
   - fn: (x-2)^4 (x + 1)^3 (x - 1)
 ~~~
