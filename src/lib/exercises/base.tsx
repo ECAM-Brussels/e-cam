@@ -215,7 +215,17 @@ export function createExerciseType<
         await exercise.attempt.parseAsync(attempt),
       )
     },
-    getFeedback: exercise.feedback?.[0],
+    getFeedback: async (
+      remaining: number | true,
+      question: z.input<typeof exercise.question>,
+      attempt: z.input<typeof exercise.attempt>,
+    ) => {
+      return exercise.feedback?.[0](
+        remaining,
+        await exercise.question.parseAsync(question),
+        await exercise.attempt.parseAsync(attempt),
+      )
+    },
     attempt: exercise.attempt,
   }
 }

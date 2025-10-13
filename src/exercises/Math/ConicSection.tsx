@@ -23,7 +23,10 @@ const finiteSet = z
   .array()
   .nonempty()
   .or(z.string().transform((el) => [el]))
-  .transform((elements) => ['FiniteSet', ...elements.filter((el) => el !== 'FiniteSet')])
+  .transform(
+    (elements) =>
+      ['FiniteSet', ...elements.filter((el) => el !== 'FiniteSet')] as [string, ...string[]],
+  )
 
 const { Component, schema, mark, getFeedback, attempt } = createExerciseType({
   name: 'ConicSection',
