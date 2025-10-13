@@ -13,7 +13,7 @@ import { request } from '~/lib/graphql'
 import { narrow } from '~/lib/helpers'
 import { simplify } from '~/queries/algebra'
 
-const { Component, schema } = createExerciseType({
+const { Component, schema, mark, getFeedback, attempt } = createExerciseType({
   name: 'Equation',
   Component: (props) => {
     const [attempt, setAttempt] = createStore<string[]>([])
@@ -24,7 +24,7 @@ const { Component, schema } = createExerciseType({
         <p>Résolvez l'équation</p>
         <Math value={props.question.equation} displayMode />
         <Show when={props.question.S}>
-          sur <MathSet value={props.question.S}/>.
+          sur <MathSet value={props.question.S} />.
         </Show>
         <div class="flex flex-wrap gap-8">
           <For each={attempt}>
@@ -292,4 +292,4 @@ const { Component, schema } = createExerciseType({
   },
 })
 
-export { Component as default, schema }
+export { Component as default, schema, mark, getFeedback, attempt }
