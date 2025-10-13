@@ -26,6 +26,7 @@ def split_coordinates(s):
 
 
 def parse_latex(expr: str):
+    expr = expr.replace("\\ ", " ")
     expr = re.sub(r"\\sqrt(\d+)", r"\\sqrt{\1}", expr)
     expr = expr.replace("\\exponentialE", "{e}")
     expr = expr.replace("\\imaginaryI", "{i}")

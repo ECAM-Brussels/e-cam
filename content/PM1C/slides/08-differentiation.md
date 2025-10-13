@@ -21,6 +21,7 @@ $$
 :::
 
 ~~~ yaml {.plot}
+height: 300
 data:
   - fn: x/2 - 1
 ~~~
@@ -199,10 +200,6 @@ y = f'(a) (x - a) + f(a)
 $$
 :::
 
-::: remark
-Vous pouvez vous entraîner sur la plateforme [learning.ecam.be](/PM1C/practice/differentiation/tangents)
-:::
-
 # Normale p. 113 {.w-1--2}
 
 ~~~ yaml {.plot}
@@ -224,10 +221,6 @@ La **normale** à $y = f(x)$ en $(a, f(a))$ est la droite
 $$
 y = \frac {-1} {f'(a)} (x - a) + f(a)
 $$
-:::
-
-::: remark
-Vous pouvez vous entraîner sur la plateforme [learning.ecam.be](/PM1C/practice/differentiation/tangents)
 :::
 
 # Tangente: exemple p. 113 {.w-1--2}
@@ -301,25 +294,37 @@ $$
 Calculez $\sin'$
 :::
 
-::: text-sm
-~~~ python {.run}
-from sympy import *
-x, h = symbols("x h")
-expand_trig((sin(x + h) - sin(x)) / h)
-~~~
-:::
-
 ~~~ yaml {.plot}
 - data:
   - fn: sin(x)
     derivative:
       fn: cos(x)
       updateOnMouseMove: true
+  height: 300
 - data:
   - fn: cos(x)
     color: green
+  height: 300
 ~~~
-::::
+
+# Exemple: $\cos$ {.w-1--2}
+
+::: example
+Calculez $\cos'$
+:::
+
+~~~ yaml {.plot}
+- data:
+  - fn: cos(x)
+    derivative:
+      fn: -sin(x)
+      updateOnMouseMove: true
+  height: 300
+- data:
+  - fn: -sin(x)
+    color: green
+  height: 300
+~~~
 
 # Notation p. 123 {.w-1--2}
 
@@ -463,9 +468,9 @@ $$
 $$
 :::
 
-::: remark
-Entraînez-vous sur [learning.ecam.be](/PM1C/practice/differentiation/differentiation)
-:::
+~~~ {.tsx .raw}
+<Graph query={{ "page": { title: { contains: "dérivée"} } }} class="border rounded-xl w-full h-72" />
+~~~
 
 # Exemples {.w-1--2}
 

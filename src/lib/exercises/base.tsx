@@ -203,5 +203,19 @@ export function createExerciseType<
       exercise.generator?.params.optional().describe('Parameters to generate an exercise') ??
       z.undefined(),
   })
-  return { Component, schema, mark: exercise.mark }
+  return {
+    Component,
+    schema,
+    mark: async (
+      question: z.input<typeof exercise.question>,
+      attempt: z.input<typeof exercise.attempt>,
+    ) => {
+      return exercise.mark(
+        await exercise.question.parseAsync(question),
+        await exercise.attempt.parseAsync(attempt),
+      )
+    },
+    getFeedback: exercise.feedback?.[0],
+    attempt: exercise.attempt,
+  }
 }
