@@ -1,4 +1,4 @@
-import { mark } from './ConicSection'
+import { getFeedback, mark, attempt as attemptSchema } from './ConicSection'
 import { expect, test } from 'vitest'
 
 const tests: { equation: string; attempt: Parameters<typeof mark>[1]; correct: boolean }[] = [
@@ -397,4 +397,23 @@ const tests: { equation: string; attempt: Parameters<typeof mark>[1]; correct: b
 test.each(tests)('conic section: $equation', async ({ equation, attempt, correct }) => {
   const result = await mark({ type: 'conic', equation }, attempt)
   expect(result).toBe(correct)
+  if (getFeedback) {
+    const feedback = await getFeedback(0, { type: 'conic', equation }, attempt)
+    const correctAttempt = attemptSchema.parse({
+      type: feedback.type,
+      ...(feedback.type === 'parabola' ? { directrix: feedback.directrix.expr } : {}),
+      ...(feedback.type !== 'parabola' ? { center: feedback.center.expr } : {}),
+      ...(feedback.type === 'circle' ? { radius: feedback.radius.expr } : {}),
+      ...(feedback.vertices.list.length
+        ? { vertices: ['FiniteSet', ...feedback.vertices.list.map((e) => e.expr)] }
+        : {}),
+      ...(feedback.asymptotes.length
+        ? { asymptotes: ['FiniteSet', ...feedback.asymptotes.map((e) => e.expr)] }
+        : {}),
+      ...(feedback.foci.list.length
+        ? { foci: ['FiniteSet', ...feedback.foci.list.map((e) => e.expr)] }
+        : {}),
+    })
+    expect(await mark({ type: 'conic', equation }, correctAttempt)).toBe(true)
+  }
 })
