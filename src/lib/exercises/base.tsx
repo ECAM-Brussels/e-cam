@@ -203,5 +203,11 @@ export function createExerciseType<
       exercise.generator?.params.optional().describe('Parameters to generate an exercise') ??
       z.undefined(),
   })
-  return { Component, schema, mark: exercise.mark }
+  return {
+    Component,
+    schema,
+    mark: exercise.mark,
+    getFeedback: exercise.feedback?.[0],
+    attempt: exercise.attempt,
+  }
 }
