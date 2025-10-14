@@ -118,9 +118,11 @@ const questions = new Set()
 test.each(tests)('factorisation: $expr', async ({ expr, attempt, correct }) => {
   expect(await mark({ expr }, attempt)).toBe(correct)
   if (questions.has(expr)) {
-    const answer = (await getFeedback(0, { expr }, attempt))?.answer
-    expect(answer).not.toBe(undefined)
-    expect(await mark({ expr }, answer ?? '')).toBe(true)
+    const feedback = await getFeedback(0, { expr }, attempt)
+    if (feedback !== undefined && !('answer' in feedback)) {
+      throw new Error("Feedback doesn't have the correct form")
+    }
+    expect(await mark({ expr }, feedback?.answer ?? '')).toBe(true)
     questions.add(expr)
   }
 })
