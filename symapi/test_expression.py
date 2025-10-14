@@ -57,29 +57,31 @@ def test_expand(expr: str, expected: str):
 
 
 @pytest.mark.parametrize(
-    "expr,attempt,expected",
+    "expr,attempt,assumptions,expected",
     [
-        ("x^2 - 5x + 6", "(x - 2)(x - 3)", True),
-        ("i^2", "-1", True),
-        ("e", "\\exp(1)", True),
-        ("\\pi", "2*\\arcsin(1)", True),
-        ("x^2 - 4x", "x(x - 4)", True),
-        ("((2) \\cdot \\sqrt{2}, 3)", "(2 \\sqrt{2}; 3)", True),
-        ("(\\left(2\\right) \\cdot \\sqrt{2}, 3)", "(2 \\sqrt{2}; 3)", True),
-        ("2^0.5", "\\sqrt{2}", True),
-        ("1 + i", "\\sqrt{2} e^{i \\frac{\\pi}{4}}", True),
+        ("x^2 - 5x + 6", "(x - 2)(x - 3)", True, True),
+        ("i^2", "-1", True, True),
+        ("e", "\\exp(1)", True, True),
+        ("\\pi", "2*\\arcsin(1)", True, True),
+        ("x^2 - 4x", "x(x - 4)", True, True),
+        ("((2) \\cdot \\sqrt{2}, 3)", "(2 \\sqrt{2}; 3)", True, True),
+        ("(\\left(2\\right) \\cdot \\sqrt{2}, 3)", "(2 \\sqrt{2}; 3)", True, True),
+        ("2^0.5", "\\sqrt{2}", True, True),
+        ("1 + i", "\\sqrt{2} e^{i \\frac{\\pi}{4}}", True, True),
+        ("x^{-\\frac{2}{3}}", "\\frac{1}{\\sqrt[3]{x^2}}", True, False),
+        ("x^{-\\frac{2}{3}}", "\\frac{1}{\\sqrt[3]{x^2}}", False, True),
     ],
 )
-def test_is_equal(expr: str, attempt: str, expected: bool):
+def test_is_equal(expr: str, attempt: str, assumptions: bool, expected: bool):
     result = schema.execute_sync(
         """
-            query ($expr: Math!, $attempt: Math!) {
+            query ($expr: Math!, $attempt: Math!, $assumptions: Boolean!) {
                 expression(expr: $attempt) {
-                    isEqual(expr: $expr, complex: true)
+                    isEqual(expr: $expr, complex: true, assumptions: $assumptions)
                 }
             }
         """,
-        variable_values={"expr": expr, "attempt": attempt},
+        variable_values={"expr": expr, "attempt": attempt, "assumptions": assumptions},
     )
 
     assert result.data is not None

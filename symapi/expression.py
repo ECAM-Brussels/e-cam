@@ -160,7 +160,11 @@ class Expression:
 
     @strawberry.field(description="Perform equality check")
     def is_equal(
-        self, expr: Math, complex: Optional[bool] = False, modulo: Optional[Math] = None
+        self,
+        expr: Math,
+        complex: Optional[bool] = False,
+        modulo: Optional[Math] = None,
+        assumptions: Optional[bool] = True,
     ) -> bool:
         expand = sympy.expand_complex if complex else sympy.expand
         if isinstance(self.expr, sympy.Eq):
@@ -179,7 +183,14 @@ class Expression:
                     for i in range(len(expr.args))
                 ]
             )
-        result = expand(sympy.nsimplify(expr - self.expr))
+        result = expr - self.expr
+        if not assumptions:
+            symbols = {
+                s: sympy.symbols(s.name, real=True, positive=True)
+                for s in result.free_symbols
+            }
+            result = result.xreplace(symbols)
+        result = expand(sympy.nsimplify(result))
         if modulo:
             return sympy.simplify(result / modulo).is_integer
         return sympy.simplify(result) == 0
