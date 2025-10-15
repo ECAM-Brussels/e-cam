@@ -10,6 +10,9 @@ export default defineConfig({
       watch: {
         paths: ['content/**'],
       },
+      hmr: {
+        port: 5142,
+      },
     },
     worker: {
       format: 'es',

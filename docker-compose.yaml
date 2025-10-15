@@ -67,6 +67,7 @@ services:
       DATABASE_URL: mysql://root:hello@db:3306/ecam
     ports:
       - '3000:3000'
+      - '5142:5142'
     networks:
       - internal
     restart: always
