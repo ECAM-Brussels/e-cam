@@ -45,6 +45,15 @@ services:
         - path: ./content
           target: /app/content
           action: sync
+        - path: ./public
+          target: /app/public
+          action: sync
+        - path: ./prisma/schema.prisma
+          target: /app/public
+          action: sync+restart
+    volumes:
+      - node_modules:/app/node_modules
+      - routes:/app/src/routes/\(generated\)
     environment:
       VITE_AZURE_CLIENT_ID: af790946-79b3-435e-a2a1-f566e09a63f7
       VITE_AZURE_TENANT_ID: e3d6f09e-9ba9-4a36-ad75-d9039be4fe29
@@ -69,3 +78,5 @@ networks:
     driver: bridge
 volumes:
   db_data:
+  node_modules:
+  routes:
