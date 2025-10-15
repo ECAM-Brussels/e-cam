@@ -7,6 +7,7 @@ fi
 
 npm install
 if ! [ "$1" = "test" ]; then
+  npx prisma generate
   npx prisma migrate deploy
 fi
 npx graphql-codegen
