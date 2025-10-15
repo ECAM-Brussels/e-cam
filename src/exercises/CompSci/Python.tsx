@@ -9,7 +9,7 @@ import { encrypt } from '~/lib/cryptography'
 import { createExerciseType } from '~/lib/exercises/base'
 import { wrapCode } from '~/lib/helpers'
 
-let execPython: (code: string, test: string) => Promise<string>
+export let execPython: (code: string, test: string) => Promise<string>
 if (isServer) {
   const { spawn } = await import('child_process')
   execPython = (code: string, test: string) => {

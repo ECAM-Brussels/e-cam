@@ -1,11 +1,19 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: "Python"
+title: 'Python'
 options:
   adjustElo: false
   whiteboard: false
   maxAttempts: null
   save: lastAttempt
 body:
+  - type: Output
+    question:
+      code: |
+        print(3 + 4)
+  - type: Output
+    question:
+      code: |
+        print(4 + 4)
   - type: Python
     question:
       wrap: true
