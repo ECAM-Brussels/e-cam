@@ -35,6 +35,8 @@ services:
       target: dev
     develop:
       watch:
+        - path: ./web.Dockerfile
+          action: rebuild
         - path: ./entrypoint.sh
           action: rebuild
         - path: ./package.json
