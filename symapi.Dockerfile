@@ -13,10 +13,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY symapi symapi
 
-ENTRYPOINT ["python", "-m"]
-
 FROM base AS dev
-CMD ["fastapi", "dev", "--host", "0.0.0.0", "symapi"]
+CMD ["python", "-m", "fastapi", "dev", "--host", "0.0.0.0", "symapi"]
 
 FROM base AS prod
-CMD ["fastapi", "run", "--host", "0.0.0.0", "symapi", "--workers", "$(nproc)"]
+CMD ["python", "-m", "fastapi", "run", "--host", "0.0.0.0", "symapi", "--workers", "$(nproc)"]

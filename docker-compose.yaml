@@ -14,8 +14,15 @@ services:
       context: .
       dockerfile: symapi.Dockerfile
       target: dev
-    volumes:
-      - .:/app
+    develop:
+      watch:
+        - path: ./symapi.Dockerfile
+          action: rebuild
+        - path: ./requirements.txt
+          action: rebuild
+        - path: ./symapi
+          target: /app/symapi
+          action: sync
     restart: always
     ports:
       - '8000:8000'
