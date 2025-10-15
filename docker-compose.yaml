@@ -33,6 +33,15 @@ services:
       context: .
       dockerfile: web.Dockerfile
       target: dev
+    develop:
+      watch:
+        - path: ./entrypoint.sh
+          action: rebuild
+        - path: ./package.json
+          action: rebuild
+        - path: ./src
+          target: /app/src
+          action: sync
     environment:
       VITE_AZURE_CLIENT_ID: af790946-79b3-435e-a2a1-f566e09a63f7
       VITE_AZURE_TENANT_ID: e3d6f09e-9ba9-4a36-ad75-d9039be4fe29
@@ -42,8 +51,6 @@ services:
       VITE_PASSPHRASE: hello
       VITE_SESSION_SECRET: Kr2vM0bSdsPYd0cfuCul7RzWCZR0f34v
       DATABASE_URL: mysql://root:hello@db:3306/ecam
-    volumes:
-      - .:/app
     ports:
       - '3000:3000'
     networks:
