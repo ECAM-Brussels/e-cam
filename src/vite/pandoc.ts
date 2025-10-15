@@ -69,7 +69,7 @@ async function generatePage(file: string, prisma: PrismaClient, force: boolean =
 
   try {
     const [inStat, outStat] = await Promise.all([safeStat(file), safeStat(outputPath)])
-    if (!force && outState.mtime !== 0 && outStat.mtime >= inStat.mtime) {
+    if (!force && outStat.mtime !== 0 && outStat.mtime >= inStat.mtime) {
       return
     }
   } catch {}
@@ -81,7 +81,7 @@ async function generatePage(file: string, prisma: PrismaClient, force: boolean =
       console.log(`Error converting ${file} to ${outputPath}:`, stderr)
     }
   } catch (error) {
-    console.error('Error while converting with pandoc:', error)
+    console.error(`Error while converting ${file} with pandoc:`, error)
   }
 }
 
