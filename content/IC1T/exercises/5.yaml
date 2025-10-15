@@ -1,0 +1,85 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: 'Python'
+options:
+  adjustElo: false
+  whiteboard: false
+  maxAttempts: null
+  save: lastAttempt
+body:
+  - type: Python
+    question:
+      text: |
+        Écrire une fonction nommée `unique()` qui reçoit une liste en paramètre et qui renvoie une nouvelle liste contenant
+        une fois chaque élément de la liste d’entrée, dans l’ordre d’apparition de la 1ère occurrence.
+      answer: |
+        def unique(lst):
+            seen = set()
+            res = []
+            for x in lst:
+                if x not in seen:
+                    seen.add(x)
+                    res.append(x)
+            return res
+        
+      tests:
+        - test: unique([1,2,1,3,2])
+          desc: -> [1,2,3]
+        - test: unique(["a","b","a"])
+          desc: -> ['a','b']
+
+  - type: Python
+    question:
+      text: |
+        Écrire une fonction nommée `zipper()` qui reçoit 2 listes en paramètres et qui renvoie une liste contenant les
+        éléments des deux listes alternés. Attention, les deux listes peuvent être de tailles différentes.
+      answer: |
+        def zipper(a, b):
+            res = []
+            n = max(len(a), len(b))
+            for i in range(n):
+                if i < len(a):
+                    res.append(a[i])
+                if i < len(b):
+                    res.append(b[i])
+            return res
+      tests:
+        - test: zipper([1,2,3],["a","b"])
+          desc: -> [1,'a',2,'b',3]
+        - test: zipper([],[1,2])
+          desc: -> [1,2]
+
+  - type: Python
+    question:
+      text: |
+        Écrire une fonction nommée `fibo()` qui prend un entier `n` en paramètre et qui renvoie le `n`ième terme de la suite de Fibonacci.
+        Les deux premiers termes sont égaux à 1. Les termes sont numérotés à partir de 1.
+      answer: |
+        def fibo(n):
+            if n <= 2:
+                return 1
+            a, b = 1, 1
+            for _ in range(3, n+1):
+                a, b = b, a + b
+            return b
+      tests:
+        - test: fibo(1)
+          desc: -> 1
+        - test: fibo(2)
+          desc: -> 1
+        - test: fibo(6)
+          desc: -> 8
+
+  - type: Python
+    question:
+      text: |
+        Écrire une fonction nommée `pgcd()` qui prend deux entiers en paramètres et renvoie le Plus Grand Commun Diviseur (PGCD).
+      answer: |
+        def pgcd(a, b):
+            while b:
+                a, b = b, a % b
+            return abs(a)
+      tests:
+        - test: pgcd(48, 18)
+          desc: -> 6
+        - test: pgcd(7, 3)
+          desc: -> 1
