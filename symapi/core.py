@@ -30,6 +30,7 @@ def parse_latex(expr: str):
     expr = re.sub(r"\\sqrt(\d+)", r"\\sqrt{\1}", expr)
     expr = expr.replace("\\exponentialE", "{e}")
     expr = expr.replace("\\imaginaryI", "{i}")
+    expr = re.sub(r"\^([0-9a-zA-Z])", r"^{\1}", expr)  # 2^3 4 is not 2^34
     coordinates = re.fullmatch(r"(?:\\left\s*)?\((.*)\)(?:\s*\\right)?", expr)
     if coordinates:
         parts = split_coordinates(coordinates.group(1))
