@@ -112,14 +112,19 @@ async function buildAll(prisma: PrismaClient, force = false) {
   }
 }
 
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
+
 const pandocPlugin = (): Plugin => {
   let prisma: PrismaClient
   return {
     name: 'pandoc-plugin',
     buildStart() {
-      prisma = new PrismaClient({
-        datasources: { db: { url: process.env.DATABASE_URL } },
-      })
+      prisma =
+        globalForPrisma.prisma ||
+        new PrismaClient({
+          datasources: { db: { url: process.env.DATABASE_URL } },
+        })
+      if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
       const force = process.env.NODE_ENV !== 'development'
       buildAll(prisma, force)
     },

@@ -7,8 +7,6 @@ import { type Plugin } from 'vite'
 import { z } from 'zod'
 import { type AssignmentInput } from '~/lib/exercises/assignment'
 
-let prisma: PrismaClient
-
 async function createEmptyAssignments(prisma: PrismaClient, assignments: string[]) {
   await prisma.assignment.createMany({
     data: assignments.map((path) => {
@@ -140,14 +138,18 @@ async function cleanAssignments(prisma: PrismaClient, assignments: string[]) {
   await prisma.assignment.deleteMany({ where: { url: { notIn: urls } } })
 }
 
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
 export default function (): Plugin {
   let prisma: PrismaClient
   return {
     name: 'assignments-plugin',
     async buildStart() {
-      prisma = new PrismaClient({
-        datasources: { db: { url: process.env.DATABASE_URL } },
-      })
+      prisma =
+        globalForPrisma.prisma ||
+        new PrismaClient({
+          datasources: { db: { url: process.env.DATABASE_URL } },
+        })
+      if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
       const assignments = await glob.glob('content/**/*.yaml', { ignore: ['content/data.yaml'] })
       await cleanAssignments(prisma, assignments)
       await createEmptyAssignments(prisma, assignments)

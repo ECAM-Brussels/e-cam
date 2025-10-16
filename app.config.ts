@@ -4,19 +4,24 @@ import pandocPlugin from './src/vite/pandoc'
 import { defineConfig } from '@solidjs/start/config'
 
 export default defineConfig({
-  vite: {
-    plugins: [pandocPlugin(), assignmentPlugin(), graphqlPlugin()],
-    server: {
-      watch: {
-        paths: ['content/**'],
+  vite({ router }) {
+    return {
+      plugins: [pandocPlugin(), assignmentPlugin(), graphqlPlugin()],
+      server: {
+        watch: {
+          paths: ['content/**'],
+        },
+        hmr:
+          router === 'client'
+            ? {
+                port: 4000,
+              }
+            : undefined,
       },
-      hmr: {
-        port: 5142,
+      worker: {
+        format: 'es',
       },
-    },
-    worker: {
-      format: 'es',
-    },
+    }
   },
   server: {
     esbuild: {
