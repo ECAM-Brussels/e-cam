@@ -5,7 +5,7 @@
 
 - Install [Docker](https://www.docker.com/)
 - Clone this repository
-- Run `docker compose up --build`
+- Run `docker compose watch`
 
 ### Structure
 
