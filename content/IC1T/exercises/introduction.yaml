@@ -1,0 +1,112 @@
+title: 'Python'
+options:
+  adjustElo: false
+  whiteboard: false
+  maxAttempts: null
+  save: lastAttempt
+body:
+  - type: Output
+    question:
+      code: |
+        a = 3
+        b = 4
+        print(a + b)
+
+  - type: Output
+    question:
+      code: |
+        x = 5
+        y = 2
+        print(x / y)
+
+  - type: Output
+    question:
+      code: |
+        print(5 // 2)
+
+  - type: Output
+    question:
+      code: |
+        print(5 % 2)
+
+  - type: Output
+    question:
+      code: |
+        s = "Hello"
+        t = "World"
+        print(s + " " + t)
+
+  - type: Output
+    question:
+      code: |
+        print("3" + "4")
+
+  - type: Output
+    question:
+      code: |
+        print(int("3") + 4)
+
+  - type: Output
+    question:
+      code: |
+        print(3 > 2)
+
+  - type: Output
+    question:
+      code: |
+        n = 3
+        if n % 2 == 0:
+            print("pair")
+        else:
+            print("impair")
+
+  - type: Output
+    question:
+      code: |
+        x = 2
+        x = x + 3
+        print(x)
+
+  - type: Output
+    question:
+      code: |
+        a = True
+        b = False
+        print(a and b)
+
+  - type: Output
+    question:
+      code: |
+        uneVariableBool = False
+        uneAutreVariableBool = 5!=3
+        print(uneVariableBool or uneAutreVariableBool)
+  - type: Output
+    question:
+      code: |
+        a = 2**2 == 4
+        print(not a)
+
+  - type: Output
+    question:
+      code: |
+    x = 5
+    if x > 0:
+      x = x - 3
+      if x > 1:
+        x = x * 2
+      else:
+        x = x + 5
+    else:
+      x = 0
+    print(x)
+
+  - type: Output
+    question:
+      code: |
+        a = 1
+        b = a + 2
+        a = b * 3
+        if a > b and b > 0:
+            print(a*b)
+        else:
+            print(b+a)

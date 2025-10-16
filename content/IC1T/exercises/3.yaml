@@ -1,0 +1,111 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: 'Python'
+options:
+  adjustElo: false
+  whiteboard: false
+  maxAttempts: null
+  save: lastAttempt
+body:
+  - type: Python
+    question:
+      wrap: true
+      text: |
+        Écrire un programme qui permet à l’utilisateur d’entrer une liste. Le programme
+        commencera par demander combien d’éléments il y aura dans la liste. Puis, il
+        demandera les valeurs de chaque élément dans l’ordre. Pour finir, il affichera la
+        liste.
+      answer: |
+        n = int(input(""))
+        lst = []
+        for _ in range(n):
+          lst.append(input(""))
+        print(lst)
+      tests:
+        - test: main(["3","a","b","c"])
+          desc: entrée 3 éléments -> ['a','b','c']
+
+  - type: Python
+    question:
+      wrap: true
+      text: |
+        Écrire un programme qui demande une liste de nombres et qui affiche le produit
+        des éléments de la liste.
+      answer: |
+        n = int(input(""))
+        prod = 1
+        for _ in range(n):
+          prod *= float(input(""))
+        if prod.is_integer():
+          print(int(prod))
+        else:
+          print(prod)
+      tests:
+        - test: main(["3","2","3","4"])
+          desc: 2*3*4 -> 24
+        - test: main(["2","2.5","2"])
+          desc: 2.5*2 -> 5.0
+
+  - type: Python
+    question:
+      wrap: true
+      text: |
+        Écrire un programme qui demande une liste de chaînes de caractères et qui
+        affiche la chaîne la plus longue de la liste.
+      answer: |
+        n = int(input(""))
+        longest = ""
+        for _ in range(n):
+          s = input("")
+          if len(s) > len(longest):
+            longest = s
+        print(longest)
+      tests:
+        - test: main(["3","a","abcd","abc"])
+          desc: -> 'abcd'
+
+  - type: Python
+    question:
+      wrap: true
+      text: |
+        Écrire un programme qui demande une chaîne de caractères et qui affiche la même
+        chaîne où toutes les voyelles ont été remplacées par des `*`.
+      answer: |
+        s = input("")
+        vowels = "aeiouyAEIOUY"
+        res = "".join("*" if c in vowels else c for c in s)
+        print(res)
+      tests:
+        - test: main(["bonjour"])
+          desc: -> b*nj**r
+        - test: main(["yoyo"])
+          desc: -> ****
+
+  - type: Python
+    question:
+      wrap: true
+      text: |
+        Écrire un programme qui demande une phrase (string) et qui affiche la liste des
+        mots.
+      answer: |
+        s = input("")
+        print(s.split())
+      tests:
+        - test: main(["hello world"])
+          desc: -> ['hello','world']
+
+  - type: Python
+    question:
+      wrap: true
+      text: |
+        Écrire un programme qui demande une liste et une valeur à chercher dans la
+        liste. Il affichera la liste des indices auxquels l’élément recherché apparaît.
+      answer: |
+        n = int(input(""))
+        lst = [input("") for _ in range(n)]
+        target = input("")
+        indices = [i for i, v in enumerate(lst) if v == target]
+        print(indices)
+      tests:
+        - test: main(["5","a","b","a","c","a","a"])
+          desc: chercher 'a' -> [0,2,4]
+
