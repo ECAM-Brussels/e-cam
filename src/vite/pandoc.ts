@@ -118,7 +118,7 @@ const pandocPlugin = (): Plugin => {
   let prisma: PrismaClient
   return {
     name: 'pandoc-plugin',
-    buildStart() {
+    async buildStart() {
       prisma =
         globalForPrisma.prisma ||
         new PrismaClient({
@@ -126,7 +126,7 @@ const pandocPlugin = (): Plugin => {
         })
       if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
       const force = process.env.NODE_ENV !== 'development'
-      buildAll(prisma, force)
+      await buildAll(prisma, force)
     },
     async handleHotUpdate({ file }) {
       if (file.endsWith('.md') && file.startsWith(resolve('content'))) {
