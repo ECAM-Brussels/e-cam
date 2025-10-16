@@ -1,4 +1,4 @@
-title: 'Python'
+title: 'Introduction au python'
 options:
   adjustElo: false
   whiteboard: false
@@ -89,16 +89,16 @@ body:
   - type: Output
     question:
       code: |
-    x = 5
-    if x > 0:
-      x = x - 3
-      if x > 1:
-        x = x * 2
-      else:
-        x = x + 5
-    else:
-      x = 0
-    print(x)
+        x = 5
+        if x > 0:
+          x = x - 3
+          if x > 1:
+            x = x * 2
+          else:
+            x = x + 5
+        else:
+          x = 0
+        print(x)
 
   - type: Output
     question:

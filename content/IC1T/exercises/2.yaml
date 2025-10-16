@@ -1,5 +1,7 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: 'Python'
+title: 'Séance 2'
+prerequisites:
+  - /IC1T/exercises/1
 options:
   adjustElo: false
   whiteboard: false
@@ -37,7 +39,7 @@ body:
           desc: Entrer 7 devrait donner 'impair'
         - test: main([8])
           desc: Entrer 8 devrait donner 'pair'
-  
+
   - type: Python
     question:
       wrap: true

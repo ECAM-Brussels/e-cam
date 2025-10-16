@@ -1,5 +1,7 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: 'Python'
+title: 'Séance 3'
+prerequisites:
+  - /IC1T/exercises/2
 options:
   adjustElo: false
   whiteboard: false
@@ -108,4 +110,3 @@ body:
       tests:
         - test: main(["5","a","b","a","c","a","a"])
           desc: chercher 'a' -> [0,2,4]
-

@@ -10,3 +10,10 @@ title: 'Programmation'
 - [Session 2](/IC1T/exercises/2)
 - [Session 3](/IC1T/exercises/3)
 - [Session 5](/IC1T/exercises/5)
+
+~~~ tsx {.raw}
+<Graph
+class="mt-8 bg-white border rounded-xl w-full h-[400px]"
+query={{ url: { startsWith: '/IC1T/' } }}
+/>
+~~~

@@ -1,5 +1,7 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: 'Python'
+title: 'Séance 5'
+prerequisites:
+  - /IC1T/exercises/3
 options:
   adjustElo: false
   whiteboard: false
@@ -20,7 +22,7 @@ body:
                     seen.add(x)
                     res.append(x)
             return res
-        
+
       tests:
         - test: unique([1,2,1,3,2])
           desc: -> [1,2,3]
@@ -83,3 +85,4 @@ body:
           desc: -> 6
         - test: pgcd(7, 3)
           desc: -> 1
+

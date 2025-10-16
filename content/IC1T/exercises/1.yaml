@@ -1,5 +1,7 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: 'Python'
+title: 'Séance 1'
+prerequisites:
+  - /IC1T/exercises/introduction
 options:
   adjustElo: false
   whiteboard: false
@@ -51,9 +53,9 @@ body:
         print(c)
       tests:
         - test: main(["32"])
-          desc: 32  -> 0 
+          desc: 32  -> 0
         - test: main(["212"])
-          desc: 212  -> 100 
+          desc: 212  -> 100
         - test: main(["10"])
           desc: 10  -> -12.22222222222222
 
@@ -106,4 +108,3 @@ body:
           desc: 3661 -> 1:1:1
         - test: main(["59"])
           desc: 59 -> 0:0:59
-
