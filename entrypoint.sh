@@ -11,6 +11,7 @@ if ! [ "$1" = "test" ]; then
   npx prisma migrate deploy
 fi
 npx graphql-codegen
+rsync -a --delete node_modules /mnt/
 
 if ! [ "$1" = "build" ]; then
   exec npm run $@
