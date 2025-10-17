@@ -394,11 +394,14 @@ const tests: { equation: string; attempt: Parameters<typeof mark>[1]; correct: b
   },
 ]
 
+const equations = new Set<string>()
 test.each(tests)('conic section: $equation', async ({ equation, attempt, correct }) => {
   const result = await mark({ type: 'conic', equation }, attempt)
   expect(result).toBe(correct)
-  if (getFeedback) {
+  if (!equations.has(equation)) {
     const feedback = await getFeedback(0, { type: 'conic', equation }, attempt)
+    if (feedback === undefined) throw new Error('Feedback undefined')
+    expect(feedback).not.toBe(undefined)
     const correctAttempt = attemptSchema.parse({
       type: feedback.type,
       ...(feedback.type === 'parabola' ? { directrix: feedback.directrix.expr } : {}),
@@ -415,5 +418,6 @@ test.each(tests)('conic section: $equation', async ({ equation, attempt, correct
         : {}),
     })
     expect(await mark({ type: 'conic', equation }, correctAttempt)).toBe(true)
+    equations.add(equation)
   }
 })

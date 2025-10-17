@@ -486,7 +486,7 @@ Calculez les dérivées suivantes:
 - $y = (2x + 1)^5 (x^3 - x + 1)^4$
 
 ::: remark
-Entraînez-vous sur [learning.ecam.be](/PM1C/practice/differentiation/differentiation)
+Entraînez-vous sur [learning.ecam.be](/skills/calculus/differentiate/basic)
 :::
 
 ~~~ python {.run}

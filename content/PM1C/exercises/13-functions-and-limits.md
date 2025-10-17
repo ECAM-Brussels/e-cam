@@ -6,7 +6,7 @@ slideshow: true
 # Préparation {.columns-2}
 
 ::: {.exercise title="1.3.3"}
-![](/images/exercises/1.3.3.png)
+![](/images/exercises/1.3.3.png){.w-96 .mx-auto .block}
 :::
 
 ::: {.exercise title="1.3.15"}

@@ -36,7 +36,7 @@ const { Component, schema } = createExerciseType({
         query CheckDerivative($expr: Math!, $attempt: Math!) {
           expression(expr: $expr) {
             diff {
-              isEqual(expr: $attempt)
+              isEqual(expr: $attempt, assumptions: false)
             }
           }
         }

@@ -1,4 +1,4 @@
-import { mark } from './Factor'
+import { getFeedback, mark } from './Factor'
 import { expect, test } from 'vitest'
 
 const tests: { expr: string; attempt: string; correct: boolean }[] = [
@@ -114,7 +114,15 @@ const tests: { expr: string; attempt: string; correct: boolean }[] = [
   },
 ]
 
+const questions = new Set()
 test.each(tests)('factorisation: $expr', async ({ expr, attempt, correct }) => {
   expect(await mark({ expr }, attempt)).toBe(correct)
+  if (questions.has(expr)) {
+    const feedback = await getFeedback(0, { expr }, attempt)
+    if (feedback !== undefined && !('answer' in feedback)) {
+      throw new Error("Feedback doesn't have the correct form")
+    }
+    expect(await mark({ expr }, feedback?.answer ?? '')).toBe(true)
+    questions.add(expr)
+  }
 })
-

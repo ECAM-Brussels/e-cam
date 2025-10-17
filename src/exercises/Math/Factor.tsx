@@ -5,6 +5,7 @@ import Math from '~/components/Math'
 import { graphql } from '~/gql'
 import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
+import { narrow } from '~/lib/helpers'
 import { checkFactorisation, expand, normalizePolynomial } from '~/queries/algebra'
 
 export function product<T>(...allEntries: T[][]): T[][] {
@@ -19,7 +20,7 @@ export function product<T>(...allEntries: T[][]): T[][] {
 
 const math = z.number().or(z.string())
 
-const { Component, schema, mark } = createExerciseType({
+const { Component, schema, mark, getFeedback } = createExerciseType({
   name: 'Factor',
   Component: (props) => (
     <>
@@ -48,104 +49,32 @@ const { Component, schema, mark } = createExerciseType({
   attempt: z.string().min(1),
   mark: (question, attempt) => checkFactorisation(attempt, question.expr),
   feedback: [
-    async (remaining, question, attempt) => {
+    async (remaining, question) => {
       'use server'
-      const data = await request(
+      if (remaining) return question
+      const { expression } = await request(
         graphql(`
-          query FactorisationFeedback($expr: Math!, $x: Math!, $attempt: Math!) {
-            attempt: expression(expr: $attempt) {
-              solveset {
-                list {
-                  expr
-                  # to check if the student made a sign mistake
-                  opposite {
-                    subsIn(expr: $expr, var: $x) {
-                      isEqual(expr: "0")
-                    }
-                  }
-                  subsIn(expr: $expr, var: $x) {
-                    isEqual(expr: "0")
-                  }
-                }
-              }
-            }
-            expr: expression(expr: $expr) {
+          query FactorisationFeedback($expr: Math!, $x: Math!) {
+            expression(expr: $expr) {
               factor {
                 expr
-              }
-              solveset {
-                list(sort: abs) {
-                  expr
-                  opposite {
-                    add(expr: $x) {
-                      expr
-                    }
-                  }
-                }
-                isSymmetricSet
               }
             }
           }
         `),
-        { attempt: attempt, expr: question.expr, x: question.x },
-      )
-      const studentRoots = data.attempt.solveset.list.map((info) => ({
-        root: info.expr,
-        opposite: info.opposite.subsIn.isEqual === true,
-        correct: info.subsIn.isEqual === true,
-      }))
-      const roots = data.expr.solveset
-      const squaredSum = roots.list.length === 1
-      const squareDiff = roots.list.length === 2 && roots.isSymmetricSet
-      return {
-        remaining,
-        answer: data.expr.factor.expr,
-        factors: data.expr.solveset.list.map((root) => root.opposite.add.expr),
-        firstCorrectRoot: data.expr.solveset.list[0].expr,
-        correctRoots: studentRoots.filter((r) => r.correct),
-        wrongSign: studentRoots.filter((r) => r.opposite),
-        incorrectRoots: studentRoots.filter((r) => !r.correct),
-        numberofRoots: data.expr.solveset.list.length,
-        squaredSum,
-        squareDiff,
         question,
-      }
+      )
+      return { ...question, answer: expression.factor.expr }
     },
     (props) => (
-      <Switch>
-        <Match when={props.squaredSum || props.squareDiff}>
-          <Show
-            when={props.remaining}
-            fallback={
-              <p>
-                C'est bien un produit remarquable: <Math value={props.answer} />
-              </p>
-            }
-          >
-            <p>Peux-tu vérifier si c'est un produit remarquable?</p>
-          </Show>
-        </Match>
-        <Match when={props.correctRoots.length === 0}>
-          <Show when={props.remaining} fallback={<p>hello</p>}>
-            <Show
-              when={props.wrongSign.length}
-              fallback={<p>Est-ce que tu peux trouver une racine à vue?</p>}
-            >
-              <p>Vérifie le signe de tes racines.</p>
-            </Show>
-            <p>
-              Rappelle-toi que si <Math value={`${props.question.x} = a`} /> est une racine, alors{' '}
-              <Math value={`${props.question.x} - a`} /> est un facteur.
-            </p>
-          </Show>
-        </Match>
-        <Match when={props.correctRoots.length === 1 && props.incorrectRoots}>
-          <p>
-            La racine <Math value={`${props.question.x} = ${props.correctRoots[0].root}`} /> est
-            correcte. Peux-tu vérifier ta distributivité?
-          </p>
-        </Match>
-      </Switch>
+      <Show
+        when={narrow(
+          () => props,
+          (p) => 'answer' in p,
+        )}
+      >
+        {(p) => <Math value={`${p().expr} = ${p().answer}`} displayMode />}
+      </Show>
     ),
   ],
   generator: {
@@ -185,4 +114,4 @@ const { Component, schema, mark } = createExerciseType({
   },
 })
 
-export { Component as default, schema, mark }
+export { Component as default, schema, mark, getFeedback }
