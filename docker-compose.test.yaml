@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: symapi.Dockerfile
-      target: dev
+    command: python -m fastapi dev --host 0.0.0.0 symapi
     restart: always
     ports:
       - '8000:8000'
