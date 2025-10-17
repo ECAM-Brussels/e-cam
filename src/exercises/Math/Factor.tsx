@@ -54,7 +54,7 @@ const { Component, schema, mark, getFeedback } = createExerciseType({
       if (remaining) return question
       const { expression } = await request(
         graphql(`
-          query FactorisationFeedback($expr: Math!, $x: Math!) {
+          query FactorisationFeedback($expr: Math!) {
             expression(expr: $expr) {
               factor {
                 expr
