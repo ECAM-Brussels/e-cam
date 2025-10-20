@@ -28,17 +28,21 @@ Les commentaires suivants sont valides pour les examens de novembre, avril et se
   - Les réponses tomberont juste.
   - Les formules trigonométriques (addition, duplication) nécéssaires seront rappelées.
     Vous ne devez pas les connaître.
-  - Vous devez connaître les valeurs exacte de $\sin$, $\cos$, $\tan$ pour les angles $\frac \pi 6$, $\frac \pi 4$, $\frac \pi 3$: [exercices](/PM1C/practice/trigonometry/exact_values)
+  - Vous devez connaître les valeurs exacte de $\sin$, $\cos$, $\tan$ pour les angles $\frac \pi 6$, $\frac \pi 4$, $\frac \pi 3$: [exercices](/skills/trigonometry/values)
   - Vous devez connaître les lois des logarithmes et des exponentielles.
-  - Vous devez connaître les formules de dérivées, y compris celles des fonctions cyclométriques: [exercices](/PM1C/practice/differentiation/differentiation)
+  - Vous devez connaître les formules de dérivées: [exercices](/skills/calculus/differentiate/basic)
   - Vous devez connaître les limites classiques: $\frac {\sin x} x$, $\frac {1 - \cos x} {x}$
   - Vous devez connaître les propriétés des coniques
 
 - Exercices types
-  - L'examen contiendra un **problème d'optimisation** (voir Calculus pour des exercices supplémentaires).
-  - L'examen comportera un **système** de 3 équations, qui pourra être impossible ou indéterminé: [exercices](/PM1C/practice/algebra/systems-3-vars-3)
-  - L'examen contiendra au moins une des questions suivantes:
-     - [Classification de coniques](/PM1C/practice/geometry/conic-sections)
-     - [Équations de type $z^n = w$](/PM1C/practice/algebra/complex-roots)
+  - L'examen contiendra un **problème** (voir Calculus pour des exercices supplémentaires).
+  - L'examen comportera un **système** de 3 équations, qui pourra être impossible ou indéterminé: [exercices](/skills/algebra/equations/simultaneous/3-vars)
+  - L'examen comportera une [classification de coniques](/skills/geometry/conic-sections/classification)
+  - Les questions suivantes issues de la plateforme sont du niveau de l'examen
+     - [Équations trigonométriques simples](/skills/trigonometry/simple-equations)
+     - [Équations de type $z^n = w$](/skills/algebra/complex/roots)
+     - [Volume d'un parallélépipède](/skills/geometry/vectors/triple-product)
+     - [Angle entre deux vecteurs](/skills/geometry/vectors/angle)
+     - [Limites](https://learning.ecam.be/skills/calculus/limits/rational)
 
 :::::
