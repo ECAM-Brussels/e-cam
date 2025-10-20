@@ -4,13 +4,36 @@ slideshow: true
 lang: en
 ---
 
+# Course outline
+
+- Divide and Conquer
+
+- Dynamic programming
+
+- Greedy algorithms
+
+- Graphs
+
+- Weighted graphs
+
+- PageRank
+
+# Recommendations
+
+- Don't use AI just yet, **ask questions**.
+  You will be able to code on paper at the exam.
+
+- Use Jupyter Notebooks for notetaking
+
+<Youtube src="https://www.youtube.com/watch?v=suAkMeWJ1yE" />
+
 # Algorithm example: Insertion sort {.w-1--2}
 
 ::: question
 Given a set of cards, how do you sort them in increasing order?
 :::
 
-~~~ python {.run hideUntil="2024-11-05 16:15"}
+~~~ python {.run hideUntil="2025-10-22 16:15"}
 cards = [3, 7, 4, 1, 2, 7, 3]
 # --- fragment
 right_hand = [3, 7, 4, 1, 2, 7, 3]
@@ -108,7 +131,7 @@ and recursively call your function onto the small subproblems.
 construct the solution to the real problem.
 :::
 
-```python {.run .break-inside-avoid hideUntil="2024-11-05 16:15"}
+```python {.run .break-inside-avoid hideUntil="2025-10-22 16:15"}
 def merge_sort(numbers: list[int | float]):
     # Simple cases
     # Divide
@@ -175,7 +198,7 @@ We just need to find the `max` and the `min`.
 
 # Maximum difference: solution {.w-1--2}
 
-~~~ python {.run hideUntil="2024-11-05 16:15"}
+~~~ python {.run hideUntil="2025-10-22 16:15"}
 def min_max(A: list[float]) -> tuple[float, float]:
     pass
 
@@ -212,7 +235,7 @@ i.e. without creating copies of the array?
 
 # Quicksort: solution {.w-1--2}
 
-~~~ python {.run hideUntil="2024-11-05 16:15"}
+~~~ python {.run hideUntil="2025-10-22 16:15"}
 def quicksort(A):
     pass
 quicksort([1, 2, 6, 5, 3, 7, 4])
@@ -266,7 +289,7 @@ data:
 
 # Peak search: solution {.w-1--2}
 
-~~~ python {.run hideUntil="2024-11-05 16:15"}
+~~~ python {.run hideUntil="2025-10-22 16:15"}
 A = [1, 2, 6, 5, 3, 7, 4]
 
 def peak_find(start: int = 0, end: int = len(A)):
@@ -332,7 +355,7 @@ recursively use Karatsuba's trick to multiply two numbers.
 What is its time complexity?
 :::
 
-~~~ python {.run hideUntil="2024-11-05 16:15"}
+~~~ python {.run hideUntil="2025-10-22 16:15"}
 def karatsuba(x, y):
     return x * y
 
@@ -381,7 +404,7 @@ The largest sum will either be:
 
 # Maximum subarray: solution {.w-1--2}
 
-~~~ python {.run hideUntil="2024-11-05 16:15"}
+~~~ python {.run hideUntil="2025-10-22 16:15"}
 def max_sum(A: list[float]) -> float:
     pass
 # --- fragment

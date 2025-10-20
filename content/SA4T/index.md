@@ -5,7 +5,7 @@ lang: en
 
 # Algorithms
 
-![](/images/SA4T.webp){.w-full .lg:max-h-96 .max-h-84 .object-cover .rounded-xl .opacity-70}
+![](/images/SA4T.webp){.w-full .lg:max-h-96 .max-h-84 .object-cover .rounded-xl}
 
 :::::::::: {.lg:grid .lg:grid-cols-2 .gap-4}
 ::: {.bg-white .rounded-xl .p-4 .shadow}
@@ -24,7 +24,6 @@ lang: en
 ::: {.bg-white .rounded-xl .p-4 .shadow}
 ## Assessment
 
-- 30%: Advent of Code
 - 20%: PageRank
 - 50%: oral exam
 
