@@ -7,6 +7,7 @@ courses:
   - MATH
 prerequisites:
   - /skills/trigonometry/values
+video: https://youtube.com/embed/TyPLugMwits
 options:
   streak: 999
 body:
