@@ -237,7 +237,7 @@ E.g. HYPERLINKING, DOLPHINSPEAK: PINK, 4
 
 # Longest common subsequence {.w-1--2}
 
-```python {.run hideUntil="2025-11-05 12:00"}
+```python {.run hideUntil="2025-11-05 16:15"}
 def LCS(A: str, B: str):
     """
     Returns the length of the longest common subsequence of A and B.
@@ -265,7 +265,7 @@ LCS("HYPERLINKING", "DOLPHINSPEAK")
 Adapt your code to find the subsequence itself.
 :::
 
-```python {.run hideUntil="2025-11-05 12:00"}
+```python {.run hideUntil="2025-11-05 16:15"}
 def LCS(A: str, B: str) -> str:
     return ""
 
@@ -310,7 +310,7 @@ What is the complexity of your algorithm?
 
 # Knapsack: implementation {.w-1--2}
 
-```python {.run hideUntil="2025-11-05 12:00"}
+```python {.run hideUntil="2025-11-05 16:15"}
 v = [10, 40, 30, 50]
 s = [5, 4, 6, 3]
 
@@ -340,7 +340,7 @@ KS(3, 10)
 
 # Knapsack: finding items {.w-1--2}
 
-```python {.run hideUntil="2025-11-05 12:00"}
+```python {.run hideUntil="2025-11-05 16:15"}
 v = [10, 40, 30, 50]
 s = [5, 4, 6, 3]
 
@@ -392,7 +392,7 @@ but you cannot pick `5`.
 
 # Coin problem: implementation {.w-1--2}
 
-```python {.run hideUntil="2025-11-05 12:00"}
+```python {.run hideUntil="2025-11-05 16:15"}
 coins = [1, 3, 4, 5, 10, 25]
 def min_coins(value: int):
     pass
@@ -421,7 +421,7 @@ min_coins(65)
 What if we want to find the coins themselves?
 :::
 
-```python {.run hideUntil="2025-11-05 12:00"}
+```python {.run hideUntil="2025-11-05 16:15"}
 coins = [1, 3, 4, 5, 10, 25]
 def min_coins(value: int):
     pass
@@ -458,7 +458,7 @@ What is the complexity?
 
 # Minimum jumps {.w-1--2}
 
-```python {.run hideUntil="2025-11-05 12:00"}
+```python {.run hideUntil="2025-11-05 16:15"}
 allowed = [1, 3, 5, 8, 9, 2, 6, 7, 6, 8, 9]
 
 def jumps(start: int, dest: int):
@@ -509,7 +509,7 @@ Algorithm used for spellchecking.
 
 # Edit distance {.w-1--2}
 
-```python {.run hideUntil="2025-11-05 12:00"}
+```python {.run hideUntil="2025-11-05 16:15"}
 def dist(A: str, B: str) -> int:
     return 0
 
