@@ -2,6 +2,16 @@ name: Lint
 on:
   - push
 jobs:
+  black:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: 3.13
+      - run: pip install black
+      - run: black --check symapi
   prettier:
     runs-on: ubuntu-latest
     steps:
