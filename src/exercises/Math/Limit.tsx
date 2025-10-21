@@ -22,8 +22,8 @@ const { Component, schema } = createExerciseType({
       <Show when={props.question.differentialQuotient}>
         <p>
           Cette limite est la dérivée de la fonction{' '}
-          <Math name="attempt.fct" editable value={props.attempt?.fct} />
-          {' '}en <Math value={`x =`}/> <Math name="attempt.a" editable value={props.attempt?.a} />
+          <Math name="attempt.fct" editable value={props.attempt?.fct} /> en <Math value={`x =`} />{' '}
+          <Math name="attempt.a" editable value={props.attempt?.a} />
         </p>
       </Show>
     </>
