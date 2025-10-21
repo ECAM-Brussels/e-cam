@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: "Complétion du carré"
+title: 'Complétion du carré'
 courses:
   - algebra
   - PM1C

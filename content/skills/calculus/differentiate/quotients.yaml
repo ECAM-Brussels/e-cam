@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: "Dérivées: règle du quotient"
+title: 'Dérivées: règle du quotient'
 courses:
   - calculus
   - 5MATH4

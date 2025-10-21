@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: "Dérivées: règle de la composée"
+title: 'Dérivées: règle de la composée'
 courses:
   - calculus
   - 5MATH4

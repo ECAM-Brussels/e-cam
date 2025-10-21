@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: "Équations trigonométriques simples"
+title: 'Équations trigonométriques simples'
 courses:
   - trigonometry
   - PM1C
