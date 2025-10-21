@@ -29,7 +29,6 @@ Les commentaires suivants sont valides pour les examens de novembre, avril et se
   - Les formules trigonométriques (addition, duplication) nécéssaires seront rappelées.
     Vous ne devez pas les connaître.
   - Vous devez connaître les valeurs exacte de $\sin$, $\cos$, $\tan$ pour les angles $\frac \pi 6$, $\frac \pi 4$, $\frac \pi 3$: [exercices](/skills/trigonometry/values)
-  - Vous devez connaître les lois des logarithmes et des exponentielles.
   - Vous devez connaître les formules de dérivées: [exercices](/skills/calculus/differentiate/basic)
   - Vous devez connaître les limites classiques: $\frac {\sin x} x$, $\frac {1 - \cos x} {x}$
   - Vous devez connaître les propriétés des coniques
