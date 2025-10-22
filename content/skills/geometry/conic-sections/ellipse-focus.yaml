@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: "Les foyers d'une ellipse"
+# I would like to change the name of this file to ellipse-centered
+title: "L'ellipse centrée à l'origine"
 prerequisites:
   - /skills/geometry/pythagoras
 video: https://youtube.com/embed/oBYBIpNLKmg
