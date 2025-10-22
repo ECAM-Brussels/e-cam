@@ -421,8 +421,7 @@ def max_sum(A: list[float]) -> float:
         attempt = crossing
         for n in A[m + i::i]:
             attempt += n
-            if attempt > crossing:
-                crossing = attempt
+            crossing = max(crossing, attempt)
     return max(crossing, left, right)
 
 max_sum([-2,1,-3,4,-1,2,1,-5,4])
