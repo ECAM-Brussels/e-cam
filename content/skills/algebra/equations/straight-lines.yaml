@@ -1,5 +1,4 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-# I would like to move this to geometry
 title: "Équations du premier degré"
 courses:
   - geometry

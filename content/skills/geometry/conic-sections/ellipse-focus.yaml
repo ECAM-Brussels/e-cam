@@ -1,5 +1,4 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-# I would like to change the name of this file to ellipse-centered
 title: "L'ellipse centrée à l'origine"
 prerequisites:
   - /skills/geometry/pythagoras
