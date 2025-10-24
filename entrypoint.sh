@@ -1,9 +1,11 @@
 #!/bin/sh
 set -e 
 
-if [ "$2" = "npm" ] || [ "$1" = "npx" ]; then
-  npx prisma generate
-  npx prisma migrate deploy
+if [ "$1" = "npm" ] || [ "$1" = "npx" ]; then
+  if [ "$2" != "vitest" ]; then
+    npx prisma generate
+    npx prisma migrate deploy
+  fi
   npx graphql-codegen
 fi
 
