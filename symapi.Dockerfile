@@ -3,6 +3,7 @@ WORKDIR /app
 EXPOSE 8000
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
     gcc \
     g++ \
     build-essential \

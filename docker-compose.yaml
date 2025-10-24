@@ -87,7 +87,7 @@ services:
       db:
         condition: service_healthy
       symapi:
-        condition: service_started
+        condition: service_healthy
 networks:
   internal:
     driver: bridge
