@@ -5,7 +5,7 @@ lang: en
 
 # Algorithms
 
-![](/images/SA4T.webp){.w-full .lg:max-h-96 .max-h-84 .object-cover .rounded-xl .opacity-70}
+![](/images/SA4T.webp){.w-full .lg:max-h-96 .max-h-84 .object-cover .rounded-xl}
 
 :::::::::: {.lg:grid .lg:grid-cols-2 .gap-4}
 ::: {.bg-white .rounded-xl .p-4 .shadow}
@@ -17,16 +17,15 @@ lang: en
 3. [Greedy algorithms](/SA4T/slides/03-greedy)
 4. [Unweighted Graphs](/SA4T/slides/04-graphs)
 5. [Weighted Graphs](/SA4T/slides/05-graphs)
-6. [PageRank](/SA4T/slides/06-pagerank) and Advent of Code
+6. [PageRank](/SA4T/slides/06-pagerank)
 
 :::
 
 ::: {.bg-white .rounded-xl .p-4 .shadow}
 ## Assessment
 
-- 30%: Advent of Code
 - 20%: PageRank
-- 50%: oral exam
+- 80%: oral exam
 
 #### Algorithms to know
 

@@ -166,7 +166,7 @@ We try to track the parent node that brought us to the current node.
 
 # Shortest paths: implementation {.w-1--2}
 
-``` python {.run hideUntil="2024-11-26 12:00"}
+``` python {.run hideUntil="2025-11-26 16:15"}
 def shortest_paths(adj, start):
     pass
 # --- fragment
@@ -200,7 +200,7 @@ Write a code that solves any Sudoku grid.
 
 # Sudoku: implementation {.w-1--2}
 
-``` python {.run hideUntil="2024-11-26 12:00"}
+``` python {.run hideUntil="2025-11-26 16:15"}
 def solve(grid: list[int]):
     return grid
 
@@ -250,7 +250,7 @@ Part II: find the path itself.
 
 # Snakes and ladders: implementation {.w-1--2}
 
-``` python {.run hideUntil="2024-11-26 12:00"}
+``` python {.run hideUntil="2025-11-26 16:15"}
 snakes = {17: 13, 52: 29, 57: 40, 62: 22, 88: 18, 95: 51, 97: 79}
 ladders = {3: 21, 8: 30, 28: 84, 58: 77, 75: 86, 80: 100, 90: 91} 
 
@@ -324,7 +324,7 @@ and log at the beginning and at the end of an "exploration".
 
 # Topological sort: implementation {.w-1--2}
 
-``` python {.run hideUntil="2024-11-26 12:00"}
+``` python {.run hideUntil="2025-11-26 16:15"}
 def topological_sort(adj: dict[any, set]) -> list:
     return []
 
@@ -359,7 +359,7 @@ determine if it has a cycle (a loop).
 
 # Detecting cycles {.w-1--2}
 
-``` python {.run hideUntil="2024-11-26 12:00"}
+``` python {.run hideUntil="2025-11-26 16:15"}
 def has_cycles(adj: dict[any, set]) -> bool:
     return False
 # --- fragment

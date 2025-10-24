@@ -34,9 +34,9 @@ body:
         - \sqrt{\tan{x}}
         - \sqrt{\ln{x}}
         - \sqrt{{{a}}^{x}}
-        - \ln\left(\sin x}\right)
-        - \ln\left(\cos x}\right)
-        - \ln\left(\tan x}\right)
+        - \ln\left(\sin {x}\right)
+        - \ln\left(\cos {x}\right)
+        - \ln\left(\tan {x}\right)
         - '{{a}}^{\sin x}'
         - '{{a}}^{\cos x}'
         - '{{a}}^{\tan x}'

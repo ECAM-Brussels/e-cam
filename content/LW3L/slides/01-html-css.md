@@ -3,6 +3,22 @@ title: HTML and CSS
 slideshow: true
 ---
 
+# Course outline
+
+#. HTML and CSS
+
+#. Component-based Architecture
+
+#. Server-Side Rendering
+
+#. Databases
+
+#. Sessions
+
+#. Client-Side Interactivity
+
+#. Review
+
 # Table of contents
 
 #. Requests and Responses
