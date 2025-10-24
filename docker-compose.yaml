@@ -32,7 +32,7 @@ services:
     build:
       context: .
       dockerfile: web.Dockerfile
-      target: dev
+    command: npx vinxi dev -- --host 0.0.0.0
     develop:
       watch:
         - path: ./web.Dockerfile

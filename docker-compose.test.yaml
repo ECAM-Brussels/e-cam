@@ -21,7 +21,7 @@ services:
     depends_on:
       symapi:
         condition: service_started
-    command: test -- --run
+    command: npx vitest -- --run
 networks:
   internal:
     driver: bridge

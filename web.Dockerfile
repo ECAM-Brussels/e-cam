@@ -28,16 +28,10 @@ RUN pip3 install --no-cache-dir -r requirements.txt --break-system-packages
 COPY entrypoint.sh .
 ENTRYPOINT ["sh", "/app/entrypoint.sh"]
 
-FROM base AS dev
-
-COPY . .
-CMD ["dev", "--", "--host", "0.0.0.0"]
-
-FROM base AS prod
-
 COPY package*.json ./
 RUN npm install
 
-COPY . .
+COPY prisma ./
+RUN npx prisma generate
 
-CMD ["build"]
+COPY . .
