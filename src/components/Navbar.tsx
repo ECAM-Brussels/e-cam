@@ -109,7 +109,7 @@ function Drawer(props: { visible?: boolean; onOutsideClick?: () => void }) {
   return (
     <Portal>
       <div
-        class="fixed left-0 top-0 z-10 h-screen w-full flex flex-row-reverse"
+        class="fixed left-0 top-0 z-40 h-screen w-full flex flex-row-reverse"
         classList={{ hidden: !props.visible }}
       >
         <div class="h-full w-96 bg-white shadow-xl opacity-100 transition-transform duration-700">

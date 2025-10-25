@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: "Dérivées directes"
+title: 'Dérivées directes'
 courses:
   - calculus
   - 5MATH4

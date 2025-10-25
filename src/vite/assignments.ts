@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, type Prisma } from '@prisma/client'
 import glob from 'fast-glob'
 import { mkdir, readFile, stat, writeFile } from 'fs/promises'
 import yaml from 'js-yaml'
@@ -7,9 +7,15 @@ import { type Plugin } from 'vite'
 import { z } from 'zod'
 import { type AssignmentInput } from '~/lib/exercises/assignment'
 
-let prisma: PrismaClient
-
 async function createEmptyAssignments(prisma: PrismaClient, assignments: string[]) {
+  await prisma.page.createMany({
+    data: assignments.map((path) => {
+      const relativePath = relative(resolve('content'), path)
+      const url = '/' + relativePath.replace(/\.ya?ml$/, '')
+      return { url }
+    }),
+    skipDuplicates: true,
+  })
   await prisma.assignment.createMany({
     data: assignments.map((path) => {
       const relativePath = relative(resolve('content'), path)
@@ -20,7 +26,7 @@ async function createEmptyAssignments(prisma: PrismaClient, assignments: string[
   })
 }
 
-type Update = Parameters<typeof prisma.assignment.update>[0]['data']
+type Update = Prisma.AssignmentUpdateInput
 
 export async function registerAssignment(
   prisma: PrismaClient,
@@ -56,7 +62,7 @@ export async function registerAssignment(
   await prisma.assignment.update({ where: { url: assignment.url }, data })
 }
 
-async function safeStat(path: string) {
+export async function safeStat(path: string) {
   try {
     return await stat(path)
   } catch (err) {
@@ -136,25 +142,27 @@ async function cleanAssignments(prisma: PrismaClient, assignments: string[]) {
     const relativePath = relative(resolve('content'), path)
     return '/' + relativePath.replace(/\.ya?ml$/, '')
   })
-  // await prisma.attempt.deleteMany({ where: { url: { notIn: urls } } })
+  await prisma.attempt.deleteMany({ where: { url: { notIn: urls } } })
   await prisma.assignment.deleteMany({ where: { url: { notIn: urls } } })
 }
 
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
 export default function (): Plugin {
   let prisma: PrismaClient
   return {
     name: 'assignments-plugin',
     async buildStart() {
-      prisma = new PrismaClient({
-        datasources: { db: { url: process.env.DATABASE_URL } },
-      })
+      prisma =
+        globalForPrisma.prisma ||
+        new PrismaClient({
+          datasources: { db: { url: process.env.DATABASE_URL } },
+        })
+      if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
       const assignments = await glob.glob('content/**/*.yaml', { ignore: ['content/data.yaml'] })
-      // await cleanAssignments(prisma, assignments)
+      await cleanAssignments(prisma, assignments)
       await createEmptyAssignments(prisma, assignments)
-      await Promise.all([
-        ...assignments.map((file) => createAssignment(file, prisma)),
-        loadData(prisma),
-      ])
+      await Promise.all(assignments.map((file) => createAssignment(file, prisma)))
+      await loadData(prisma)
     },
     async handleHotUpdate({ file }) {
       if (file.startsWith(resolve('content')) && file.endsWith('.yaml')) {

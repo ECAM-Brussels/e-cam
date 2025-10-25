@@ -1,66 +1,11 @@
-- Main: [![Python Tests](https://github.com/ECAM-Brussels/e-cam/actions/workflows/pytest.yaml/badge.svg?branch=main)](https://github.com/ECAM-Brussels/e-cam/actions/workflows/pytest.yaml)
-- Next: [![Python Tests](https://github.com/ECAM-Brussels/e-cam/actions/workflows/pytest.yaml/badge.svg)](https://github.com/ECAM-Brussels/e-cam/actions/workflows/pytest.yaml)
+- Main: [![Python Tests](https://github.com/ECAM-Brussels/e-cam/actions/workflows/tests.yaml/badge.svg?branch=main)](https://github.com/ECAM-Brussels/e-cam/actions/workflows/tests.yaml)
+- Next: [![Python Tests](https://github.com/ECAM-Brussels/e-cam/actions/workflows/tests.yaml/badge.svg)](https://github.com/ECAM-Brussels/e-cam/actions/workflows/tests.yaml)
 
-## Dependencies
+## Installation instructions
 
-- [Node.js](https://nodejs.org/en)
-- [Python](https://www.python.org/)
-- [Poetry](https://python-poetry.org/)
-- MySQL or MariaDB
-- [Pandoc](https://pandoc.org)
-
-### Instructions for MacOS
-
-~~~ bash
-# Install homebrew
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-# Install dependencies
-brew install node python poetry mariadb pandoc
-
-# Start MariaDB
-brew services start mariadb
-~~~
-
-### Create a database
-
-First, connect to the database server via the `mysql` command.
-
-~~~ sql
-CREATE DATABASE ecam;
-~~~
-
-Then connect to the server as root `sudo mysql` to set up a password for your user.
-
-~~~ sql
-ALTER USER '<username>'@'localhost' IDENTIFIED BY '<password>';
-FLUSH PRIVILEGES;
-~~~
-
-## First run
-
-### Env variables
-
-Create a `.env` file which contains:
-
-~~~ bash
-VITE_AZURE_CLIENT_ID=
-VITE_AZURE_TENANT_ID=
-VITE_AZURE_CLIENT_SECRET=
-VITE_AZURE_REDIRECT_URI=
-VITE_PASSPHRASE=
-VITE_SESSION_SECRET=
-DATABASE_URL=mysql://<user>:<password>@localhost:3306/ecam
-~~~
-
-### Set up
-
-Run the following commands
-
-~~~ bash
-npm install
-npm run dev
-~~~
+- Install [Docker](https://www.docker.com/)
+- Clone this repository
+- Run `docker compose watch`
 
 ### Structure
 

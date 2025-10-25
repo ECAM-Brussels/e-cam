@@ -1,0 +1,7 @@
+antlr4-python3-runtime==4.11
+chempy
+fastapi[standard]
+panflute
+pytest
+strawberry-graphql[fastapi]
+sympy

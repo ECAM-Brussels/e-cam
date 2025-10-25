@@ -1,0 +1,110 @@
+# yaml-language-server: $schema=http://localhost:3000/schema.json
+title: 'Séance 1'
+prerequisites:
+  - /IC1T/exercises/introduction
+options:
+  adjustElo: false
+  whiteboard: false
+  maxAttempts: null
+  save: lastAttempt
+body:
+  - type: Python
+    question:
+      wrap: true
+      text: |
+        Écrire un programme qui demande les amplitudes de deux angles d’un
+        triangle et qui affiche l’amplitude du troisième (en degrés).
+      answer: |
+        a = int(input(""))
+        b = int(input(""))
+        print(180 - a - b)
+      tests:
+        - test: main(["60","60"])
+          desc: 60 + 60 -> 60
+        - test: main(["30","60"])
+          desc: 30 + 60 -> 90
+
+  - type: Python
+    question:
+      wrap: true
+      text: |
+        Écrire un programme qui demande les longueurs des deux côtés de l’angle
+        droit d’un triangle rectangle et qui affiche la longueur de l’hypoténuse.
+      answer: |
+        import math
+        a = float(input(""))
+        b = float(input(""))
+        print(math.hypot(a, b))
+      tests:
+        - test: main(["3","4"])
+          desc: 3 et 4 -> 5
+        - test: main(["5","12"])
+          desc: 5 et 12 -> 13
+
+  - type: Python
+    question:
+      wrap: true
+      text: |
+        Écrire un programme qui convertit des degrés Fahrenheit en degrés
+        Celsius. (entrée: nombre; sortie: nombre)
+      answer: |
+        f = float(input(""))
+        c = (f - 32) * 5 / 9
+        print(c)
+      tests:
+        - test: main(["32"])
+          desc: 32  -> 0
+        - test: main(["212"])
+          desc: 212  -> 100
+        - test: main(["10"])
+          desc: 10  -> -12.22222222222222
+
+  - type: Python
+    question:
+      wrap: true
+      text: |
+        Écrire un programme qui convertit des degrés Celsius en degrés
+        Fahrenheit. (entrée: nombre; sortie: nombre)
+      answer: |
+        c = float(input(""))
+        f = c * 9 / 5 + 32
+        print(f)
+      tests:
+        - test: main(["0"])
+          desc: 0 C -> 32 F
+        - test: main(["100"])
+          desc: 100 C -> 212 F
+
+  - type: Python
+    question:
+      wrap: true
+      text: |
+        Écrire un programme qui reçoit le rayon d’un cercle et qui affiche sa surface.
+      answer: |
+        import math
+        r = float(input(""))
+        print(math.pi * r * r)
+      tests:
+        - test: main(["1"])
+          desc: rayon 1 -> pi
+        - test: main(["2"])
+          desc: rayon 2 -> 4*pi
+
+  - type: Python
+    question:
+      wrap: true
+      text: |
+        Écrire un programme qui demande un nombre de secondes et qui affiche les
+        nombres d’heures, de minutes et de secondes correspondant (format H:M:S).
+      answer: |
+        s = int(input(""))
+        h = s // 3600
+        s = s % 3600
+        m = s // 60
+        sec = s % 60
+        print(f"{h}:{m}:{sec}")
+      tests:
+        - test: main(["3661"])
+          desc: 3661 -> 1:1:1
+        - test: main(["59"])
+          desc: 59 -> 0:0:59
