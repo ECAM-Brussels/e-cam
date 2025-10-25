@@ -19,7 +19,7 @@ services:
     build:
       context: .
       dockerfile: symapi.Dockerfile
-    command: python -m fastapi dev --host 0.0.0.0 symapi
+      target: dev
     develop:
       watch:
         - path: ./symapi.Dockerfile
