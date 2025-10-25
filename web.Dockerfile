@@ -1,14 +1,17 @@
+FROM pandoc/minimal:3.8.2.1 AS pandoc
+
 FROM node:slim AS base
 WORKDIR /app
 EXPOSE 3000
+
+COPY --from=pandoc /usr/local/bin/pandoc /usr/local/bin/
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         locales \
         python3 \
         python3-pip \
-        rsync \
-        wget && \
+        rsync && \
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen en_US.UTF-8 && \
     update-locale LANG=en_US.UTF-8 && \
@@ -17,10 +20,6 @@ RUN apt-get update && \
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
     LC_ALL=en_US.UTF-8
-
-RUN wget https://github.com/jgm/pandoc/releases/download/3.8.2/pandoc-3.8.2-1-amd64.deb && \
-    apt-get install -y ./pandoc-3.8.2-1-amd64.deb && \
-    rm pandoc-3.8.2-1-amd64.deb
 
 COPY requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt --break-system-packages
