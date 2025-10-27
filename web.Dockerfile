@@ -1,11 +1,10 @@
 FROM pandoc/minimal:3.8.2.1 AS pandoc
 
-FROM node:slim AS base
+FROM node:slim AS dev
 WORKDIR /app
 EXPOSE 3000
 
 COPY --from=pandoc /usr/local/bin/pandoc /usr/local/bin/
-
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         locales \
@@ -31,3 +30,35 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
+
+CMD ["npx", "vinxi", "dev", "--", "--host", "0.0.0.0"]
+
+FROM node:slim as builder
+WORKDIR /app
+
+COPY --from=pandoc /usr/local/bin/pandoc /usr/local/bin/
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        python3 \
+        python3-pip \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip3 install --no-cache-dir -r requirements.txt --break-system-packages
+
+COPY package*.json ./
+RUN npm ci --only=production
+
+COPY . .
+RUN npx prisma generate
+RUN npx graphql-codegen
+RUN npx vinxi build
+
+FROM node:slim as production
+WORKDIR /app
+EXPOSE 3000
+
+COPY package.json package-lock.json ./
+COPY --from=builder /app/.output ./.output
+COPY --from=builder /app/node_modules ./node_modules
+CMD ["npx", "vinxi", "start"]
