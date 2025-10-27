@@ -20,6 +20,8 @@ services:
       context: .
       dockerfile: symapi.Dockerfile
       target: dev
+    volumes:
+      - ./symapi/generated:/app/symapi/generated
     develop:
       watch:
         - path: ./symapi.Dockerfile
