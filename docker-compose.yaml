@@ -36,12 +36,6 @@ services:
       - '8000:8000'
     networks:
       - internal
-    healthcheck:
-      test: ['CMD', 'curl', '-f', '-I', 'http://localhost:8000/health']
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
   web:
     build:
       context: .
@@ -65,7 +59,10 @@ services:
           target: /app/public
           action: sync
         - path: ./prisma/schema.prisma
-          target: /app/public
+          target: /app/prisma/schema.prisma
+          action: sync+restart
+        - path: ./symapi/generated
+          target: /app/symapi/generated
           action: sync+restart
     volumes:
       - node_modules:/app/node_modules
@@ -87,8 +84,6 @@ services:
     restart: always
     depends_on:
       db:
-        condition: service_healthy
-      symapi:
         condition: service_healthy
 networks:
   internal:
