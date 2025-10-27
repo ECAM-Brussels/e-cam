@@ -19,6 +19,7 @@ services:
     build:
       context: .
       dockerfile: web.Dockerfile
+      target: dev
     environment:
       VITE_GRAPHQL_URL: http://symapi:8000/graphql
     networks:
