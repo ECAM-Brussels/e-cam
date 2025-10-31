@@ -3,13 +3,16 @@ title: HTML and CSS
 slideshow: true
 ---
 
-# Course outline
+# General information {.grid .grid-cols-2}
+
+::: col
+### Course outline
 
 #. HTML and CSS
 
-#. Component-based Architecture
+#. TypeScript and Component-based Architecture
 
-#. Server-Side Rendering
+#. Server-Side Rendering and deployment with Docker
 
 #. Databases
 
@@ -18,155 +21,35 @@ slideshow: true
 #. Client-Side Interactivity
 
 #. Review
-
-# Table of contents
-
-#. Requests and Responses
-
-#. Struture of a web page (HTML)
-
-#. Appearance of a web page (CSS)
-
-# Requests and Responses {.w-1--2}
-
-~~~ mermaid
-sequenceDiagram
-  participant client as Client
-  participant server as Server
-  client ->> server: Request
-  server ->> server: Processing request
-  server ->> client: Response
-~~~
-
-# Hello world {.w-1--2}
-
-~~~ html
-<!DOCTYPE html>
-<html>
-  <head>
-    <!-- Page metadata -->
-    <title>My WebSite</title>
-  </head>
-  <body>
-    <!-- Page contents -->
-    <h1>Hello World</h1>
-  </body>
-</html>
-~~~
-
-# Text and content
-
-From now on,
-we shall assume the code fragments
-to be placed within the page's `<body>`.
-
-~~~ html {.run .columns .columns-2}
-<h1>Heading of level 1 (title)</h1>
-<h2>Heading of level 2 (subtitle)</h2>
-<h6>Heading of level 6</h6>
-<p>This is a paragraph</p>
-<p>This is another paragraph</p>
-<p>
-  This may be <em>important</em>,
-  but some things are
-  <strong>even more important</strong>.
-</p>
-<p>
-  This is a link to
-  <a href="https://google.com">Google</a>,
-  but within the same website,
-  we tend to use <a href="/">relative links</a>.
-</p>
-~~~
-
-# Lists
-
-~~~ html {.run .columns .columns-2}
-<h1>Todo</h1>
-<ul>
-  <li>Wake up</li>
-  <li>Feed the dog</li>
-  <li>Walk the dog</li>
-</ul>
-
-<h1>Table of Contents</h1>
-<ol>
-  <li>Introduction</li>
-  <li>HTML</li>
-  <li>CSS</li>
-  <li>JavaScript</li>
-</ol>
-~~~
-
-::::: w-1--2
-::: remark
-- `ul`: unordered list
-- `ol`: ordered list
-- `li`: list item
 :::
-:::::
 
-# Table
+::: col
+### Assessment
 
-~~~ html {.run .columns-2}
-<table>
-  <thead>
-    <tr>
-      <th>Header cell 1</th>
-      <th>Header cell 2</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>A</td>
-      <td>B</td>
-    </tr>
-    <tr>
-      <td>C</td>
-      <td>D</td>
-    </tr>
-  </body>
-</table>
-~~~
+#. Programming exam (75%)
 
-# Forms and inputs
+#. Personal website (25%)
 
-~~~ html {.run .columns .columns-2}
-<form method="POST" action="/url">
-  <label>
-    Name:
-    <input name="name" />
-  </label>
-  <label>
-    Email:
-    <input type="email" name="email" />
-  </label>
-  <label>
-    Password:
-    <input type="password" name="password" />
-  </label>
-  <label>
-    Bored:
-    <select name="bored">
-      <option value="yes">Yes</option>
-      <option value="no">No</option>
-    </select>
-  </label>
-  <label>
-    Biography: <textarea name="biography" />
-  </label>
-  <button>Submit</button>
-</form>
-~~~
+   #. At least one published webpage (e.g. CV) with responsive design
+   #. Use of component-based architecture (Next.js/React)
+   #. Deployed with Docker
+   #. Basic blog or portfolio
+   #. Secured Authentication
+   #. Git history
+:::
 
-# Semantic and layout
+# Session outline
 
-- `<header>` – Page or section header.
-- `<footer>` – Page or section footer.
-- `<nav>` – Navigation section.
-- `<main>` – Main content of the page.
-- `<section>` – Thematic grouping of content.
-- `<article>` – Self-contained content.
-- `<aside>` – Sidebar content.
-- `<figure>` – Media with caption.
-- `<figcaption>` – Caption for figure.
+- Short demo
+
+- Set up VS Code
+
+  - Install the "Prettier - Code formatter" extension
+  - `Ctrl/Cmd+-,`, search and enable "format on save"
+  - `Ctrl/Cmd+Shift+P`: format document and choose prettier
+
+- Follow the following [web tutorial](https://openclassrooms.com/fr/courses/1603881-creez-votre-site-web-avec-html5-et-css3)
+
+- Create a basic web page with responsive design and upload it on your VM
+
+- For next time, install [Docker](https://docker.com)
