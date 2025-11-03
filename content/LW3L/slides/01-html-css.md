@@ -52,4 +52,8 @@ slideshow: true
 
 - Create a basic web page with responsive design and upload it on your VM
 
-- For next time, install [Docker](https://docker.com)
+- For next time, install:
+
+  - [Docker](https://docker.com)
+  - Git
+  - [NodeJS](https://nodejs.org/en)
