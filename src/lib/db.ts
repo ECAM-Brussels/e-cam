@@ -1,5 +1,3 @@
-'use server'
-
 import { type Options as ExerciseOptions } from './exercises/schemas'
 import { PrismaClient } from '@prisma/client'
 import { type Stroke } from '~/lib/board'
