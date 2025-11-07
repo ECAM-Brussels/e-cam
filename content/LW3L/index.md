@@ -8,8 +8,9 @@ title: Web Technologies
 
 ::: {.bg-white .rounded-xl .p-4 .shadow}
 
-## Outline
+## Slides
 
 1. [HTML and CSS](/LW3L/slides/01-html-css)
+2. [Components-based architecture](/LW3L/slides/02-components)
 
 :::
