@@ -8,9 +8,14 @@ title: Web Technologies
 
 ::: {.bg-white .rounded-xl .p-4 .shadow}
 
-## Slides
+## Resources
 
 1. [HTML and CSS](/LW3L/slides/01-html-css)
-2. [Components-based architecture](/LW3L/slides/02-components)
+2. [Components-based Architecture](/LW3L/slides/02-components)
+3. [Server-Side Rendering and Deployment with Docker](/LW3L/slides/03-ssr)
+4. Databases
+5. Sessions
+6. Client-Side Interactivity
+7. Review
 
 :::

@@ -143,6 +143,11 @@ Class              CSS
 `text-white`       `color: white;`
 `hover:text-white` `color:white;` on `hover`
 `lg:columns-2`     `columns: 2` when screen in large
+
+::: remark
+Best-practice is to make your website **mobile-first**.
+Use the `md:`, `lg:`, `xl:` prefixes to handle progressively larger screens.
+:::
 :::::
 
 ::::: col
@@ -314,4 +319,11 @@ We will show how git deployment works next session.
 
 - Do I understand **why** component-based architecture is used?
 
+- Are you using git and do you commit regularly?
+
 - Is Docker installed?
+
+::: info
+Next time,
+we will use Docker and git to deploy your website.
+:::
