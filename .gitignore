@@ -20,5 +20,7 @@ __pycache__
 data
 dist
 gitignore
+poetry.lock
+pyproject.toml
 src/gql
 src/routes/(generated)
