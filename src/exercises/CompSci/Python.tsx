@@ -1,15 +1,17 @@
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { hash, compare } from 'bcryptjs'
-import { For, isServer } from 'solid-js/web'
+import { createEffect, createSignal } from 'solid-js'
+import { For, isServer, Show } from 'solid-js/web'
 import { z } from 'zod'
+import Button from '~/components/Button'
 import Code from '~/components/Code'
 import Fa from '~/components/Fa'
 import Markdown from '~/components/Markdown'
 import { encrypt } from '~/lib/cryptography'
-import { createExerciseType } from '~/lib/exercises/base'
+import { createExerciseType, useExerciseContext } from '~/lib/exercises/base'
 import { wrapCode } from '~/lib/helpers'
 
-let execPython: (code: string, test: string) => Promise<string>
+export let execPython: (code: string, test: string) => Promise<string>
 if (isServer) {
   const { spawn } = await import('child_process')
   execPython = (code: string, test: string) => {
@@ -55,15 +57,33 @@ function runTests(code: string, tests: string[], hashes?: string[]) {
 
 const { Component, schema } = createExerciseType({
   name: 'Python',
-  Component: (props) => (
-    <>
-      <Markdown value={props.question.text} />
-      <Code class="w-full" lang="python" name="attempt" value={props.attempt ?? ''} run />
-    </>
-  ),
+  Component: (props) => {
+    const exercise = useExerciseContext()
+    const [code, setCode] = createSignal('')
+    createEffect(() => setCode(props.attempt ?? props.question.initialCode))
+    return (
+      <>
+        <Markdown value={props.question.text} />
+        <Code
+          class="w-full"
+          lang="python"
+          name="attempt"
+          value={code()}
+          run
+          onCodeUpdate={setCode}
+        />
+        <Show when={!exercise?.readOnly}>
+          <Button type="button" onClick={() => setCode(props.question.initialCode)}>
+            Reset
+          </Button>
+        </Show>
+      </>
+    )
+  },
   question: z
     .object({
       text: z.string().describe('Question, entered as markdown'),
+      initialCode: z.string().default(''),
       tests: z
         .string()
         .or(z.object({ test: z.string(), desc: z.string() }))

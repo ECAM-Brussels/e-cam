@@ -45,10 +45,10 @@ class System:
         else:
             b = sympy.Matrix([random.choice(X) for _ in range(n)])
             b[-1] = b[-1] if b[-1] != 0 else 1
-            b = L**(-1) * b
+            b = L ** (-1) * b
         system = A * sympy.Matrix(variables)
         return [sympy.Eq(system[i], b[i], evaluate=False) for i in range(n)]
-    
+
     @strawberry.field
     def check(equations: list[Math], variables: list[Math], x: list[Math]) -> bool:
         subs = dict(zip(variables, x))

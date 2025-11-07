@@ -9,6 +9,7 @@ import { lazy } from 'solid-js'
 import { z } from 'zod'
 import { schema as BalanceSchema } from '~/exercises/Chemistry/Balance'
 import { schema as MolarMassSchema } from '~/exercises/Chemistry/MolarMass'
+import { schema as OutputSchema } from '~/exercises/CompSci/Output'
 import { schema as PythonSchema } from '~/exercises/CompSci/Python'
 import { schema as ArgumentSchema } from '~/exercises/Math/Argument'
 import { schema as CalculateSchema } from '~/exercises/Math/Calculate'
@@ -43,6 +44,7 @@ import { registerAssignment } from '~/vite/assignments'
 export const exercises = {
   Balance: lazy(() => import('~/exercises/Chemistry/Balance')),
   MolarMass: lazy(() => import('~/exercises/Chemistry/MolarMass')),
+  Output: lazy(() => import('~/exercises/CompSci/Output')),
   Python: lazy(() => import('~/exercises/CompSci/Python')),
   Argument: lazy(() => import('~/exercises/Math/Argument')),
   Calculate: lazy(() => import('~/exercises/Math/Calculate')),
@@ -75,6 +77,7 @@ export const exercises = {
 export const exerciseSchema = z.discriminatedUnion('type', [
   BalanceSchema,
   MolarMassSchema,
+  OutputSchema,
   PythonSchema,
   ArgumentSchema,
   CalculateSchema,

@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: "Nombres trigonométriques dans un triangle rectangle"
+title: 'Nombres trigonométriques dans un triangle rectangle'
 courses:
   - trigonometry
   - PM1C

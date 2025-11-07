@@ -1,5 +1,6 @@
 import fastapi
 from fastapi.middleware.cors import CORSMiddleware
+import os
 import strawberry
 import strawberry.fastapi
 import sympy
@@ -85,3 +86,11 @@ app.include_router(graphql, prefix="/graphql")
 @app.head("/health")
 async def health_check():
     return {"status": "ok"}
+
+
+@app.on_event("startup")
+async def generate_schema():
+    path = "./symapi/generated/schema.graphql"
+    with open(path, "w") as f:
+        f.write(str(schema))
+    print(f"GraphQL schema generated at {path}")

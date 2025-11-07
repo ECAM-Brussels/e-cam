@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: "Factorisation: polynômes du second degré unitaires"
+title: 'Factorisation: polynômes du second degré unitaires'
 prerequisites:
   - /skills/algebra/factor/binomial-formulas
 video: https://youtube.com/embed/2U0qdBDpkjU

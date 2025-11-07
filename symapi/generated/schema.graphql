@@ -1,0 +1,208 @@
+type ChemicalEquation {
+  react: [Formula!]!
+  prod: [Formula!]!
+  products: [Substance!]!
+  reactants: [Substance!]!
+}
+
+type Chemistry {
+  substance(formula: Formula!): Substance!
+  equation(reactants: [Formula!]!, products: [Formula!]!): ChemicalEquation!
+}
+
+type ConicSection {
+  equation: Math!
+  asymptotes: [Expression!]!
+  direction: String!
+  directrix: Expression!
+  type: String!
+  x0: Expression!
+  y0: Expression!
+  center: Expression!
+  foci: Expression!
+  isCircle: Boolean!
+  radius: Expression!
+  vertices: Expression!
+}
+
+type Expression {
+  """Current mathematical expression"""
+  expr: Math!
+
+  """Absolute value (or modulus for a complex number)"""
+  abs: Expression!
+
+  """Add `expr` to the current expression"""
+  add(expr: Math!): Expression!
+
+  """Argument for a complex number"""
+  arg: Expression!
+  args: [Expression!]!
+
+  """Coefficient of `x`^`n`"""
+  coeff(x: Math! = "x", n: Int! = 1): Expression!
+
+  """Express a quadratic equation as a perfect square"""
+  completeSquare(x: Math = "x"): Expression!
+
+  """Count how many times an expression appears"""
+  count(expr: Math!): Int!
+
+  """Differentiate n times with respect to a given variable"""
+  diff(x: Math! = "x", n: Int! = 1): Expression!
+  differentialQuotient(x0: Math!, x: Math! = "x"): Expression!
+
+  """Expand an expression"""
+  expand: Expression!
+
+  """Write a complex number under the a + bi form"""
+  expandComplex: Expression!
+
+  """Numerical evaluation"""
+  evalf(precision: Int! = 15): Expression!
+
+  """Factor an expression"""
+  factor: Expression!
+  func: String!
+  im: Expression!
+
+  """Get element with a particular index from a list"""
+  index(i: Int!): Expression!
+
+  """
+  Check whether the difference between the current expression and `expr` is sufficiently small
+  """
+  isApproximatelyEqual(expr: Math!, error: Float!): Boolean!
+
+  """Check if a complex number is in standard form"""
+  isComplexRectangular(strict: Boolean = false): Boolean!
+
+  """Perform equality check"""
+  isEqual(expr: Math!, complex: Boolean = false, modulo: Math = null, assumptions: Boolean = true): Boolean!
+
+  """Check if a complex number is in exponential form"""
+  isExponential: Boolean!
+  isFinite: Boolean!
+
+  """Check if a number is nonnegative"""
+  isNonnegative: Boolean!
+
+  """Check if it's a number"""
+  isNumber: Boolean!
+
+  """Check if a complex number is in polar form"""
+  isPolar(strict: Boolean = false): Boolean!
+  isRowEquivalent(entries: [[Math!]!]!): Boolean!
+
+  """"""
+  isSymmetricSet: Boolean!
+
+  "\nCheck if the current expression (a mathematical set,\nas given by `solveset` for example) is equal to a given set.\n"
+  isSetEqual(S: MathSet!, complex: Boolean = false): Boolean!
+
+  """Check if the current expression is fully expanded"""
+  isExpanded: Boolean!
+
+  """Check if the current expression is fully factored"""
+  isFactored: Boolean!
+
+  """Check if the current expression is a float or an int"""
+  isNumeric: Boolean!
+
+  """"""
+  isPolynomial(symbols: [Math!]! = []): Boolean!
+
+  """Evaluate the limit of the current expression at `x` = `x0`"""
+  limit(x0: Math!, x: Math = "x"): Expression!
+
+  """Transform the current expression into a list of expressions."""
+  list(sort: SortOptions = nosort): [Expression!]!
+
+  """Maximum value of the current expression"""
+  maximum(x: Math = "x", S: MathSet = "\\mathbb{R}"): Expression!
+
+  """Minimum value of the current expression"""
+  minimum(x: Math = "x", S: MathSet = "\\mathbb{R}"): Expression!
+
+  """
+  Multiply a polynomial so that it could be factored without fractions if all its roots are rational.
+  """
+  normalizeRoots: Expression!
+  opposite: Expression!
+  real: Expression!
+  rref: Expression!
+  simplify: Expression!
+
+  """
+  Get the solution set of an equation, which can be intersected with [`a`, `b`] if necessary
+  """
+  solveset(S: MathSet = null, complex: Boolean = null, x: Math = "x"): Expression!
+
+  """Subtract `expr` from the current expression"""
+  subtract(expr: Math!): Expression!
+
+  """Get stationary points of an expression"""
+  stationaryPoints(x: Math = "x", S: MathSet = "\\mathbb{R}"): Expression!
+  str: String!
+  subs(expr: Math!, val: Math!): Expression!
+  subsIn(expr: Math!, var: Math!): Expression!
+  tangent(x0: Math!, x: Math = "x", y: Math = "y", normal: Boolean = false): Expression!
+}
+
+scalar Formula
+
+"""Mathematical formula"""
+scalar Math
+
+"""Mathematical set"""
+scalar MathSet
+
+type Query {
+  chemistry: Chemistry!
+  conicSection(equation: Math!): ConicSection!
+
+  """Analyze a mathematical expression"""
+  expression(expr: Math!): Expression!
+  matrix(entries: [[Math!]!]!): Expression!
+  vector(coordinates: [Math!]!): Vector!
+
+  """Systems"""
+  system: System!
+
+  """Set"""
+  set(expr: MathSet!): Expression!
+  interpolate(points: [[Math!]!]!, line: Math = null, perpendicular: Boolean = false, x: Math! = "x", y: Math! = "y"): Expression!
+}
+
+enum SortOptions {
+  abs
+  nosort
+}
+
+type Substance {
+  """Substance formula"""
+  formula: Formula!
+  coeff: Float!
+  mass: Expression!
+  latex: String!
+}
+
+type System {
+  generate(variables: [Math!]!, Lentries: [Math!]!, Uentries: [Math!]!, X: [Math!]!, eliminationCount: Int, zeroRows: Int! = 0, impossible: Boolean! = false): [Math!]!
+  check(equations: [Math!]!, variables: [Math!]!, x: [Math!]!): Boolean!
+  solve(equations: [Math!]!, variables: [Math!]!): [Expression!]!
+}
+
+type Vector {
+  coordinates: [Math!]!
+  angle(coordinates: [Math!]!, degrees: Boolean! = false): Expression!
+  cross(coordinates: [Math!]!): Vector!
+  dot(coordinates: [Math!]!): Expression!
+  eulerRotate(phi: Math!, theta: Math!, psi: Math!): Vector!
+  expr: [Expression!]!
+  isEqual(coordinates: [Math!]!): Boolean!
+  norm: Expression!
+  normalize: Vector!
+  permute(swaps: [[Int!]!]!): Vector!
+  unitVector: Vector!
+}

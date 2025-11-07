@@ -1,7 +1,8 @@
+import { safeStat } from './assignments'
 import { PrismaClient } from '@prisma/client'
 import { exec as execWithCallback } from 'child_process'
 import glob from 'fast-glob'
-import { mkdir, readFile, stat } from 'fs/promises'
+import { mkdir, readFile } from 'fs/promises'
 import yaml from 'js-yaml'
 import { dirname, relative, resolve } from 'path'
 import { promisify } from 'util'
@@ -52,7 +53,7 @@ async function generatePage(file: string, prisma: PrismaClient, force: boolean =
   }
 
   let cmd = [
-    `poetry run pandoc "${file}"`,
+    `pandoc "${file}"`,
     `-o "${outputPath}"`,
     '-t html5',
     `--template src/vite/${template}`,
@@ -67,8 +68,8 @@ async function generatePage(file: string, prisma: PrismaClient, force: boolean =
   }
 
   try {
-    const [inStat, outStat] = await Promise.all([stat(file), stat(outputPath)])
-    if (!force && outStat.mtime >= inStat.mtime) {
+    const [inStat, outStat] = await Promise.all([safeStat(file), safeStat(outputPath)])
+    if (!force && outStat.mtime !== 0 && outStat.mtime >= inStat.mtime) {
       return
     }
   } catch {}
@@ -80,7 +81,7 @@ async function generatePage(file: string, prisma: PrismaClient, force: boolean =
       console.log(`Error converting ${file} to ${outputPath}:`, stderr)
     }
   } catch (error) {
-    console.error('Error while converting with pandoc:', error)
+    console.error(`Error while converting ${file} with pandoc:`, error)
   }
 }
 
@@ -106,25 +107,28 @@ async function generateImports() {
 
 async function buildAll(prisma: PrismaClient, force = false) {
   const pages = await glob.glob('content/**/*.md')
-  for (const file of pages) {
-    generatePage(file, prisma, force)
-  }
+  await Promise.all(pages.map((file) => generatePage(file, prisma, force)))
 }
+
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
 
 const pandocPlugin = (): Plugin => {
   let prisma: PrismaClient
   return {
     name: 'pandoc-plugin',
-    buildStart() {
-      prisma = new PrismaClient({
-        datasources: { db: { url: process.env.DATABASE_URL } },
-      })
+    async buildStart() {
+      prisma =
+        globalForPrisma.prisma ||
+        new PrismaClient({
+          datasources: { db: { url: process.env.DATABASE_URL } },
+        })
+      if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
       const force = process.env.NODE_ENV !== 'development'
-      buildAll(prisma, force)
+      await buildAll(prisma, force)
     },
     async handleHotUpdate({ file }) {
       if (file.endsWith('.md') && file.startsWith(resolve('content'))) {
-        generatePage(file, prisma, true)
+        await generatePage(file, prisma, true)
       }
     },
   }

@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: "Valeurs trigonométriques exactes avec formules trigonométriques"
+title: 'Valeurs trigonométriques exactes avec formules trigonométriques'
 courses:
   - trigonometry
   - PM1C
@@ -18,12 +18,12 @@ body:
         trouvez la valeur exacte de
       exercises:
         - F:
-           - cos
-           - sin
-           - tan
-           - cot
+            - cos
+            - sin
+            - tan
+            - cot
           Alpha:
-           - \frac{\pi}{12}
-           - \frac{\pi}{8}
-           - \frac{5\pi}{12}
+            - \frac{\pi}{12}
+            - \frac{\pi}{8}
+            - \frac{5\pi}{12}
           K: [0]

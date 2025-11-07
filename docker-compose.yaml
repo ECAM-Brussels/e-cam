@@ -1,0 +1,93 @@
+services:
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: hello
+      MYSQL_DATABASE: ecam
+    networks:
+      - internal
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+  symapi:
+    build:
+      context: .
+      dockerfile: symapi.Dockerfile
+      target: dev
+    volumes:
+      - ./symapi/generated:/app/symapi/generated
+    develop:
+      watch:
+        - path: ./symapi.Dockerfile
+          action: rebuild
+        - path: ./requirements.txt
+          action: rebuild
+        - path: ./symapi
+          target: /app/symapi
+          action: sync
+    restart: always
+    ports:
+      - '8000:8000'
+    networks:
+      - internal
+  web:
+    build:
+      context: .
+      dockerfile: web.Dockerfile
+      target: dev
+    develop:
+      watch:
+        - path: ./web.Dockerfile
+          action: rebuild
+        - path: ./entrypoint.sh
+          action: rebuild
+        - path: ./package.json
+          action: rebuild
+        - path: ./src
+          target: /app/src
+          action: sync
+        - path: ./content
+          target: /app/content
+          action: sync
+        - path: ./public
+          target: /app/public
+          action: sync
+        - path: ./prisma/schema.prisma
+          target: /app/prisma/schema.prisma
+          action: sync+restart
+        - path: ./symapi/generated
+          target: /app/symapi/generated
+          action: sync+restart
+    volumes:
+      - node_modules:/app/node_modules
+      - ./node_modules:/mnt/node_modules
+    environment:
+      VITE_AZURE_CLIENT_ID: af790946-79b3-435e-a2a1-f566e09a63f7
+      VITE_AZURE_TENANT_ID: e3d6f09e-9ba9-4a36-ad75-d9039be4fe29
+      VITE_AZURE_CLIENT_SECRET: cG-8Q~o_.-xtYPosirjAEZJu5alUccUrsVM2xas1
+      VITE_AZURE_REDIRECT_URI: http://localhost:3000/auth/callback
+      VITE_GRAPHQL_URL: http://symapi:8000/graphql
+      VITE_PASSPHRASE: hello
+      VITE_SESSION_SECRET: Kr2vM0bSdsPYd0cfuCul7RzWCZR0f34v
+      DATABASE_URL: mysql://root:hello@db:3306/ecam
+    ports:
+      - '3000:3000'
+      - '4000:4000'
+    networks:
+      - internal
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+networks:
+  internal:
+    driver: bridge
+volumes:
+  db_data:
+  node_modules:

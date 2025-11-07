@@ -153,6 +153,7 @@ export function createExerciseType<
                   <exercise.Component
                     question={question()}
                     attempt={props.attempts.at(-1)?.attempt}
+                    context={{ readOnly: readOnly() }}
                   />
                 </div>
               </Show>
