@@ -13,7 +13,7 @@ title: Web Technologies
 1. [HTML and CSS](/LW3L/slides/01-html-css)
 2. [Components-based Architecture](/LW3L/slides/02-components)
 3. [Server-Side Rendering and Deployment with Docker](/LW3L/slides/03-ssr)
-4. Databases
+4. [Database](/LW3L/slides/04-database)
 5. Sessions
 6. Client-Side Interactivity
 7. Review

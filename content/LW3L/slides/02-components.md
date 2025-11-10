@@ -45,6 +45,8 @@ Create your Next.js project:
 npx create-next-app@latest
 ~~~
 
+Pick `Yes, use recommended defaults`.
+
 To start the development server:
 
 ~~~ bash
