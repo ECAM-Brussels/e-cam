@@ -32,7 +32,7 @@ lang: en
 - Merge sort, quicksort
 - Longest common subsequence
 - Huffman encoding
-- BFS, DFS, Shortest paths, topological sort
+- Signals, BFS, DFS, Shortest paths, topological sort
 - Dijkstra, Bellman-Ford, Floyd-Warshall, Prim, PageRank
 
 #### Possible questions

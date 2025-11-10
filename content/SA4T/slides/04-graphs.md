@@ -66,6 +66,120 @@ adj = {
 }
 ```
 
+# Application in software development: reactivity {.grid .grid-cols-2 .gap-8}
+
+~~~ python {.run}
+running = []
+
+class Signal:
+
+    def __init__(self, value):
+        self._value = value
+        self.subscribers = set()
+
+    @property
+    def value(self):
+        if running:
+            self.subscribers.add(running[-1])
+        return self._value
+
+    @value.setter
+    def value(self, value):
+        self._value = value
+        for effect in self.subscribers:
+            effect()
+
+
+def effect(fn):
+    def wrapped():
+        running.append(wrapped)
+        fn()
+        running.pop()
+    wrapped()
+# --- start
+hp = Signal(100)
+
+@effect
+def on_hp_change():
+    if hp.value > 20:
+        print("You have", hp.value, "HP")
+    else:
+        print("Careful! Only", hp.value, "HP left")
+
+
+hp.value = 90
+hp.value = 70
+hp.value = 15
+~~~
+
+::::: col
+We will show how `Signal` and `effect` on the next slide.
+
+- **Signal**: variable that changes over time and that is usually has an impact on the UI.
+
+- **Effect**: function that is run whenever an underlying signal changes.
+  Generally used to update the UI.
+
+::: info
+- All web frameworks (Angular, Vue, Svelte, Solid, Qwik, etc.) except React
+  use this pattern at the core of their reactivity system.
+
+- In a way,
+  this is "Excel programming"
+:::
+:::::
+
+# Signal Implementation {.grid .grid-cols-2 .gap-8}
+
+~~~ python
+running = []
+class Signal:
+    def __init__(self, value):
+        self._value = value
+        self.subscribers = set()
+
+    @property
+    def value(self):
+        if running:
+            self.subscribers.add(running[-1])
+        return self._value
+
+    @value.setter
+    def value(self, value):
+        self._value = value
+        for effect in self.subscribers:
+            effect()
+
+def effect(fn):
+    def wrapped():
+        running.append(wrapped)
+        fn()
+        running.pop()
+    wrapped()
+~~~
+
+::: break-inside-avoid
+- `running`: stack used to keep track of currently running effects.
+  Later, we will ensure that effects push themselves onto `running` before running,
+  and remove themselves afterwards.
+
+- `self._value`: used to store the current value of the signal.
+
+- `self.subscribers`: set containing the effects that need to be rerun.
+  In a way, this is an **adjacency set**.
+
+- L9-13: signal getter.
+  If the signal is read inside an effect,
+  we add the latter in `self.subscribers`.
+
+- L15-19: signal setter.
+  We change the value
+  and rerun the dependent effects.
+
+- L22-28: effect decorator.
+  We change `fn` so that it pushes itself on and off the `running` stack.
+:::
+
 # Graph exploration {.columns-2}
 
 Two approaches are possible:
