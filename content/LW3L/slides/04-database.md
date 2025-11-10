@@ -115,6 +115,8 @@ services:
   we even trigger a rebuild or a restart.
 
 - In *app*, we supply the url to the postgres database.
+
+- We now use `docker compose watch` to start developing.
 :::::
 
 # Install drizzle {.w-1--2}
@@ -144,11 +146,11 @@ we'll need to import `db`.
 Let's describe our table structure in `db/schema.ts`.
 
 ~~~ ts
-import { boolean, pgTable, uuid, varchar } from 'drizzle-orm/pg-core'
+import { boolean, pgTable, text, uuid } from 'drizzle-orm/pg-core'
 
 export const tasksTable = pgTable('tasks', {
   id: uuid().defaultRandom().primaryKey(),
-  title: varchar().notNull(),
+  title: text().notNull(),
   done: boolean().default(false).notNull(),
 })
 ~~~
