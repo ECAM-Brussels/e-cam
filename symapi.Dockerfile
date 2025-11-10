@@ -1,4 +1,6 @@
-FROM python:3.14.0-slim-trixie AS builder
+ARG PYTHON_VERSION="3.14.0-slim-trixie"
+
+FROM python:${PYTHON_VERSION} AS builder
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -10,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --prefix=/install --no-cache-dir -r requirements.txt
 
-FROM builder AS dev
+FROM python:${PYTHON_VERSION} AS dev
 EXPOSE 8000
 
 COPY symapi symapi
