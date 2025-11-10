@@ -13,6 +13,7 @@ COPY requirements.txt .
 RUN pip install --prefix=/install --no-cache-dir -r requirements.txt
 
 FROM python:${PYTHON_VERSION} AS dev
+WORKDIR /app
 EXPOSE 8000
 
 COPY symapi symapi
@@ -21,6 +22,6 @@ COPY --from=builder /install /usr/local
 CMD ["python", "-m", "fastapi", "dev", "--host", "0.0.0.0", "symapi"]
 
 
-FROM dev as prod
+FROM dev AS prod
 EXPOSE 8000
 CMD ["python", "-m", "fastapi", "run", "--workers", "8", "symapi"]
