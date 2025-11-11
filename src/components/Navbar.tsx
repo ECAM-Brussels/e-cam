@@ -27,6 +27,9 @@ const Logo = () => (
     <NavbarItem class="font-bold text-2xl text-slate-600 border-b-0" href="/">
       <span>e</span>
       <span class="mx-px text-gray-400">·</span>cam
+      <Show when={import.meta.env.DEV}>
+        <span class="font-thin text-lg text-green-700"> (dev)</span>
+      </Show>
     </NavbarItem>
   </ul>
 )
