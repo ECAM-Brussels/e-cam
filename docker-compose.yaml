@@ -42,8 +42,8 @@ services:
         - path: ./prisma
           target: /app/prisma
           action: rebuild
-        - path: ./symapi/generated
-          target: /app/symapi/generated
+        - path: ./symapi/generated/schema.graphql
+          target: /app/symapi/generated/schema.graphql
           action: rebuild
         - path: ./src
           target: /app/src
