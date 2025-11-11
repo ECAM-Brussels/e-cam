@@ -137,6 +137,56 @@ function App() {
   and check it is the same as `storedPassword`.
 :::::
 
+# Session persistence {.grid .grid-cols-2}
+
+::::: break-inside-avoid
+::: question
+How do we persist sessions after logging in?
+:::
+
+We use **cookies**.
+
+::: definition
+A cookie is a piece of data that the client sends with every request until expiration.
+:::
+
+::: warning
+Cookies can be faked.
+:::
+:::::
+
+```mermaid
+sequenceDiagram
+  participant browser as Browser
+  participant server as Server
+  browser ->> server: POST /login
+  server ->> server: DB check and Cookie generation
+  server ->> browser: Set-Cookie: session=token;
+  browser ->> server: Request + Cookie
+  server ->> server: Use cookie to identify user
+```
+
+# Signed cookie {.w-1--2}
+
+::: definition
+A cookie is a piece of data that the client sends with every request until expiration.
+:::
+
+Authentication cookies are generally signed to ensure they aren't faked.
+
+$$
+\underbrace{\texttt{ngy@ecam.be}}_{\text{value}};
+\underbrace{\texttt{6953c8d7890a1ef90d3028be3...}}_{
+  \text{Signature} =
+  \texttt{hash}(
+    \texttt{secret} + \texttt{value}
+  )
+}
+$$
+
+In the above,
+you need to know the secret to calculate the signature.
+
 # Database {.w-1--2}
 
 Let's add a `users` table.
@@ -174,24 +224,40 @@ export async function register(form: FormData) {
 ~~~
 :::
 
-# Cookies
+# Cookies {.grid .grid-cols-2}
 
+::::: break-inside-avoid
 ~~~ ts
 'use server'
 
-const secret = process.env.SECRET!
+const secret = process.env.SECRET
 
 async function createSessionCookie(email: password) {
+  const signature = await hash(secret + email, 10)
   const cookieStore = await cookies()
-  cookieStore.set('session', await hash(secret + email, 10))
+  cookieStore.set('session', email + ';' + signature)
 }
 
 async function checkSessionCookie() {
-  const session = (await cookies()).get('session')
-  const [email, hashed] = session.split(';')
-  return await compare(hashed, secret + email) ? email : null
+  const cookieStore = await cookies()
+  const sessionCookie = cookieStore.get('session')
+  const [email, signature] = sessionCookie.split(';')
+  const correct = await compare(signature, secret + email)
+  return correct ? email : null
 }
 ~~~
+:::::
+
+::::: break-inside-avoid
+- `secret` is an **environment variable** only known to the server.
+  You can set it in an `.env` file or via Docker Compose.
+  (In the previous session, we defined `DATABASE_URL` in Docker Compose).
+
+- `createSessionCookie` creates a **signed cookie**
+  that contains an email.
+
+- `checkSessionCookie` checks that the signature is correct.
+:::::
 
 # Loggin in
 
@@ -220,12 +286,11 @@ export async function login(form: FormData) {
 
 export async function getUser() {
   const email = await checkSessionCookie()
-  if (email === null) return null
   const user = await db
     .select()
     .from(usersTable)
     .where(eq(usersTable.email, email))
-  return user ?? null
+  return user.at(0) ?? null
 }
 ~~~
 :::::

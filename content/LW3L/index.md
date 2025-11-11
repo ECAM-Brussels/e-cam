@@ -15,7 +15,7 @@ title: Web Technologies
 3. [Server-Side Rendering and Deployment with Docker](/LW3L/slides/03-ssr)
 4. [Database](/LW3L/slides/04-database)
 5. [Sessions](/LW3L/slides/05-sessions)
-6. Client-Side Interactivity
+6. [Client-Side Interactivity](/LW3L/slides/06-interactivity)
 7. Review
 
 :::
