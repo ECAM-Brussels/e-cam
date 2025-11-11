@@ -7,6 +7,7 @@ import { transform } from '~/lib/repl/babel'
 
 type JavascriptProps = Props & {
   framework?: 'react' | 'solid' | 'svelte'
+  render?: string
 }
 
 export default function Javascript(props: JavascriptProps) {
@@ -14,7 +15,7 @@ export default function Javascript(props: JavascriptProps) {
     async () =>
       dedent`
         <script type="module">
-        ${await transform(props.value, props.framework)}
+        ${await transform(props.value, props.framework, props.render)}
         </script>
       `,
     { initialValue: '' },

@@ -16,6 +16,7 @@ type CodeProps = {
   lang: string
   name?: string
   readOnly?: boolean
+  render?: string
   run?: boolean
   runImmediately?: boolean
   onCodeUpdate?: (newValue: string) => void
@@ -146,7 +147,12 @@ export default function Code(props: CodeProps) {
       <Show
         when={['tsx', 'js', 'ts', 'javascript', 'typescript'].includes(props.lang) && props.run}
       >
-        <Javascript value={codeToRun()} framework={props.framework} tailwind={props.tailwind} />
+        <Javascript
+          value={codeToRun()}
+          framework={props.framework}
+          tailwind={props.tailwind}
+          render={props.render}
+        />
       </Show>
       <Show when={props.lang === 'dot' && props.run}>
         <Dot value={codeToRun()} />
