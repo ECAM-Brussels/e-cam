@@ -5,10 +5,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: hello
       MYSQL_DATABASE: ecam
-    networks:
-      - internal
     volumes:
-      - db_data:/var/lib/mysql
+      - /var/lib/mysql
     healthcheck:
       test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
       interval: 10s
@@ -24,8 +22,6 @@ services:
       - ./symapi/generated:/app/symapi/generated
     develop:
       watch:
-        - path: ./symapi.Dockerfile
-          action: rebuild
         - path: ./requirements.txt
           action: rebuild
         - path: ./symapi
@@ -34,8 +30,6 @@ services:
     restart: always
     ports:
       - '8000:8000'
-    networks:
-      - internal
   web:
     build:
       context: .
@@ -43,11 +37,13 @@ services:
       target: dev
     develop:
       watch:
-        - path: ./web.Dockerfile
-          action: rebuild
-        - path: ./entrypoint.sh
-          action: rebuild
         - path: ./package.json
+          action: rebuild
+        - path: ./prisma
+          target: /app/prisma
+          action: rebuild
+        - path: ./symapi/generated
+          target: /app/symapi/generated
           action: rebuild
         - path: ./src
           target: /app/src
@@ -58,15 +54,9 @@ services:
         - path: ./public
           target: /app/public
           action: sync
-        - path: ./prisma/schema.prisma
-          target: /app/prisma/schema.prisma
-          action: sync+restart
-        - path: ./symapi/generated
-          target: /app/symapi/generated
-          action: sync+restart
     volumes:
-      - node_modules:/app/node_modules
-      - ./node_modules:/mnt/node_modules
+      - /app/src/routes/\(generated\)
+      - /app/node_modules
     environment:
       VITE_AZURE_CLIENT_ID: af790946-79b3-435e-a2a1-f566e09a63f7
       VITE_AZURE_TENANT_ID: e3d6f09e-9ba9-4a36-ad75-d9039be4fe29
@@ -79,15 +69,7 @@ services:
     ports:
       - '3000:3000'
       - '4000:4000'
-    networks:
-      - internal
     restart: always
     depends_on:
       db:
         condition: service_healthy
-networks:
-  internal:
-    driver: bridge
-volumes:
-  db_data:
-  node_modules:
