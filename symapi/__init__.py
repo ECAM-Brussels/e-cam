@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 import fastapi
 from fastapi.middleware.cors import CORSMiddleware
 import os
@@ -72,7 +73,25 @@ class Query:
 
 schema = strawberry.Schema(Query)
 graphql = strawberry.fastapi.GraphQLRouter(schema)
-app = fastapi.FastAPI()
+
+
+@asynccontextmanager
+async def lifespan(app: fastapi.FastAPI):
+    print("Hello")
+    path = "./symapi/generated/schema.graphql"
+    content = str(schema)
+    old = None
+    if os.path.exists(path):
+        with open(path, "r") as f:
+            old = f.read()
+    if content != old:
+        with open(path, "w") as f:
+            f.write(str(schema))
+        print(f"GraphQL schema generated at {path}")
+    yield
+
+
+app = fastapi.FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -86,11 +105,3 @@ app.include_router(graphql, prefix="/graphql")
 @app.head("/health")
 async def health_check():
     return {"status": "ok"}
-
-
-@app.on_event("startup")
-async def generate_schema():
-    path = "./symapi/generated/schema.graphql"
-    with open(path, "w") as f:
-        f.write(str(schema))
-    print(f"GraphQL schema generated at {path}")
