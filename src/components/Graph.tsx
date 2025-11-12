@@ -63,6 +63,8 @@ export default function Graph(props: {
             style: {
               shape: 'round-rectangle',
               'background-color': '#bae6fd',
+              'border-style': 'solid',
+              'border-width': (el) => (el.data('zpd') ? '2px' : '0'),
               'font-family': 'Fira Sans',
               'font-weight': 'lighter',
               label: 'data(label)',

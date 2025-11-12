@@ -338,6 +338,25 @@ function gradeToColor(correct: number, incorrect: number, total = 10) {
   return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`
 }
 
+function inZPD(
+  assignments: Prisma.AssignmentGetPayload<{
+    select: { attempts: true; url: true; requiredBy: { select: { url: true } } }
+  }>[],
+  url: string,
+) {
+  const neighbours = assignments.filter((a) => a.requiredBy.map((n) => n.url).includes(url))
+  const current = assignments.filter((a) => a.url === url).at(0)!
+  const correct = current.attempts.filter((a) => a.correct).length
+  const total = current.attempts.length
+  if (total >= 5 && correct / total >= 0.8) return false
+  for (const neighbour of neighbours) {
+    const correct = neighbour.attempts.filter((a) => a.correct).length
+    const total = neighbour.attempts.length
+    if (total < 5 || correct / total < 0.8) return false
+  }
+  return true
+}
+
 export const getAssignmentGraph = query(
   async (
     where: Prisma.AssignmentFindManyArgs['where'] = {},
@@ -376,6 +395,7 @@ export const getAssignmentGraph = query(
     ).map(({ courses, ...info }) => ({ ...info, courses: courses.map((r) => r.code) }))
     const vertices = data.map((assignment) => ({
       data: {
+        zpd: inZPD(data, assignment.url),
         id: assignment.url,
         label: assignment.page.title,
         parent: courses.filter((c) => assignment.courses.includes(c)).at(0),
