@@ -350,7 +350,7 @@ function inZPD(
     const total = assignment.attempts.length
     if (total >= 5 && correct / total >= 0.8) return true
     for (const neighbour of assignment.requiredBy) {
-      const n = assignments.filter(a => a.url === neighbour.url).at(0)
+      const n = assignments.filter((a) => a.url === neighbour.url).at(0)
       if (n && isUnderstood(n)) return true
     }
     return false
