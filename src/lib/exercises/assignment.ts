@@ -5,6 +5,7 @@ import { type Options, optionsSchema } from './schemas'
 import { type Prisma } from '@prisma/client'
 import { query, redirect } from '@solidjs/router'
 import { type ElementDefinition } from 'cytoscape'
+import { memoize } from 'lodash-es'
 import { lazy } from 'solid-js'
 import { z } from 'zod'
 import { schema as BalanceSchema } from '~/exercises/Chemistry/Balance'
@@ -344,15 +345,22 @@ function inZPD(
   }>[],
   url: string,
 ) {
+  const isUnderstood = memoize((assignment: (typeof assignments)[number]): boolean => {
+    const correct = assignment.attempts.filter((a) => a.correct).length
+    const total = assignment.attempts.length
+    if (total >= 5 && correct / total >= 0.8) return true
+    for (const neighbour of assignment.requiredBy) {
+      const n = assignments.filter(a => a.url === neighbour.url).at(0)
+      if (n && isUnderstood(n)) return true
+    }
+    return false
+  })
+
   const neighbours = assignments.filter((a) => a.requiredBy.map((n) => n.url).includes(url))
   const current = assignments.filter((a) => a.url === url).at(0)!
-  const correct = current.attempts.filter((a) => a.correct).length
-  const total = current.attempts.length
-  if (total >= 5 && correct / total >= 0.8) return false
+  if (isUnderstood(current)) return false
   for (const neighbour of neighbours) {
-    const correct = neighbour.attempts.filter((a) => a.correct).length
-    const total = neighbour.attempts.length
-    if (total < 5 || correct / total < 0.8) return false
+    if (!isUnderstood(neighbour)) return false
   }
   return true
 }
