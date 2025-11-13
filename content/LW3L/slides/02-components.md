@@ -162,6 +162,24 @@ Use the `md:`, `lg:`, `xl:` prefixes to handle progressively larger screens.
 - [Documentation](https://tailwindcss.com/docs/styling-with-utility-classes)
 :::::
 
+# Serving static assets {.w-1--2}
+
+If you want to serve static files (e.g. images):
+
+#. Place them in the `public/` folder.
+
+#. Refer to them via their path but without `public/`.
+
+::: example
+If you'd like to use `logo.png`,
+place it in the `public/` folder (`public/logo.png`).
+You can now use it in your code:
+
+~~~ html
+<img src="logo.png" alt="Logo" />
+~~~
+:::
+
 # Layout {.grid .grid-cols-2}
 
 ::::: col
