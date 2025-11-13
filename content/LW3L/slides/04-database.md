@@ -68,10 +68,6 @@ services:
     restart: always
     develop:
       watch:
-        - path: ./Dockerfile
-          action: rebuild
-        - path: ./docker-compose.yaml
-          action: rebuild
         - path: ./drizzle.config.ts
           target: /app/drizzle.config.ts
           action: sync
@@ -223,3 +219,11 @@ but modified so that it gets the data from a database.
 - Create a registration form to create new users.
 
 - Add a portfolio (with a form to add projects).
+
+- Create an interface to edit your CV.
+
+# Check list for next session
+
+- Can I create a simple CRUD (Create, Read, Update, Delete) app?
+
+- Can I deploy my website automatically with git and Docker?
