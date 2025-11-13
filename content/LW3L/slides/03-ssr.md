@@ -329,7 +329,38 @@ services:
 This will be particularly useful later when we have a database.
 :::
 
-# Creating a remote repository {.w-1--2}
+# Set up your VM {.w-1--2}
+
+- SSH into your Virtual machine (via Putty or equivalent)
+
+- **Install docker**:
+
+  ~~~ bash
+  sudo apt update
+  sudo apt install -y docker.io docker-compose
+  sudo systemctl enable --now docker
+  ~~~
+
+- Set up a **reverse proxy** so that Apache forwards traffic from the port 80 to 3000.
+
+- Edit `/etc/apache2/sites-available/000-default.conf`:
+
+  ~~~ txt
+  <VirtualHost *:80>
+    ProxyPass / http://127.0.0.1:3000/
+    ProxyPassReverse / http://127.0.0.1:3000/
+  </VirtualHost>
+  ~~~
+
+- Enable the `proxy` and `proxy_http` modules and restart Apache
+
+  ~~~ bash
+  sudo a2enmod proxy
+  sudo a2enmod proxy_http
+  sudo systemctl restart apache2
+  ~~~
+
+# Creating a remote git repository {.w-1--2}
 
 ### On your virtual machine
 
@@ -356,15 +387,26 @@ cd ~/www
 docker compose up --build
 ~~~
 
-::: info
-Next session,
-we will **automate** this step.
-:::
+You can automate this step by creating an **post-receive** (`.git/hooks/post-receive`) hook.
+This script will be executed
+every time commits will be pushed to that repository.
+
+
+~~~ bash
+#!/usr/bin/env bash
+
+cd ~/www
+docker compose up --build
+~~~
+
+Make sure the above script is executable (`chmod +x`).
 
 # Checklist {.w-1--2}
 
 - Can I create a simple CRUD (Create, Read, Update, Delete) app without a database?
 
-- Do I know what an async function is?
+- Do I know what an *async* function is?
 
 - Can I deploy my website with Docker?
+
+- Can I deploy it automatically with a post-receive hook?
