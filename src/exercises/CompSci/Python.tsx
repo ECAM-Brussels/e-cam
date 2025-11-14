@@ -8,7 +8,7 @@ import Code from '~/components/Code'
 import Fa from '~/components/Fa'
 import Markdown from '~/components/Markdown'
 import { encrypt } from '~/lib/cryptography'
-import { createExerciseType, useExerciseContext } from '~/lib/exercises/base'
+import { createExerciseType } from '~/lib/exercises/base'
 import { wrapCode } from '~/lib/helpers'
 
 export let execPython: (code: string, test: string) => Promise<string>
@@ -58,7 +58,6 @@ function runTests(code: string, tests: string[], hashes?: string[]) {
 const { Component, schema } = createExerciseType({
   name: 'Python',
   Component: (props) => {
-    const exercise = useExerciseContext()
     const [code, setCode] = createSignal('')
     createEffect(() => setCode(props.attempt ?? props.question.initialCode))
     return (
@@ -72,7 +71,7 @@ const { Component, schema } = createExerciseType({
           run
           onCodeUpdate={setCode}
         />
-        <Show when={!exercise?.readOnly}>
+        <Show when={!props.context.readOnly}>
           <Button type="button" onClick={() => setCode(props.question.initialCode)}>
             Reset
           </Button>

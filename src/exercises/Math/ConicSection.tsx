@@ -3,7 +3,7 @@ import { createEffect, createSignal, Show } from 'solid-js'
 import { z } from 'zod'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
-import { createExerciseType, useExerciseContext } from '~/lib/exercises/base'
+import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
 import { expand, simplify } from '~/queries/algebra'
 
@@ -31,7 +31,6 @@ const finiteSet = z
 const { Component, schema, mark, getFeedback, attempt } = createExerciseType({
   name: 'ConicSection',
   Component: (props) => {
-    const exercise = useExerciseContext()
     const obj = () =>
       ({
         conic: 'la conique',
@@ -62,7 +61,7 @@ const { Component, schema, mark, getFeedback, attempt } = createExerciseType({
           <label>
             Type de conique:{' '}
             <select
-              disabled={exercise?.readOnly ?? false}
+              disabled={props.context.readOnly}
               class="border bg-white py-2 px-2"
               value={conicSectionType()}
               onChange={(e) => setConicSectionType(e.target.value as ConicSectionType)}
