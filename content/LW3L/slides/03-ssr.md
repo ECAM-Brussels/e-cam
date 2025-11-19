@@ -74,9 +74,11 @@ export async function createTask(form: FormData) {
   as client/server communication can take time.
 
 - An **async** function is one that can be paused and resumed later
-  during a long running task.
+  because we are waiting for a long running task.
   The aim is to ensure that the main thread is not stuck
   during the execution of the function.
+
+  It essentially means: *you can do something else every time an instruction starts with `await`*.
 
 - `redirect(...)` ensures the page is reloaded.
   In traditional web development,
@@ -93,11 +95,27 @@ Always validate data coming from a form.
 
 ::: col
 ~~~ ts
+// Async means that the function can be paused
 async function eatCheeseburger() {
   goToMcDonalds()
+  // Execution of the function is paused now because there is an 'await'
+  // It will resume again *after* the order is finished
   const food = await order('cheeseburger')
   eat(food)
 }
+~~~
+
+Guess in what order the `console.log` will run.
+
+~~~ ts {.run}
+async function someAsyncFunction() {
+  console.log("I'm hungry")
+  await new Promise(r => setTimeout(r, 1000));
+  console.log("I'm bored")
+}
+
+someAsyncFunction()
+console.log("I'm sleepy")
 ~~~
 :::
 
@@ -106,13 +124,18 @@ async function eatCheeseburger() {
   and yield back to the main thread.
   Async functions return a **promise of a response**.
 
+  In other words, `async` means:
+  *In this function every time you see `await`, you are free to do other things*
+
 - On L3, there is a an `await`,
   so the main thread gets a promise of a response (like a receipt in MacDonalds)
   and pauses the execution of the function `eatCheeseburger`
   to do something else.
-
   When the promise is resolved (i.e. when the cheeseburger is ready) and whenever it can,
   it resumes execution of the function.
+
+  More simply, `await` means:
+  *this will take some time, go do something else and return later*.
 :::
 
 # Todo App (view) {.grid .grid-cols-2}
