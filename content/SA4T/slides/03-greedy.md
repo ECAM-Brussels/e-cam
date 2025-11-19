@@ -143,11 +143,9 @@ def FKS(items: list[item], capacity: int) -> list[item]:
     items.sort(key=lambda x: x[1] / x[2], reverse=True)
     sel = []
     for i, value, weight in items:
-        if capacity <= 0:
-            break
-        ratio = min(capacity / weight, 1)
-        capacity -= ratio * weight
-        sel.append([i, ratio*value, ratio*weight])
+        take = max(min(capacity, weight), 0)
+        capacity -= take
+        sel.append([i, take])
     return sel
 
 FKS([(0, 60, 10), (1, 100, 20), (2, 120, 30)], 50)
@@ -179,10 +177,8 @@ activity = tuple[int, int] # (start_time, end_time)
 # Running time: O(n log n), n = len(activities)
 def activity_selection(activities: list[activity]) -> list[activity]:
     activities.sort(key=lambda x: x[1])
-    sel = []
-    last_end = lambda: sel[-1][1] if sel else 0
     for start, end in activities:
-        if start >= last_end():
+        if not sel or start >= sel[-1][1]:
             sel.append((start, end))
     return sel
 
