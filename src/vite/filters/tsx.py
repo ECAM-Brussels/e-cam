@@ -55,22 +55,15 @@ def code(el: pf.Element, doc: pf.Doc):
     if type(el) == pf.CodeBlock and "raw" in el.classes:
         return pf.RawBlock(el.text)
     if type(el) == pf.CodeBlock and el.classes:
-        run = "true" if "run" in el.classes else "false"
+        run = "run" in el.classes
         attrs = el.attributes
         attrs["class"] = " ".join(el.classes)
+        attrs["lang"] = el.classes[0]
+        attrs["run"] = run
+        attrs["value"] = el.text
         props = json.dumps(attrs)
         props = f"{{...{props}}}" if el.attributes else ""
-        return pf.RawBlock(
-            "<Code "
-            + props
-            + " value={String.raw`"
-            + el.text
-            + '`} lang="'
-            + el.classes[0]
-            + '" run={'
-            + run
-            + "} />"
-        )
+        return pf.RawBlock(f"<Code {props} />")
 
 
 pf.run_filters([tailwind_classes, math, environments, code])
