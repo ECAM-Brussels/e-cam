@@ -35,8 +35,16 @@ type Step<S extends Schema, N extends keyof S['steps'], F> = [
  * This is in fact a simple identity helper to guide TypeScript inference.
  * More precisely, it checks that the feedback function returns
  */
-export function defineStep<S extends Schema, N extends keyof S['steps'], F>(step: Step<S, N, F>) {
-  return step
+function defineStep<S extends Schema, N extends keyof S['steps'], F>(
+  _schema: S,
+  _stepName: N,
+  step: Step<S, N, F>,
+): Step<S, N, F>
+function defineStep<S extends Schema, N extends keyof S['steps'], F>(
+  step: Step<S, N, F>,
+): Step<S, N, F>
+function defineStep(...args: unknown[]) {
+  return args.at(-1)
 }
 
 /**
