@@ -356,13 +356,17 @@ function inZPD(
     return false
   })
 
-  const neighbours = assignments.filter((a) => a.requiredBy.map((n) => n.url).includes(url))
-  const current = assignments.filter((a) => a.url === url).at(0)!
-  if (isUnderstood(current)) return false
-  for (const neighbour of neighbours) {
-    if (!isUnderstood(neighbour)) return false
+  try {
+    const neighbours = assignments.filter((a) => a.requiredBy.map((n) => n.url).includes(url))
+    const current = assignments.filter((a) => a.url === url).at(0)!
+    if (isUnderstood(current)) return false
+    for (const neighbour of neighbours) {
+      if (!isUnderstood(neighbour)) return false
+    }
+    return true
+  } catch {
+    return false
   }
-  return true
 }
 
 export const getAssignmentGraph = query(
