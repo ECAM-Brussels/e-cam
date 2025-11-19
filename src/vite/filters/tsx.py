@@ -66,4 +66,11 @@ def code(el: pf.Element, doc: pf.Doc):
         return pf.RawBlock(f"<Code {props} />")
 
 
-pf.run_filters([tailwind_classes, math, environments, code])
+def softbreak(el: pf.Element, doc: pf.Doc):
+    del doc
+    if isinstance(el, pf.Para):
+        space = pf.RawInline("{' '}")
+        el.content = [space if type(e) == pf.SoftBreak else e for e in el.content]
+
+
+pf.run_filters([tailwind_classes, math, environments, code, softbreak])
