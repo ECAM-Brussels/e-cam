@@ -399,42 +399,11 @@ sudo service docker start
   sudo systemctl restart apache2
   ~~~
 
-# Creating a remote git repository {.w-1--2}
-
-### On your virtual machine
-
-As a normal user:
-
-~~~ bash
-mkdir -p ~/www
-cd ~/www
-git init
-git config receive.denyCurrentBranch updateInstead
-~~~
-
-### On your machine
-
-~~~ bash
-git remote add production user@server:~/www
-git push production main
-~~~
-
 # Deployment {.w-1--2}
 
 ~~~ bash
-cd ~/www
-docker compose up --build
-~~~
-
-You can automate this step by creating an **post-receive** (`.git/hooks/post-receive`) hook.
-This script will be executed
-every time commits will be pushed to that repository.
-
-
-~~~ bash
-#!/usr/bin/env bash
-
-cd ~/www
+git clone <repo_url>
+cd <repo_dir>
 docker compose up --build
 ~~~
 
