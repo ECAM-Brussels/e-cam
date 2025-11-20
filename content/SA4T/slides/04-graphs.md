@@ -71,7 +71,7 @@ adj = {
 ~~~ python {.run}
 running = []
 
-class Signal:
+class State:
 
     def __init__(self, value):
         self._value = value
@@ -90,6 +90,15 @@ class Signal:
             effect()
 
 
+class Derived:
+
+    def __init__(self, fn):
+        self.fn = fn
+
+    @property
+    def value(self):
+        return self.fn()
+
 def effect(fn):
     def wrapped():
         running.append(wrapped)
@@ -97,7 +106,8 @@ def effect(fn):
         running.pop()
     wrapped()
 # --- start
-hp = Signal(100)
+hp = State(100)
+doubled = Derived(lambda: hp.value * 2)
 
 @effect
 def on_hp_change():
@@ -105,6 +115,7 @@ def on_hp_change():
         print("You have", hp.value, "HP")
     else:
         print("Careful! Only", hp.value, "HP left")
+    print("Doubled value:", doubled.value)
 
 
 hp.value = 90
@@ -113,9 +124,9 @@ hp.value = 15
 ~~~
 
 ::::: col
-We will show how `Signal` and `effect` on the next slide.
+We will show how `State` and `effect` on the next slide.
 
-- **Signal**: variable that changes over time and that is usually has an impact on the UI.
+- **State**: variable that changes over time and that is usually has an impact on the UI.
 
 - **Effect**: function that is run whenever an underlying signal changes.
   Generally used to update the UI.
@@ -129,11 +140,36 @@ We will show how `Signal` and `effect` on the next slide.
 :::
 :::::
 
-# Signal Implementation {.grid .grid-cols-2 .gap-8}
+# Demo: Svelte
+
+~~~ javascript {.run framework=svelte}
+<script>
+  let maxHp = 274
+  let hp = $state(274)
+
+  function slap() {
+    hp -= 10
+  }
+  function heal() {
+    hp = maxHp
+  }
+</script>
+
+Pikachu<br />
+<progress value={hp} max={maxHp} /><br />
+{hp} / {maxHp}<br />
+<button onclick={slap}>Slap Pikachu</button>
+<button onclick={heal}>Heal Pikachu</button>
+{#if hp <= 0}
+  <p>You've killed Pikachu. What a monster!</p>
+{/if}
+~~~
+
+# State Implementation {.grid .grid-cols-2 .gap-8}
 
 ~~~ python
 running = []
-class Signal:
+class State:
     def __init__(self, value):
         self._value = value
         self.subscribers = set()
