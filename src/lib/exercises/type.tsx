@@ -36,12 +36,12 @@ type Step<Steps extends string, S extends Schema<Steps>, N extends Steps, F> = [
  * More precisely, it checks that the feedback function return type
  * is compatible with the view.
  */
-export function defineStep<Steps extends string, S extends Schema, N extends Steps, F>(
+export function defineStep<Steps extends string, S extends Schema<Steps>, N extends Steps, F>(
   _schema: S,
   _stepName: N,
   step: Step<Steps, S, N, F>,
 ): Step<Steps, S, N, F>
-export function defineStep<Steps extends string, S extends Schema, N extends Steps, F>(
+export function defineStep<Steps extends string, S extends Schema<Steps>, N extends Steps, F>(
   step: Step<Steps, S, N, F>,
 ): Step<Steps, S, N, F>
 export function defineStep(...args: unknown[]) {
