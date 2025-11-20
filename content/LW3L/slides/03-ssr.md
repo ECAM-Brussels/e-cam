@@ -213,12 +213,12 @@ export default async function TodoApp() {
       </form>
       <ul>
         {tasks.map((task, id) => (
-          <>
+          <form action={deleteTask.bind(null, id)}>
             <li>{task.title}</li>
-            <button formAction={deleteTask.bind(null, id)}>
+            <button>
               Delete task
             </button>
-          </>
+          </form>
         ))}
       </ul>
     </>
