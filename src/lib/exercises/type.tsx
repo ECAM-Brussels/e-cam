@@ -17,12 +17,12 @@ export type Schema<Steps extends string = string> = {
 /**
  * Exercise type step, which contains a View and feedback function
  */
-type Step<S extends Schema, N extends keyof S['steps'], F> = [
+type Step<Steps extends string, S extends Schema<Steps>, N extends Steps, F> = [
   (
     question: z.infer<S['question']>,
     state: z.infer<S['steps'][N]>,
-  ) => Promise<{ correct: boolean; next?: keyof S['steps'] | null; feedback: F }>,
-  View: (props: {
+  ) => Promise<{ correct: boolean; next?: Steps | null; feedback: F }>,
+  (props: {
     question: z.infer<S['question']>
     state?: z.infer<S['steps'][N]>
     feedback?: F
@@ -33,26 +33,28 @@ type Step<S extends Schema, N extends keyof S['steps'], F> = [
  * Helper to define an exercise step
  *
  * This is in fact a simple identity helper to guide TypeScript inference.
- * More precisely, it checks that the feedback function returns
+ * More precisely, it checks that the feedback function return type
+ * is compatible with the view.
  */
-function defineStep<S extends Schema, N extends keyof S['steps'], F>(
+export function defineStep<Steps extends string, S extends Schema, N extends Steps, F>(
   _schema: S,
   _stepName: N,
-  step: Step<S, N, F>,
-): Step<S, N, F>
-function defineStep<S extends Schema, N extends keyof S['steps'], F>(
-  step: Step<S, N, F>,
-): Step<S, N, F>
-function defineStep(...args: unknown[]) {
+  step: Step<Steps, S, N, F>,
+): Step<Steps, S, N, F>
+export function defineStep<Steps extends string, S extends Schema, N extends Steps, F>(
+  step: Step<Steps, S, N, F>,
+): Step<Steps, S, N, F>
+export function defineStep(...args: unknown[]) {
   return args.at(-1)
 }
 
 /**
  * Exercise type
  * Contains different steps and potentially a generator
+ * if allowed by the schema
  */
 export type ExerciseType<S extends Schema = Schema> = {
-  steps: { [N in keyof S['steps']]: Step<S, N, any> }
+  steps: { [N in keyof S['steps'] & string]: Step<keyof S['steps'] & string, S, N, any> }
 } & (S['params'] extends z.ZodObject
   ? { generator: (params: z.infer<S['params']>) => Promise<z.input<S['question']>> }
   : {})
