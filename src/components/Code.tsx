@@ -115,7 +115,9 @@ export default function Code(props: CodeProps) {
       <Show when={fragments().length > 1}>
         <Show
           when={
-            user()?.role === 'TEACHER' || !props.hideUntil || now() >= new Date(props.hideUntil)
+            ['TEACHER', 'ADMIN'].includes(user()?.role ?? '') ||
+            !props.hideUntil ||
+            now() >= new Date(props.hideUntil)
           }
           fallback={
             <p class="text-sm">
