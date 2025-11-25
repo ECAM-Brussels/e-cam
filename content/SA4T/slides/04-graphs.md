@@ -21,9 +21,14 @@ acyclic
 
 weighted
 : edges have weights
-:::::
 
-``` dot {.run hideEditor=true}
+::: {.remark title="Applicaions"}
+- Building software
+- Navigation (Google PageRank, breadcrumbs, etc.)
+- Reactive programming
+:::
+
+``` dot {.run runImmediately=true hideEditor=true}
 digraph {
     a -> b
     b -> c
@@ -34,6 +39,7 @@ digraph {
     c -> e
 }
 ```
+:::::
 
 # Adjacency list {.w-1--2}
 
@@ -44,7 +50,7 @@ and the associated values are a list (or set) of
 the end points of the edges starting from that vertex.
 :::
 
-``` dot {.run hideEditor=true}
+``` dot {.run runImmediately=true hideEditor=true}
 digraph {
     a -> b
     b -> c
@@ -238,12 +244,14 @@ def BFS(adj, start):
 
 BFS({ 0: {1, 2}, 1: {3, 4}, 2: {5, 6}, 3: set(), 4: set(), 5: set(), 6: set() }, 0)
 # --- fragment
+import collections
+
 # Complexity: O(V + E)
 def BFS(adj, start):
     visited = set()
-    queue = [start]
+    queue = collections.deque([start])
     while queue:
-        node = queue.pop(0) # dequeue is better
+        node = queue.popleft()
         print("Visiting", node)
         visited.add(node)
         queue.extend(adj[node] - visited)
@@ -251,7 +259,7 @@ def BFS(adj, start):
 BFS({ 0: {1, 2}, 1: {3, 4}, 2: {5, 6}, 3: set(), 4: set(), 5: set(), 6: set() }, 0)
 ```
 
-``` dot {.run hideEditor=true}
+``` dot {.run runImmediately=true hideEditor=true}
 digraph {
   0 -> 1
   0 -> 2
@@ -288,7 +296,7 @@ def DFS(adj: dict[any, set]):
 DFS({ 0: {1, 2}, 1: {3, 4}, 2: {5, 6}, 3: set(), 4: set(), 5: set(), 6: set() })
 ```
 
-``` dot {.run hideEditor=true}
+``` dot {.run runImmediately=true hideEditor=true}
 digraph {
   0 -> 1
   0 -> 2
@@ -314,11 +322,14 @@ use the idea of *parent pointers*.
 We try to track the parent node that brought us to the current node.
 :::
 
-# Shortest paths: implementation {.w-1--2}
+# Shortest paths: implementation {.grid .grid-cols-2}
 
+::::: break-inside-avoid
 ``` python {.run hideUntil="2025-11-26 16:15"}
 def shortest_paths(adj, start):
     pass
+
+shortest_paths({ 0: {1, 2}, 1: {3, 4}, 2: {5, 6}, 3: set(), 4: set(), 5: set(), 6: set() }, 0)
 # --- fragment
 # Complexity: O(V + E)
 def shortest_paths(adj, start):
@@ -331,7 +342,23 @@ def shortest_paths(adj, start):
                 dist[neighbour] = dist[node] + 1
                 queue.append(neighbour)
     return dist
+
+shortest_paths({ 0: {1, 2}, 1: {3, 4}, 2: {5, 6}, 3: set(), 4: set(), 5: set(), 6: set() }, 0)
 ```
+:::::
+
+::::: break-inside-avoid
+``` dot {.run runImmediately=true hideEditor=true}
+digraph {
+  0 -> 1
+  0 -> 2
+  1 -> 3
+  1 -> 4
+  2 -> 5
+  2 -> 6
+}
+```
+:::::
 
 # Sudoku {.w-1--2}
 
@@ -351,6 +378,14 @@ Write a code that solves any Sudoku grid.
 # Sudoku: implementation {.w-1--2}
 
 ``` python {.run hideUntil="2025-11-26 16:15"}
+def blacklist(grid: list[int], n: int) -> set[int]:
+    """
+    For entry n,
+    specify which numbers cannot be used,
+    because they have been used in the row, column or region.
+    """
+    return set() 
+
 def solve(grid: list[int]):
     return grid
 
@@ -438,7 +473,7 @@ Given a directed graph,
 that the edges are all pointing right.
 :::
 
-``` dot {.run hideEditor=true}
+``` dot {.run runImmediately=true hideEditor=true}
 digraph {
   start [label="Wake up"]
   teeth [label="Brush teeth"]
