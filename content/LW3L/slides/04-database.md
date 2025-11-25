@@ -51,7 +51,7 @@ except for the following things:
 ~~~ yaml
 services:
   db:
-    image: postgres:18
+    image: postgres:16
     restart: always
     environment:
       POSTGRES_USER: root
