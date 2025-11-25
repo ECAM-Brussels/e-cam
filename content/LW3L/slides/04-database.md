@@ -115,6 +115,21 @@ services:
 - We now use `docker compose watch` to start developing.
 :::::
 
+# Developing with Docker {.w-1--2}
+
+Some useful commands:
+
+~~~ bash
+# Start development
+docker compose watch
+
+# Services logs
+docker compose logs -f
+
+# Start a shell in your node container
+docker compose exec app bash
+~~~
+
 # Install drizzle {.grid .grid-cols-2}
 
 ::::: column
