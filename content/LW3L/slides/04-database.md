@@ -115,8 +115,9 @@ services:
 - We now use `docker compose watch` to start developing.
 :::::
 
-# Install drizzle {.w-1--2}
+# Install drizzle {.grid .grid-cols-2}
 
+::::: column
 Drizzle is going to help us query our database easily.
 Let's install it.
 
@@ -136,6 +137,25 @@ export const db = drizzle(process.env.DATABASE_URL!)
 
 If we want to use our database in another module,
 we'll need to import `db`.
+:::::
+
+::::: column
+In `drizzle.config.ts`,
+put the following:
+
+~~~ ts
+import { defineConfig } from 'drizzle-kit'
+
+export default defineConfig({
+  dialect: 'postgresql',
+  schema: './db/schema.ts',
+  out: './drizzle',
+  dbCredentials: {
+    url: process.env.DATABASE_URL!,
+  },
+})
+~~~
+:::::
 
 # Schema {.w-1--2}
 
