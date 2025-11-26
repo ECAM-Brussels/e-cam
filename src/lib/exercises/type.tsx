@@ -1,24 +1,23 @@
 import type { JSX } from 'solid-js'
 import z from 'zod/v4'
 
-type StepBaseSchema = z.ZodDiscriminatedUnion<
+type StepTemplate = z.ZodDiscriminatedUnion<
   z.ZodObject<{ name: z.ZodLiteral; state: z.ZodObject }>[]
 >
-type Schema<Q = z.ZodObject, S = StepBaseSchema, P = z.ZodObject> = {
+export type Schema<Q = z.ZodObject, S = StepTemplate, P = z.ZodObject> = {
   question: Q
   steps: S
   params?: P
 }
 
+type Unwrap<T> = T extends (infer U)[] ? U : T
+type StepSchema<Q, S, P> = Unwrap<z.infer<Schema<Q, S, P>['steps']>>
 type Step<Q, S, K, F> = {
   feedback: (question: Q, state: S) => Promise<{ correct: boolean; next?: K; feedback: F }>
   View: (props: { question: Q; state?: S; feedback?: F }) => JSX.Element
 }
 
-type UnwrapArray<T> = T extends (infer U)[] ? U : T
-type StepSchema<Q, S, P> = UnwrapArray<z.infer<Schema<Q, S, P>['steps']>>
-
-function defineStep<Q, S extends StepBaseSchema, P, N extends StepSchema<Q, S, P>['name'], F>(
+export function defineStep<Q, S extends StepTemplate, P, N extends StepSchema<Q, S, P>['name'], F>(
   _schema: Schema<Q, S, P> & Schema,
   _stepName: N,
   step: Step<
