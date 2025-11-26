@@ -1,56 +1,83 @@
 import type { JSX } from 'solid-js'
 import z from 'zod/v4'
 
-/**
- * Schema that describes an exercise type
- *
- * - `question`: parameters that make an exercise instance unique
- * - `steps`: view, marker and feedback of a part of the exercise
- * - `params`: parameters to generate questions.
- */
-export type Schema<Steps extends string = string> = {
-  question: z.ZodObject
-  steps: Record<Steps, z.ZodTypeAny>
-  params?: z.ZodObject
+type SchemaInput<Q, S, P> = {
+  question: Q
+  steps: S
+  params?: P
 }
 
-/**
- * Exercise type step, which contains a View and feedback function
- */
-type Step<S extends Schema, N extends keyof S['steps'], F> = {
-  feedback: (
-    question: z.infer<S['question']>,
-    state: z.infer<S['steps'][N]>,
-  ) => Promise<{ correct: boolean; next?: keyof S['steps']; feedback: F }>
-  View: (props: {
-    question: z.infer<S['question']>
-    state?: z.infer<S['steps'][N]>
-    feedback?: F
-  }) => JSX.Element
+type StepSchema = z.ZodDiscriminatedUnion<z.ZodObject<{ name: z.ZodLiteral; state: z.ZodObject }>[]>
+
+export function defineSchema<
+  Q extends z.ZodObject,
+  S extends StepSchema,
+  P extends z.ZodObject | undefined,
+>(schema: SchemaInput<Q, S, P>) {
+  return z.object({
+    attempt: schema.steps.array().default([]),
+    question: schema.question,
+  })
 }
 
-/**
- * Helper to define an exercise step
- *
- * This is in fact a simple identity helper to guide TypeScript inference.
- * More precisely, it checks that the feedback function return type
- * is compatible with the view.
- */
-export function defineStep<S extends Schema, N extends keyof S['steps'], F>(
-  _schema: S,
+type SchemaOutput<
+  Q extends z.ZodObject,
+  S extends StepSchema,
+  P extends z.ZodObject | undefined,
+> = ReturnType<typeof defineSchema<Q, S, P>>
+
+type Step<Q, S, K, F> = {
+  feedback: (question: Q, state: S) => Promise<{ correct: boolean; next?: K; feedback: F }>
+  View: (props: { question: Q; state?: S; feedback?: F }) => JSX.Element
+}
+
+type UnwrapArray<T> = T extends (infer U)[] ? U : T
+
+type Attempt<
+  Q extends z.ZodObject,
+  S extends StepSchema,
+  P extends z.ZodObject | undefined,
+> = z.infer<SchemaOutput<Q, S, P>>['attempt']
+
+function defineStep<
+  Q extends z.ZodObject,
+  S extends StepSchema,
+  P extends z.ZodObject | undefined,
+  N extends UnwrapArray<Attempt<Q, S, P>>['name'],
+  F,
+>(
+  _schema: SchemaOutput<Q, S, P>,
   _stepName: N,
-  step: Step<S, N, F>,
+  step: Step<
+    z.infer<Q>,
+    Extract<Attempt<Q, S, P>[number], { name: N }>['state'],
+    UnwrapArray<Attempt<Q, S, P>>['name'],
+    F
+  >,
 ) {
   return step
 }
 
-/**
- * Exercise type
- * Contains different steps and potentially a generator
- * if allowed by the schema
- */
-export type ExerciseType<S extends Schema = Schema> = {
-  steps: { [N in keyof S['steps']]: Step<S, N, any> }
-} & (S['params'] extends z.ZodObject
-  ? { generator: (params: z.infer<S['params']>) => Promise<z.input<S['question']>> }
-  : {})
+export const schema = defineSchema({
+  question: z.object({ expr: z.string() }),
+  steps: z.discriminatedUnion('name', [
+    z.object({
+      name: z.literal('start'),
+      state: z.object({ attempt: z.string() }),
+    }),
+    z.object({
+      name: z.literal('root'),
+      state: z.object({ root: z.string() }),
+    }),
+  ]),
+})
+
+export const start = defineStep(schema, 'start', {
+  async feedback(question, state) {
+    const correct = state.attempt === 'hello'
+    return { correct: true, feedback: { hello: 'world' } }
+  },
+  View(props) {
+    return <p>Hello world {props.feedback?.hello}</p>
+  },
+})
