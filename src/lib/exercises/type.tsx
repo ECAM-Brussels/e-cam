@@ -1,30 +1,14 @@
 import type { JSX } from 'solid-js'
 import z from 'zod/v4'
 
-type SchemaInput<Q, S, P> = {
+type StepBaseSchema = z.ZodDiscriminatedUnion<
+  z.ZodObject<{ name: z.ZodLiteral; state: z.ZodObject }>[]
+>
+type Schema<Q = z.ZodObject, S = StepBaseSchema, P = z.ZodObject> = {
   question: Q
   steps: S
   params?: P
 }
-
-type StepSchema = z.ZodDiscriminatedUnion<z.ZodObject<{ name: z.ZodLiteral; state: z.ZodObject }>[]>
-
-export function defineSchema<
-  Q extends z.ZodObject,
-  S extends StepSchema,
-  P extends z.ZodObject | undefined,
->(schema: SchemaInput<Q, S, P>) {
-  return z.object({
-    attempt: schema.steps.array().default([]),
-    question: schema.question,
-  })
-}
-
-type SchemaOutput<
-  Q extends z.ZodObject,
-  S extends StepSchema,
-  P extends z.ZodObject | undefined,
-> = ReturnType<typeof defineSchema<Q, S, P>>
 
 type Step<Q, S, K, F> = {
   feedback: (question: Q, state: S) => Promise<{ correct: boolean; next?: K; feedback: F }>
@@ -32,33 +16,22 @@ type Step<Q, S, K, F> = {
 }
 
 type UnwrapArray<T> = T extends (infer U)[] ? U : T
+type StepSchema<Q, S, P> = UnwrapArray<z.infer<Schema<Q, S, P>['steps']>>
 
-type Attempt<
-  Q extends z.ZodObject,
-  S extends StepSchema,
-  P extends z.ZodObject | undefined,
-> = z.infer<SchemaOutput<Q, S, P>>['attempt']
-
-function defineStep<
-  Q extends z.ZodObject,
-  S extends StepSchema,
-  P extends z.ZodObject | undefined,
-  N extends UnwrapArray<Attempt<Q, S, P>>['name'],
-  F,
->(
-  _schema: SchemaOutput<Q, S, P>,
+function defineStep<Q, S extends StepBaseSchema, P, N extends StepSchema<Q, S, P>['name'], F>(
+  _schema: Schema<Q, S, P> & Schema,
   _stepName: N,
   step: Step<
     z.infer<Q>,
-    Extract<Attempt<Q, S, P>[number], { name: N }>['state'],
-    UnwrapArray<Attempt<Q, S, P>>['name'],
+    Extract<StepSchema<Q, S, P>, { name: N }>['state'],
+    StepSchema<Q, S, P>['name'],
     F
   >,
 ) {
   return step
 }
 
-export const schema = defineSchema({
+export const schema = {
   question: z.object({ expr: z.string() }),
   steps: z.discriminatedUnion('name', [
     z.object({
@@ -70,7 +43,10 @@ export const schema = defineSchema({
       state: z.object({ root: z.string() }),
     }),
   ]),
-})
+  params: z.object({
+    x1: z.string().array(),
+  }),
+} satisfies Schema
 
 export const start = defineStep(schema, 'start', {
   async feedback(question, state) {
