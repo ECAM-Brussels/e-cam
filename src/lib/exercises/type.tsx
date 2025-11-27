@@ -4,10 +4,41 @@ import z from 'zod/v4'
 type StepTemplate = z.ZodDiscriminatedUnion<
   z.ZodObject<{ name: z.ZodLiteral; state: z.ZodObject }>[]
 >
-export type Schema<Q = z.ZodObject, S = StepTemplate, P = z.ZodObject> = {
+export type Schema<Q = z.ZodObject, S = StepTemplate, P = z.ZodObject | undefined> = {
   question: Q
   steps: S
   params?: P
+}
+
+export function buildSchema<Q extends z.ZodObject, S extends StepTemplate, P extends undefined>(
+  schema: Schema<Q, S, P>,
+): z.ZodObject<{ question: Q; attempt: z.ZodArray<S> }>
+export function buildSchema<Q extends z.ZodObject, S extends StepTemplate, P extends z.ZodObject>(
+  schema: Schema<Q, S, P>,
+): z.ZodUnion<
+  [
+    z.ZodObject<{ question: Q; attempt: z.ZodArray<S> }>,
+    z.ZodObject<{ params: P; attempt: z.ZodArray<S> }>,
+  ]
+>
+export function buildSchema<Q, S extends StepTemplate, P>(schema: Schema<Q, S, P>) {
+  if (schema.params === undefined) {
+    return z.object({
+      question: schema.question,
+      attempt: schema.steps.array(),
+    })
+  } else {
+    return z.union([
+      z.object({
+        question: schema.question,
+        attempt: schema.steps.array(),
+      }),
+      z.object({
+        params: schema.params,
+        attempt: schema.steps.array(),
+      }),
+    ])
+  }
 }
 
 type Unwrap<T> = T extends (infer U)[] ? U : T
@@ -46,6 +77,9 @@ export const schema = {
     x1: z.string().array(),
   }),
 } satisfies Schema
+
+const transformed = buildSchema(schema)
+type Inferred = z.infer<typeof transformed>
 
 export const start = defineStep(schema, 'start', {
   async feedback(question, state) {
