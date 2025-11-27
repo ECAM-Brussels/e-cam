@@ -61,6 +61,13 @@ export function defineStep<Q, S extends StepTemplate, P, N extends StepSchema<Q,
   return step
 }
 
+export function defineGenerator<Q, P>(
+  _schema: Schema<Q, StepTemplate, P> & Schema,
+  fn: (params: { [K in keyof z.infer<P>]: Unwrap<z.infer<P>[K]> }) => Promise<z.infer<Q>>,
+) {
+  return fn
+}
+
 export const schema = {
   question: z.object({ expr: z.string() }),
   steps: z.discriminatedUnion('name', [
@@ -80,6 +87,10 @@ export const schema = {
 
 const transformed = buildSchema(schema)
 type Inferred = z.infer<typeof transformed>
+
+const generator = defineGenerator(schema, async ({ x1 }) => {
+  return { expr: `(x - ${x1}) (x - ${x1})` }
+})
 
 export const start = defineStep(schema, 'start', {
   async feedback(question, state) {
