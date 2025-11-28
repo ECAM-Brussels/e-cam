@@ -59,15 +59,13 @@ services:
       POSTGRES_DB: mydb
     volumes:
       - db_data:/var/lib/postgresql/data
-  pgadmin:
-    image: dpage/pgadmin4:9
+  adminer:
+    image: adminer
+    restart: unless-stopped
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+      ADMINER_DEFAULT_SERVER: db
     ports:
-      - "8080:80"
-    depends_on:
-      - db
+      - '8080:8080'
   app:
     depends_on:
       - db
