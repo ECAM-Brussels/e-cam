@@ -58,7 +58,7 @@ services:
       POSTGRES_PASSWORD: hello
       POSTGRES_DB: mydb
     volumes:
-      - /var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
   pgadmin:
     image: dpage/pgadmin4:9
     environment:
@@ -102,7 +102,10 @@ services:
     environment:
       DATABASE_URL: postgres://root:hello@db:5432/mydb
     volumes:
-      - /app/node_modules
+      - node_modules:/app/node_modules
+volumes:
+  db_data:
+  node_modules:
 ~~~
 :::::
 
