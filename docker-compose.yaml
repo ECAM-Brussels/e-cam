@@ -1,7 +1,7 @@
 services:
   db:
     image: mysql
-    restart: always
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: hello
       MYSQL_DATABASE: ecam
@@ -34,7 +34,7 @@ services:
         - path: ./symapi
           target: /app/symapi
           action: sync
-    restart: always
+    restart: unless-stopped
     ports:
       - '8000:8000'
   web:
@@ -76,7 +76,7 @@ services:
     ports:
       - '3000:3000'
       - '4000:4000'
-    restart: always
+    restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
