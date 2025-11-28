@@ -6,13 +6,20 @@ services:
       MYSQL_ROOT_PASSWORD: hello
       MYSQL_DATABASE: ecam
     volumes:
-      - /var/lib/mysql
+      - db_data:/var/lib/mysql
     healthcheck:
       test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 10s
+  adminer:
+    image: adminer
+    restart: unless-stopped
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    ports:
+      - '8080:8080'
   symapi:
     build:
       context: .
@@ -55,8 +62,8 @@ services:
           target: /app/public
           action: sync
     volumes:
-      - /app/src/routes/\(generated\)
-      - /app/node_modules
+      - routes:/app/src/routes/\(generated\)
+      - node_modules:/app/node_modules
     environment:
       VITE_AZURE_CLIENT_ID: af790946-79b3-435e-a2a1-f566e09a63f7
       VITE_AZURE_TENANT_ID: e3d6f09e-9ba9-4a36-ad75-d9039be4fe29
@@ -73,3 +80,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
+volumes:
+  db_data:
+  routes:
+  node_modules:
