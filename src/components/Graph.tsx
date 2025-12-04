@@ -3,8 +3,9 @@ import { createAsync, useNavigate, usePreloadRoute } from '@solidjs/router'
 import { type Core } from 'cytoscape'
 import cytoscape from 'cytoscape'
 import dagre from 'cytoscape-dagre'
-import { createEffect, createSignal, onCleanup, onMount } from 'solid-js'
+import { createEffect, createSignal, onCleanup, onMount, Show, Suspense } from 'solid-js'
 import Fa from '~/components/Fa'
+import Spinner from '~/components/Spinner'
 import { getAssignmentGraph } from '~/lib/exercises/assignment'
 
 export default function Graph(props: {
@@ -23,7 +24,9 @@ export default function Graph(props: {
   const elements = createAsync(() => getAssignmentGraph(query(), props.groups, props.userEmail), {
     initialValue: [],
   })
+  const [ready, setReady] = createSignal(false)
   const redraw = () => {
+    setReady(false)
     if (cy() && elements()) {
       cy()?.resize()
       cy()!.json({
@@ -136,6 +139,9 @@ export default function Graph(props: {
       event.target.removeClass('hovered')
       cy()!.container()!.style.cursor = 'default'
     })
+    cy()!.on('layoutstop', () => {
+      setReady(true)
+    })
     ro = new ResizeObserver(redraw)
     ro.observe(container)
   })
@@ -156,7 +162,12 @@ export default function Graph(props: {
 
   return (
     <div class="relative z-30">
-      <div class={props.class} ref={container} />
+      <Show when={!ready()}>
+        <div class="absolute z-50 flex gap-4 items-center justify-center w-full">
+          <Spinner /> <p>Chargement...</p>
+        </div>
+      </Show>
+      <div class={props.class} ref={container}></div>
       <div class="absolute right-4 bottom-2 flex gap-2 z-50">
         <button
           class="opacity-30 hover:opacity-100"
