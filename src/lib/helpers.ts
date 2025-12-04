@@ -1,6 +1,15 @@
 import CryptoJS from 'crypto-js'
 import dedent from 'dedent-js'
 import stringify from 'json-stable-stringify'
+import { mergeProps, type Component } from 'solid-js'
+import z from 'zod'
+
+export function createComponent<S extends z.ZodTypeAny>(schema: S, fn: Component<z.infer<S>>) {
+  return function (originalProps: z.input<S>) {
+    const props = mergeProps(schema.parse(originalProps))
+    return fn(props)
+  }
+}
 
 function indent(code: string, indent: string) {
   return code
