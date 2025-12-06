@@ -174,7 +174,7 @@ export async function login(form: FormData) {
   const users = await db.select().from(usersTable)
     .where(eq(usersTable.login, login))
   const loggedIn = users.length > 0
-    ? await compare(password, user.password)
+    ? await compare(password, users[0].password)
     : false
   // To be continued... (cookie generation)
 }
