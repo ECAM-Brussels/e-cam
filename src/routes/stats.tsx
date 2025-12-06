@@ -36,7 +36,7 @@ export default function Statistics() {
         </Show>
         <section class="lg:grid lg:grid-cols-2">
           <div>
-            <h2 class="text-2xl font-bold my-4">Meilleurs scores ELO</h2>
+            <h2 class="text-2xl font-bold my-4">Utilisateurs</h2>
             <p>ELO moyen: {stats()?.averages.userScore}</p>
             <Table
               data={stats()?.users ?? []}
@@ -73,7 +73,7 @@ export default function Statistics() {
             />
           </div>
           <div>
-            <h2 class="text-2xl font-bold my-4">Meilleurs scores ELO</h2>
+            <h2 class="text-2xl font-bold my-4">Séquences d'exercices</h2>
             <p>ELO moyen: {stats()?.averages.assignmentScore}</p>
             <Table
               data={stats()?.assignments ?? []}
