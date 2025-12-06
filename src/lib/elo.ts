@@ -96,10 +96,10 @@ export const getAssignmentEloGraph = query(async (url: string) => {
     const start = subDays(startOfToday(), i)
     const end = addDays(start, 1)
     const dayAttempts = attempts.filter((a) => a.date >= start && a.date <= end)
-    const dayGain = dayAttempts.reduce((partial, attempt) => partial - attempt.gain! / 8, 0)
+    const dayGain = dayAttempts.reduce((partial, attempt) => partial + attempt.gain!, 0)
     labels.unshift(format(start, 'dd/MM'))
     data.unshift(Math.round(score))
-    score = score - dayGain
+    score = score + dayGain / 8
   }
   return {
     labels,
