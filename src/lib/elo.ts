@@ -58,7 +58,7 @@ export const getEloGraph = query(async (email?: string) => {
   let score = user?.score ?? 800
   const data: number[] = []
   const labels = []
-  for (let i = 0; i < 14; i++) {
+  for (let i = 0; i < 90; i++) {
     const start = subDays(startOfToday(), i)
     const end = addDays(start, 1)
     const dayAttempts = attempts.filter((a) => a.date >= start && a.date <= end)
@@ -92,7 +92,7 @@ export const getAssignmentEloGraph = query(async (url: string) => {
   let score = assignment.score ?? 1600
   const data: number[] = []
   const labels = []
-  for (let i = 0; i < 14; i++) {
+  for (let i = 0; i < 90; i++) {
     const start = subDays(startOfToday(), i)
     const end = addDays(start, 1)
     const dayAttempts = attempts.filter((a) => a.date >= start && a.date <= end)
