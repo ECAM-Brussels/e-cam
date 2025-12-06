@@ -1,16 +1,19 @@
 import { faCheck, faFile, faQuestion, faUser, faXmark } from '@fortawesome/free-solid-svg-icons'
-import { createAsync, type RouteDefinition, useParams } from '@solidjs/router'
-import { createSignal, For } from 'solid-js'
+import { createAsync, type RouteDefinition, useParams, createAsyncStore } from '@solidjs/router'
+import { createSignal, For, Show } from 'solid-js'
 import Fa from '~/components/Fa'
+import LineChart from '~/components/LineChart'
 import Page from '~/components/Page'
 import Table from '~/components/Table'
 import { getUser } from '~/lib/auth/session'
+import { getAssignmentEloGraph } from '~/lib/elo'
 import { getAssignmentResults } from '~/lib/exercises/assignment'
 
 export const route = {
   preload({ params }) {
     getUser()
     getAssignmentResults('/' + params.url)
+    getAssignmentEloGraph('/' + params.url)
   },
 } satisfies RouteDefinition
 
@@ -18,6 +21,7 @@ export default function () {
   const params = useParams()
   const [page, setPage] = createSignal(1)
   const data = createAsync(() => getAssignmentResults('/' + params.url), { initialValue: [] })
+  const dataset = createAsyncStore(() => getAssignmentEloGraph('/' + params.url))
   return (
     <Page title="Résultats">
       <section class="bg-white rounded-xl p-4 py-8 border">
@@ -25,6 +29,9 @@ export default function () {
           <a href={`/${params.url}`}>Voir les questions</a>
         </p>
         <h1 class="font-bold text-3xl">Résultats</h1>
+        <Show when={dataset()}>
+          {(dataset) => <LineChart class="p-4 lg:p-12" {...dataset()} />}
+        </Show>
         <Table
           search
           page={page()}
