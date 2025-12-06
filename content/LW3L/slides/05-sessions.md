@@ -284,6 +284,7 @@ export async function login(form: FormData) {
 ::::: break-inside-avoid
 - `process.env.SECRET` is an **environment variable** that should be kept secret,
   and known only to the server.
+  This env variable should be specified in `docker-compose.yaml`.
 
 - The **signature** is to check that the cookie wasn't faked.
   Only the server could do it, as it requires knowledge of the secret.
