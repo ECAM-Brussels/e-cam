@@ -14,8 +14,8 @@ title: Web Technologies
 2. [Components-based Architecture](/LW3L/slides/02-components)
 3. [Server-Side Rendering and Deployment with Docker](/LW3L/slides/03-ssr)
 4. [Database](/LW3L/slides/04-database)
-5. [Sessions](/LW3L/slides/05-sessions)
-6. [Client-Side Interactivity](/LW3L/slides/06-interactivity)
+5. [Deployment](/LW3L/slides/05-deployment)
+6. [Sessions](/LW3L/slides/06-sessions)
 7. Review
 
 :::
