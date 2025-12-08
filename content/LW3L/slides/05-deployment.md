@@ -60,5 +60,6 @@ Every time you change your code, run:
 git pull
 npm install
 npx drizzle-kit push
+npm run build
 npm run start
 ~~~
