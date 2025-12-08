@@ -190,7 +190,7 @@ like this:
 ~~~ ts
 export const usersTable = pgTable('users', {
   id: uuid().defaultRandom().primaryKey(),
-  email: text().notNull().unique(),
+  login: text().notNull().unique(),
   password: text().notNull(),
 })
 ~~~
@@ -313,7 +313,7 @@ export async function getCurrentUser() {
   if (!session) return null
 
   // Check the signature
-  const [login, signature] = sessionCookie.split(';')
+  const [login, signature] = session.split(';')
   const correct = await compare(signature, secret + login)
 
   return correct ? login : null
