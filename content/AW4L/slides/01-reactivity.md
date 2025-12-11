@@ -108,7 +108,7 @@ A useful analogy is that of an Excel document.
 Changing a cell retriggers calculations,
 like below
 
-```javascript {.run framework="solid" hideEditor=true}
+```javascript {.run framework="solid" hideEditor=true runImmediately=true}
 import { createSignal } from 'solid-js'
 
 function App() {
@@ -230,7 +230,7 @@ Effects are used
 - ...
 ::::
 
-```javascript {.run framework="solid" hideEditor=true}
+```javascript {.run framework="solid" hideEditor=true runImmediately=true}
 import { createSignal, createResource, Show } from 'solid-js'
 
 async function loadPokemonImage(name) {
