@@ -38,7 +38,7 @@ export default function Code(props: CodeProps) {
   }
   const [value, setValue] = createSignal('')
   const [index, setIndex] = createSignal(0)
-  const parts = () => props.value.split(/^.*---\s*start$/m).map((p) => p.trim())
+  const parts = () => props.value.split(/^.*---\s*start.*$/m).map((p) => p.trim())
   const before = () => (parts().length === 1 ? '' : parts()[0] + '\n')
   const main = () => (parts().length <= 1 ? props.value : parts()[1])
   const fragments = () =>
