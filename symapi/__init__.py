@@ -77,7 +77,6 @@ graphql = strawberry.fastapi.GraphQLRouter(schema)
 
 @asynccontextmanager
 async def lifespan(app: fastapi.FastAPI):
-    print("Hello")
     path = "./symapi/generated/schema.graphql"
     content = str(schema)
     old = None
