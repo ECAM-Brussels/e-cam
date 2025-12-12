@@ -1,6 +1,8 @@
 import { extractFormData } from '../form'
 import { action, createAsync, query } from '@solidjs/router'
-import { createEffect, createSignal, type JSX } from 'solid-js'
+import { createEffect, createMemo, createSignal, For, type JSX } from 'solid-js'
+import { createStore } from 'solid-js/store'
+import { Dynamic } from 'solid-js/web'
 import z from 'zod/v4'
 import Button from '~/components/Button'
 import ErrorBoundary from '~/components/ErrorBoundary'
@@ -16,7 +18,7 @@ export type Schema = {
 type AttemptSchema<T extends Schema> = {
   [K in keyof T['steps']]: z.ZodObject<{
     name: z.ZodLiteral<K & string>
-    state: T['steps'][K & string]
+    state: z.ZodOptional<T['steps'][K & string]>
   }>
 }[keyof T['steps']]
 
@@ -31,7 +33,7 @@ export function buildSchema<T extends Schema>(schema: T): FullSchema<T> {
     attempt: z
       .union(
         Object.entries(schema.steps).map(([name, state]) =>
-          z.object({ name: z.literal(name), state }),
+          z.object({ name: z.literal(name), state: state.optional() }),
         ) as AttemptSchema<T>[],
       )
       .array()
@@ -63,21 +65,23 @@ export function buildStep<T extends Schema, N extends keyof T['steps'] & string,
   return function (props: {
     question: z.infer<T['question']>
     state?: z.infer<T['steps'][N]>
-    onChange?: (
-      newState: z.infer<T['steps'][N]>,
-      feedback: Awaited<ReturnType<typeof step.feedback>>,
-    ) => Promise<void>
+    onChange?: (event: {
+      newState: z.infer<T['steps'][N]>
+      feedback: Awaited<ReturnType<typeof step.feedback>>
+    }) => Promise<void> | void
   }) {
     const [state, setState] = createSignal(props.state)
-    createEffect(() => setState(() => props.state))
+    createEffect(async () => {
+      setState(() => props.state)
+    })
     const feedback = createAsync(async () => {
       if (state()) return getFeedback(props.question, state()!)
     })
     const submit = action(async (form: FormData) => {
       const newState = await step.stepSchema.parseAsync(extractFormData(form))
       const feedback = await getFeedback(props.question, newState)
-      await props.onChange?.(newState, feedback)
       setState(() => newState)
+      await props.onChange?.({ newState, feedback })
       return feedback
     })
     return (
@@ -89,6 +93,51 @@ export function buildStep<T extends Schema, N extends keyof T['steps'] & string,
         </Suspense>
         <Button>Corriger</Button>
       </form>
+    )
+  }
+}
+
+export type ExerciseType = {
+  schema: Schema
+  steps: ReturnType<typeof defineStep>[]
+}
+
+export function buildExercise<T extends ExerciseType>(exercise: T) {
+  const step = (name: keyof T['schema']['steps']) =>
+    exercise.steps.filter((e) => e.name === name).at(0)
+  const Step = (name: keyof T['schema']['steps']) => buildStep(step(name))
+  return function (props: {
+    question: z.infer<T['schema']['question']>
+    attempt?: z.infer<AttemptSchema<T['schema']>>[]
+    onChange?: (event: { attempt: z.infer<AttemptSchema<T['schema']>>[] }) => void | Promise<void>
+  }) {
+    const [attempt, setAttempt] = createStore(props.attempt ?? [])
+    createEffect(() => setAttempt(props.attempt ?? []))
+    return (
+      <For each={attempt.length ? attempt : [{ name: exercise.steps[0].name, state: undefined }]}>
+        {(part, i) => (
+          <Dynamic
+            component={Step(part.name)}
+            question={props.question}
+            state={part.state}
+            onChange={(e) => {
+              setAttempt(i(), {
+                name: part.name,
+                state: e.newState,
+              } as z.infer<AttemptSchema<T['schema']>>)
+              if (i() >= attempt.length - 1 && e.feedback.next) {
+                setAttempt([
+                  ...attempt,
+                  {
+                    name: e.feedback.next,
+                  } as z.infer<AttemptSchema<T['schema']>>,
+                ])
+              }
+              props.onChange?.({ attempt })
+            }}
+          />
+        )}
+      </For>
     )
   }
 }

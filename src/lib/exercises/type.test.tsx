@@ -1,4 +1,11 @@
-import { buildSchema, buildStep, defineStep, type Schema } from './type'
+import {
+  buildExercise,
+  buildSchema,
+  buildStep,
+  defineStep,
+  type ExerciseType,
+  type Schema,
+} from './type'
 import { MemoryRouter, Route } from '@solidjs/router'
 import { render } from '@solidjs/testing-library'
 import userEvent from '@testing-library/user-event'
@@ -11,12 +18,13 @@ const schema = {
   question: z.object({ expr: z.string() }),
   steps: {
     start: z.object({ attempt: z.string() }),
+    dummy: z.object({ attempt: z.string() }),
   },
 } satisfies Schema
 
 const start = defineStep(schema, 'start', {
   async feedback(question, state) {
-    return { correct: question.expr === state.attempt, next: null, data: { hello: 'world' } }
+    return { correct: question.expr === state.attempt, next: 'dummy', data: { hello: 'world' } }
   },
   View(props) {
     return (
@@ -31,6 +39,20 @@ const start = defineStep(schema, 'start', {
     )
   },
 })
+
+const dummy = defineStep(schema, 'dummy', {
+  async feedback(question, state) {
+    return { correct: true, next: null, data: null }
+  },
+  View(props) {
+    return <p>Dummy</p>
+  },
+})
+
+const exercise = {
+  schema,
+  steps: [start, dummy] as const,
+} satisfies ExerciseType
 
 const user = userEvent.setup()
 
@@ -64,9 +86,7 @@ test('step displays properly', async () => {
         <Route path="/" component={() => <Start question={{ expr: 'hello' }} />} />
       </MemoryRouter>
     ),
-    {
-      location: '/',
-    },
+    { location: '/' },
   )
   expect(await findByText('Write')).toBeInTheDocument()
   const input = getByRole('textbox') as HTMLInputElement
@@ -83,4 +103,26 @@ test('step displays properly', async () => {
   expect(input.value).toBe('hello')
   await user.click(submit)
   expect(await findByText('correct')).toBeInTheDocument()
+})
+
+test('exercise displays properly', async () => {
+  const Exercise = buildExercise(exercise)
+  const { findByText, getByRole } = render(
+    () => (
+      <MemoryRouter>
+        <Route path="/" component={() => <Exercise question={{ expr: 'hello' }} />} />
+      </MemoryRouter>
+    ),
+    { location: '/' },
+  )
+  expect(await findByText('Write')).toBeInTheDocument()
+  const input = getByRole('textbox') as HTMLInputElement
+  const submit = getByRole('button')
+  expect(input).toBeInTheDocument()
+
+  await user.type(input, 'hello')
+  expect(input.value).toBe('hello')
+  await user.click(submit)
+  expect(await findByText('correct')).toBeInTheDocument()
+  expect(await findByText('Dummy')).toBeInTheDocument()
 })
