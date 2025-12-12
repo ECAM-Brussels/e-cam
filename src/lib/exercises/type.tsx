@@ -2,6 +2,7 @@ import { extractFormData } from '../form'
 import { action, createAsync, query } from '@solidjs/router'
 import { createEffect, createSignal, type JSX } from 'solid-js'
 import z from 'zod/v4'
+import Button from '~/components/Button'
 import ErrorBoundary from '~/components/ErrorBoundary'
 import Suspense from '~/components/Suspense'
 
@@ -86,6 +87,7 @@ export function buildStep<T extends Schema, N extends keyof T['steps'] & string,
             <step.View question={props.question} state={state()} feedback={feedback()} />
           </ErrorBoundary>
         </Suspense>
+        <Button>Corriger</Button>
       </form>
     )
   }
