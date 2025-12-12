@@ -21,7 +21,7 @@ type AttemptSchema<T extends Schema> = {
 
 type FullSchema<T extends Schema> = z.ZodObject<{
   question: T['question']
-  attempt: z.ZodArray<z.ZodUnion<AttemptSchema<T>[]>>
+  attempt: z.ZodOptional<z.ZodArray<z.ZodUnion<AttemptSchema<T>[]>>>
 }>
 
 export function buildSchema<T extends Schema>(schema: T): FullSchema<T> {
@@ -33,7 +33,8 @@ export function buildSchema<T extends Schema>(schema: T): FullSchema<T> {
           z.object({ name: z.literal(name), state }),
         ) as AttemptSchema<T>[],
       )
-      .array(),
+      .array()
+      .optional(),
   })
 }
 
