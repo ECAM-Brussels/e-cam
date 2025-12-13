@@ -1,6 +1,6 @@
 import { extractFormData } from '../form'
 import { action, createAsync, query } from '@solidjs/router'
-import { createEffect, createMemo, createSignal, For, type JSX } from 'solid-js'
+import { createEffect, createSignal, For, type JSX, lazy } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web'
 import z from 'zod/v4'
@@ -21,6 +21,7 @@ type AttemptSchema<T extends Schema> = {
     state: z.ZodOptional<T['steps'][K & string]>
   }>
 }[keyof T['steps']]
+type Attempt<T extends Schema> = z.infer<AttemptSchema<T>>
 
 type FullSchema<T extends Schema> = z.ZodObject<{
   question: T['question']
@@ -71,9 +72,7 @@ export function buildStep<T extends Schema, N extends keyof T['steps'] & string,
     }) => Promise<void> | void
   }) {
     const [state, setState] = createSignal(props.state)
-    createEffect(async () => {
-      setState(() => props.state)
-    })
+    createEffect(() => setState(() => props.state))
     const feedback = createAsync(async () => {
       if (state()) return getFeedback(props.question, state()!)
     })
@@ -83,7 +82,7 @@ export function buildStep<T extends Schema, N extends keyof T['steps'] & string,
       setState(() => newState)
       await props.onChange?.({ newState, feedback })
       return feedback
-    })
+    }, `exercise-${step.schema.name}-${step.name}-action`)
     return (
       <form method="post" action={submit}>
         <Suspense>
@@ -97,19 +96,26 @@ export function buildStep<T extends Schema, N extends keyof T['steps'] & string,
   }
 }
 
-export type ExerciseType = {
-  schema: Schema
-  steps: ReturnType<typeof defineStep>[]
+type Steps<T extends Schema> = {
+  [K in keyof T['steps'] & string]: ReturnType<typeof defineStep<T, K, any>>
+}[keyof T['steps'] & string][]
+
+export function defineExercise<T extends Schema, S extends Steps<T>>(exercise: {
+  schema: T
+  steps: S
+}) {
+  return exercise
 }
 
-export function buildExercise<T extends ExerciseType>(exercise: T) {
-  const step = (name: keyof T['schema']['steps']) =>
-    exercise.steps.filter((e) => e.name === name).at(0)
-  const Step = (name: keyof T['schema']['steps']) => buildStep(step(name))
+export function buildExercise<T extends Schema, S extends Steps<T>>(
+  exercise: ReturnType<typeof defineExercise<T, S>>,
+) {
+  const step = (name: keyof T['steps']) => exercise.steps.filter((e) => e.name === name).at(0)!
+  const Step = (name: keyof T['steps']) => buildStep(step(name))
   return function (props: {
-    question: z.infer<T['schema']['question']>
-    attempt?: z.infer<AttemptSchema<T['schema']>>[]
-    onChange?: (event: { attempt: z.infer<AttemptSchema<T['schema']>>[] }) => void | Promise<void>
+    question: z.infer<T['question']>
+    attempt?: z.infer<AttemptSchema<T>>[]
+    onChange?: (event: { attempt: z.infer<AttemptSchema<T>>[] }) => void | Promise<void>
   }) {
     const [attempt, setAttempt] = createStore(props.attempt ?? [])
     createEffect(() => setAttempt(props.attempt ?? []))
@@ -120,24 +126,35 @@ export function buildExercise<T extends ExerciseType>(exercise: T) {
             component={Step(part.name)}
             question={props.question}
             state={part.state}
-            onChange={(e) => {
+            onChange={async ({ feedback, newState }) => {
               setAttempt(i(), {
                 name: part.name,
-                state: e.newState,
-              } as z.infer<AttemptSchema<T['schema']>>)
-              if (i() >= attempt.length - 1 && e.feedback.next) {
+                state: newState,
+              } as z.infer<AttemptSchema<T>>)
+              if (i() >= attempt.length - 1 && feedback.next) {
                 setAttempt([
                   ...attempt,
                   {
-                    name: e.feedback.next,
-                  } as z.infer<AttemptSchema<T['schema']>>,
+                    name: feedback.next,
+                  } as z.infer<AttemptSchema<T>>,
                 ])
               }
-              props.onChange?.({ attempt })
+              await props.onChange?.({ attempt })
             }}
           />
         )}
       </For>
     )
   }
+}
+
+export function loadExercise<T extends Schema, S extends Steps<T>>(
+  importModule: () => Promise<{ schema: T; default: ReturnType<typeof defineExercise<T, S>> }>,
+) {
+  return lazy(async () => {
+    const module = await importModule()
+    return {
+      default: buildExercise(module.default),
+    }
+  })
 }
