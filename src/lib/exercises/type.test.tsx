@@ -2,8 +2,9 @@ import {
   buildExercise,
   buildSchema,
   buildStep,
+  defineExercise,
   defineStep,
-  type ExerciseType,
+  loadExercise,
   type Schema,
 } from './type'
 import { MemoryRouter, Route } from '@solidjs/router'
@@ -49,10 +50,10 @@ const dummy = defineStep(schema, 'dummy', {
   },
 })
 
-const exercise = {
+const exercise = defineExercise({
   schema,
-  steps: [start, dummy] as const,
-} satisfies ExerciseType
+  steps: [start, dummy],
+})
 
 const user = userEvent.setup()
 

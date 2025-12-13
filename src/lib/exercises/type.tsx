@@ -1,12 +1,12 @@
-import { extractFormData } from '../form'
 import { action, createAsync, query } from '@solidjs/router'
-import { createEffect, createSignal, For, type JSX, lazy } from 'solid-js'
+import { createEffect, createSignal, For, type JSX, lazy, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web'
 import z from 'zod/v4'
 import Button from '~/components/Button'
 import ErrorBoundary from '~/components/ErrorBoundary'
 import Suspense from '~/components/Suspense'
+import { extractFormData } from '~/lib/form'
 
 export type Schema = {
   name: string
@@ -21,7 +21,6 @@ type AttemptSchema<T extends Schema> = {
     state: z.ZodOptional<T['steps'][K & string]>
   }>
 }[keyof T['steps']]
-type Attempt<T extends Schema> = z.infer<AttemptSchema<T>>
 
 type FullSchema<T extends Schema> = z.ZodObject<{
   question: T['question']
@@ -44,7 +43,12 @@ export function buildSchema<T extends Schema>(schema: T): FullSchema<T> {
 
 type Step<Q, S, F> = {
   feedback: (question: Q, state: S) => Promise<F>
-  View: (props: { question: Q; state?: S; feedback?: F }) => JSX.Element
+  View: (props: {
+    question: Q
+    state?: S
+    feedback?: F
+    context: { readOnly: boolean }
+  }) => JSX.Element
 }
 
 export function defineStep<T extends Schema, N extends keyof T['steps'] & string, F>(
@@ -66,6 +70,7 @@ export function buildStep<T extends Schema, N extends keyof T['steps'] & string,
   return function (props: {
     question: z.infer<T['question']>
     state?: z.infer<T['steps'][N]>
+    context: { readOnly: boolean }
     onChange?: (event: {
       newState: z.infer<T['steps'][N]>
       feedback: Awaited<ReturnType<typeof step.feedback>>
@@ -73,9 +78,12 @@ export function buildStep<T extends Schema, N extends keyof T['steps'] & string,
   }) {
     const [state, setState] = createSignal(props.state)
     createEffect(() => setState(() => props.state))
-    const feedback = createAsync(async () => {
-      if (state()) return getFeedback(props.question, state()!)
-    })
+    const feedback = createAsync(
+      async () => {
+        if (state()) return getFeedback(props.question, state()!)
+      },
+      { initialValue: undefined },
+    )
     const submit = action(async (form: FormData) => {
       const newState = await step.stepSchema.parseAsync(extractFormData(form))
       const feedback = await getFeedback(props.question, newState)
@@ -87,10 +95,17 @@ export function buildStep<T extends Schema, N extends keyof T['steps'] & string,
       <form method="post" action={submit}>
         <Suspense>
           <ErrorBoundary>
-            <step.View question={props.question} state={state()} feedback={feedback()} />
+            <step.View
+              context={props.context}
+              question={props.question}
+              state={state()}
+              feedback={feedback()}
+            />
           </ErrorBoundary>
         </Suspense>
-        <Button>Corriger</Button>
+        <Show when={!props.context.readOnly}>
+          <Button color="green">Corriger</Button>
+        </Show>
       </form>
     )
   }
@@ -126,6 +141,7 @@ export function buildExercise<T extends Schema, S extends Steps<T>>(
             component={Step(part.name)}
             question={props.question}
             state={part.state}
+            context={{ readOnly: attempt.length > 0 && i() < attempt.length - 1 }}
             onChange={async ({ feedback, newState }) => {
               setAttempt(i(), {
                 name: part.name,
