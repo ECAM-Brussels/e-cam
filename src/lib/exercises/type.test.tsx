@@ -4,7 +4,6 @@ import {
   buildStep,
   defineExercise,
   defineStep,
-  loadExercise,
   type Schema,
 } from './type'
 import { MemoryRouter, Route } from '@solidjs/router'
@@ -84,7 +83,10 @@ test('step displays properly', async () => {
   const { findByText, getByRole } = render(
     () => (
       <MemoryRouter>
-        <Route path="/" component={() => <Start question={{ expr: 'hello' }} />} />
+        <Route
+          path="/"
+          component={() => <Start question={{ expr: 'hello' }} context={{ readOnly: false }} />}
+        />
       </MemoryRouter>
     ),
     { location: '/' },
