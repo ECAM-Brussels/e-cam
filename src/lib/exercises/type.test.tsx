@@ -20,7 +20,13 @@ const schema = {
     start: z.object({ attempt: z.string() }),
     dummy: z.object({ attempt: z.string() }),
   },
+  params: {
+    x1: z.string(),
+  },
 } satisfies Schema
+
+const fullSchema = buildSchema(schema)
+type Test = z.infer<typeof fullSchema>
 
 const start = defineStep(schema, 'start', {
   async feedback(question, state) {
@@ -30,7 +36,8 @@ const start = defineStep(schema, 'start', {
     return (
       <>
         <p>
-          <strong>Write</strong> exactly {props.question.expr}: <input name="attempt" />{' '}
+          <strong>Write</strong> exactly <em>{props.question.expr}</em>:{' '}
+          <input name="attempt" />{' '}
         </p>
         <Show when={props.feedback}>
           {(feedback) => <p>{feedback().correct ? 'correct' : 'incorrect'}</p>}
@@ -52,6 +59,9 @@ const dummy = defineStep(schema, 'dummy', {
 const exercise = defineExercise({
   schema,
   steps: [start, dummy],
+  async generator(params) {
+    return { expr: `(x - ${params.x1})` }
+  },
 })
 
 const user = userEvent.setup()
@@ -128,4 +138,17 @@ test('exercise displays properly', async () => {
   await user.click(submit)
   expect(await findByText('correct')).toBeInTheDocument()
   expect(await findByText('Dummy')).toBeInTheDocument()
+})
+
+test('generator works', async () => {
+  const Exercise = buildExercise(exercise)
+  const { findByText } = render(
+    () => (
+      <MemoryRouter>
+        <Route path="/" component={() => <Exercise params={{ x1: ['1'] }} />} />
+      </MemoryRouter>
+    ),
+    { location: '/' },
+  )
+  expect(await findByText('(x - 1)')).toBeInTheDocument()
 })
