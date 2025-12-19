@@ -30,7 +30,7 @@ type WithQuestion<T extends Schema> = z.ZodObject<{
 
 type ParamsSchema<T extends Schema> = T extends { params: object }
   ? z.ZodObject<{
-      [K in keyof T['params']]: z.ZodArray<T['params'][K]>
+      [K in keyof T['params']]: z.ZodTuple<[T['params'][K]], T['params'][K]>
     }>
   : never
 
@@ -59,7 +59,7 @@ export function buildSchema<T extends Schema>(schema: T) {
     const params = z.object(
       Object.fromEntries(
         Object.entries(schema.params).map(([param, paramSchema]) => {
-          return [param, paramSchema.array().nonempty()]
+          return [param, z.tuple([paramSchema], paramSchema)]
         }),
       ),
     )
