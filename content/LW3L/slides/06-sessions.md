@@ -174,7 +174,7 @@ export async function login(form: FormData) {
   const users = await db.select().from(usersTable)
     .where(eq(usersTable.login, login))
   const loggedIn = users.length > 0
-    ? await compare(password, user.password)
+    ? await compare(password, users[0].password)
     : false
   // To be continued... (cookie generation)
 }
@@ -190,7 +190,7 @@ like this:
 ~~~ ts
 export const usersTable = pgTable('users', {
   id: uuid().defaultRandom().primaryKey(),
-  email: text().notNull().unique(),
+  login: text().notNull().unique(),
   password: text().notNull(),
 })
 ~~~
@@ -284,6 +284,7 @@ export async function login(form: FormData) {
 ::::: break-inside-avoid
 - `process.env.SECRET` is an **environment variable** that should be kept secret,
   and known only to the server.
+  This env variable should be specified in `docker-compose.yaml`.
 
 - The **signature** is to check that the cookie wasn't faked.
   Only the server could do it, as it requires knowledge of the secret.
@@ -312,7 +313,7 @@ export async function getCurrentUser() {
   if (!session) return null
 
   // Check the signature
-  const [login, signature] = sessionCookie.split(';')
+  const [login, signature] = session.split(';')
   const correct = await compare(signature, secret + login)
 
   return correct ? login : null

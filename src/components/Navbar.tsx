@@ -43,6 +43,9 @@ function UserInfo(props: { onBurgerClick: () => void }) {
         {(user) => (
           <div class="items-center hidden md:flex">
             <NavbarItem href={`/users/${user().email}`}>{user().firstName}</NavbarItem>
+            <Show when={user().role !== 'STUDENT'}>
+              <NavbarItem href="/stats">Statistiques</NavbarItem>
+            </Show>
             <NavbarItem>
               <form action={logout} method="post">
                 <input type="hidden" name="currentUrl" value={location.pathname} />

@@ -58,16 +58,14 @@ services:
       POSTGRES_PASSWORD: hello
       POSTGRES_DB: mydb
     volumes:
-      - /var/lib/postgresql/data
-  pgadmin:
-    image: dpage/pgadmin4:9
+      - db_data:/var/lib/postgresql/data
+  adminer:
+    image: adminer
+    restart: unless-stopped
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+      ADMINER_DEFAULT_SERVER: db
     ports:
-      - "8080:80"
-    depends_on:
-      - db
+      - '8080:8080'
   app:
     depends_on:
       - db
@@ -102,7 +100,10 @@ services:
     environment:
       DATABASE_URL: postgres://root:hello@db:5432/mydb
     volumes:
-      - /app/node_modules
+      - node_modules:/app/node_modules
+volumes:
+  db_data:
+  node_modules:
 ~~~
 :::::
 

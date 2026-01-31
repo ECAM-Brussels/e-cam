@@ -1,8 +1,9 @@
-import Button from './Button'
-import Markdown from './Markdown'
+import Code from './Code'
 import { action, useSubmission } from '@solidjs/router'
 import { createSignal, Show } from 'solid-js'
 import z from 'zod'
+import Button from '~/components/Button'
+import Markdown from '~/components/Markdown'
 import Math from '~/components/Math'
 import Spinner from '~/components/Spinner'
 import Tick from '~/components/Tick'
@@ -13,6 +14,7 @@ const schema = z.object({
   showAnswer: z.boolean().default(true),
   value: z.string(),
   unit: z.string().default(''),
+  code: z.string().optional(),
 })
 
 const checkSolution = action((form: FormData) => {
@@ -24,11 +26,13 @@ export default createComponent(schema, (props) => {
   const submission = useSubmission(checkSolution)
   return (
     <details
-      class="border-l-4 border-slate-300 p-2 m-2 text-sm"
+      class="border-l-4 border-slate-300 p-2 m-2 text-sm relative"
       open={open()}
       onToggle={() => setOpen(!open())}
     >
-      <summary class="text-slate-500">{open() ? 'Cacher' : 'Montrer'} la réponse</summary>
+      <summary class="text-slate-500 relative z-50">
+        {open() ? 'Cacher' : 'Montrer'} la réponse
+      </summary>
       <form action={checkSolution} method="post" class="flex gap-4 items-center">
         <Show when={props.showAnswer}>
           Réponse: <Math value={props.value} />
@@ -37,7 +41,7 @@ export default createComponent(schema, (props) => {
         <label class="flex gap-4 items-center">
           Vérifiez votre réponse:
           <Math
-            class="border rounded"
+            class="border rounded z-50"
             value={String(submission.input?.[0].get('answer') ?? '')}
             editable
             name="answer"
@@ -50,6 +54,14 @@ export default createComponent(schema, (props) => {
         <Tick value={submission.result} />
         <Button color="green">Soumettre</Button>
       </form>
+      <Show when={props.code}>
+        {(code) => (
+          <div class="text-slate-500 relative z-50 text-xs">
+            <p>La reponse a été calculée avec le code suivant:</p>
+            <Code value={code()} class="my-0" lang="python" run />
+          </div>
+        )}
+      </Show>
     </details>
   )
 })

@@ -8,9 +8,9 @@ export default function (props: { class?: string; children: JSXElement }) {
           <h1 class="font-bold text-3xl mb-8">Something went wrong</h1>
           <details>
             <summary>Error message</summary>
-            <pre class="text-sm bg-gray-100 text-gray-700 rounded-xl p-4 overflow-auto">
+            <p class="text-sm bg-gray-100 text-gray-700 rounded-xl p-4 overflow-auto">
               {error.toString()}
-            </pre>
+            </p>
           </details>
         </div>
       )}
