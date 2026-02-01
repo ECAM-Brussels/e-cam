@@ -108,3 +108,124 @@ body:
           desc: 3661 -> 1:1:1
         - test: main(["59"])
           desc: 59 -> 0:0:59
+
+  - type: Python
+    question:
+      wrap: true
+      text: |
+        Écrire un programme qui demande un entier
+        et qui affiche
+
+        - `pair` si ce nombre est pair
+        - `impair` si ce nombre est impair
+      answer: |
+        n = int(input(""))
+        print("impair" if n % 2 else "pair")
+      tests:
+        - test: main([0])
+          desc: Entrer 0 devrait donner 'pair'
+        - test: main([1])
+          desc: Entrer 1 devrait donner 'impair'
+        - test: main([2])
+          desc: Entrer 2 devrait donner 'pair'
+        - test: main([3])
+          desc: Entrer 3 devrait donner 'impair'
+        - test: main([4])
+          desc: Entrer 4 devrait donner 'pair'
+        - test: main([5])
+          desc: Entrer 5 devrait donner 'impair'
+        - test: main([6])
+          desc: Entrer 6 devrait donner 'pair'
+        - test: main([7])
+          desc: Entrer 7 devrait donner 'impair'
+        - test: main([8])
+          desc: Entrer 8 devrait donner 'pair'
+
+  - type: Python
+    question:
+      wrap: true
+      text: |
+        Écrire un programme qui demande un nombre (float) et affiche sa valeur absolue.
+      answer: |
+        x = float(input(""))
+        if x < 0:
+          x = -x
+        print(x)
+      tests:
+        - test: main(["5"])
+          desc: 5 -> 5.0
+        - test: main(["-3"])
+          desc: -3 -> 3.0
+        - test: main(["2.5"])
+          desc: 2.5 -> 2.5
+        - test: main(["-9"])
+          desc: -9 -> 9.0
+
+  - type: Python
+    question:
+      wrap: true
+      text: |
+        Écrire un programme qui demande une année en paramètre et qui affiche si elle
+        est bissextile ou non.
+      answer: |
+        y = int(input(""))
+        is_leap = (y % 4 == 0 and y % 100 != 0) or (y % 400 == 0)
+        print(is_leap)
+      tests:
+        - test: main(["2000"])
+          desc: 2000 -> True
+        - test: main(["1900"])
+          desc: 1900 -> False
+        - test: main(["2024"])
+          desc: 2024 -> True
+
+  - type: Python
+    question:
+      wrap: true
+      text: |
+        Écrire un programme qui demande un entier et qui affiche sa factorielle.
+        (Il est interdit d'importer le module math.)
+      constraints:
+        - ['\bimport\s+math\b', false]
+      answer: |
+        n = int(input(""))
+        res = 1
+        for i in range(2, n+1):
+          res *= i
+        print(res)
+      tests:
+        - test: main(["0"])
+          desc: 0! = 1
+        - test: main(["1"])
+          desc: 1! = 1
+        - test: main(["5"])
+          desc: 5! = 120
+
+  - type: Python
+    question:
+      wrap: true
+      text: |
+        Écrire un programme qui demande un entier et qui affiche s’il est premier ou
+        non.
+      answer: |
+        n = int(input(""))
+        if n <= 1:
+          print(False)
+        else:
+          is_prime = True
+          i = 2
+          while i * i <= n:
+            if n % i == 0:
+              is_prime = False
+              break
+            i += 1
+          print(is_prime)
+      tests:
+        - test: main(["1"])
+          desc: 1 -> False
+        - test: main(["2"])
+          desc: 2 -> True
+        - test: main(["17"])
+          desc: 17 -> True
+        - test: main(["18"])
+          desc: 18 -> False
