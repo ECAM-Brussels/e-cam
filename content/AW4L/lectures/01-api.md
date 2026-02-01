@@ -42,6 +42,8 @@ You will not get a passing grade if:
 
 #. Client-side data fetching *($\to$ TanStack Query)*
 
+#. Client-side data fetching II *($\to$ TanStack Query)*
+
 #. Advanced React
 
 #. Authentication
@@ -497,13 +499,8 @@ Prisma is an open-source **ORM and database toolkit** for TypeScript and Node.js
 ::: col
 ```prisma
 // schema.prisma
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
 model User {
-  id    String @id @default(cuid())
+  id    String @id @default(uuid())
   email String @unique
   name  String
 }
@@ -522,4 +519,6 @@ async function main() {
 ```
 :::
 
-# Demo: monorepo
+# Demo
+
+<Iframe src="https://stackblitz.com/github/middleapi/orpc/tree/main/playgrounds/svelte-kit?embed=1&file=src%2Flib%2Forpc.server.ts&view=editor" class="w-full h-full" />
