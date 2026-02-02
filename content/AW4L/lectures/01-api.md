@@ -41,9 +41,7 @@ You will not get a passing grade if:
 
 #. Component-based architecture *($\to$ React, React Native)*
 
-#. Client-side data fetching *($\to$ why is it hard?)*
-
-#. Client-side data fetching II *($\to$ TanStack Query)*
+#. Client-side data fetching *($\to$ TanStack Query)*
 
 #. Advanced React *(Hooks)*
 
