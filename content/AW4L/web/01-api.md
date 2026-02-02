@@ -96,10 +96,7 @@ export default defineConfig({
   server: {
     port: 3001,
     cors: {
-      origin: [
-        "http://localhost:19006",
-        "http://localhost:8081",
-      ],
+      origin: ["http://localhost:8081"],
       credentials: true,
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       allowedHeaders: ["Content-Type", "Authorization"],
