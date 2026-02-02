@@ -11,12 +11,13 @@ lang: en
 
   - API
   - Interactive Web app with good SEO
-  - Mobile client that uses a mobile feature
+  - Separate mobile client that uses a mobile feature
 
 - Other requirements:
 
   - Fully Type-safe
   - Use a database
+  - Use a meta-framework
   - Dockerized backend
   - Authentication
 :::
@@ -40,11 +41,11 @@ You will not get a passing grade if:
 
 #. Component-based architecture *($\to$ React, React Native)*
 
-#. Client-side data fetching *($\to$ TanStack Query)*
+#. Client-side data fetching *($\to$ why is it hard?)*
 
 #. Client-side data fetching II *($\to$ TanStack Query)*
 
-#. Advanced React
+#. Advanced React *(Hooks)*
 
 #. Authentication
 
@@ -381,6 +382,33 @@ In web development this means calling typed functions (procedures) instead of re
 It simplifies client code and enables end-to-end typing and better IDE support.
 
 <Iframe src="https://assets.trpc.io/www/v10/v10-dark-landscape.mp4" class="w-full h-1/2" />
+
+# Server functions {.w-1--2}
+
+Pioneered by Solid-Start, popularized by Next.js.
+
+SvelteKit and TanStack Start have since adopted a more "secure" version.
+
+``` ts
+async function getTasks() {
+  'use server'
+  return await db.select().from('tasks')
+}
+```
+
+``` ts
+// client.ts
+// This gets compiled into a fetch call!
+getTasks()
+```
+
+::: remark
+The DX is incredible, with full type-safety.
+
+- It doesn't work with mobile clients
+- People forget they are opening API endpoints,
+  leading to huge security vulnerabilities.
+:::
 
 # oRPC {.w-1--2}
 
