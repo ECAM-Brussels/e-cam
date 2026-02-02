@@ -389,6 +389,39 @@ Components are:
 
 - **isomorphic**: can be used on the client and on the server
 
+# Components: drawbacks {.w-1--2}
+
+- Global State
+
+  - Shopping cart
+    ```tsx {.text-sm}
+    <Page>
+      <ShoppingCart />
+      <Card>
+        <p>Item description</p>
+        <Button>Buy Item!</Button>
+      </Card>
+    </Page>
+    ```
+  - Log out
+    ```tsx {.text-sm}
+    function LogOutButton() {
+      // Must remove user info in whole app!
+    }
+    ```
+
+- Waterfalls
+  ```tsx {.text-sm}
+  <ComponentA>
+    <ComponentB>
+      <ComponentC>
+      </ComponentC>
+    </ComponentB>
+  </ComponentA>
+  ```
+
+- Without a meta-framework, SEO is bad.
+
 # React Native
 
 - React for cross platform apps
@@ -396,8 +429,6 @@ Components are:
 - HTML tags are replaced by `View`, `Text`, `TextInput`, `Pressable`, `Image`, ...
 
 - Tailwind support through UniWind
-
-TODO: improve slide
 
 # Different approaches {.w-1--2}
 
