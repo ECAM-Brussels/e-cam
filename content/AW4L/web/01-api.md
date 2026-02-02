@@ -156,12 +156,15 @@ pnpm run scriptName
 
 - `prisma.schema`: File that describes your tables and their relationships
 
-- `pnpm db:push` to ensure your database matches `prisma.schema`.
+- `pnpm run db:push` to ensure your database matches `prisma.schema`.
   Will also trigger codegen to make sure you can query your new tables.
+
+- `pnpm run db:generate` to generate the Prisma client.
 
 ::: warning
 In short, after changing `prisma.schema`,
-always run `pnpm db:push`.
+always run `pnpm run db:push`
+and `pnpm run db:generate`.
 :::
 
 # Prisma schema {.grid .grid-cols-2}
