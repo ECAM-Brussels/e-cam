@@ -65,7 +65,7 @@ export default function Math(props: MathProps) {
         }
       >
         <math-field
-          className={props.class ?? 'border min-w-24 py-2'}
+          className={props.class ?? 'border min-w-24 py-2 z-20'}
           {...others}
           oninput={(event: MathInputEvent) => {
             extra.onInput?.(event)

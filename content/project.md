@@ -3,155 +3,223 @@ title: Projet e-cam
 slideshow: true
 ---
 
-# Lancer une copie locale {.w-1--2}
+# Statistiques 2025-2026 {.flex}
 
-::: {.info title="Prérequis"}
-- Sur **Windows**, installez WSL, git et [Docker](https://docker.com)
-- Sur **MacOS**, [installez homebrew](https://brew.sh/) et ensuite lancez
+::::: {.grow .self-center}
+- 477 utilisateurs et utilisatrices
 
-  ~~~bash
-  brew install git docker
-  ~~~
-:::
+- 356 ont résolu au moins un exercice
 
-::: remark
-Sur Windows,
-il est conseillé de mettre le code sur WSL.
-:::
+- Certain.es ont résolu jusqu'à 890 exercices
 
-~~~ bash
-git clone https://github.com/ECAM-Brussels/e-cam.git
-cd e-cam
-docker compose up
-~~~
+- 45 387 exercices tentés en 7 semaines
 
-# Architecture de l'application
+- Utilisée pour:
 
-~~~ mermaid
-flowchart LR
-  client["Client"] --> server["Serveur"]
-  server --> graphql["API GraphQL"]
-  server --> db["Base de données"]
-~~~
+  - Pont maths A
+  - Programmation BA1
 
-- Client/Serveur
-  - Partie *Web pure* du projet
-  - Application **isomorphe** écrite avec [SolidStart](https://docs.solidjs.com/solid-start/)
-  - TypeScript
-- API GraphQL
-  - Partie calcul scientifique
-  - Écrite en Python avec [Strawberry](https://strawberry.rocks)
+- Contributions par FKY, HIL, LUR, NGY.
+:::::
 
-# Tâches
+<Iframe src="/stats" class="w-2/3 h-full rounded-xl border shadow-md" />
 
-- Créer un **type d'exercice** en mathématiques, physique ou chimie
-  - Interface pour l'étudiant.e
-  - Correction automatique
-  - Génération d'exercices
-  - Feedback pour l'étudiant
-  - Tests unitaires
+# Pont maths {.flex}
 
-- Créer une interface permettant aux enseignant.es de créer une "interro"
+::::: {.grow .self-center}
+- Ressources groupées par **thème**
 
-- Améliorer le coeur de l'application
-  - Score ELO par domaine/cours
-  - Possibilité d'exercices en plusieurs stades
-  - Améliorer l'expérience développeur
+  - Cours théoriques en direct
+  - Exercices corrigés
 
-# Anatomie d'un type d'exercice {.columns .columns-2}
+- Cartographies personnalisées locales des compétences
 
-~~~ typescript
-createExerciseType({
-  name: 'VerySimpleExercise',
-  question: z.object({
-    answer: z.string().nonempty(),
-  }),
-  attempt: z.string().nonempty(),
-  Component: (props) => (
-    <>
-      <p>Tapez exactement: {props.question.answer}</p>
-      <label>
-        Réponse:
-        <input
-          name="attempt"
-          value={props.question.answer}
-        />
-      </label>
-    </>
-  ),
-  mark: (question, attempt) => {
-    return attempt === question.answer
+- Couverture presque complète des compétences
+:::::
+
+<Iframe src="/PM1C/" class="w-3/4 h-full rounded-xl border shadow-md" />
+
+# Cours théorique {.flex}
+
+::::: {.grow .self-center}
+- Slides annotés en direct
+
+- Exécution de code
+
+- Interactivité riche
+:::::
+
+<Iframe class="w-3/4 h-full rounded-xl border shadow-md" src="https://learning.ecam.be/PM1C/slides/01-trigonometry/15/1?boardName=A" />
+
+# Cartographies personnalisées des contenus {.flex .gap-8}
+
+::::: {.self-center}
+### Cartographies locales
+
+::: break-inside-avoid
+~~~ {.tsx .raw .break-inside-avoid}
+<ChapterInfo title="Droites et Coniques" query={{
+  "page": {
+    OR: [
+      { "title": { contains: "premier degré" } },
+      { "title": { contains: "hyperbole" } },
+      { "title": { contains: "parabole" } },
+      { "title": { contains: "ellipse" } },
+      { "title": { contains: "cercle" } },
+      { "title": { contains: "conique" } },
+    ]
   }
-})
-~~~
-
-::: col
-## Explications
-
-Le but de cet exercice est de recopier l'énoncé.
-L'utilisateur aura une réponse correcte
-si et seulement si sa tentative est égale au texte.
-
-- **name**: un nom identifiant le type d'exercice de manière unique.
-
-- **question**: schéma décrivant la forme d'une question.
-  Ici, une question est un object qui a pour propriété "answer",
-  défini comme une chaîne non vide.
-
-- **attempt**: schéma décrivant la forme de la tentative de l'étudiant.e.
-  Ici, sa tentative est une chaîne non vide.
-
-- **Component**: interface de l'exercice vue par l'étudiant.e.
-
-- **mark**: fonction recevant la question et la tentative en argument,
-  et qui renvoie `true` ou `false`
-  en fonction de si la tentative de l'étudiant.e est correcte.
-:::
-
-# Correction symbolique {.columns .columns-2}
-
-::: col
-- La correction symbolique se fait en **Python**,
-  via la librairie symbolique [sympy](https://sympy.org)
-:::
-
-::: {.example title="Correction d'une équation du second degré"}
-~~~ python {.run}
-from sympy import *
-x = Symbol("x")
-
-# Question
-equation = x**2 - 5*x + 6
-
-# Tentative étudiant
-attempt = {2, 3}
-
-# Correction
-if solveset(equation) == attempt:
-    print("Correct")
-else:
-    print("Incorrect")
+}}>
+  <Resource type="theory" href="/PM1C/slides/02-vectors?boardName=A">CT 2A</Resource>
+  <Resource type="theory" href="/PM1C/slides/02-vectors?boardName=B">CT 2B</Resource>
+  <Resource type="handout" href="/PM1C/slides/02-vectors?print=true">CT 2</Resource>
+  <Resource type="exercise" href="/PM1C/exercises/03-vectors">EX 3</Resource>
+  <Resource type="exercise" href="/PM1C/exercises/04-vectors">EX 4</Resource>
+  <Resource type="exercise" href="/PM1C/exercises/05-vectors">EX 5</Resource>
+</ChapterInfo>
 ~~~
 :::
+:::::
 
-# Contribution {.grid .grid-columns-2}
+::::: grow
+### Cartographie globales
+ 
+~~~ {.tsx .raw}
+<Graph
+  class="border rounded-xl w-full h-[800px]"
+  query={{ courses: { some: { code: 'PM1C' } } }}
+/>
+~~~
+:::::
 
-~~~ bash
-# Sélection de la branche de départ
-git checkout main
-git pull
+# Vue d'un exercice côté étudiant {.flex}
 
-# Création de la nouvelle branche
-git checkout -b new_cool_feature
+::: {.column .grow .self-center}
+- Vue tablette
 
-# Développement, commits
+- Aide à la saisie
 
-# Demande de review
-git pull
-git merge main
+- Compétences voisines
+:::
+
+<Iframe src="/skills/algebra/factor/monic-quadratics" class="border rounded-xl shadow-xl w-4/5 h-full" />
+
+# Vue d'un exercice côté enseignant {.flex}
+
+::: {.column .grow .self-center}
+- Score ELO pour quantifier la difficulté perçue
+
+- Résultats par étudiant.e
+:::
+
+<Iframe src="/results/skills/algebra/factor/monic-quadratics" class="border rounded-xl shadow-xl w-2/3 h-full" />
+
+# Progrès d'un étudiant {.flex}
+
+::: {.column .grow .self-center}
+- Cartographies colorées
+
+- Historique des exercices résolus
+:::
+
+<Iframe src="https://learning.ecam.be/users/25199@ecam.be/math" class="border rounded-xl shadow-xl w-2/3 h-full" />
+
+# Moteur d'exercices
+
+::::: {.flex .justify-around}
+::: self-center
+Un exercice est **défini** précisément...
+:::
+
+~~~ yaml {.run .flex .flex-row-reverse .justify-end .gap-16 .border .rounded-xl .shadow-sm .p-4}
+type: Factor
+question:
+  expr: x^2 - 5x + 6
+~~~
+:::::
+
+::::: {.flex .justify-around}
+::: self-center
+ou il peut être **généré**...
+:::
+
+~~~ yaml {.run .flex .flex-row-reverse .justify-end .gap-16 .border .rounded-xl .shadow-sm .p-4}
+type: Factor
+params:
+  A: [1]
+  roots:
+    product:
+      - [-3, -2, -1, 1, 2, 3]
+      - [-3, -2, -1, 1, 2, 3]
+~~~
+:::::
+
+# Chimie, informatique
+
+L'outil est suffisament versatile pour répondre aux besoins des collègues.
+
+::::: {.flex .justify-around}
+::: self-center
+De la **chimie**...
+
+::::: {.text-slate-500 .text-sm}
+(Notez que le système comprend réellement la stoechiométrie)
+:::::
+:::
+
+~~~ yaml {.run .flex .flex-row-reverse .justify-end .gap-16 .border .rounded-xl .shadow-sm .p-4}
+type: Balance
+question:
+  reactants: [Na, H2O]
+  products: [NaOH, H2]
+~~~
+:::::
+
+::::: {.flex .justify-around}
+::: self-center
+à l'**informatique**...
+
+:::::: {.text-slate-500 .text-sm}
+(où aucun setup n'est nécessaire)
+::::::
+:::
+
+~~~ yaml {.run .flex .flex-row-reverse .justify-end .gap-16 .border .rounded-xl .shadow-sm .p-4}
+type: Output
+question:
+  code: |
+    a = 3
+    b = 4
+    print(a + b)
+~~~
+:::::
+
+# Réunion FGS
+
+- Beaucoup d'exercices "simples"
+
+~~~ yaml {.run .flex .flex-row-reverse .justify-end .gap-16}
+type: Simple
+question:
+  text: Donnez la formule de la loi de gravitation universelle.
+  label: $F =$
+  unit: N
+  answer: $\frac {G m_1 m_2} {r^2}$
 ~~~
 
-# Timeline
+- **Feature manquante**: exercices avec **plusieurs étapes**.
 
-- [Tutoriel Solid-js](https://www.solidjs.com/tutorial/introduction_basics)
-- [Tutoriel Sympy](https://docs.sympy.org/latest/tutorials/intro-tutorial/index.html)
+  $\to$ Réécriture profonde.
+
+# Leçons {.w-1--2}
+
+- **Correction symbolique**
+
+  - Suffisament puissante pour nos cas d'utilisations
+  - Pas de problèmes de ressources
+  - Feedback riche difficile $\to$ solution trouvée
+
+- **Développement**
+
+  - Jusqu'à présent prototypage $\to$ plus de tests
+  - Ralentir le cycle de développement
