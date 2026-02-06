@@ -9,7 +9,7 @@ import Fa from '~/components/Fa'
 import Html from '~/components/Html'
 import Suspense from '~/components/Suspense'
 import { getUser } from '~/lib/auth/session'
-import { Exercise } from '~/lib/exercises/assignment'
+import { Exercise, exerciseSchema } from '~/lib/exercises/assignment'
 
 type CodeProps = {
   class?: string
@@ -74,9 +74,10 @@ export default function Code(props: CodeProps) {
   let textarea: HTMLTextAreaElement
 
   const [exercise, setExercise] = createSignal<null | Exercise>(null)
-  createEffect(() => {
+  createEffect(async () => {
     if (props.lang === 'yaml' && props.run) {
-      setExercise(yaml.load(value()) as Exercise)
+      const exercise = await exerciseSchema.parseAsync(yaml.load(value()))
+      setExercise(exercise)
     }
   })
 
@@ -172,7 +173,6 @@ export default function Code(props: CodeProps) {
       <Show when={props.lang === 'yaml' && props.run && exercise()}>
         <ExerciseUI
           {...(exercise()!)}
-          attempts={[]}
           onChange={(event, action) => {
             setExercise(event)
           }}

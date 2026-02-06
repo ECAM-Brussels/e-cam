@@ -6,13 +6,13 @@ slideshow: true
 # Statistiques 2025-2026 {.flex}
 
 ::::: {.grow .self-center}
-- 477 utilisateurs et utilisatrices
+- +450 utilisateurs et utilisatrices
 
-- 356 ont résolu au moins un exercice
+- +350 ont résolu au moins un exercice
 
-- Certain.es ont résolu jusqu'à 890 exercices
+- Certain.es ont résolu jusqu'à 900 exercices
 
-- 45 387 exercices tentés en 7 semaines
+- ~46 000 exercices tentés en 7 semaines
 
 - Utilisée pour:
 
@@ -32,7 +32,10 @@ slideshow: true
   - Cours théoriques en direct
   - Exercices corrigés
 
-- Cartographies personnalisées locales des compétences
+- Cartographies des compétences
+
+  - Compétences voisines
+  - Couleurs en fonction de la maîtrise de l'étudiant.e
 
 - Couverture presque complète des compétences
 :::::
@@ -54,6 +57,10 @@ slideshow: true
 # Cartographies personnalisées des contenus {.flex .gap-8}
 
 ::::: {.self-center}
+::: info
+Les cartographies sont générées automatiquement.
+:::
+
 ### Cartographies locales
 
 ::: break-inside-avoid
@@ -88,6 +95,7 @@ slideshow: true
 <Graph
   class="border rounded-xl w-full h-[800px]"
   query={{ courses: { some: { code: 'PM1C' } } }}
+  groups={['algebra', 'geometry', 'calculus', 'trigonometry']}
 />
 ~~~
 :::::
@@ -120,9 +128,11 @@ slideshow: true
 - Cartographies colorées
 
 - Historique des exercices résolus
+
+- Suggestion d'exercices
 :::
 
-<Iframe src="https://learning.ecam.be/users/25199@ecam.be/math" class="border rounded-xl shadow-xl w-2/3 h-full" />
+<Iframe src="https://learning.ecam.be/users/25220@ecam.be/math" class="border rounded-xl shadow-xl w-2/3 h-full" />
 
 # Moteur d'exercices
 
@@ -134,7 +144,8 @@ Un exercice est **défini** précisément...
 ~~~ yaml {.run .flex .flex-row-reverse .justify-end .gap-16 .border .rounded-xl .shadow-sm .p-4}
 type: Factor
 question:
-  expr: x^2 - 5x + 6
+  expr: (x - 2)(x - 3)(x - 1)
+  expand: true
 ~~~
 :::::
 
@@ -146,9 +157,9 @@ ou il peut être **généré**...
 ~~~ yaml {.run .flex .flex-row-reverse .justify-end .gap-16 .border .rounded-xl .shadow-sm .p-4}
 type: Factor
 params:
-  A: [1]
   roots:
     product:
+      - [0]
       - [-3, -2, -1, 1, 2, 3]
       - [-3, -2, -1, 1, 2, 3]
 ~~~
@@ -194,32 +205,84 @@ question:
 ~~~
 :::::
 
-# Réunion FGS
+# Test diagnostique {.flex}
+
+::: {.grow .self-center}
+- Pas de soucis de performance
+- Bug rendant les résultats inutilisables
+- Trop précipité 7/10/2026
+:::
+
+<Iframe class="w-3/4 h-full rounded-xl border shadow-md" src="https://learning.ecam.be/results/PM1C/diagnostic-test-group-2" />
+
+# Réunions et retours
+
+### Réunion FGS
 
 - Beaucoup d'exercices "simples"
 
-~~~ yaml {.run .flex .flex-row-reverse .justify-end .gap-16}
-type: Simple
-question:
-  text: Donnez la formule de la loi de gravitation universelle.
-  label: $F =$
-  unit: N
-  answer: $\frac {G m_1 m_2} {r^2}$
-~~~
+  ~~~ yaml {.border .rounded-xl .p-4 .run .flex .flex-row-reverse .justify-end .gap-16 .text-xs}
+  type: Calculate
+  params:
+    type: withParams
+    questions:
+      - text: |
+          Deux points matériels ont comme masse ${m1}$ kg et ${m2}$ kg,
+          et se trouvent à une distance de ${d}$ mètres.
+  
+          Déterminez l'intensité de la force gravitationnelle
+          entre ces deux objets.
+        label: F
+        unit: N
+        expr: \frac {{G} {m1} {m2}} {{d}^2}
+        error: 0.1
+    subs:
+      G: 6.6743 \cdot 10^{-11}
+      m1: [200, 300, 400, 500, 600, 700]
+      m2: [200, 300, 400, 500, 600, 700]
+      d: [25, 50, 100, 200, 300]
+  ~~~
 
-- **Feature manquante**: exercices avec **plusieurs étapes**.
+- Exercices avec **plusieurs étapes** $\to$ impossible pour le moment.
 
-  $\to$ Réécriture profonde.
+### Avec Ruben
 
-# Leçons {.w-1--2}
+- Correction comme à l'examen (crédit partiel) $\to$ impossible
 
-- **Correction symbolique**
+- **Feedback** détaillé $\to$ difficile
 
-  - Suffisament puissante pour nos cas d'utilisations
-  - Pas de problèmes de ressources
-  - Feedback riche difficile $\to$ solution trouvée
+# Stages et consultants {.w-1--2}
 
-- **Développement**
+- Pas de contribution de code de la part du consultant pour le moment.
+  Beaucoup de temps investi pour former l'étudiant.
 
-  - Jusqu'à présent prototypage $\to$ plus de tests
-  - Ralentir le cycle de développement
+- Projet difficile pour des étudiants,
+  principalement à cause de l'aspect calcul symbolique.
+
+- Stages reportés $\to$ congé paternité,
+  et nécessité d'améliorations du coeur (trop difficile).
+
+# Développement futur {.w-1--2}
+
+::: column
+- **2025-2026**: amélioration du coeur
+
+  - Couverture de test
+  - Feedback riche
+  - Exercices par étapes
+  - Améliorer l'expérience enseignant
+
+- **Q1 2026**: documentation pour les stagiaires
+
+- **Q2 2027**: supervisions de stage pour réécrire les exercices courants,
+  et ajouter des exercices de FGS.
+:::
+
+# Ressenti {.w-1--2}
+
+- *À court terme*, les besoins de **developpement** excèdent de loin ceux de pédagogie.
+
+- Pérennité: quelle ligne directrice s'il y a une incertitude pour l'année suivante?
+
+- Former des stagiaires demande du **temps**,
+  peu de différence entre 1 et 4 stagiaires.
