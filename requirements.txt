@@ -5,3 +5,4 @@ panflute
 pytest
 strawberry-graphql[fastapi]
 sympy
+unyt

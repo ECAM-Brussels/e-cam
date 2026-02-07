@@ -157,12 +157,23 @@ scalar Math
 """Mathematical set"""
 scalar MathSet
 
+type Quantity {
+  value: Math!
+  unit: Unit!
+  expression: Math!
+  testExpression: String!
+  isEqual(value: Math!, unit: Unit!): Boolean!
+}
+
 type Query {
   chemistry: Chemistry!
   conicSection(equation: Math!): ConicSection!
 
   """Analyze a mathematical expression"""
   expression(expr: Math!): Expression!
+
+  """quantity for chemical units"""
+  quantity(value: Math!, unit: Unit!): Quantity!
   matrix(entries: [[Math!]!]!): Expression!
   vector(coordinates: [Math!]!): Vector!
 
@@ -192,6 +203,9 @@ type System {
   check(equations: [Math!]!, variables: [Math!]!, x: [Math!]!): Boolean!
   solve(equations: [Math!]!, variables: [Math!]!): [Expression!]!
 }
+
+"""pour l instant pas besoin """
+scalar Unit
 
 type Vector {
   coordinates: [Math!]!
