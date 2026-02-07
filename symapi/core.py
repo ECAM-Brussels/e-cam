@@ -5,6 +5,29 @@ import sympy
 import sympy.core.function
 import sympy.parsing.latex
 from typing import NewType
+import unyt
+from sympy.physics.units import (
+    convert_to,
+    meter,
+    kilogram,
+    second,
+    ampere,
+    kelvin,
+    mole,
+    candela,
+    gram,
+    centimeter,
+    millimeter,
+    kilometer,
+    hour,
+    minute,
+    newton,
+    pascal,
+    joule,
+    watt,
+    liter,
+)
+from sympy.parsing.latex import parse_latex as sympy_parse_latex
 
 
 def split_coordinates(s):
@@ -113,4 +136,46 @@ MathSet = strawberry.scalar(
     serialize=sympy.latex,
     parse_value=parse_set,
     description="Mathematical set",
+)
+
+
+BASE_SI = [meter, kilogram, second, ampere, kelvin, mole]
+
+
+MY_UNITS = {
+    "km": kilometer,
+    "m": meter,
+    "cm": centimeter,
+    "mm": 0.001 * meter,
+    "g": gram,
+    "kg": kilogram,
+    "h": hour,
+    "min": minute,
+    "s": second,
+    "ms": 0.001 * second,
+    "N": newton,
+    "Pa": pascal,
+    "J": joule,
+    "W": watt,
+    "L": liter,
+    "tonne": 1000 * kilogram,
+    "t": 1000 * kilogram,
+    "N": newton,
+    "kN": 1000 * newton,
+}
+
+
+def parse_unit(unit_str: str) -> str:
+    u_str = str(unit_str).strip()
+
+    if not re.match(r"^[a-zA-Z0-9\s\*\/\^\+\-\.\(\)]+$", u_str):
+        return "1"
+    return u_str
+
+
+Unit = strawberry.scalar(
+    NewType("Unit", str),
+    serialize=lambda v: str(v),
+    parse_value=parse_unit,
+    description="pour l instant pas besoin ",
 )
