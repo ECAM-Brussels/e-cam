@@ -19,6 +19,7 @@ lang: en
 ### Web Architecture Labs
 
 - [API](/AW4L/web/01-api)
+- [Routing](/AW4L/web/02-routing)
 :::::
 
 ::::: {.bg-white .rounded-xl .border .px-4 .py-2}
