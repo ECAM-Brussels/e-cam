@@ -8,6 +8,10 @@ lang: en
 
 - File-based routing
 
+- Preload query cache
+
+- SEO
+
 # File-based routing {.w-1--2}
 
 Routes are located in `apps/web/routes`.
@@ -121,5 +125,20 @@ export const Route = createFileRoute('/posts/$postId')({
     const { postId } = Route.useParams()
     return <div>Post {postId}</div>
   },
+})
+```
+
+# Metadata {.w-1--2}
+
+```tsx
+export const Route = createFileRoute('/hello-world')({
+  head: () => ({
+    meta: [
+      { title: 'hello world'}
+      { name: 'keywords', content: 'hello, world' },
+      { name: 'author', content: 'Quentin LURKIN' }
+    ],
+  }),
+  component: () => <p>Hello world</p>,
 })
 ```
