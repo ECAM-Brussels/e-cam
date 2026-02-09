@@ -40,8 +40,13 @@ class Quantity:
             q1_si = convert_to(self.value * u1_obj, BASE_SI)
             q2_si = convert_to(value * u2_obj, BASE_SI)
             diff = float(sympy.N(q1_si - q2_si))
+            check = q1_si.as_coeff_Mul()[1] == q2_si.as_coeff_Mul[1]
 
-            if abs(diff) < 1e-4:  # ok if the quantities are exactly equal
+            valeur_diff, _ = diff.as_coeff_Mul()
+
+            if (
+                abs(valeur_diff) < 1e-4 and check
+            ):  # ok if the quantities are exactly equal  try 1 : mull try
                 return True
             else:
                 return False

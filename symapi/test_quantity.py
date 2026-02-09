@@ -5,7 +5,7 @@ from symapi import schema
 @pytest.mark.parametrize(
     "value,unit,expected",
     [
-        ("1", "km", "1000*meter"),
+        ("1", "km", "1000.01*meter"),
         ("2", "m", "2*meter"),
         ("22", "g/cm**3", "22000*kilogram/meter**3"),
         ("1", "h", "3600*second"),
