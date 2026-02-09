@@ -167,6 +167,9 @@ body:
       text: |
         Écrire un programme qui demande une année en paramètre et qui affiche si elle
         est bissextile ou non.
+        Une année est bissextile si:
+        - elle est divisible par 4 et non divisible par 100, ou
+        - si elle est divisible par 400.
       answer: |
         y = int(input(""))
         is_leap = (y % 4 == 0 and y % 100 != 0) or (y % 400 == 0)
