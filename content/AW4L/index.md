@@ -13,6 +13,7 @@ lang: en
 
 - [API](/AW4L/lectures/01-api)
 - [Components](/AW4L/lectures/02-components)
+- [Data fetching and routing](/AW4L/lectures/03-data-fetching)
 :::::
 
 ::::: {.bg-white .rounded-xl .border .px-4 .py-2}
