@@ -218,7 +218,7 @@ how can clicking on "buy now" affect the state of the Cart component?
 
 # React Context {.grid .grid-cols-2}
 
-```tsx {.text-sm .run framework="react"}
+```tsx {.run framework="react"}
 import { createContext, useContext, useState } from 'react';
 
 const Context = createContext({
@@ -417,8 +417,8 @@ by editing the cache.
 ```tsx
 const addTask = useMutation(orpc.tasks.create.mutationOptions({
   onMutate: async () {
-    queryClient.setQueryData(orpc.tasks.list.key(), (old) => [
-      ...old,
+    queryClient.setQueryData(orpc.tasks.list.queryKey(), (old) => [
+      ...(old ?? []),
       { title: text },
     ])
   },
