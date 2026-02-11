@@ -422,7 +422,7 @@ const addTask = useMutation(orpc.tasks.create.mutationOptions({
       { title: text },
     ])
   },
-  onSuccess: () => {
+  onSettled: () => {
     queryClient.invalidateQueries()
   }
 }))
