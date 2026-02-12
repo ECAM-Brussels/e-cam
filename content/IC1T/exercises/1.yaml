@@ -15,13 +15,13 @@ body:
         Écrire un programme qui demande les amplitudes de deux angles d’un
         triangle et qui affiche l’amplitude du troisième (en degrés).
       answer: |
-        a = int(input(""))
-        b = int(input(""))
+        a = float(input(""))
+        b = float(input(""))
         print(180 - a - b)
       tests:
-        - test: main(["60","60"])
+        - test: f"{float(res.group()):.5f}" if (res := __import__("re").compile(r"[+-]?(?:\d+\.\d*|\.\d+|\d+)").search(main(["60", "60"]))) is not None else None
           desc: 60 + 60 -> 60
-        - test: main(["30","60"])
+        - test: f"{float(res.group()):.5f}" if (res := __import__("re").compile(r"[+-]?(?:\d+\.\d*|\.\d+|\d+)").search(main(["30", "60"]))) is not None else None
           desc: 30 + 60 -> 90
 
   - type: Python
@@ -36,9 +36,9 @@ body:
         b = float(input(""))
         print(math.hypot(a, b))
       tests:
-        - test: main(["3","4"])
+        - test: f"{float(res.group()):.5f}" if (res := __import__("re").compile(r"[+-]?(?:\d+\.\d*|\.\d+|\d+)").search(main(["3", "4"]))) is not None else None
           desc: 3 et 4 -> 5
-        - test: main(["5","12"])
+        - test: f"{float(res.group()):.5f}" if (res := __import__("re").compile(r"[+-]?(?:\d+\.\d*|\.\d+|\d+)").search(main(["5", "12"]))) is not None else None
           desc: 5 et 12 -> 13
 
   - type: Python
@@ -47,16 +47,18 @@ body:
       text: |
         Écrire un programme qui convertit des degrés Fahrenheit en degrés
         Celsius. (entrée: nombre; sortie: nombre)
+
+        $$T_c = \frac{5}{9}\,(T_f - 32)$$
       answer: |
         f = float(input(""))
         c = (f - 32) * 5 / 9
         print(c)
       tests:
-        - test: main(["32"])
+        - test: f"{float(res.group()):.5f}" if (res := __import__("re").compile(r"[+-]?(?:\d+\.\d*|\.\d+|\d+)").search(main(["32"]))) is not None else None
           desc: 32  -> 0
-        - test: main(["212"])
+        - test: f"{float(res.group()):.5f}" if (res := __import__("re").compile(r"[+-]?(?:\d+\.\d*|\.\d+|\d+)").search(main(["212"]))) is not None else None
           desc: 212  -> 100
-        - test: main(["10"])
+        - test: f"{float(res.group()):.5f}" if (res := __import__("re").compile(r"[+-]?(?:\d+\.\d*|\.\d+|\d+)").search(main(["10"]))) is not None else None
           desc: 10  -> -12.22222222222222
 
   - type: Python
@@ -70,9 +72,9 @@ body:
         f = c * 9 / 5 + 32
         print(f)
       tests:
-        - test: main(["0"])
+        - test: f"{float(res.group()):.5f}" if (res := __import__("re").compile(r"[+-]?(?:\d+\.\d*|\.\d+|\d+)").search(main(["0"]))) is not None else None
           desc: 0 C -> 32 F
-        - test: main(["100"])
+        - test: f"{float(res.group()):.5f}" if (res := __import__("re").compile(r"[+-]?(?:\d+\.\d*|\.\d+|\d+)").search(main(["100"]))) is not None else None
           desc: 100 C -> 212 F
 
   - type: Python
@@ -85,9 +87,9 @@ body:
         r = float(input(""))
         print(math.pi * r * r)
       tests:
-        - test: main(["1"])
+        - test: f"{float(res.group()):.6f}" if (res := __import__("re").compile(r"[+-]?(?:\d+\.\d*|\.\d+|\d+)").search(main(["1"]))) is not None else None
           desc: rayon 1 -> pi
-        - test: main(["2"])
+        - test: f"{float(res.group()):.6f}" if (res := __import__("re").compile(r"[+-]?(?:\d+\.\d*|\.\d+|\d+)").search(main(["2"]))) is not None else None
           desc: rayon 2 -> 4*pi
 
   - type: Python
@@ -95,7 +97,7 @@ body:
       wrap: true
       text: |
         Écrire un programme qui demande un nombre de secondes et qui affiche les
-        nombres d’heures, de minutes et de secondes correspondant (format H:M:S).
+        nombres d’heures, de minutes et de secondes correspondant (format H:M:S **sans espaces**).
       answer: |
         s = int(input(""))
         h = s // 3600
@@ -122,23 +124,23 @@ body:
         n = int(input(""))
         print("impair" if n % 2 else "pair")
       tests:
-        - test: main([0])
+        - test: str("impair") if "impair" in (res := main(["0"])) else "pair" if "pair" in res else ""
           desc: Entrer 0 devrait donner 'pair'
-        - test: main([1])
+        - test: str("impair") if "impair" in (res := main(["1"])) else "pair" if "pair" in res else ""
           desc: Entrer 1 devrait donner 'impair'
-        - test: main([2])
+        - test: str("impair") if "impair" in (res := main(["2"])) else "pair" if "pair" in res else ""
           desc: Entrer 2 devrait donner 'pair'
-        - test: main([3])
+        - test: str("impair") if "impair" in (res := main(["3"])) else "pair" if "pair" in res else ""
           desc: Entrer 3 devrait donner 'impair'
-        - test: main([4])
+        - test: str("impair") if "impair" in (res := main(["4"])) else "pair" if "pair" in res else ""
           desc: Entrer 4 devrait donner 'pair'
-        - test: main([5])
+        - test: str("impair") if "impair" in (res := main(["5"])) else "pair" if "pair" in res else ""
           desc: Entrer 5 devrait donner 'impair'
-        - test: main([6])
+        - test: str("impair") if "impair" in (res := main(["6"])) else "pair" if "pair" in res else ""
           desc: Entrer 6 devrait donner 'pair'
-        - test: main([7])
+        - test: str("impair") if "impair" in (res := main(["7"])) else "pair" if "pair" in res else ""
           desc: Entrer 7 devrait donner 'impair'
-        - test: main([8])
+        - test: str("impair") if "impair" in (res := main(["8"])) else "pair" if "pair" in res else ""
           desc: Entrer 8 devrait donner 'pair'
 
   - type: Python
@@ -152,13 +154,13 @@ body:
           x = -x
         print(x)
       tests:
-        - test: main(["5"])
+        - test: f"{float(res.group()):.6f}" if (res := __import__("re").compile(r"[+-]?(?:\d+\.\d*|\.\d+|\d+)").search(main(["5"]))) is not None else None
           desc: 5 -> 5.0
-        - test: main(["-3"])
+        - test: f"{float(res.group()):.6f}" if (res := __import__("re").compile(r"[+-]?(?:\d+\.\d*|\.\d+|\d+)").search(main(["-3"]))) is not None else None
           desc: -3 -> 3.0
-        - test: main(["2.5"])
+        - test: f"{float(res.group()):.6f}" if (res := __import__("re").compile(r"[+-]?(?:\d+\.\d*|\.\d+|\d+)").search(main(["2.5"]))) is not None else None
           desc: 2.5 -> 2.5
-        - test: main(["-9"])
+        - test: f"{float(res.group()):.6f}" if (res := __import__("re").compile(r"[+-]?(?:\d+\.\d*|\.\d+|\d+)").search(main(["-9"]))) is not None else None
           desc: -9 -> 9.0
 
   - type: Python
@@ -170,6 +172,8 @@ body:
         Une année est bissextile si:
         - elle est divisible par 4 et non divisible par 100, ou
         - si elle est divisible par 400.
+
+        **Sortie: `True` ou `False`**
       answer: |
         y = int(input(""))
         is_leap = (y % 4 == 0 and y % 100 != 0) or (y % 400 == 0)
@@ -190,6 +194,7 @@ body:
         (Il est interdit d'importer le module math.)
       constraints:
         - ['\bimport\s+math\b', false]
+        - ['\bfrom\s+math\b', false]
       answer: |
         n = int(input(""))
         res = 1
@@ -210,6 +215,8 @@ body:
       text: |
         Écrire un programme qui demande un entier et qui affiche s’il est premier ou
         non.
+        
+        **Sortie: `True` ou `False`**
       answer: |
         n = int(input(""))
         if n <= 1:
@@ -231,4 +238,4 @@ body:
         - test: main(["17"])
           desc: 17 -> True
         - test: main(["18"])
-          desc: 18 -> False
+          desc: 18 -> False 
