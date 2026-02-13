@@ -8,6 +8,28 @@ type PythonProps = {
   value: string
 }
 
+function filter_error(error_str: string) {
+  if (error_str.startsWith("Traceback")) {
+    const lines = error_str.split(/\r?\n/);
+    const res = [];
+    res.push(lines[0])
+    lines.splice(0, 1)
+    let keep = false
+    for (const line of lines) {
+      if(line.trim().startsWith('File "<exec>"')) {
+        keep = true
+      }
+      if (keep) {
+        res.push(line)
+      }
+    }
+    return res.join("\n")
+  }
+  else {
+    return error_str
+  }
+}
+
 export default function Python(props: PythonProps) {
   const result = createAsync(() => runPython(props.value))
   return (
@@ -21,7 +43,9 @@ export default function Python(props: PythonProps) {
             <Show when={output().format === 'matplotlib'}>
               <img src={output().output} alt="Matplotlib plot" />
             </Show>
-            <Show when={output().format === 'error'}>{output().output}</Show>
+            <Show when={output().format === 'error' && output().output}>
+              <pre style="color: red;">{filter_error(output().output.message)}</pre>
+            </Show>
             <Show when={output().format === 'string' && output().output}>
               <pre>{output().output}</pre>
             </Show>
