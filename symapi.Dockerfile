@@ -2,6 +2,7 @@ ARG PYTHON_VERSION="3.14.0-alpine3.22"
 
 FROM python:${PYTHON_VERSION} AS builder
 WORKDIR /app
+RUN apk add --no-cache build-base
 RUN apk add --no-cache gcc musl-dev python3-dev linux-headers
 COPY requirements.txt .
 RUN pip install --prefix=/install --no-cache-dir -r requirements.txt
