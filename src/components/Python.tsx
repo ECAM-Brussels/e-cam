@@ -44,7 +44,7 @@ export default function Python(props: PythonProps) {
               <img src={output().output} alt="Matplotlib plot" />
             </Show>
             <Show when={output().format === 'error' && output().output}>
-              <pre style="color: red;">{filter_error(output().output.message)}</pre>
+              <pre class="text-red-800">{filter_error(output().output.message)}</pre>
             </Show>
             <Show when={output().format === 'string' && output().output}>
               <pre>{output().output}</pre>
