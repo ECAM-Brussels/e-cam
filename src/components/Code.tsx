@@ -1,12 +1,15 @@
+import { ExerciseUI } from './Assignment'
 import { faPlayCircle } from '@fortawesome/free-solid-svg-icons'
 import { createAsync } from '@solidjs/router'
 import { clientOnly } from '@solidjs/start'
 import { formatDistance } from 'date-fns'
+import yaml from 'js-yaml'
 import { createEffect, createSignal, on, onCleanup, Show } from 'solid-js'
 import Fa from '~/components/Fa'
 import Html from '~/components/Html'
 import Suspense from '~/components/Suspense'
 import { getUser } from '~/lib/auth/session'
+import { Exercise, exerciseSchema } from '~/lib/exercises/assignment'
 
 type CodeProps = {
   class?: string
@@ -69,6 +72,14 @@ export default function Code(props: CodeProps) {
   const user = createAsync(() => getUser())
 
   let textarea: HTMLTextAreaElement
+
+  const [exercise, setExercise] = createSignal<null | Exercise>(null)
+  createEffect(async () => {
+    if (props.lang === 'yaml' && props.run) {
+      const exercise = await exerciseSchema.parseAsync(yaml.load(value()))
+      setExercise(exercise)
+    }
+  })
 
   return (
     <div class={`m-8 ${props.class}`}>
@@ -158,6 +169,14 @@ export default function Code(props: CodeProps) {
       </Show>
       <Show when={props.lang === 'dot' && props.run}>
         <Dot value={codeToRun()} />
+      </Show>
+      <Show when={props.lang === 'yaml' && props.run && exercise()}>
+        <ExerciseUI
+          {...(exercise()!)}
+          onChange={(event, action) => {
+            setExercise(event)
+          }}
+        />
       </Show>
     </div>
   )
