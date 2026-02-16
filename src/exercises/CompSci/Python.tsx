@@ -11,6 +11,16 @@ import { encrypt } from '~/lib/cryptography'
 import { createExerciseType } from '~/lib/exercises/base'
 import { wrapCode } from '~/lib/helpers'
 
+function filter_error(error_str: string) {
+  if (error_str.startsWith("Traceback")) {
+    const lines = error_str.trim().split(/\r?\n/);
+    return lines[lines.length-1]
+  }
+  else {
+    return error_str
+  }
+}
+
 export let execPython: (code: string, test: string) => Promise<string>
 if (isServer) {
   const { spawn } = await import('child_process')
@@ -36,21 +46,60 @@ if (isServer) {
   execPython = async (code: string, test: string) => {
     const output = await runPython(`${code}\n${test}`, true)
     if (output.format === 'error') {
-      throw new Error(`Could not run test ${test}`)
+      throw filter_error(output.output.message)
     }
     return output.output
   }
 }
 
-function runTests(code: string, tests: string[]): Promise<string>[]
-function runTests(code: string, tests: string[], hashes: string[]): Promise<boolean>[]
-function runTests(code: string, tests: string[], hashes?: string[]) {
+
+function run_tests(code: string, tests: string[]): Promise<string>[] {
   return tests.map(async (test, index) => {
+      return execPython(code, test)
+  })
+}
+
+function get_hashes(code: string, tests: string[]): Promise<string>[] {
+  return run_tests(code, tests).map(async (result) => {
     try {
-      const result = await execPython(code, test)
-      return hashes?.length ? compare(result, hashes[index]) : hash(result, 10)
-    } catch (error) {
+      return hash(await result, 10)
+    }
+    catch (error) {
+      return String(error)
+    }
+  })
+}
+
+function check_tests(code: string, tests: string[], hashes: string[]): Promise<boolean>[] {
+  return run_tests(code, tests).map(async (result, index) => {
+    try {
+      return compare(await result, hashes[index])
+    }
+    catch (error) {
       return false
+    }
+  })
+}
+
+type TestFeedback = {
+  pass: boolean,
+  message: string,
+}
+
+function tests_feedback(code: string, tests: string[], hashes: string[]): Promise<TestFeedback>[] {
+  return run_tests(code, tests).map(async (result, index) => {
+    try {
+      const res = await result;
+      return {
+        pass: await compare(res, hashes[index]),
+        message: `Processed result: ${res}`
+      }
+    }
+    catch (error) {
+      return {
+        pass: false,
+        message: String(error)
+      }
     }
   })
 }
@@ -120,7 +169,7 @@ const { Component, schema } = createExerciseType({
         ? {}
         : {
             answer: await encrypt(state.answer),
-            results: await Promise.all(runTests(state.answer, tests)),
+            results: await Promise.all(get_hashes(state.answer, tests)),
           }
       return { attempt: '', ...state, ...patch, tests }
     }),
@@ -130,7 +179,7 @@ const { Component, schema } = createExerciseType({
       return false
     }
     if (question.wrap) attempt = wrapCode(attempt)
-    const tests = runTests(attempt, question.tests, question.results)
+    const tests = check_tests(attempt, question.tests, question.results)
     return Promise.race([
       Promise.all(tests).then((t) => t.every((v) => v)),
       Promise.race(tests.map(async (t) => ((await t) ? new Promise<never>(() => {}) : false))),
@@ -139,10 +188,10 @@ const { Component, schema } = createExerciseType({
   feedback: [
     async (_, question, attempt) => {
       if (question.wrap) attempt = wrapCode(attempt)
-      const tests = runTests(attempt, question.tests, question.results)
+      const tests = tests_feedback(attempt, question.tests, question.results)
       const results = await Promise.all(tests)
       return {
-        results: question.descriptions.map((d, i) => [d, results[i]] as const),
+        results: question.descriptions.map((d, i) => [d, results[i].message, results[i].pass] as const),
       }
     },
     (props) => (
@@ -150,9 +199,10 @@ const { Component, schema } = createExerciseType({
         <h3 class="text-2xl font-semibold my-4">Résultats des tests</h3>
         <ul class="list-disc px-8">
           <For each={props.results}>
-            {([desc, result]) => (
+            {([desc, message, result]) => (
               <li classList={{ 'text-green-800': result, 'text-red-800': !result }}>
-                {desc} <Fa icon={result ? faCheck : faXmark} />
+                {desc} <Fa icon={result ? faCheck : faXmark} /><br />
+                <pre>{message}</pre>
               </li>
             )}
           </For>
