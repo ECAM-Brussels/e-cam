@@ -382,7 +382,7 @@ function TodosScreen() {
   const queryClient = useQueryClient()
   const tasks = useQuery(orpc.tasks.list.queryOptions());
   const addTask = useMutation(orpc.tasks.create.mutationOptions({
-    onSuccess: () => {
+    onSettled: () => {
       queryClient.invalidateQueries()
     }
   }))
@@ -445,7 +445,7 @@ and edit this as follows:
 ```ts
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
-    onSuccess: () => {
+    onSettled: () => {
       queryClient.invalidateQueries()
     },
   }),
