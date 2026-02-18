@@ -40,3 +40,4 @@ lang: en
 ## Extra
 
 - [How does oRPC work?](/AW4L/orpc)
+- [Basic TanStack Query implementation](/AW4L/query)
