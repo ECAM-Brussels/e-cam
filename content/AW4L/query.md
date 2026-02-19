@@ -55,3 +55,36 @@ function useQuery<T extends () => Promise<any>>(query: Query<T>) {
   return { data, loading }
 }
 ```
+
+The code above use the following context.
+
+```ts
+const CacheContext = createContext<{
+  get: (key: string) => any;
+  set: (key: string, value: any) => void;
+}>({
+  get: () => {},
+  set: () => {},
+});
+
+function CacheProvider(props: any) {
+  const [cache, setCache] = useState<any>({});
+  return (
+    <CacheContext.Provider
+      value={{
+        get: (key) => cache[key],
+        set: (key, value) => {
+          cache[key] = value;
+          setCache({ ...cache, [key]: value });
+        },
+      }}
+    >
+      {props.children}
+    </CacheContext.Provider>
+  );
+}
+
+export function useCache() {
+  return useContext(CacheContext);
+}
+```
