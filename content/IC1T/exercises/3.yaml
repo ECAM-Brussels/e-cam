@@ -1,7 +1,5 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
 title: 'Séance 3'
-prerequisites:
-  - /IC1T/exercises/2
 options:
   adjustElo: false
   whiteboard: false

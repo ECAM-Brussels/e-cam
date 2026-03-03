@@ -8,6 +8,7 @@ title: 'Programmation'
 
 - [Introduction](/IC1T/exercises/introduction)
 - [Session 1](/IC1T/exercises/1)
+- [Session 2](/IC1T/exercises/2)
 
 ~~~ tsx {.raw}
 {/*
