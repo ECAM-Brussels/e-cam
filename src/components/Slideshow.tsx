@@ -1,23 +1,21 @@
-import type { IconDefinition } from '@fortawesome/fontawesome-common-types'
+import { faBlackboard, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+import { createAsync, revalidate } from '@solidjs/router'
 import {
-  faBlackboard,
-  faChevronDown,
-  faChevronLeft,
-  faChevronRight,
-  faChevronUp,
-  faEyeSlash,
-  faPrint,
-} from '@fortawesome/free-solid-svg-icons'
-import { A, createAsync, revalidate, useBeforeLeave } from '@solidjs/router'
-import { createSignal, For, onCleanup, onMount, Show, type JSXElement } from 'solid-js'
+  createEffect,
+  createSignal,
+  For,
+  on,
+  onCleanup,
+  onMount,
+  Show,
+  type JSXElement,
+} from 'solid-js'
 import { Dynamic } from 'solid-js/web'
-import z from 'zod'
 import Breadcrumbs from '~/components/Breadcrumbs'
 import Fa from '~/components/Fa'
 import Whiteboard from '~/components/Whiteboard'
 import { getUser } from '~/lib/auth/session'
 import { loadBoard } from '~/lib/board'
-import { createSearchParam } from '~/lib/params'
 import { getBoardCount, getBoardCounts } from '~/lib/slideshow'
 
 type SlideshowProps = {
@@ -35,29 +33,8 @@ export default function Slideshow(props: SlideshowProps) {
   let container!: HTMLDivElement
   const boardCounts = createAsync(() => getBoardCounts(props.url, 'ngy@ecam.be', props.board))
 
-  const [smartphone, setSmartPhone] = createSignal(false)
-  const [scale, setScale] = createSignal(1)
-  const [translation, setTranslation] = createSignal('0, 0')
-  onMount(() => {
-    const observer = new ResizeObserver((_entries) => {
-      setSmartPhone(window.matchMedia('(max-width: 767px)').matches)
-      if (!smartphone() && !props.print) {
-        const scaleX = container.clientWidth / 1920
-        const scaleY = container.clientHeight / 1080
-        const scale = Math.min(scaleX, scaleY)
-        setScale(scale)
-        const x = (container.clientWidth - 1920 * scale) / 2
-        const y = (container.clientHeight - 1080 * scale) / 2
-        setTranslation(`${x}px, ${y}px`)
-      } else {
-        setScale(1)
-        setTranslation('0, 0')
-      }
-    })
-    observer.observe(container)
-  })
-
   const user = createAsync(() => getUser())
+  const [currentBoard, setCurrentBoard] = createSignal<[number, number]>([1, 1])
   const boardName = () => `${props.board}-${props.hIndex}-${props.vIndex}`
   type Message = { url: string; board: string }
   let ws: WebSocket | null = null
@@ -71,162 +48,90 @@ export default function Slideshow(props: SlideshowProps) {
         revalidate(getBoardCount.keyFor(props.url, 'ngy@ecam.be', props.board, props.hIndex))
       }
     })
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            history.replaceState(null, '', `#${entry.target.id}`)
+            setCurrentBoard(entry.target.id.split('/').map(Number) as [number, number])
+          }
+        })
+      },
+      { threshold: 0.2 },
+    )
+    Array.from(container.children[0]?.children ?? []).forEach((slide) => observer.observe(slide))
   })
-  onCleanup(() => ws?.close())
-  useBeforeLeave(() => {
-    if (ws && user()?.email === 'ngy@ecam.be') {
-      ws.send(JSON.stringify({ url: props.url, board: boardName() }))
-    }
+  onCleanup(() => {
+    ws?.close()
+    ws = null
   })
+  createEffect(
+    on(currentBoard, (_, oldVal) => {
+      if (ws && ws.readyState === WebSocket.OPEN && oldVal && user()?.email === 'ngy@ecam.be') {
+        const board = `${props.board}-${oldVal.join('-')}`
+        ws.send(JSON.stringify({ url: props.url, board }))
+      }
+    }),
+  )
 
   return (
-    <div classList={{ 'w-screen h-screen': !props.print }} ref={container!}>
+    <div ref={container!}>
       <div
-        class="bg-white w-[1920px] h-[1080px] origin-top-left"
-        classList={{ 'overflow-hidden': !props.print, 'select-none': props.showBoard }}
-        style={{ transform: `scale(${scale()}) translate(${translation()})` }}
+        class="bg-white w-[1920px] h-[1080px] origin-top-left xl:snap-y xl:snap-mandatory overflow-scroll"
+        classList={{ 'select-none': props.showBoard }}
       >
-        <Show
-          when={!props.print}
-          fallback={
+        <For
+          each={[
+            ...Array(props.slides.length)
+              .keys()
+              .map((i) => i + 1),
+          ]}
+        >
+          {(i) => (
             <For
               each={[
-                ...Array(props.slides.length)
+                ...Array(boardCounts()?.[i] ?? 1)
                   .keys()
                   .map((i) => i + 1),
               ]}
             >
-              {(i) => (
-                <For
-                  each={[
-                    ...Array(boardCounts()?.[i] ?? 1)
-                      .keys()
-                      .map((i) => i + 1),
-                  ]}
-                >
-                  {(j) => (
-                    <div class="bg-white relative h-[1080px]">
-                      <Dynamic component={props.slides[i - 1]} />
-                      <Show when={props.showBoard}>
-                        <Whiteboard
-                          class="absolute top-0 z-10"
-                          width={1920}
-                          height={1080}
-                          toolbarPosition="hidden"
-                          owner="ngy@ecam.be"
-                          url={props.url}
-                          name={`${props.board}-${i}-${j}`}
-                          scale
-                        />
-                      </Show>
-                    </div>
-                  )}
-                </For>
+              {(j) => (
+                <div class="bg-white relative h-[1080px] xl:snap-start" id={`${i}/${j}`}>
+                  <Dynamic component={props.slides[i - 1]} />
+                  <Show when={props.showBoard}>
+                    <Whiteboard
+                      class="absolute top-0 z-10"
+                      width={1920}
+                      height={1080}
+                      toolbarPosition="hidden"
+                      owner="ngy@ecam.be"
+                      url={props.url}
+                      name={`${props.board}-${i}-${j}`}
+                      scale
+                    />
+                  </Show>
+                  <Remote {...props} />
+                </div>
               )}
             </For>
-          }
-        >
-          <Dynamic component={props.slides[props.hIndex - 1]} />
-          <Show when={props.showBoard}>
-            <Whiteboard
-              class="absolute top-0 z-10"
-              width={1920}
-              height={1080}
-              toolbarPosition="bottom"
-              owner="ngy@ecam.be"
-              url={props.url}
-              name={boardName()}
-              scale
-            />
-          </Show>
-          <Remote {...props} />
-        </Show>
+          )}
+        </For>
       </div>
     </div>
   )
 }
 
 function Remote(props: SlideshowProps) {
-  const [print, setPrint] = createSearchParam('print', z.boolean().default(false))
   return (
     <div class="absolute bottom-4 right-4 text-4xl flex gap-4 items-center print:hidden">
       <Breadcrumbs class="bg-white border rounded-lg text-sm mr-8 z-50 p-2 px-4" />
-      <Arrow {...props} dir="left" />
       <div class="flex flex-col items-center">
-        <Arrow {...props} dir="up" />
         <div class="flex flex-row z-50">
-          <button
-            title={props.showBoard ? 'Hide board' : 'Show board'}
-            onClick={() => setPrint(true)}
-          >
-            <Fa icon={faPrint} />
-          </button>
-          <button
-            onClick={() => props.onShowBoardChange?.(!props.showBoard)}
-            title="Version imprimable"
-          >
+          <button onClick={() => props.onShowBoardChange?.(!props.showBoard)}>
             <Fa icon={props.showBoard ? faEyeSlash : faBlackboard} />
           </button>
         </div>
-        <Arrow {...props} dir="down" />
       </div>
-      <Arrow {...props} dir="right" />
-    </div>
-  )
-}
-
-const arrows = {
-  up: [faChevronUp, (i, j) => [i, j - 1], 'ArrowUp'],
-  down: [faChevronDown, (i, j) => [i, j + 1], 'ArrowDown'],
-  left: [faChevronLeft, (i, _j) => [i - 1, 1], 'ArrowLeft'],
-  right: [faChevronRight, (i, _j) => [i + 1, 1], 'ArrowRight'],
-} as const satisfies {
-  [dir: string]: [IconDefinition, (i: number, j: number) => [number, number], string]
-}
-
-function Arrow(props: SlideshowProps & { dir: keyof typeof arrows }) {
-  const boardCount = createAsync(() =>
-    getBoardCount(props.url, 'ngy@ecam.be', props.board, props.hIndex),
-  )
-  const icon = () => arrows[props.dir][0]
-  const link = () => {
-    const [i, j] = arrows[props.dir][1](props.hIndex, props.vIndex)
-    const pathname =
-      i >= 1 &&
-      j >= 1 &&
-      i <= props.slides.length &&
-      boardCount() !== undefined &&
-      j <= boardCount()! + 1
-        ? `${props.url}/${i}/${j}`
-        : null
-    if (pathname === null) return null
-    return `${pathname}${props.board ? `?boardName=${props.board}` : ''}`
-  }
-
-  const [arrow, setArrow] = createSignal<HTMLAnchorElement | undefined>(undefined)
-  const handleKeyDown = (event: KeyboardEvent) => {
-    const arr = arrow()
-    if (event.key === arrows[props.dir][2] && arr && link()) {
-      arr.click()
-    }
-  }
-  onMount(() => {
-    window.addEventListener('keydown', handleKeyDown)
-  })
-
-  onCleanup(() => {
-    window.removeEventListener('keydown', handleKeyDown)
-  })
-
-  return (
-    <div class="z-30">
-      <Show when={link()} fallback={<Fa icon={icon()} class="text-gray-200" />}>
-        {(link) => (
-          <A href={link()} noScroll ref={setArrow}>
-            <Fa icon={icon()} />
-          </A>
-        )}
-      </Show>
     </div>
   )
 }
