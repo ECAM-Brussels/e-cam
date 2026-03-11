@@ -17,7 +17,11 @@ export default function SymbolicEquality(props: Props) {
   createEffect(() => setExpr2(props.expr2))
   const diff = () => `${expr1()} - (${expr2()})`
   const simplified = createAsync(async () => {
-    if (diff()) return simplify(diff())
+    try {
+      if (diff()) return simplify(diff())
+    } catch {
+      return ''
+    }
     return ''
   })
 
