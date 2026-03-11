@@ -1,4 +1,9 @@
-import { faBlackboard, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+import {
+  faAngleLeft,
+  faAngleRight,
+  faBlackboard,
+  faEyeSlash,
+} from '@fortawesome/free-solid-svg-icons'
 import { createAsync, revalidate } from '@solidjs/router'
 import {
   createEffect,
@@ -103,34 +108,36 @@ export default function Slideshow(props: SlideshowProps) {
                       class="absolute top-0 z-10"
                       width={1920}
                       height={1080}
-                      toolbarPosition="hidden"
+                      toolbarPosition="bottom"
                       owner="ngy@ecam.be"
                       url={props.url}
                       name={`${props.board}-${i}-${j}`}
                       scale
                     />
                   </Show>
-                  <Remote {...props} />
+                  <div class="absolute bottom-4 right-4 text-4xl flex gap-4 items-center print:hidden">
+                    <Breadcrumbs class="bg-white border rounded-lg text-sm mr-8 z-50 p-2 px-4" />
+                    <div class="flex flex-row z-50 gap-4">
+                      <Show when={i > 1}>
+                        <a href={`#${i - 1}/1`}>
+                          <Fa icon={faAngleLeft} />
+                        </a>
+                      </Show>
+                      <button onClick={() => props.onShowBoardChange?.(!props.showBoard)}>
+                        <Fa icon={props.showBoard ? faEyeSlash : faBlackboard} />
+                      </button>
+                      <Show when={i <= props.slides.length - 1}>
+                        <a href={`#${i + 1}/1`}>
+                          <Fa icon={faAngleRight} />
+                        </a>
+                      </Show>
+                    </div>
+                  </div>
                 </div>
               )}
             </For>
           )}
         </For>
-      </div>
-    </div>
-  )
-}
-
-function Remote(props: SlideshowProps) {
-  return (
-    <div class="absolute bottom-4 right-4 text-4xl flex gap-4 items-center print:hidden">
-      <Breadcrumbs class="bg-white border rounded-lg text-sm mr-8 z-50 p-2 px-4" />
-      <div class="flex flex-col items-center">
-        <div class="flex flex-row z-50">
-          <button onClick={() => props.onShowBoardChange?.(!props.showBoard)}>
-            <Fa icon={props.showBoard ? faEyeSlash : faBlackboard} />
-          </button>
-        </div>
       </div>
     </div>
   )

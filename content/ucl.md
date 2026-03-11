@@ -94,8 +94,8 @@ On peut également diminuer la barrière d'entrée à la programmation
 - Exécution de code
 :::::
 
-<div class="relative z-30 border shadow-md rounded-xl max-w-[960px] max-h-[540px] overflow-hidden">
-<div class="scale-50 origin-top-left">
+<div class="relative z-30 border shadow-md rounded-xl max-w-[1440px] max-h-[817.5px] overflow-hidden">
+<div class="scale-75 origin-top-left">
 <Iframe class="w-[1920px] h-[1090px]" src="/PM1C/slides/01-trigonometry?boardName=A#15/1" />
 </div>
 </div>
@@ -208,8 +208,6 @@ params:
 :::::
 
 # Chimie, informatique
-
-L'outil est suffisament versatile pour répondre aux besoins des collègues.
 
 ::::: {.flex .justify-around}
 ::: self-center
