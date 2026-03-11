@@ -19,6 +19,7 @@ export default function Dot(props: DotProps) {
     try {
       if (viz()) {
         const svg = viz()?.renderSVGElement(props.value)
+        container!.innerHTML = ''
         if (svg) {
           container!.appendChild(svg)
         }

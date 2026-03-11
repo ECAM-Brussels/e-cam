@@ -79,7 +79,6 @@ Les cartographies sont générées automatiquement.
 }}>
   <Resource type="theory" href="/PM1C/slides/02-vectors?boardName=A">CT 2A</Resource>
   <Resource type="theory" href="/PM1C/slides/02-vectors?boardName=B">CT 2B</Resource>
-  <Resource type="handout" href="/PM1C/slides/02-vectors?print=true">CT 2</Resource>
   <Resource type="exercise" href="/PM1C/exercises/03-vectors">EX 3</Resource>
   <Resource type="exercise" href="/PM1C/exercises/04-vectors">EX 4</Resource>
   <Resource type="exercise" href="/PM1C/exercises/05-vectors">EX 5</Resource>

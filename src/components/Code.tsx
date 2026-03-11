@@ -1,4 +1,5 @@
 import { ExerciseUI } from './Assignment'
+import Markdown from './Markdown'
 import { faPlayCircle } from '@fortawesome/free-solid-svg-icons'
 import { createAsync } from '@solidjs/router'
 import { clientOnly } from '@solidjs/start'
@@ -157,6 +158,9 @@ export default function Code(props: CodeProps) {
       <Show when={props.lang === 'html' && props.run}>
         <Html value={codeToRun()} tailwind={props.tailwind} />
       </Show>
+      <Show when={props.lang === 'markdown' && props.run}>
+        <Markdown value={codeToRun()} />
+      </Show>
       <Show
         when={['tsx', 'js', 'ts', 'javascript', 'typescript'].includes(props.lang) && props.run}
       >
@@ -172,7 +176,7 @@ export default function Code(props: CodeProps) {
       </Show>
       <Show when={props.lang === 'yaml' && props.run && exercise()}>
         <ExerciseUI
-          {...(exercise()!)}
+          {...exercise()!}
           onChange={(event, action) => {
             setExercise(event)
           }}
