@@ -1,3 +1,4 @@
+import ErrorBoundary from './ErrorBoundary'
 import Math from './Math'
 import Suspense from './Suspense'
 import SymbolicRepresentation from './SymbolicRepresentation'
@@ -49,10 +50,12 @@ export default function SymbolicEquality(props: Props) {
         <Math value="\xrightarrow[\text{après simplifications}]{}" displayMode />
         <div class="border p-8 shadow rounded-xl">
           <Suspense>
-            <h4>
-              Différence après simplification: <Math value={simplified()} />
-            </h4>
-            <SymbolicRepresentation value={simplified()} hideField />
+            <ErrorBoundary>
+              <h4>
+                Différence après simplification: <Math value={simplified()} />
+              </h4>
+              <SymbolicRepresentation value={simplified()} hideField />
+            </ErrorBoundary>
           </Suspense>
         </div>
       </div>
