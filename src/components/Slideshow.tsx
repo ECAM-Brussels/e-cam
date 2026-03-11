@@ -1,3 +1,4 @@
+import ErrorBoundary from './ErrorBoundary'
 import {
   faAngleLeft,
   faAngleRight,
@@ -102,7 +103,9 @@ export default function Slideshow(props: SlideshowProps) {
             >
               {(j) => (
                 <div class="bg-white relative h-[1080px] xl:snap-start" id={`${i}/${j}`}>
-                  <Dynamic component={props.slides[i - 1]} />
+                  <ErrorBoundary>
+                    <Dynamic component={props.slides[i - 1]} />
+                  </ErrorBoundary>
                   <Show when={props.showBoard}>
                     <Whiteboard
                       class="absolute top-0 z-10"
