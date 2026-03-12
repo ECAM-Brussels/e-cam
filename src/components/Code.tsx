@@ -16,6 +16,7 @@ type CodeProps = {
   lang: string
   name?: string
   readOnly?: boolean
+  render?: string
   run?: boolean
   runImmediately?: boolean
   onCodeUpdate?: (newValue: string) => void
@@ -37,7 +38,7 @@ export default function Code(props: CodeProps) {
   }
   const [value, setValue] = createSignal('')
   const [index, setIndex] = createSignal(0)
-  const parts = () => props.value.split(/^.*---\s*start$/m).map((p) => p.trim())
+  const parts = () => props.value.split(/^.*---\s*start.*$/m).map((p) => p.trim())
   const before = () => (parts().length === 1 ? '' : parts()[0] + '\n')
   const main = () => (parts().length <= 1 ? props.value : parts()[1])
   const fragments = () =>
@@ -114,7 +115,9 @@ export default function Code(props: CodeProps) {
       <Show when={fragments().length > 1}>
         <Show
           when={
-            user()?.role === 'TEACHER' || !props.hideUntil || now() >= new Date(props.hideUntil)
+            ['TEACHER', 'ADMIN'].includes(user()?.role ?? '') ||
+            !props.hideUntil ||
+            now() >= new Date(props.hideUntil)
           }
           fallback={
             <p class="text-sm">
@@ -146,7 +149,12 @@ export default function Code(props: CodeProps) {
       <Show
         when={['tsx', 'js', 'ts', 'javascript', 'typescript'].includes(props.lang) && props.run}
       >
-        <Javascript value={codeToRun()} framework={props.framework} tailwind={props.tailwind} />
+        <Javascript
+          value={codeToRun()}
+          framework={props.framework}
+          tailwind={props.tailwind}
+          render={props.render}
+        />
       </Show>
       <Show when={props.lang === 'dot' && props.run}>
         <Dot value={codeToRun()} />

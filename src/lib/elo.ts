@@ -46,7 +46,7 @@ export const getEloGraph = query(async (email?: string) => {
   if (!email) {
     const user = await getUser()
     if (!user) {
-      throw new Error('Hello')
+      throw new Error("Vous n'êtes pas connecté")
     }
     email = user.email
   }
@@ -58,7 +58,7 @@ export const getEloGraph = query(async (email?: string) => {
   let score = user?.score ?? 800
   const data: number[] = []
   const labels = []
-  for (let i = 0; i < 14; i++) {
+  for (let i = 0; i < 90; i++) {
     const start = subDays(startOfToday(), i)
     const end = addDays(start, 1)
     const dayAttempts = attempts.filter((a) => a.date >= start && a.date <= end)
@@ -74,3 +74,35 @@ export const getEloGraph = query(async (email?: string) => {
     ],
   }
 }, 'getEloGraph')
+
+export const getAssignmentEloGraph = query(async (url: string) => {
+  'use server'
+  const user = await getUser()
+  const assignment = await prisma.assignment.findUniqueOrThrow({
+    where: { url },
+    select: { score: true, page: true },
+  })
+  if (!user || user.role === 'STUDENT') {
+    throw new Error("Vous n'avez pas les droits suffisants pour voir cette ressource.")
+  }
+  const attempts = await prisma.attempt.findMany({
+    where: { url, gain: { not: null } },
+    select: { gain: true, date: true },
+  })
+  let score = assignment.score ?? 1600
+  const data: number[] = []
+  const labels = []
+  for (let i = 0; i < 90; i++) {
+    const start = subDays(startOfToday(), i)
+    const end = addDays(start, 1)
+    const dayAttempts = attempts.filter((a) => a.date >= start && a.date <= end)
+    const dayGain = dayAttempts.reduce((partial, attempt) => partial + attempt.gain!, 0)
+    labels.unshift(format(start, 'dd/MM'))
+    data.unshift(Math.round(score))
+    score = score + dayGain / 8
+  }
+  return {
+    labels,
+    datasets: [{ data, borderColor: 'rgb(75, 192, 192)', label: assignment.page.title }],
+  }
+}, 'getAssignmentEloGraph')

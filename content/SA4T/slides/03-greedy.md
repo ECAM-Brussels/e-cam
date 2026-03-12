@@ -91,7 +91,7 @@ Since the result may be very large, you need to return a string instead of an in
 
 # Largest number: implementation {.w-1--2}
 
-```python {.run hideUntil="2024-11-19 16:15"}
+```python {.run hideUntil="2025-11-19 16:15"}
 def largest(numbers: list[int]) -> str:
     return ""
 
@@ -128,7 +128,7 @@ Justify why a greedy approach works.
 
 # Fractional knapsack: implementation {.w-1--2}
 
-```python {.run hideUntil="2024-11-19 16:15"}
+```python {.run hideUntil="2025-11-19 16:15"}
 item = tuple[int, int, int] # (id, value, weight)
 
 def FKS(items: list[item], capacity: int) -> list[item]:
@@ -143,11 +143,9 @@ def FKS(items: list[item], capacity: int) -> list[item]:
     items.sort(key=lambda x: x[1] / x[2], reverse=True)
     sel = []
     for i, value, weight in items:
-        if capacity <= 0:
-            break
-        ratio = min(capacity / weight, 1)
-        capacity -= ratio * weight
-        sel.append([i, ratio*value, ratio*weight])
+        take = max(min(capacity, weight), 0)
+        capacity -= take
+        sel.append([i, take])
     return sel
 
 FKS([(0, 60, 10), (1, 100, 20), (2, 120, 30)], 50)
@@ -166,7 +164,7 @@ What is the time complexity?
 
 # Activity selection problem: implementation {.w-1--2}
 
-```python {.run hideUntil="2024-11-19 16:15"}
+```python {.run hideUntil="2025-11-19 16:15"}
 activity = tuple[int, int] # (start_time, end_time)
 
 def activity_selection(activities: list[activity]) -> list[activity]:
@@ -179,10 +177,8 @@ activity = tuple[int, int] # (start_time, end_time)
 # Running time: O(n log n), n = len(activities)
 def activity_selection(activities: list[activity]) -> list[activity]:
     activities.sort(key=lambda x: x[1])
-    sel = []
-    last_end = lambda: sel[-1][1] if sel else 0
     for start, end in activities:
-        if start >= last_end():
+        if not sel or start >= sel[-1][1]:
             sel.append((start, end))
     return sel
 
@@ -205,7 +201,7 @@ and find the time complexity.
 
 # Job sequencing {.w-1--2}
 
-```python {.run hideUntil="2024-11-19 16:15"}
+```python {.run hideUntil="2025-11-19 16:15"}
 job = tuple[int, int, int] # (id, deadline, profit)
 
 def job_sequencing(jobs: list[job]) -> list[int | None]:
@@ -294,7 +290,7 @@ Which letters should be at the bottom?
 
 # Huffman {.w-1--2}
 
-```python {.run hideUntil="2024-11-19 16:15"}
+```python {.run hideUntil="2025-11-19 16:15"}
 from dataclasses import dataclass
 from typing import Optional
 

@@ -8,7 +8,7 @@ import Fa from '~/components/Fa'
 import Math from '~/components/Math'
 import MathSet, { MathJSON } from '~/components/MathSet'
 import { graphql } from '~/gql'
-import { createExerciseType, useExerciseContext } from '~/lib/exercises/base'
+import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
 import { narrow } from '~/lib/helpers'
 import { simplify } from '~/queries/algebra'
@@ -17,7 +17,6 @@ const { Component, schema, mark, getFeedback, attempt } = createExerciseType({
   name: 'Equation',
   Component: (props) => {
     const [attempt, setAttempt] = createStore<string[]>([])
-    const exercise = useExerciseContext()
     createEffect(() => setAttempt(props.attempt ?? ['']))
     return (
       <>
@@ -32,7 +31,7 @@ const { Component, schema, mark, getFeedback, attempt } = createExerciseType({
               <label class="flex gap-2 items-center">
                 <Math value={`${props.question.x} =`} />
                 <Math editable value={sol} name="attempt" />
-                <Show when={!exercise?.readOnly}>
+                <Show when={props.context.readOnly}>
                   <button
                     class="text-slate-200"
                     type="button"
@@ -44,7 +43,7 @@ const { Component, schema, mark, getFeedback, attempt } = createExerciseType({
               </label>
             )}
           </For>
-          <Show when={!exercise?.readOnly}>
+          <Show when={!props.context.readOnly}>
             <button
               class="text-sky-800 px-3 py-0"
               type="button"

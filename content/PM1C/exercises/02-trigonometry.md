@@ -76,8 +76,15 @@ $$
 
 ::: exercise
 Si $\sin x = \frac 1 3$ et $\sec y = \frac 5 4$,
-déterminez la valeur de $$\sin (x - y)$$ sachant que $x$ et $y$ sont au premier quadrant.
+déterminez la valeur de $\sin (x - y)$ sachant que $x$ et $y$ sont au premier quadrant.
 :::
+
+~~~ python {.answer}
+from sympy import *
+x = asin(Rational(1, 3))
+y = acos(Rational(4, 5))
+simplify(sin(x - y))
+~~~
 
 ::: hint
 Réécrivez $\sec y$ en termes de fonctions plus familières

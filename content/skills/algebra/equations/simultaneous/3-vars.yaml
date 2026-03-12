@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: "Système de 3 équations à 3 inconnues"
+title: 'Système de 3 équations à 3 inconnues'
 courses:
   - algebra
   - PM1C

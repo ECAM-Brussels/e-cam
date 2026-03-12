@@ -4,7 +4,7 @@ import { createStore } from 'solid-js/store'
 import { z } from 'zod'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
-import { createExerciseType, useExerciseContext } from '~/lib/exercises/base'
+import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
 import { narrow } from '~/lib/helpers'
 
@@ -16,7 +16,6 @@ const { Component, schema } = createExerciseType({
   name: 'UnitVector',
   Component: (props) => {
     const [c, setC] = createStore<string[]>(props.attempt ?? ['', '', ''])
-    const exercise = useExerciseContext()
     return (
       <>
         <p>
@@ -27,7 +26,7 @@ const { Component, schema } = createExerciseType({
           <Math value={`\\hat v =`} displayMode />
           <Math
             value={
-              exercise?.readOnly
+              props.context.readOnly
                 ? vect(props.attempt ?? [])
                 : vect([
                     String.raw`\placeholder[c1]{${props.attempt?.[0] ?? ''}}`,

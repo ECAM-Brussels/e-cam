@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import json
 import panflute as pf
 import re
 import sympy
@@ -12,6 +13,24 @@ def latex(expr):
     C = sympy.vector.CoordSys3D("")
     x, y, z = sympy.symbols("x y z")
     return sympy.latex(expr.subs({C.x: x, C.y: y, C.z: z}))
+
+
+def eval_python(code: str) -> str:
+    code_without_last_line = "\n".join(code.split("\n")[:-1])
+    last_line = code.split("\n")[-1]
+    try:
+        if code_without_last_line:
+            exec(code_without_last_line, namespace)
+        if "=" in last_line:
+            exec(last_line, namespace)
+            return ""
+        result = eval(last_line, namespace)
+        if isinstance(result, (sympy.Basic, sympy.Matrix)):
+            return latex(result)
+        return result
+    except:
+        pf.debug(f"Error when running: {code}")
+        return ""
 
 
 def run(
@@ -46,6 +65,11 @@ def run_code(el: pf.Element, doc: pf.Doc) -> None | pf.Element | list[pf.Element
         return run(el)
     elif type(el) == pf.CodeBlock and "eval" in el.classes:
         return run(el, True)
+    elif type(el) == pf.CodeBlock and "answer" in el.classes:
+        attrs = el.attributes
+        attrs["value"] = eval_python(el.text)
+        attrs["code"] = el.text
+        return pf.RawBlock(f"<Answer {{...{json.dumps(attrs)}}} />")
     if type(el) == pf.Math or (
         type(el) == pf.RawInline and el.format in ["tex", "latex"]
     ):

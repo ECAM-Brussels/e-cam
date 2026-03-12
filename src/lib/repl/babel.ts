@@ -46,7 +46,11 @@ async function babelTransform(code: string, presetNames: string[] = []) {
   )
 }
 
-export async function transform(code: string, framework?: 'react' | 'solid' | 'svelte') {
+export async function transform(
+  code: string,
+  framework?: 'react' | 'solid' | 'svelte',
+  render?: string,
+) {
   let presets: string[] = ['typescript']
   let before: string = ''
   let after: string = ''
@@ -58,13 +62,13 @@ export async function transform(code: string, framework?: 'react' | 'solid' | 's
     after = dedent`
       import { createRoot } from 'https://esm.sh/react-dom/client';
       const root = createRoot(document.body);
-      root.render(React.createElement(App, null));
+      root.render(React.createElement(${render ?? 'App'}, null));
     `
   } else if (framework === 'solid') {
     presets = [...presets, 'babel-preset-solid']
     after = dedent`
       import { render } from "https://esm.sh/solid-js/web";
-      render(App, document.body)
+      render(${render ?? 'App'}, document.body)
     `
   } else if (framework === 'svelte') {
     const compiler = await import(/* @vite-ignore */ `${cdn}/svelte/compiler`)

@@ -2,28 +2,25 @@ import { execPython } from './Python'
 import { hash, compare } from 'bcryptjs'
 import z from 'zod'
 import Code from '~/components/Code'
-import { createExerciseType, useExerciseContext } from '~/lib/exercises/base'
+import { createExerciseType } from '~/lib/exercises/base'
 
 const { Component, schema } = createExerciseType({
   name: 'Output',
-  Component: (props) => {
-    const exercise = useExerciseContext()
-    return (
-      <>
-        <p>Quel est le résultat du code suivant?</p>
-        <Code class="w-full" lang="python" value={props.question.code} />
-        <p>
-          Réponse:{' '}
-          <input
-            class="border px-2 py-2 font-mono"
-            name="attempt"
-            value={props.attempt ?? ''}
-            disabled={exercise?.readOnly}
-          />
-        </p>
-      </>
-    )
-  },
+  Component: (props) => (
+    <>
+      <p>Quel est le résultat du code suivant?</p>
+      <Code class="w-full" lang="python" value={props.question.code} />
+      <p>
+        Réponse:{' '}
+        <input
+          class="border px-2 py-2 font-mono"
+          name="attempt"
+          value={props.attempt ?? ''}
+          disabled={props.context.readOnly}
+        />
+      </p>
+    </>
+  ),
   question: z
     .object({
       code: z.string(),

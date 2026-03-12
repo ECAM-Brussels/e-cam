@@ -85,4 +85,3 @@ body:
           desc: -> 6
         - test: pgcd(7, 3)
           desc: -> 1
-

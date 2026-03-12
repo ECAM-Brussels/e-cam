@@ -107,9 +107,7 @@ async function generateImports() {
 
 async function buildAll(prisma: PrismaClient, force = false) {
   const pages = await glob.glob('content/**/*.md')
-  for (const file of pages) {
-    generatePage(file, prisma, force)
-  }
+  await Promise.all(pages.map((file) => generatePage(file, prisma, force)))
 }
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
@@ -130,7 +128,7 @@ const pandocPlugin = (): Plugin => {
     },
     async handleHotUpdate({ file }) {
       if (file.endsWith('.md') && file.startsWith(resolve('content'))) {
-        generatePage(file, prisma, true)
+        await generatePage(file, prisma, true)
       }
     },
   }

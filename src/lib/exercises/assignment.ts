@@ -5,6 +5,7 @@ import { type Options, optionsSchema } from './schemas'
 import { type Prisma } from '@prisma/client'
 import { query, redirect } from '@solidjs/router'
 import { type ElementDefinition } from 'cytoscape'
+import { memoize } from 'lodash-es'
 import { lazy } from 'solid-js'
 import { z } from 'zod'
 import { schema as BalanceSchema } from '~/exercises/Chemistry/Balance'
@@ -315,7 +316,7 @@ export const getAssignment = async (data: z.input<typeof assignmentSchema>) => {
       await assignmentSchema.parseAsync(data)
     await registerAssignment(prisma, data, { ...assignment, hash })
     if (page && hashObject(page.body) !== hashObject(assignment.body)) {
-      await prisma.attempt.deleteMany({ where })
+      // await prisma.attempt.deleteMany({ where })
     }
   }
   if (page.score === null && data.options?.adjustElo !== false) {
@@ -336,6 +337,36 @@ function gradeToColor(correct: number, incorrect: number, total = 10) {
     return color
   }, [] as number[])
   return `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`
+}
+
+function inZPD(
+  assignments: Prisma.AssignmentGetPayload<{
+    select: { attempts: true; url: true; requiredBy: { select: { url: true } } }
+  }>[],
+  url: string,
+) {
+  const isUnderstood = memoize((assignment: (typeof assignments)[number]): boolean => {
+    const correct = assignment.attempts.filter((a) => a.correct).length
+    const total = assignment.attempts.length
+    if (total >= 5 && correct / total >= 0.8) return true
+    for (const neighbour of assignment.requiredBy) {
+      const n = assignments.filter((a) => a.url === neighbour.url).at(0)
+      if (n && isUnderstood(n)) return true
+    }
+    return false
+  })
+
+  try {
+    const neighbours = assignments.filter((a) => a.requiredBy.map((n) => n.url).includes(url))
+    const current = assignments.filter((a) => a.url === url).at(0)!
+    if (isUnderstood(current)) return false
+    for (const neighbour of neighbours) {
+      if (!isUnderstood(neighbour)) return false
+    }
+    return true
+  } catch {
+    return false
+  }
 }
 
 export const getAssignmentGraph = query(
@@ -376,6 +407,7 @@ export const getAssignmentGraph = query(
     ).map(({ courses, ...info }) => ({ ...info, courses: courses.map((r) => r.code) }))
     const vertices = data.map((assignment) => ({
       data: {
+        zpd: inZPD(data, assignment.url),
         id: assignment.url,
         label: assignment.page.title,
         parent: courses.filter((c) => assignment.courses.includes(c)).at(0),

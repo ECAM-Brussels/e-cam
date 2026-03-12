@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: "Classification de coniques sous forme réduite"
+title: 'Classification de coniques sous forme réduite'
 prerequisites:
   - /skills/geometry/conic-sections/ellipse-canonical
   - /skills/geometry/conic-sections/parabola-canonical

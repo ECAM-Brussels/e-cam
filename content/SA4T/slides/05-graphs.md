@@ -50,7 +50,7 @@ will always be the length of the shortest path.
 
 # Dijkstra's algorithm {.w-1--2}
 
-``` python {.run hideUntil="2024-12-04 12:00"}
+``` python {.run hideUntil="2025-12-03 16:15"}
 def dijkstra(adj, s):
     pass
 
@@ -105,7 +105,7 @@ How would you get the paths themselves?
 
 # Bellman-Ford: implementation {.w-3--5}
 
-``` python {.run hideUntil="2024-12-04 12:00"}
+``` python {.run hideUntil="2025-12-03 16:15"}
 import functools
 
 def bellman_ford(adj, s):
@@ -159,7 +159,7 @@ To be quicker, use dynamic programming.
 
 # Floyd-Warshall: implementation {.w-3--5}
 
-``` python {.run hideUntil="2024-12-04 12:00"}
+``` python {.run hideUntil="2025-12-03 16:15"}
 import functools
 
 def floyd_warshall(adj):
@@ -214,7 +214,7 @@ use a priority queue to favour lighter edges.
 
 # Prim's algorithm: implementation {.w-3--5}
 
-``` python {.run hideUntil="2024-12-04 12:00"}
+``` python {.run hideUntil="2025-12-03 16:15"}
 def prim(adj, s):
     pass
 

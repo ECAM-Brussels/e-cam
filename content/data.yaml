@@ -77,3 +77,8 @@ courses:
     image: /images/LW3L.png
     url: /LW3L
     ecam: true
+  - code: AW4L
+    title: 4MIN — Web Architecture and Mobile Development
+    image: /images/AW4L.webp
+    url: /AW4L
+    ecam: true

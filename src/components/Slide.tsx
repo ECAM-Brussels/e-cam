@@ -1,5 +1,5 @@
 import { format } from 'date-fns'
-import { createSignal, type JSXElement } from 'solid-js'
+import { createSignal, Show, type JSXElement } from 'solid-js'
 
 type SlideProps = {
   children?: JSXElement
@@ -17,7 +17,12 @@ export default function Slide(props: SlideProps) {
   return (
     <div class="h-full">
       <div class="bg-slate-700 font-semibold mb-6 px-4 py-3 shadow-md text-slate-100 text-left text-4xl flex justify-between">
-        <div>{props.title}</div>
+        <div class="flex gap-4 items-end">
+          {props.title}
+          <Show when={import.meta.env.DEV}>
+            <p class="text-lg text-green-200 ml-2">(dev)</p>
+          </Show>
+        </div>
         <div>{time()}</div>
       </div>
       <div

@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=http://localhost:3000/schema.json
-title: "Classification de coniques"
+title: 'Classification de coniques'
 prerequisites:
   - /skills/geometry/conic-sections/ellipse
   - /skills/geometry/conic-sections/parabola

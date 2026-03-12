@@ -21,9 +21,14 @@ acyclic
 
 weighted
 : edges have weights
-:::::
 
-``` dot {.run hideEditor=true}
+::: {.remark title="Applicaions"}
+- Building software
+- Navigation (Google PageRank, breadcrumbs, etc.)
+- Reactive programming
+:::
+
+``` dot {.run runImmediately=true hideEditor=true}
 digraph {
     a -> b
     b -> c
@@ -34,6 +39,7 @@ digraph {
     c -> e
 }
 ```
+:::::
 
 # Adjacency list {.w-1--2}
 
@@ -44,7 +50,7 @@ and the associated values are a list (or set) of
 the end points of the edges starting from that vertex.
 :::
 
-``` dot {.run hideEditor=true}
+``` dot {.run runImmediately=true hideEditor=true}
 digraph {
     a -> b
     b -> c
@@ -65,6 +71,156 @@ adj = {
     "e": set(),
 }
 ```
+
+# Application in software development: reactivity {.grid .grid-cols-2 .gap-8}
+
+~~~ python {.run}
+running = []
+
+class State:
+
+    def __init__(self, value):
+        self._value = value
+        self.subscribers = set()
+
+    @property
+    def value(self):
+        if running:
+            self.subscribers.add(running[-1])
+        return self._value
+
+    @value.setter
+    def value(self, value):
+        self._value = value
+        for effect in self.subscribers:
+            effect()
+
+
+class Derived:
+
+    def __init__(self, fn):
+        self.fn = fn
+
+    @property
+    def value(self):
+        return self.fn()
+
+def effect(fn):
+    def wrapped():
+        running.append(wrapped)
+        fn()
+        running.pop()
+    wrapped()
+# --- start
+hp = State(100)
+doubled = Derived(lambda: hp.value * 2)
+
+@effect
+def on_hp_change():
+    if hp.value > 20:
+        print("You have", hp.value, "HP")
+    else:
+        print("Careful! Only", hp.value, "HP left")
+    print("Doubled value:", doubled.value)
+
+
+hp.value = 90
+hp.value = 70
+hp.value = 15
+~~~
+
+::::: col
+We will show how `State` and `effect` on the next slide.
+
+- **State**: variable that changes over time and that is usually has an impact on the UI.
+
+- **Effect**: function that is run whenever an underlying signal changes.
+  Generally used to update the UI.
+
+::: info
+- All web frameworks (Angular, Vue, Svelte, Solid, Qwik, etc.) except React
+  use this pattern at the core of their reactivity system.
+
+- In a way,
+  this is "Excel programming"
+:::
+:::::
+
+# Demo: Svelte
+
+~~~ javascript {.run framework=svelte}
+<script>
+  let maxHp = 274
+  let hp = $state(274)
+
+  function slap() {
+    hp -= 10
+  }
+  function heal() {
+    hp = maxHp
+  }
+</script>
+
+Pikachu<br />
+<progress value={hp} max={maxHp} /><br />
+{hp} / {maxHp}<br />
+<button onclick={slap}>Slap Pikachu</button>
+<button onclick={heal}>Heal Pikachu</button>
+{#if hp <= 0}
+  <p>You've killed Pikachu. What a monster!</p>
+{/if}
+~~~
+
+# State Implementation {.grid .grid-cols-2 .gap-8}
+
+~~~ python
+running = []
+class State:
+    def __init__(self, value):
+        self._value = value
+        self.subscribers = set()
+
+    @property
+    def value(self):
+        if running:
+            self.subscribers.add(running[-1])
+        return self._value
+
+    @value.setter
+    def value(self, value):
+        self._value = value
+        for effect in self.subscribers:
+            effect()
+
+def effect(fn):
+    def wrapped():
+        running.append(wrapped)
+        fn()
+        running.pop()
+    wrapped()
+~~~
+
+::: break-inside-avoid
+- `running`: stack used to keep track of currently running effects.
+  Later, we will ensure that effects push themselves onto `running` before running,
+  and remove themselves afterwards.
+
+- `self._value`: used to store the current value of the signal.
+
+- `self.subscribers`: set containing the effects that need to be rerun.
+  In a way, this is an **adjacency set**.
+
+- L9-13: signal getter.
+  If the signal is read inside an effect,
+  we add the latter in `self.subscribers`.
+
+- L15-19: signal setter.
+  We change the value
+  and rerun the dependent effects.
+
+- L22-28: effect decorator.
+  We change `fn` so that it pushes itself on and off the `running` stack.
+:::
 
 # Graph exploration {.columns-2}
 
@@ -88,12 +244,14 @@ def BFS(adj, start):
 
 BFS({ 0: {1, 2}, 1: {3, 4}, 2: {5, 6}, 3: set(), 4: set(), 5: set(), 6: set() }, 0)
 # --- fragment
+import collections
+
 # Complexity: O(V + E)
 def BFS(adj, start):
     visited = set()
-    queue = [start]
+    queue = collections.deque([start])
     while queue:
-        node = queue.pop(0) # dequeue is better
+        node = queue.popleft()
         print("Visiting", node)
         visited.add(node)
         queue.extend(adj[node] - visited)
@@ -101,7 +259,7 @@ def BFS(adj, start):
 BFS({ 0: {1, 2}, 1: {3, 4}, 2: {5, 6}, 3: set(), 4: set(), 5: set(), 6: set() }, 0)
 ```
 
-``` dot {.run hideEditor=true}
+``` dot {.run runImmediately=true hideEditor=true}
 digraph {
   0 -> 1
   0 -> 2
@@ -138,7 +296,7 @@ def DFS(adj: dict[any, set]):
 DFS({ 0: {1, 2}, 1: {3, 4}, 2: {5, 6}, 3: set(), 4: set(), 5: set(), 6: set() })
 ```
 
-``` dot {.run hideEditor=true}
+``` dot {.run runImmediately=true hideEditor=true}
 digraph {
   0 -> 1
   0 -> 2
@@ -164,11 +322,14 @@ use the idea of *parent pointers*.
 We try to track the parent node that brought us to the current node.
 :::
 
-# Shortest paths: implementation {.w-1--2}
+# Shortest paths: implementation {.grid .grid-cols-2}
 
-``` python {.run hideUntil="2024-11-26 12:00"}
+::::: break-inside-avoid
+``` python {.run hideUntil="2025-11-26 16:15"}
 def shortest_paths(adj, start):
     pass
+
+shortest_paths({ 0: {1, 2}, 1: {3, 4}, 2: {5, 6}, 3: set(), 4: set(), 5: set(), 6: set() }, 0)
 # --- fragment
 # Complexity: O(V + E)
 def shortest_paths(adj, start):
@@ -181,7 +342,23 @@ def shortest_paths(adj, start):
                 dist[neighbour] = dist[node] + 1
                 queue.append(neighbour)
     return dist
+
+shortest_paths({ 0: {1, 2}, 1: {3, 4}, 2: {5, 6}, 3: set(), 4: set(), 5: set(), 6: set() }, 0)
 ```
+:::::
+
+::::: break-inside-avoid
+``` dot {.run runImmediately=true hideEditor=true}
+digraph {
+  0 -> 1
+  0 -> 2
+  1 -> 3
+  1 -> 4
+  2 -> 5
+  2 -> 6
+}
+```
+:::::
 
 # Sudoku {.w-1--2}
 
@@ -200,7 +377,15 @@ Write a code that solves any Sudoku grid.
 
 # Sudoku: implementation {.w-1--2}
 
-``` python {.run hideUntil="2024-11-26 12:00"}
+``` python {.run hideUntil="2025-11-26 16:15"}
+def blacklist(grid: list[int], n: int) -> set[int]:
+    """
+    For entry n,
+    specify which numbers cannot be used,
+    because they have been used in the row, column or region.
+    """
+    return set() 
+
 def solve(grid: list[int]):
     return grid
 
@@ -250,7 +435,7 @@ Part II: find the path itself.
 
 # Snakes and ladders: implementation {.w-1--2}
 
-``` python {.run hideUntil="2024-11-26 12:00"}
+``` python {.run hideUntil="2025-11-26 16:15"}
 snakes = {17: 13, 52: 29, 57: 40, 62: 22, 88: 18, 95: 51, 97: 79}
 ladders = {3: 21, 8: 30, 28: 84, 58: 77, 75: 86, 80: 100, 90: 91} 
 
@@ -288,7 +473,7 @@ Given a directed graph,
 that the edges are all pointing right.
 :::
 
-``` dot {.run hideEditor=true}
+``` dot {.run runImmediately=true hideEditor=true}
 digraph {
   start [label="Wake up"]
   teeth [label="Brush teeth"]
@@ -324,7 +509,7 @@ and log at the beginning and at the end of an "exploration".
 
 # Topological sort: implementation {.w-1--2}
 
-``` python {.run hideUntil="2024-11-26 12:00"}
+``` python {.run hideUntil="2025-11-26 16:15"}
 def topological_sort(adj: dict[any, set]) -> list:
     return []
 
@@ -359,7 +544,7 @@ determine if it has a cycle (a loop).
 
 # Detecting cycles {.w-1--2}
 
-``` python {.run hideUntil="2024-11-26 12:00"}
+``` python {.run hideUntil="2025-11-26 16:15"}
 def has_cycles(adj: dict[any, set]) -> bool:
     return False
 # --- fragment

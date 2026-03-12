@@ -1,21 +1,34 @@
+import { query } from '@solidjs/router'
 import { graphql } from '~/gql'
 import { request } from '~/lib/graphql'
 
-export async function checkEqual(expr1: string, expr2: string, error: number = 0) {
-  'use server'
-  const { expression } = await request(
-    graphql(`
-      query EqualityCheck($expr1: Math!, $expr2: Math!, $error: Float!, $approximately: Boolean!) {
-        expression(expr: $expr1) {
-          isApproximatelyEqual(expr: $expr2, error: $error) @include(if: $approximately)
-          isEqual(expr: $expr2) @skip(if: $approximately)
-        }
-      }
-    `),
-    { expr1, expr2, error, approximately: error !== 0 },
-  )
-  return (expression.isEqual ?? expression.isApproximatelyEqual) as boolean
-}
+export const checkEqual = query(
+  async (expr1: string, expr2: string, error: number = 0): Promise<boolean> => {
+    'use server'
+    try {
+      const { expression } = await request(
+        graphql(`
+          query EqualityCheck(
+            $expr1: Math!
+            $expr2: Math!
+            $error: Float!
+            $approximately: Boolean!
+          ) {
+            expression(expr: $expr1) {
+              isApproximatelyEqual(expr: $expr2, error: $error) @include(if: $approximately)
+              isEqual(expr: $expr2) @skip(if: $approximately)
+            }
+          }
+        `),
+        { expr1, expr2, error, approximately: error !== 0 },
+      )
+      return (expression.isEqual ?? expression.isApproximatelyEqual) === true
+    } catch {
+      return false
+    }
+  },
+  'checkEqual',
+)
 
 export async function checkFactorisation(attempt: string, expr: string) {
   'use server'

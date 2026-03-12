@@ -4,7 +4,7 @@ import { createStore } from 'solid-js/store'
 import { z } from 'zod'
 import Math from '~/components/Math'
 import { graphql } from '~/gql'
-import { createExerciseType, useExerciseContext } from '~/lib/exercises/base'
+import { createExerciseType } from '~/lib/exercises/base'
 import { request } from '~/lib/graphql'
 import { narrow } from '~/lib/helpers'
 
@@ -15,7 +15,6 @@ const { Component, schema } = createExerciseType({
   name: 'CrossProduct',
   Component: (props) => {
     const [c, setC] = createStore<[string, string, string]>(props.attempt ?? ['', '', ''])
-    const exercise = useExerciseContext()
     return (
       <>
         <p>Calculez le produit vectoriel suivant</p>
@@ -26,7 +25,7 @@ const { Component, schema } = createExerciseType({
           />
           <Math
             value={
-              exercise?.readOnly
+              props.context.readOnly
                 ? vector(props.attempt ?? ['', '', ''])
                 : vector([
                     String.raw`\placeholder[c1]{${props.attempt?.[0] ?? ''}}`,
