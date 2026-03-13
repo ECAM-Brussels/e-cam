@@ -67,17 +67,13 @@ diff(x**2 - 5*x + 6)
 
 ```javascript {.run framework=svelte runImmediately=true}
 <script>
-  let attempt = ''
+  let name = ''
 </script>
 
 <p>3 + 4 = ?</p>
-<input bind:value={attempt} />
+<input bind:value={name} />
 
-{#if attempt === '7'}
-  <p>La réponse est en effet 7!</p>
-{:else if attempt !== ''}
-  <p>La réponse {attempt} n'est pas correcte</p>
-{/if}
+Bonjour {name}!
 ```
 :::
 
@@ -115,30 +111,6 @@ On peut également diminuer la barrière d'entrée à la programmation
 <Iframe class="w-[1920px] h-[1090px]" src="/PM1C" />
 </div>
 </div>
-
-# Différenciation {.w-1--2}
-
-~~~ {.tsx .raw .break-inside-avoid}
-<ChapterInfo title="Droites et Coniques" query={{
-  "page": {
-    OR: [
-      { "title": { contains: "premier degré" } },
-      { "title": { contains: "hyperbole" } },
-      { "title": { contains: "parabole" } },
-      { "title": { contains: "ellipse" } },
-      { "title": { contains: "cercle" } },
-      { "title": { contains: "conique" } },
-    ]
-  }
-}}>
-  <Resource type="theory" href="/PM1C/slides/02-vectors?boardName=A">CT 2A</Resource>
-  <Resource type="theory" href="/PM1C/slides/02-vectors?boardName=B">CT 2B</Resource>
-  <Resource type="handout" href="/PM1C/slides/02-vectors?print=true">CT 2</Resource>
-  <Resource type="exercise" href="/PM1C/exercises/03-vectors">EX 3</Resource>
-  <Resource type="exercise" href="/PM1C/exercises/04-vectors">EX 4</Resource>
-  <Resource type="exercise" href="/PM1C/exercises/05-vectors">EX 5</Resource>
-</ChapterInfo>
-~~~
 
 # Vue d'un exercice côté étudiant {.flex}
 
@@ -306,6 +278,13 @@ En Web moderne, il est possible de créer ses propres balises,
 appelés **composants**.
 :::
 
+Par exemple,
+nous pourrions créer les composants suivants:
+
+- `<Geogebra />` pour ajouter un composant GeoGebra
+
+- `<Slide />` pour créer un slide
+
 # Markdown {.w-3--4}
 
 Pour du contenu relativement statique,
@@ -340,6 +319,9 @@ $$
 :::
 
 # Démo
+
+[Cliquez-ici](https://stackblitz.com/edit/stackblitz-starters-wt9khchk?file=slides.md)
+pour lancer l'environnement de développement.
 
 # Calcul numérique {.w-1--2}
 
