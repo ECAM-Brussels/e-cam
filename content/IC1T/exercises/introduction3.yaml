@@ -1,0 +1,147 @@
+title: 'Introduction aux lists et aux boucles for'
+options:
+  adjustElo: false
+  whiteboard: false
+  maxAttempts: null
+  save: lastAttempt
+body:
+  - type: MultipleChoice
+    question:
+      text: |
+        Quelle syntaxe crée une liste vide en Python ?
+      choices:
+        - |
+          ()
+        - |
+          {}
+        - |
+          []
+        - |
+          ""
+      answer: |
+        []
+  - type: MultipleChoice
+    question:
+      text: |
+        Quelle instruction parcourt correctement chaque élément de la liste nombres ?
+      choices:
+        - 'foreach i in range(nombres):'
+        - 'for n in nombres:'
+        - 'while n in nombres:'
+        - 'for nombres in n:'
+      answer: 'for n in nombres:'
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Quel est l'index du premier élément d'une liste ?
+      choices:
+        - '1'
+        - '0'
+        - '-1'
+        - Cela dépend de la taille de la liste
+      answer: '0'
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Quelle méthode ajoute un élément à la fin d'une liste ?
+      choices:
+        - add()
+        - push()
+        - append()
+        - insertLast()
+      answer: append()
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Quelle boucle est la plus adaptée pour parcourir les valeurs d'une liste ?
+      choices:
+        - 'while True:'
+        - 'for element in liste:'
+        - 'if element in liste:'
+        - 'switch liste:'
+      answer: 'for element in liste:'
+
+  - type: MultipleChoice
+    question:
+      text: |
+        À quoi sert principalement la fonction len() en Python ?
+      choices:
+        - Convertir un texte en entier
+        - Donner la longueur d'une séquence (liste, chaîne, etc.)
+        - Trier automatiquement une liste
+        - Supprimer le dernier élément d'une liste
+      answer: Donner la longueur d'une séquence (liste, chaîne, etc.)
+
+  - type: Output
+    question:
+      code: |
+        fruits = ["pomme", "banane", "kiwi"]
+        print(fruits[0])
+
+  - type: Output
+    question:
+      code: |
+        notes = [12, 9]
+        notes.append(18)
+        print(notes) #ne pas oublier l'espace après la virgule ;)
+
+  - type: Output
+    question:
+      code: |
+        nombres = [1, 2, 3, 4]
+        total = 0
+        for n in nombres:
+          total = total + n
+        print(total)
+
+  - type: Output
+    question:
+      code: |
+        nombres = [5, 8, 11, 14]
+        compteur = 0
+        for n in nombres:
+          if n % 2 == 0:
+            compteur = compteur + 1
+        print(compteur)
+
+  - type: Output
+    question:
+      code: |
+        valeurs = [3, 7, 12, 9]
+        val = valeurs[0]
+        for v in valeurs:
+          if v > val:
+            val = v
+        print(val)
+
+  - type: Output
+    question:
+      code: |
+        liste = [10, 20, 30, 40]
+        val = 1
+        for i in range(len(liste)):
+          val = val * i
+        print(val)
+
+  - type: Output
+    question:
+      code: |
+        lignes = [[1, 2], [3, 4], [5, 6]]
+        somme = 0
+        for sous_liste in lignes:
+          for valeur in sous_liste:
+            somme = somme + valeur
+        print(somme)
+
+  - type: Output
+    question:
+      code: |
+        mots = ['for', 'liste', 'python', 'ecam']
+        resultat = []
+        for mot in mots:
+          if len(mot) > 4:
+            resultat.append(mot)
+        print(resultat) #ne pas oublier l'espace après la virgule et utiliser ' et non "
