@@ -1,0 +1,180 @@
+title: 'Introduction aux fonctions et aux boucles while'
+options:
+  adjustElo: false
+  whiteboard: false
+  maxAttempts: null
+  save: lastAttempt
+body:
+  - type: MultipleChoice
+    question:
+      text: |
+        Quel mot-clé permet de définir une fonction en Python ?
+      choices:
+        - function
+        - def
+        - func
+        - fonction
+      answer: def
+
+  - type: MultipleChoice
+    question:
+      text: |
+        À quoi sert principalement l'instruction return dans une fonction ?
+      choices:
+        - Afficher un texte à l'écran
+        - Répéter une boucle
+        - Renvoyer une valeur au programme appelant
+        - Créer une variable globale
+      answer: Renvoyer une valeur au programme appelant
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Quelle est la différence entre une fonction avec ou sans parenthèses?
+      choices:
+        - Il n'y a aucune différence
+        - Avec parenthèses, la fonction est exécutée; sans parenthèses, elle est référencée
+        - Sans parenthèses, la fonction est exécutée; avec parenthèses, elle est référencée
+      answer: Avec parenthèses, la fonction est exécutée; sans parenthèses, elle est référencée
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Que se passe-t-il si une fonction n'utilise pas return ?
+      choices:
+        - Elle renvoie toujours 0
+        - Elle renvoie automatiquement None
+        - Elle provoque toujours une erreur
+        - Elle renvoie la dernière variable créée
+      answer: Elle renvoie automatiquement None
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Vrai ou faux: print(), int() et input() sont des fonctions en Python.
+      choices:
+        - Vrai
+        - Faux
+      answer: Vrai
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Quelle condition permet à une boucle while de continuer ?
+      choices:
+        - Tant que la condition est vraie
+        - Tant que la condition est fausse
+        - Uniquement 10 fois
+        - Jusqu'à la première instruction print
+      answer: Tant que la condition est vraie
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Dans une boucle while, quel risque existe si la variable de contrôle n'est jamais modifiée ?
+      choices:
+        - Une boucle infinie
+        - Une conversion automatique en boucle for
+        - La suppression de la variable
+        - Un return implicite
+      answer: Une boucle infinie
+
+  - type: Output
+    question:
+      code: |
+        def greet():
+            print("Hello Jean !")
+        greet()
+  - type: Output
+    question:
+      code: |
+        def greet():
+            return "Hello Louise"
+        print(greet())
+  - type: Output
+    question:
+      code: |
+        def salutations():
+            a = "Hello Edouard"
+        print(salutations())
+  - type: Output
+    question:
+      code: |
+        def salutations():
+            a = "Hello Amed"
+            return a
+
+  - type: Output
+    question:
+      code: |
+        def mathFun(a, b, c):
+            return a * b + c
+        print(mathFun(2, 3, 4))
+
+  - type: Output
+    question:
+      code: |
+        def mathFunFlex(a, b, c):
+            if c and b == "sub":
+                return a - b
+            else:
+                return a * b
+        print(mathFunFlex(2, "add", True))
+
+  - type: Output
+    question:
+      code: |
+        def mathFunFlex(a, b, c):
+            if c and b == "sub":
+                return a - 5
+            else:
+                return a * 5
+        a = mathFunFlex(2, "add", True) - 5
+        print(a * 2)
+
+  - type: Output
+    question:
+      code: |
+        def mathFunFlex(a, b, c):
+            if c and b == "sub":
+                return a - 5
+            else:
+                return a * 5
+        print(mathFunFlex(2, "sub", True) * 2)
+
+  - type: Output
+    question:
+      code: |
+        nombre_changeant = 5
+        while nombre_changeant > 0:
+          nombre_changeant = nombre_changeant - 1
+        print(nombre_changeant)
+
+  - type: Output
+    question:
+      code: |
+        nombre_changeant = 5
+        while nombre_changeant > 0:
+          nombre_changeant = nombre_changeant - 10
+        print(nombre_changeant)
+  - type: Output
+    question:
+      code: |
+        accumulateur = 0
+        nombre_changeant = 5
+        while nombre_changeant > 0:
+          accumulateur = accumulateur + nombre_changeant
+          nombre_changeant = nombre_changeant - 1
+        print(accumulateur)
+  - type: Output
+    question:
+      code: |
+        accumulateur = 0
+        nombre_changeant = 5
+        while nombre_changeant > 0:
+          accumulateur = accumulateur + nombre_changeant
+          if nombre_changeant != 3 and nombre_changeant != 1:
+            nombre_changeant = nombre_changeant - 1
+          else:
+            nombre_changeant = nombre_changeant - 2
+        print(accumulateur)
