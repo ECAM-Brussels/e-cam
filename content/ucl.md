@@ -320,7 +320,11 @@ $$
 
 # Démo
 
-[Cliquez-ici](https://stackblitz.com/edit/stackblitz-starters-wt9khchk?file=slides.md)
+<a href="https://stackblitz.com/edit/stackblitz-starters-wt9khchk?file=slides.md">
+<Iframe src="https://stackblitz.com/edit/stackblitz-starters-wt9khchk?file=slides.md" class="w-full h-[850px]" />
+</a>
+
+[Cliquez ici](https://stackblitz.com/edit/stackblitz-starters-wt9khchk?file=slides.md)
 pour lancer l'environnement de développement.
 
 # Calcul numérique {.w-1--2}
