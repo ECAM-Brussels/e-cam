@@ -484,12 +484,6 @@ Quel est le volume d'un cylindre de rayon $r$ et de hauteur $h$?
 
 <SymbolicExercise pre='r, h = symbols("r h")' answer="pi * r**2 * h" />
 
-# Exemple
-
-::: example
-Trouvez le **point critique** de
-:::
-
 # SymPy {.w-1--2}
 
 SymPy est une librairie Python qui permet
