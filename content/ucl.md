@@ -32,7 +32,7 @@ slideshow: true
     - slides interactifs
 :::
 
-# Pourquoi le Web?
+# Pourquoi le Web? {.w-1--2}
 
 ::: question
 Pourquoi utiliser le Web pour créer des ressources?
@@ -81,7 +81,7 @@ Bonjour {name}!
 On peut également diminuer la barrière d'entrée à la programmation
 :::
 
-# Interactivité: en pratique {.flex .items-center .justify-around}
+# Interactivité: en pratique {.flex .items-center .justify-around .gap-12}
 
 ::::: {.grow}
 
@@ -111,6 +111,24 @@ On peut également diminuer la barrière d'entrée à la programmation
 <Iframe class="w-[1920px] h-[1090px]" src="/PM1C" />
 </div>
 </div>
+
+# Cartographies {.grid .grid-cols-2 .grid-12}
+
+::: col
+~~~ {.tsx .raw}
+<Graph
+  class="border rounded-xl w-full h-[800px]"
+  query={{ courses: { some: { code: 'algebra' } } }}
+/>
+~~~
+:::
+
+::: col
+
+- Les couleurs indiquent l'**avancement** de l'étudiant.e
+
+- Les flèches indiquent les **prérequis**
+:::
 
 # Vue d'un exercice côté étudiant {.flex}
 
@@ -465,3 +483,86 @@ Quel est le volume d'un cylindre de rayon $r$ et de hauteur $h$?
 :::
 
 <SymbolicExercise pre='r, h = symbols("r h")' answer="pi * r**2 * h" />
+
+# Exemple
+
+::: example
+Trouvez le **point critique** de
+:::
+
+# SymPy {.w-1--2}
+
+SymPy est une librairie Python qui permet
+le calcul formel en Python.
+
+```{.python .run runImmediately=true}
+from sympy import *
+
+x = Symbol("x")
+expr = x**2 - 5*x + 6
+factor(expr)
+diff(expr)
+```
+
+# Application: création d'examen {.grid .grid-cols-2}
+
+```python
+# Système
+
+~~~ python
+x = Matrix([3, -1, 4])
+L = Matrix([
+  [1, 0, 0],
+  [-4, 1, 0],
+  [-1, 2, 1],
+])
+U = Matrix([
+  [-1, -2, 2],
+  [0, 3, 1],
+  [0, 0, 1],
+])
+
+A = L * U
+b = A * x
+
+X = Matrix([Symbol("x"), Symbol("y"), Symbol("z")])
+~~~
+
+(7 points) Résolvez le système suivant
+$$
+  \begin{cases}
+    `(A*X)[0]` &= `b[0]`\\
+    `(A*X)[1]` &= `b[1]`\\
+    `(A*X)[2]` &= `b[2]`\\
+  \end{cases}
+$$
+
+en appliquant la méthode du pivot de Gauss
+jusqu'à ce que la matrice principale soit échelonnée.
+
+*Vous devez indiquer clairement quelles opérations élémentaires vous appliquez.
+Les solutions employant une autre méthode ne seront pas acceptées.*
+
+::: {.answer}
+M2
+: Opérations élémentaires correctes pour créer deux zéros (e.g. en première colonne).
+
+M1
+: Opération élémentaire correcte pour créer un autre zéro
+  **qui ne détruit pas les autres**.
+  L'étudiant obtient $0$ à l'exercice (faute grave)
+  s'il obtient M0 ici, cela a été annoncé au cours.
+
+A1
+: Vérifiez que la dernière ligne de leur système est équivalente à
+  `(U * X)[2]` = `(L**(-1) * b)[2]`
+
+M1
+: Backward substitution
+
+A2
+: $`X` = `x`$
+:::
+```
+
+<Iframe src="/documents/pm1c-2025-september.md.pdf" class="border shadow rounded-xl w-full h-full" />
