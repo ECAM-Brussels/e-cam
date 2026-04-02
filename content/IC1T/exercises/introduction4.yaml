@@ -1,0 +1,168 @@
+﻿title: 'Introduction aux tuples, enumerate, imports et turtle'
+options:
+  adjustElo: false
+  whiteboard: false
+  maxAttempts: null
+  save: lastAttempt
+body:
+  - type: MultipleChoice
+    question:
+      text: |
+        Quelle syntaxe crée un tuple avec 3 éléments ?
+      choices:
+        - '()'
+        - '(1, 2, 3)'
+        - '{1, 2, 3}'
+        - 'tuple(1, 2, 3)'
+      answer: '(1, 2, 3)'
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Quelle opération sur un tuple t est valide ?
+      choices:
+        - 't[1] = 5'
+        - 't.append(4)'
+        - 'len(t)'
+        - 't.pop()'
+      answer: 'len(t)'
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Quel est le meilleur usage d'enumerate() pour obtenir index et valeur ?
+      choices:
+        - 'for i, v in enumerate(liste):'
+        - 'for i, v in list(enumerate(liste)):'
+        - 'for i in enumerate(liste):'
+        - 'for v in enumerate(liste):'
+      answer: 'for i, v in enumerate(liste):'
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Quelle ligne importe seulement la fonction sqrt du module math ?
+      choices:
+        - 'import math.sqrt'
+        - 'from math import sqrt'
+        - 'import sqrt from math'
+        - 'from math import *'
+      answer: 'from math import sqrt'
+
+  - type: MultipleChoice
+    question:
+      text: |
+        On a un fichier `aide.py` contenant `def saluer():` que doit-on écrire dans `main.py` pour utiliser cette fonction ?
+      choices:
+        - |
+          import aide.py
+
+          print(aide.saluer())
+        - |
+          from aide import saluer
+
+          saluer()
+        - |
+          import aide.saluer
+
+          saluer()
+        - |
+          from main import saluer
+
+          main()
+      answer: |
+        from aide import saluer
+        saluer()
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Que fait la méthode turtle.forward(100) ?
+      choices:
+        - 'Tourner la tortue à gauche de 100 degrés'
+        - 'Avancer de 100 unités dans la direction courante'
+        - 'Faire aller la tortue vers la droite de 100 unités'
+        - 'Faire reculer de 100 unités dans la direction courante'
+      answer: 'Avancer de 100 unités dans la direction courante'
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Que fait turtle.penup() suivi de turtle.goto(0, 0) et turtle.pendown() ?
+      choices:
+        - Ferme la fenêtre turtle
+        - place la tortue vers l'origine sans tracer puis recommence à tracer
+        - Change la couleur du trait
+        - Vide l'écran
+      answer: Déplace la tortue vers l'origine sans tracer puis recommence à tracer
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Quel dessin produit le code suivant ?
+
+            import turtle
+
+            t = turtle.Turtle()
+
+            for _ in range(4):
+
+                t.forward(100)
+
+                t.right(90)
+
+            turtle.done()
+      choices:
+        - 'Un carré'
+        - 'Un losange'
+        - 'Un triangle'
+        - 'Une pentagone'
+      answer: 'Un carré'
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Quelle est la bonne convention pour nommer un fichier Python ?
+      choices:
+        - 'monFichier2703.py'
+        - 'mon fichier 27/03.py'
+        - 'mon@fichierà2703.py'
+        - 'mon.fichier.py'
+      answer: 'monFichier2703.py'
+
+  - type: Output
+    question:
+      code: |
+        t = (3, 6, 9)
+        print(t[1])
+
+  - type: Output
+    question:
+      code: |
+        t = (1, "cacao", 3)
+        print(len(t))
+
+  - type: Output
+    question:
+      code: |
+        t1 = (1, "table")
+        t2 = (3, " chaise")
+        t3 = (t1[0] + t2[0], t1[1] + t2[1])
+        print(t3[0])
+
+  - type: Output
+    question:
+      code: |
+        mots = ('chat', 'chien', 'lapin')
+        val = 0
+        for a, b in enumerate(mots):
+          val += a
+        print(val)
+
+  - type: Output
+    question:
+      code: |
+        mots = ('ecam', 'python', 'tuples')
+        for b , t  in enumerate(mots):
+          if b % 2 == 0 and t[0] != 'e':
+            print(t)
