@@ -1,4 +1,5 @@
 import ErrorBoundary from './ErrorBoundary'
+import Suspense from './Suspense'
 import {
   faAngleLeft,
   faAngleRight,
@@ -103,39 +104,41 @@ export default function Slideshow(props: SlideshowProps) {
             >
               {(j) => (
                 <div class="bg-white relative h-[1080px] xl:snap-start" id={`${i}/${j}`}>
-                  <ErrorBoundary>
-                    <Dynamic component={props.slides[i - 1]} />
-                  </ErrorBoundary>
-                  <Show when={props.showBoard}>
-                    <Whiteboard
-                      class="absolute top-0 z-10"
-                      width={1920}
-                      height={1080}
-                      toolbarPosition="bottom"
-                      owner="ngy@ecam.be"
-                      url={props.url}
-                      name={`${props.board}-${i}-${j}`}
-                      scale
-                    />
-                  </Show>
-                  <div class="absolute bottom-4 right-4 text-4xl flex gap-4 items-center print:hidden">
-                    <Breadcrumbs class="bg-white border rounded-lg text-sm mr-8 z-50 p-2 px-4" />
-                    <div class="flex flex-row z-50 gap-4">
-                      <Show when={i > 1}>
-                        <a href={`#${i - 1}/1`}>
-                          <Fa icon={faAngleLeft} />
-                        </a>
-                      </Show>
-                      <button onClick={() => props.onShowBoardChange?.(!props.showBoard)}>
-                        <Fa icon={props.showBoard ? faEyeSlash : faBlackboard} />
-                      </button>
-                      <Show when={i <= props.slides.length - 1}>
-                        <a href={`#${i + 1}/1`}>
-                          <Fa icon={faAngleRight} />
-                        </a>
-                      </Show>
+                  <Suspense>
+                    <ErrorBoundary>
+                      <Dynamic component={props.slides[i - 1]} />
+                    </ErrorBoundary>
+                    <Show when={props.showBoard}>
+                      <Whiteboard
+                        class="absolute top-0 z-10"
+                        width={1920}
+                        height={1080}
+                        toolbarPosition="bottom"
+                        owner="ngy@ecam.be"
+                        url={props.url}
+                        name={`${props.board}-${i}-${j}`}
+                        scale
+                      />
+                    </Show>
+                    <div class="absolute bottom-4 right-4 text-4xl flex gap-4 items-center print:hidden">
+                      <Breadcrumbs class="bg-white border rounded-lg text-sm mr-8 z-50 p-2 px-4" />
+                      <div class="flex flex-row z-50 gap-4">
+                        <Show when={i > 1}>
+                          <a href={`#${i - 1}/1`}>
+                            <Fa icon={faAngleLeft} />
+                          </a>
+                        </Show>
+                        <button onClick={() => props.onShowBoardChange?.(!props.showBoard)}>
+                          <Fa icon={props.showBoard ? faEyeSlash : faBlackboard} />
+                        </button>
+                        <Show when={i <= props.slides.length - 1}>
+                          <a href={`#${i + 1}/1`}>
+                            <Fa icon={faAngleRight} />
+                          </a>
+                        </Show>
+                      </div>
                     </div>
-                  </div>
+                  </Suspense>
                 </div>
               )}
             </For>
