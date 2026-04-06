@@ -165,11 +165,6 @@ export function createExerciseType<
                 </div>
               </Show>
             </fieldset>
-            <Show when={showFeedback() && props.attempts.at(-1)?.correct === false}>
-              <Button type="submit" color="blue" formAction={submit.with(true)}>
-                Recorriger
-              </Button>
-            </Show>
             <ZodError error={submission.error} />
           </form>
           <Show when={props.attempts.length > 0 && question() && showFeedback()}>
