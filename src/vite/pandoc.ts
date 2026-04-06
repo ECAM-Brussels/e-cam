@@ -92,6 +92,7 @@ async function generateImports() {
     const name = component.split('/').at(-1)!.replace('.tsx', '')
     if (
       name === 'Slideshow' ||
+      name === 'Suspense' ||
       name === 'Page' ||
       name === 'MetaProvider' ||
       name.endsWith('.test') ||
