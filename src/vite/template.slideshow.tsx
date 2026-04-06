@@ -3,6 +3,7 @@ import { clientOnly } from '@solidjs/start'
 import { createMemo, lazy } from 'solid-js'
 import { z } from 'zod'
 import MetaProvider from '~/components/MetaProvider'
+import Suspense from '~/components/Suspense'
 import { getUser } from '~/lib/auth/session'
 import { loadBoard } from '~/lib/board'
 import { getBoardCount } from '~/lib/slideshow'
@@ -49,18 +50,20 @@ export default function () {
   const showBoard = () => z.coerce.number().parse(searchParams.showBoard ?? 1) === 1
   return (
     <MetaProvider title="$title$" lang={'$if(lang)$$lang$$else$fr$endif$' as 'fr' | 'en'}>
-      <Slideshow
-        board={(searchParams.boardName as string) ?? ''}
-        hIndex={index.parse(params.slide)}
-        vIndex={index.parse(params.board)}
-        url={url(location.pathname, [params.board, params.slide])}
-        slides={children()}
-        showBoard={showBoard()}
-        onShowBoardChange={(value) => {
-          setSearchParams({ showBoard: value ? 1 : 0 })
-        }}
-        print={z.coerce.boolean().parse(searchParams.print)}
-      />
+      <Suspense>
+        <Slideshow
+          board={(searchParams.boardName as string) ?? ''}
+          hIndex={index.parse(params.slide)}
+          vIndex={index.parse(params.board)}
+          url={url(location.pathname, [params.board, params.slide])}
+          slides={children()}
+          showBoard={showBoard()}
+          onShowBoardChange={(value) => {
+            setSearchParams({ showBoard: value ? 1 : 0 })
+          }}
+          print={z.coerce.boolean().parse(searchParams.print)}
+        />
+      </Suspense>
     </MetaProvider>
   )
 }
