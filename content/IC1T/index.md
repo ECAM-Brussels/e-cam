@@ -14,6 +14,10 @@ title: 'Programmation'
 - [Session 2](/IC1T/exercises/2)
 - [Session 3](/IC1T/exercises/3)
 - [Session 5](/IC1T/exercises/5)
+- [Drill: syntaxe ](/IC1T/exercises/drill1)
+- [Drill: liste et tuple](/IC1T/exercises/drill2)
+- [Drill: fonctions](/IC1T/exercises/drill3)
+- [Drill: algorithmie](/IC1T/exercises/drill4)
 
 ```tsx {.raw}
 <Graph

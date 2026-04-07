@@ -1,0 +1,262 @@
+title: 'Drill - Syntaxe Python'
+options:
+  adjustElo: false
+  whiteboard: false
+  maxAttempts: null
+  save: lastAttempt
+body:
+  - type: MultipleChoice
+    question:
+      text: |
+        Quelle est la bonne indentation pour la ligne "print("ok")" dans ce bloc if quand x > 0?
+
+            #a)
+              if x > 0:
+              print("ok")
+            #b)
+                if x > 0:
+              print("ok")
+            #c)
+              if x > 0:
+                print("ok")
+
+      choices:
+        - a
+        - b
+        - c
+      answer: c
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Quel symbole termine l'en-tête d'une fonction, condition ou boucle en Python ?
+      choices:
+        - ';'
+        - ':'
+        - '.'
+        - ','
+      answer: ':'
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Quelle ligne contient un nom de variable valide en Python ?
+      choices:
+        - 2variable = 5
+        - variable-name = 5
+        - variable_name = 5
+        - variable name = 5
+      answer: variable_name = 5
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Qu'est-ce qu'un mot réservé en Python ?
+      choices:
+        - Un mot qui peut être utilisé comme nom de variable
+        - Un mot qui a une signification spéciale et ne peut pas être utilisé comme nom de variable
+        - Un mot qui commence toujours par un tiret
+        - Un mot qui doit être écrit en majuscules
+      answer: Un mot qui a une signification spéciale et ne peut pas être utilisé comme nom de variable
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Que se passe-t-il si vous essayez d'utiliser un mot réservé comme nom de variable ?
+      choices:
+        - Python l'accepte sans problème
+        - Python génère une erreur de syntaxe
+        - Python convertit automatiquement le nom de variable
+        - Rien de particulier, c'est autorisé
+      answer: Python génère une erreur de syntaxe
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Parmi ces mots réservés, lequel n'existe pas en Python ?
+      choices:
+        - elif
+        - else
+        - otherwise
+        - if
+      answer: otherwise
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Lequel de ces mots est un mot réservé en Python ?
+      choices:
+        - function
+        - for
+        - procedure
+        - classe
+      answer: for
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Quel opérateur est utilisé pour tester l'égalité en Python ?
+      choices:
+        - '='
+        - '=='
+        - '!='
+        - '<>'
+      answer: '=='
+
+  - type: MultipleChoice
+    question:
+      text: |
+        À quoi servent les parenthèses dans l'appel d'une fonction ?
+      choices:
+        - Elles n'ont aucun rôle
+        - Elles permettent de passer des arguments à la fonction
+        - Elles servent uniquement à augmenter la lisibilité
+        - Elles remplacent les accolades
+      answer: Elles permettent de passer des arguments à la fonction
+
+  - type: Output
+    question:
+      code: |
+        x = 5
+        if x > 0:
+            print("positif")
+
+  - type: Output
+    question:
+      code: |
+        def test():
+            return "ok"
+        print(test())
+
+  - type: Output
+    question:
+      code: |
+        x = 10
+        while x > 7:
+            x = x - 1
+        print(x)
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Quel opérateur est utilisé pour la négation logique ?
+      choices:
+        - 'not'
+        - '!'
+        - '~'
+        - '^'
+      answer: 'not'
+
+  - type: Output
+    question:
+      code: |
+        a = True
+        print(not a)
+
+  - type: Output
+    question:
+      code: |
+        x = 5
+        print(not (x > 10))
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Comment appelle-t-on les symboles * et + qui effectuent des opérations ?
+      choices:
+        - Mots réservés
+        - Symboles spéciaux
+        - Opérateurs
+        - Variables
+      answer: Opérateurs
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Quel nom de variable est correct en Python ?
+      choices:
+        - _my_var
+        - 123var
+        - my-var
+        - my var
+      answer: _my_var
+
+  - type: Output
+    question:
+      code: |
+        if True:
+            x = 1
+        else:
+            x = 2
+        print(x)
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Combien de deux-points correctes (:) se trouvent dans cette structure?
+
+            for i in range(5):
+                if i > 2:
+                    print(i:)
+      choices:
+        - '1'
+        - '2'
+        - '3'
+        - '0'
+      answer: '2'
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Quelle erreur de syntaxe se trouve dans ce code?
+
+            def lurLePlusBeau(x):
+                if x > 5
+                    print("x est grand")
+
+      choices:
+        - Manque le deux-points (:) après la condition
+        - Manque l'indentation
+        - Manque les parenthèses
+        - Le nom de la variable n'est pas valide
+      answer: Manque le deux-points (:) après la condition
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Identifiez la ou les erreurs dans ce code:
+
+            def epelerMot(mot):
+                for lettre in mot
+                print(lettre)
+
+      choices:
+        - Manque le deux-points (:) après la boucle for et l'indentation est incorrecte
+        - Manque les parenthèses dans l'appel de fonction
+        - La variable mot n'est pas définie correctement
+        - Le return doit être hors de la fonction
+      answer: Manque le deux-points (:) après la boucle for et l'indentation est incorrecte
+
+  - type: Output
+    question:
+      code: |
+        def epelerMot(mot):
+            for lettre in mot:
+                l = lettre
+            print(l)
+
+        epelerMot("Python")
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Quelle erreur/probléme se trouve dans ce code?
+
+            input = [1, 2, 3, 4, 5]
+            for i in input:
+                print(i)
+      choices:
+        - On masque (shadow) la fonction intégrée "input" en l'utilisant comme nom de variable, ce qui empêche d'utiliser la fonction input() par la suite
+        - La boucle for est mal écrite ou mal structurée avec des parenthèses manquantes ou des deux-points absent
+        - Les crochets [ ] ne sont pas valides en Python ou ne peuvent pas être utilisés pour créer des listes
+      answer: On masque (shadow) la fonction intégrée "input" en l'utilisant comme nom de variable, ce qui empêche d'utiliser la fonction input() par la suite

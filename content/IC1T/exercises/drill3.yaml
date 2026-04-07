@@ -1,0 +1,362 @@
+title: 'Drill - Fonctions Python'
+options:
+  adjustElo: false
+  whiteboard: false
+  maxAttempts: null
+  save: lastAttempt
+body:
+  - type: MultipleChoice
+    question:
+      text: |
+        Quel mot-clé permet de définir une fonction en Python ?
+      choices:
+        - function
+        - def
+        - func
+        - define
+      answer: def
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Que faut-il mettre après le nom d'une fonction ?
+      choices:
+        - Des crochets []
+        - Des parenthèses ()
+        - Des accolades {}
+        - Rien
+      answer: Des parenthèses ()
+
+  - type: Output
+    question:
+      code: |
+        def f():
+            print("ok")
+
+        f()
+
+  - type: Output
+    question:
+      code: |
+        def f(x):
+            print(x)
+
+        f(5)
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Que représente x dans def f(x) ?
+      choices:
+        - Une variable globale
+        - Un paramètre (ou argument) de la fonction
+        - Une constante
+        - Une erreur
+      answer: Un paramètre (ou argument) de la fonction
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Qu'est-ce qu'un paramètre ?
+      choices:
+        - Une valeur définie à l'intérieur d'une fonction qui peut être utilisée pour les calculs
+        - Une valeur, stockée dans la variable entre parenthèses de l'entête de la fonction, passée à une fonction pour qu'elle puisse l'utiliser
+        - Un type de fonction spéciale qui ne peut pas être appelée
+        - Un mot-clé réservé
+      answer: Une valeur, stockée dans la variable entre parenthèses de l'entête de la fonction, passée à une fonction pour qu'elle puisse l'utiliser
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Que fait le mot-clé return ?
+      choices:
+        - Affiche une valeur
+        - Termine la fonction sans rien faire
+        - Renvoie une valeur
+        - Supprime une variable
+      answer: Renvoie une valeur
+
+  - type: Output
+    question:
+      code: |
+        def f(x):
+            return x + 1
+
+        print(f(4))
+
+  - type: Output
+    question:
+      code: |
+        def f(x):
+            print(x)
+            x = x + 1
+
+        a = 5
+        f(a)
+
+  - type: Output
+    question:
+      code: |
+        def f(x):
+            x = 10
+
+        a = 5
+        f(a)
+        print(a)
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Pourquoi ce code provoque-t-il une erreur ?
+
+            def f():
+                x = 10
+
+            f()
+            print(x)
+      choices:
+        - x est une variable locale à la fonction f et n'est pas accessible en dehors de celle-ci
+        - x est une constante et ne peut pas être modifiée
+        - x est une variable globale
+        - Mauvaise indentation
+      answer: x est une variable locale à la fonction f et n'est pas accessible en dehors de celle-ci
+
+  - type: Output
+    question:
+      code: |
+        x = 5
+
+        def f():
+            print(x)
+
+        f()
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Une fonction peut-elle accéder à une variable définie en dehors d'elle ?
+      choices:
+        - Oui, si la variable est globale
+        - Non, les fonctions ne peuvent pas accéder à des variables externes
+      answer: Oui, si la variable est globale
+
+  - type: Output
+    question:
+      code: |
+        def f(x, y):
+            return x + y
+
+        print(f(2, 3))
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Combien d'arguments faut-il passer à f(x, y) ?
+      choices:
+        - '1'
+        - '2'
+        - '3'
+        - '0'
+      answer: '2'
+
+  - type: Output
+    question:
+      code: |
+        def f(x):
+            return x * 2
+
+        def g(x):
+            return f(x) + 1
+
+        print(g(3))
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Que signifie appeler une fonction ?
+      choices:
+        - La définir
+        - L'exécuter
+        - La supprimer
+        - La copier
+      answer: L'exécuter
+
+  - type: Output
+    question:
+      code: |
+        def f(x):
+            print(x)
+
+        def g(y):
+            f(y)
+
+        g(7)
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Quelle erreur se produit ici ?
+
+            def f(x):
+                return x
+
+            f()
+      choices:
+        - TypeError, car f attend un argument mais n'en reçoit aucun
+        - SyntaxError, car il manque des parenthèses
+        - IndexError, car il n'y a pas d'index 0 dans la fonction
+        - ValueError, car la fonction ne peut pas traiter une valeur vide
+      answer: TypeError, car f attend un argument mais n'en reçoit aucun
+
+  - type: Output
+    question:
+      code: |
+        def f(x):
+            return x + 1
+
+        a = 3
+        b = f(a)
+        print(b)
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Que retourne une fonction qui ne contient pas de return ?
+      choices:
+        - '0'
+        - None
+        - Une erreur
+        - Une chaîne vide
+      answer: None
+
+  - type: Output
+    question:
+      code: |
+        def f():
+            return 5
+
+        print(f())
+
+  - type: Output
+    question:
+      code: |
+        def f():
+            a = 5
+
+        print(f())
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Quelle est la différence entre print(x) et return x ?
+      choices:
+        - Aucune différence
+        - print affiche, return renvoie une valeur
+        - return affiche, print renvoie une valeur
+        - Les deux arrêtent le programme
+      answer: print affiche, return renvoie une valeur
+
+  - type: Output
+    question:
+      code: |
+        def f(x):
+            return x + 2
+
+        print(f(3) + f(4))
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Que se passe-t-il après un return dans une fonction ?
+      choices:
+        - Le programme python s'arrête complètement
+        - La fonction s'arrête immédiatement
+        - Une erreur est générée
+        - La fonction redémarre
+      answer: La fonction s'arrête immédiatement
+
+  - type: Output
+    question:
+      code: |
+        def f():
+            return 1
+            print("ok")
+
+        f()
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Une fonction peut-elle avoir plusieurs return ?
+      choices:
+        - Oui
+        - Non
+      answer: Oui
+
+  - type: Output
+    question:
+      code: |
+        def f(x):
+            return x + 1
+
+        a = f(2)
+        b = f(a)
+        print(b)
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Que va afficher ce code ?
+
+            x = 10
+
+            def f():
+                x = 5
+                return x
+
+            print(f())
+            print(x)
+      choices:
+        - 5 puis 5
+        - 10 puis 10
+        - 5 puis 10
+        - 10 puis 5
+      answer: 5 puis 10
+
+  - type: Output
+    question:
+      code: |
+        x = 1
+
+        def f():
+            return x + 1
+
+        print(f())
+
+  - type: Output
+    question:
+      code: |
+        x = 1
+
+        def f(x):
+            return x + 1
+
+        print(str(f(5)) + str(x))
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Que va afficher ce code ?
+
+            def f(x):
+                return x + 2
+
+            ecam = 1
+            print(f(ecam))
+            print(f(ecam))
+      choices:
+        - 2 et 3
+        - 3 et 3
+        - 3 et 4
+        - 1 et 1
+      answer: 3 et 3
