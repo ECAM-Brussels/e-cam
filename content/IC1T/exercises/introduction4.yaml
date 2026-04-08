@@ -72,6 +72,7 @@ body:
           main()
       answer: |
         from aide import saluer
+
         saluer()
 
   - type: MultipleChoice
@@ -91,7 +92,7 @@ body:
         Que fait turtle.penup() suivi de turtle.goto(0, 0) et turtle.pendown() ?
       choices:
         - Ferme la fenêtre turtle
-        - place la tortue vers l'origine sans tracer puis recommence à tracer
+        - Déplace la tortue vers l'origine sans tracer puis recommence à tracer
         - Change la couleur du trait
         - Vide l'écran
       answer: Déplace la tortue vers l'origine sans tracer puis recommence à tracer
@@ -102,15 +103,10 @@ body:
         Quel dessin produit le code suivant ?
 
             import turtle
-
             t = turtle.Turtle()
-
             for _ in range(4):
-
                 t.forward(100)
-
                 t.right(90)
-
             turtle.done()
       choices:
         - 'Un carré'
