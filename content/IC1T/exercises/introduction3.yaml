@@ -1,4 +1,6 @@
 title: 'Introduction aux lists et aux boucles for'
+prerequisites:
+  - /IC1T/exercises/2
 options:
   adjustElo: false
   whiteboard: false
