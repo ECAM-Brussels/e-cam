@@ -1,0 +1,132 @@
+title: 'Drill - Algorithmes Simples'
+options:
+  adjustElo: false
+  whiteboard: false
+  maxAttempts: null
+  save: lastAttempt
+body:
+  - type: Output
+    question:
+      code: |
+        def f(t):
+            a = t[0]
+            for b in t:
+                if b > a:
+                    a = b
+            return a
+
+        print(f([3, 8, 2, 10, 5]))
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Que fait ce bloc de code sur une liste `t` ?
+
+            x = t[i]
+            t[i] = t[j]
+            t[j] = x
+      choices:
+        - Il supprime les éléments aux index i et j
+        - Il remplace l'élément i par l'élément j, et perd la valeur originale de i
+        - Il échange (swap) les valeurs situées aux index i et j
+        - Il additionne les valeurs aux index i et j
+      answer: Il échange (swap) les valeurs situées aux index i et j
+
+  - type: Output
+    question:
+      code: |
+        def g(s):
+            n = 0
+            for c in s:
+                if c in "aeiouy":
+                    n += 1
+            return n
+
+        print(g("python"))
+
+  - type: Output
+    question:
+      code: |
+        def h(x):
+            y = ""
+            for i in x:
+                y = i + y
+            return y
+
+        print(h("abc"))
+
+  - type: Output
+    question:
+      code: |
+        def q(t):
+            r = []
+            for e in t:
+                if e % 2 != 0:
+                    r.append(e)
+            return r
+
+        print(q([1, 2, 3, 4, 5]))
+
+  - type: Output
+    question:
+      code: |
+        def w(t, v):
+            for i in range(len(t)):
+                if t[i] == v:
+                    return i
+            return -1
+
+        print(w([10, 20, 30, 40], 30))
+
+  - type: Output
+    question:
+      code: |
+        def z(a, b):
+            r = []
+            for e in a:
+                if e not in r:
+                    r.append(e)
+            for e in b:
+                if e not in r:
+                    r.append(e)
+            return r
+
+        print(z([1, 2, 3], [2, 3 ,4]))
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Que calcule cette fonction ?
+
+            def k(s, c):
+                n = 0
+                for x in s:
+                    if x == c:
+                        n += 1
+                return n
+      choices:
+        - Elle compte le nombre total d'éléments dans s
+        - Elle trouve l'index de la première apparition de c dans s
+        - Elle compte le nombre de fois que l'élément c apparaît dans s
+        - Elle remplace toutes les occurrences de c par un nombre
+      answer: Elle compte le nombre de fois que l'élément c apparaît dans s
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Cet algorithme est censé trier la liste `t` en ordre croissant, mais le résultat est incorrect (il perd des valeurs). 
+        Quelle modification permet de le réparer de façon à ce qu'il trie correctement la liste ?
+
+            def s(t):
+                n = len(t)
+                for i in range(n):
+                    for j in range(n - 1):
+                        if t[j] > t[j+1]:
+                            t[j] = t[j+1]
+                            t[j+1] = t[j]
+      choices:
+        - "Remplacer les deux lignes dans le 'if' par l'échange : x = t[j]; t[j] = t[j+1]; t[j+1] = x"
+        - 'Remplacer la condition par : if t[j] < t[j+1]:'
+        - 'Remplacer la boucle interne par : for j in range(n):'
+        - "Ajouter 'return t' juste en dessous de 't[j+1] = t[j]', avec la même indentation"
+      answer: "Remplacer les deux lignes dans le 'if' par l'échange : x = t[j]; t[j] = t[j+1]; t[j+1] = x"

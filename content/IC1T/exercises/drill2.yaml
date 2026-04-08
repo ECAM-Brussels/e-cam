@@ -1,0 +1,228 @@
+title: 'Drill - Listes, Tuples et Boucles'
+options:
+  adjustElo: false
+  whiteboard: false
+  maxAttempts: null
+  save: lastAttempt
+body:
+  - type: MultipleChoice
+    question:
+      text: |
+        Quelle est la syntaxe correcte pour créer une liste en Python ?
+      choices:
+        - |
+          (1, 2, 3)
+        - |
+          [1, 2, 3]
+        - |
+          { 1, 2, 3 }
+        - |
+          <1, 2, 3>
+      answer: |
+        [1, 2, 3]
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Quelle est la syntaxe correcte pour créer un tuple ?
+      choices:
+        - |
+          (1, 2, 3)
+        - |
+          [1, 2, 3]
+        - |
+          { 1, 2, 3 }
+        - |
+          <1, 2, 3>
+      answer: |
+        (1, 2, 3)
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Quelle est la principale différence entre une liste et un tuple ?
+      choices:
+        - Les tuples sont modifiables, les listes non
+        - Les listes sont immuables, les tuples non
+        - Les tuples sont immuables
+        - Il n'y a aucune différence
+      answer: Les tuples sont immuables
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Que fait la méthode append sur une liste ?
+      choices:
+        - Elle supprime un élément
+        - Elle ajoute un élément à la fin
+        - Elle remplace un élément
+        - Elle trie la liste
+      answer: Elle ajoute un élément à la fin
+
+  - type: Output
+    question:
+      code: |
+        l = [1, 2, 3]
+        l.append(4)
+        print(l)
+
+  - type: Output
+    question:
+      code: |
+        l = (1, 2, 3)
+        print(l[2])
+
+  - type: Output
+    question:
+      code: |
+        l = [1, 2, 3]
+        print(l[-1])
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Quelle opération permet d'accéder au deuxième élément d'une liste l ?
+      choices:
+        - l[2]
+        - l[1]
+        - l(1)
+        - l{1}
+      answer: l[1]
+
+  - type: Output
+    question:
+      code: |
+        l = [1, 2, 3]
+        l[1] = 10
+        print(l)
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Est-ce que ce code est valide ?
+
+            l = (1, 2, 3)
+            l[1] = 10
+            print(l)
+      choices:
+        - Oui
+        - Non
+      answer: Non
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Que fait range(5) ?
+      choices:
+        - Génère les nombres de 1 à 5
+        - Génère les nombres de 0 à 5
+        - Génère les nombres de 0 à 4
+        - Génère les nombres de 1 à 4
+      answer: Génère les nombres de 0 à 4
+
+  - type: Output
+    question:
+      code: |
+        acc=0
+        for i in range(3):
+            acc += i
+        print(acc)
+
+  - type: Output
+    question:
+      code: |
+        acc=1
+        for i in range(1, 4):
+            acc *= i
+        print(acc)
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Combien de fois s'exécute cette boucle ?
+
+            for i in range(2, 6):
+                print(i)
+      choices:
+        - '2'
+        - '3'
+        - '4'
+        - '5'
+      answer: '4'
+
+  - type: Output
+    question:
+      code: |
+        l = [10, 20, 30]
+        for x in l:
+          pass #la comande pass est un placeholder qui ne fait rien
+        print(x)
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Que retourne enumerate(l) ?
+      choices:
+        - Les éléments de la liste uniquement
+        - Des paires (index, élément)
+        - Les index uniquement
+        - Une copie de la liste
+      answer: Des paires (index, élément)
+
+  - type: Output
+    question:
+      code: |
+        l = ["a", "b", "c"]
+        acc = ""
+        for i, v in enumerate(l):
+            acc += v
+        print(acc)
+
+  - type: MultipleChoice
+    question:
+      text: |
+        Que fait len(l) ?
+      choices:
+        - Retourne la somme des éléments dans l
+        - Retourne le nombre d'éléments dans l
+        - Trie la liste
+        - Supprime un élément
+      answer: Retourne le nombre d'éléments dans l
+
+  - type: Output
+    question:
+      code: |
+        l = [1, 2, 3]
+        acc = 0
+        for i in range(len(l)):
+            acc += l[i]
+        print(acc)
+
+  - type: Output
+    question:
+      code: |
+        l1 = [1, 2, 3]
+        t2 = (2, 5, 0)
+        acc = 0
+        for i, v in enumerate(l1):
+            acc += v + t2[i]
+        print(acc)
+
+  - type: Output
+    question:
+      code: |
+        l = [1, 2]
+        l = l + [3, 4]
+        print(l)
+
+  - type: Output
+    question:
+      code: |
+        l = [(1, 2), [3, 4], (5, 6)]
+        print(l[1][0])
+
+  - type: Output
+    question:
+      code: |
+        l = [[1, 2], (3, 4), [5, 6]]
+        print(l[0][1] + l[1][0])
