@@ -1,4 +1,6 @@
 title: 'Introduction aux fonctions et aux boucles while'
+prerequisites:
+  - /IC1T/exercises/1
 options:
   adjustElo: false
   whiteboard: false

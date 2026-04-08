@@ -1,4 +1,6 @@
 ﻿title: 'Introduction aux tuples, enumerate, imports et turtle'
+prerequisites:
+  - /IC1T/exercises/3
 options:
   adjustElo: false
   whiteboard: false

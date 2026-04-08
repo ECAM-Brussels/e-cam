@@ -1,4 +1,6 @@
 title: 'Drill - Fonctions Python'
+prerequisites:
+  - /IC1T/exercises/drill2
 options:
   adjustElo: false
   whiteboard: false
