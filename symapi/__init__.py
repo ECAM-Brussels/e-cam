@@ -9,11 +9,11 @@ from typing import Optional
 
 from symapi.chemistry import Chemistry
 from symapi.conic_section import ConicSection
-from symapi.core import Math, MathSet
+from symapi.core import Math, MathSet, Unit
 from symapi.expression import Expression
 from symapi.system import System
 from symapi.vector import Vector
-
+from symapi.quantity import Quantity
 
 @strawberry.type
 class Query:
@@ -29,7 +29,9 @@ class Query:
     @strawberry.field(description="Analyze a mathematical expression")
     def expression(self, expr: Math) -> "Expression":
         return Expression(expr=expr)
-
+    @strawberry.field(description="quantity for chemical units")
+    def quantity(self, value: Math, unit: Unit) -> "Quantity":
+        return Quantity(value=value, unit=unit)
     @strawberry.field
     def matrix(self, entries: list[list[Math]]) -> "Expression":
         return Expression(expr=sympy.Matrix(entries))
