@@ -30,21 +30,21 @@ factor(x**2 + 7*x + 6)
 :::::
 
 ::: {.exercise title="Exercise 55"}
-Compléter le carré: $x^2 + 2x + 5$
+Complétez le carré: $x^2 + 2x + 5$
 :::
 
 ::: {.exercise title="Exercice 136"}
-Résouds $x^2 \geq 5$.
+Résolvez $x^2 \geq 5$.
 :::
 
 ::: {.exercise title="Exercice 151"}
-Résouds $|x - 4| < 1$.
+Résolvez $|x - 4| < 1$.
 :::
 
 # Factorisation {.w-1--2}
 
 ::: {.exercise title="Exercices 37, 46"}
-Factorise les expressions suivantes:
+Factorisez les expressions suivantes:
 
 - $6x^2 - 5x - 6$
 - $x^3 - 2x^2 - 23x + 60$
@@ -60,7 +60,7 @@ factor(6*x**2 - 5*x - 6)
 # Complétion du carré {.w-1--2}
 
 ::: {.exercise title="Exercices 56, 60"}
-Compléter le carré dans les expressions suivantes:
+Complétez le carré dans les expressions suivantes:
 
 - $x^2 - 16x + 80$
 - $3x^2 - 24x + 50$
@@ -78,7 +78,7 @@ ans.subs(subs)
 # Inéquations {.w-1--2}
 
 ::: {.exercise title="Exercices 137, 140"}
-Résolvez les inéquations suivantes et illustrez l'ensemble des solutions sur la droite réelle
+Résolvez les inéquations suivantes et illustrez l'ensemble des solutions sur l'axe réel:
 
 - $x^3 - x^2 \leq 0$
 - $x^3 + 3x < 4x^2$
