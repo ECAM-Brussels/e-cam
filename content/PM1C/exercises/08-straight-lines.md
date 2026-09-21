@@ -9,15 +9,16 @@ slideshow: true
 Montrez que $A(1, 1)$, $B(7, 4)$, $C(5, 10)$ et $D(-1, 7)$ sont les sommets d'un parallélogramme.
 :::
 
-::: {.exercise title="Exercice B.25, B.33"}
-Trouvez une équation de la droite satisfaisant les conditions données.
+::: {.exercise title="Exercice B.25"}
+Déterminez une équation de la droite passant par $(2, 1)$ et $(1, 6)$.
+:::
 
-- passant par $(2, 1)$ et $(1, 6)$
-- passant par $(1, -6)$ et parallèle à $x + 2y = 6$
+::: {.exercise title="Exercice B.33"}
+Déterminez une équation de la droite passant par $(1, -6)$ et parallèle à $x + 2y = 6$.
 :::
 
 ::: {.exercise title="Exercice B.56"}
-Trouvez les longueurs des médianes d'un triangle
+Déterminez les longueurs des médianes d'un triangle
 dont les sommets sont $A(1, 0)$, $B(3, 6)$ et $C(8, 2)$.
 :::
 
@@ -28,11 +29,11 @@ $$
 \quad \text{et} \quad
 10x + 6y - 50 = 0
 $$
-sont perpendiculaires et trouvez leur point d'intersection.
+sont perpendiculaires et déterminez leur point d'intersection.
 :::
 
 ::: {.exercise title="Exercice B.59"}
-Trouvez l'équation de la médiatrice du segment joignant $A(1, 4)$ et $B(7, -2)$.
+Déterminez une équation de la médiatrice du segment joignant $A(1, 4)$ et $B(7, -2)$.
 :::
 
 # Exercice B.16 p. A16 {.w-1--2}
@@ -62,11 +63,13 @@ if grad(A, B) == grad(D, C):
 # Exercice B.34 et B.36 p. A16 {.w-1--2}
 
 ::: exercise
-Trouvez une équation de la droite satisfaisant les conditions données.
-
-- parallèle à $2x + 3y + 4 = 0$, avec $6$ comme ordonnée à l'origine
-- passant par $(\frac 1 2, -\frac 2 3)$, perpendiculaire à la droite $4x - 8y = 1$
+Déterminez une équation de la droite parallèle à $2x + 3y + 4 = 0$, avec $6$ comme ordonnée à l'origine.
 :::
+
+::: exercise
+Déterminez une équation de la droite passant par $(\frac 1 2, -\frac 2 3)$, perpendiculaire à la droite $4x - 8y = 1$.
+:::
+
 
 ::::: text-sm
 ~~~ python {.run}
@@ -89,11 +92,11 @@ Eq(y, simplify(-1/m * (x - Rational(1, 2)) - Rational(2, 3)))
 # Exercice 60 p. A17 {.w-1--2}
 
 ::: exercise
-a. Trouvez les équations des côtés d'un triangle
+a. Déterminez les équations des côtés d'un triangle
    dont les sommets sont $P(1, 0)$, $Q(3, 4)$ et $R(-1, 6)$.
-b. Trouvez les équations des médianes de ce triangle.
+b. Déterminez les équations des médianes de ce triangle.
    Où se trouve leur intersection?
-c. Trouvez l'intersection des hauteurs et des médiatrices
+c. Déterminez l'intersection des hauteurs et des médiatrices
 d. En déduire l'équation de la droite d'Euler, qui passe par l'intersection des hauteurs, des médiatrices et des médianes.
 :::
 

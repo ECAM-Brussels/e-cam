@@ -34,17 +34,17 @@ f. $(\vec a \times \vec b) \cdot (\vec c \times \vec d)$
 :::
 
 ::: {.exercise title="Exercice 12.4.14 p. 900"}
-Trouvez $\|\vec u \times \vec v\|$ et déterminez si $\vec u \times \vec v$ pointe dans la page ou hors de la page (vers vous).
-![](/images/exercises/12.4.14.png){.w-70 .block .m-auto}
+Calculez $\|\vec u \times \vec v\|$ et déterminez si $\vec u \times \vec v$ pointe dans la page ou hors de la page (vers vous).
+![](/images/exercises/12.4.14.png){.w-80 .block .m-auto}
 :::
 
 ::: {.exercise title="Exercice 12.4.27 p. 900"}
-Trouvez l'aire du parallélogramme dont les sommets sont
+Calculez l'aire du parallélogramme dont les sommets sont
 $$A(-3, 0) \quad B(-1, 3) \quad C(5, 2) \quad D(3, -1)$$
 :::
 
 ::: {.exercise title="Exercice 12.4.35 p. 900"}
-Trouvez le volume du parallélépipède qui a pour arrêtes adjacentes $PQ$, $PR$ et $PS$:
+Calculez le volume du parallélépipède qui a pour arrêtes adjacentes $PQ$, $PR$ et $PS$:
 $$
 P(-2, 1, 0) \quad Q(2, 3, 2) \quad R(1, 4, -1) \quad S(3, 6, 1).
 $$
@@ -66,7 +66,7 @@ Calculez $(\vec i + \vec j) \times (\vec i - \vec j)$ en n'utilisant que les pro
 # Exercice 12.4.15 {.w-1--2}
 
 ::: {.exercise title="Exercice 15 p. 900"}
-Trouvez $\|\vec u \times \vec v\|$ et déterminez si $\vec u \times \vec v$ pointe dans la page ou hors de la page (vers vous).
+Calculez $\|\vec u \times \vec v\|$ et déterminez si $\vec u \times \vec v$ pointe dans la page ou hors de la page (vers vous).
 ![](/images/exercises/12.4.15.png){.w-70 .block .m-auto}
 :::
 
@@ -77,8 +77,8 @@ Réponse: 6, rentrant dans la page.
 ::: exercise
 Soient $P(7, -2, 0)$, $Q(3, 1, 3)$ et $R(4, -4, 2)$.
 
-a. Trouvez un vecteur non nul et orthogonal au plan contenant ces trois points.
-b. Trouvez l'aire du triangle PQR.
+a. Déterminez un vecteur non nul et orthogonal au plan contenant ces trois points.
+b. Calculez l'aire du triangle PQR.
 :::
 
 ::: hint
@@ -128,7 +128,7 @@ Voir exemple 5 p. 898 pour un exercice similaire.
 
 ::: exercise
 Si $\vec a \cdot \vec b = \sqrt 3$ et $\vec a \times \vec b = (1, 2, 2)$,
-trouvez l'angle entre $\vec a$ et $\vec b$.
+déterminez l'angle entre $\vec a$ et $\vec b$.
 :::
 
 ::: hint
@@ -148,7 +148,7 @@ theta
 # Exercise 12.4.44 {.w-1--2}
 
 ::: exercise
-Trouvez tous les vecteurs $\vec v$ tels que
+Déterminez tous les vecteurs $\vec v$ tels que
 $$
 \begin{pmatrix}1\\ 2\\ 1\end{pmatrix} \times \vec v
 =
