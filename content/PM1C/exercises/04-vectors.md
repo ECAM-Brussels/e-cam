@@ -13,7 +13,7 @@ Calculez $\vec a \cdot \vec b$ lorsque
 :::
 
 ::: {.exercise title="Exercice 12.3.15 p. 891"}
-Trouvez l'angle entre $\vec u = (5, 1)$ et $\vec v = (3, 2)$.
+Calculez l'angle entre $\vec u = (5, 1)$ et $\vec v = (3, 2)$.
 :::
 
 ::: {.exercise title="Exercice 12.3.25 p. 891"}
@@ -35,7 +35,7 @@ $$
 $$
 
 ::: exercise
-Trouvez l'angle entre les vecteurs $\vec a = 8 \vec i - \vec j + 4 \vec k$ et $\vec b = 4\vec j + 2 \vec k$.
+Calculez l'angle entre les vecteurs $\vec a = 8 \vec i - \vec j + 4 \vec k$ et $\vec b = 4\vec j + 2 \vec k$.
 :::
 
 ~~~ python {.run}
@@ -65,7 +65,7 @@ $$
 :::
 
 ::: exercise
-Trouvez les cosinus directeurs du vecteur $(c, c, c)$ où $c > 0$.
+Trouvez les cosinus directeurs du vecteur $\vec v=(c, c, c)$ où $c > 0$.
 :::
 
 ~~~ python {.run .text-sm}
@@ -86,14 +86,12 @@ Voir exemple 5 pp. 888-889.
 
 ::::: break-inside-avoid-column
 ::: definition
-$$
-\mathrm{proj}_{\vec a}(\vec b) = \frac {\vec a \cdot \vec b} {\|\vec a\|^2} \vec a
-\quad \text{projection de } \vec b \text{ sur } \vec a.
-$$
+La projection vectorielle de  $\vec b$ sur $\vec a$ est
+$$\mathrm{proj}_{\vec a}(\vec b) = \left( \frac {\vec a \cdot \vec b} {\|\vec a\|} \right) \frac{\vec a} {\|\vec a\|}$$
 :::
 
 ::: exercise
-Trouvez la projection de $\vec b = 5 \vec i - \vec k$ sur $\vec a = \vec i + 2 \vec j + 3 \vec k$
+Déterminez la projection vectorielle de $\vec b = 5 \vec i - \vec k$ sur $\vec a = \vec i + 2 \vec j + 3 \vec k$
 :::
 
 ~~~ python {.run}
@@ -141,7 +139,7 @@ entre la diagonale d'un cube et la diagonale d'une de ses faces.
 
 ::: hint
 Prenez un cube particulier dans un repère (le plus simple possible),
-et faites les calculs sur ce cube
+et faites les calculs sur ce cube.
 :::
 
 ~~~ python {.eval}
