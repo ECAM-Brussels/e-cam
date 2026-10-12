@@ -5,11 +5,25 @@ slideshow: true
 
 # Préparation {.columns-2}
 
+
+::: {.exercise title="1.6.10"}
+Qu'y a-t-il d'incorrect dans l'équation suivante?
+$$
+\frac {x^2 + x - 6} {x - 2} = x + 3
+$$
+Dès lors, expliquez pourquoi l'équation
+$$
+\lim_{x \to 2} \frac {x^2 + x - 6} {x - 2} = \lim_{x \to 2} (x + 3)
+$$
+est tout de même correcte.
+:::
+
 ::::: break-inside-avoid-column
+
 ::: {.exercise title="Exercices 1.6: 23, 30"}
 $$
 \lim_{h \to 0} \frac {\sqrt {9 + h} - 3} h
-\quad
+\quad\quad\quad
 \lim_{x \to 2} \frac {x^2 - 4x + 4} {x^4 - 3x^2 - 4}
 $$
 :::
@@ -27,7 +41,7 @@ limit((sqrt(9 + h) - 3) / h, h, 0)
 ::: {.exercise title="Exercices 3.4: 12, 19"}
 $$
 \lim_{t \to -\infty} \frac {6t^2 + t - 5} {9 - 2t^2}
-\quad
+\quad\quad\quad
 \lim_{x \to +\infty} \frac {\sqrt{1 + 4x^6}} {2 - x^3}
 $$
 :::
@@ -41,10 +55,25 @@ limit((6*t**2 + t - 5) / (9 - 2*t**2), t, oo)
 ~~~
 :::::
 
+# Exercice 1.6.19 {.w-1--2}
+
+::: exercise
+Calculez la limite si elle existe
+$$
+\lim_{t \to 3} \frac {t^3 - 27} {t^2 - 9}
+$$
+:::
+
+~~~ python {.run}
+from sympy import *
+t = Symbol("t")
+limit((t**3 - 27) / (t**2 - 9), t, 3)
+~~~
+
 # Exercises 1.6: 27, 31
 
 ::: exercise
-Évaluez les limites suivantes
+Calculez les limites suivantes
 
 ::::: columns-2
 :::: column
@@ -81,11 +110,13 @@ limit(f, t, 0)
 # Exercices 3.4: 20, 26, 31 {.w-1--2}
 
 ::: exercise
-Trouvez les limites ou montrez qu'elles n'existent pas:
+Calculez les limites ou montrez qu'elles n'existent pas:
 
 $$
 \lim_{x \to -\infty} \frac {\sqrt{1 + 4x^6}} {2 - x^3}\\
+\phantom{bla}\\
 \lim_{x \to -\infty} \left(\sqrt{4x^2 + 3x} + 2x\right)\\
+\phantom{bla}\\
 \lim_{x \to +\infty}x \sin \frac 1 x
 $$
 :::
