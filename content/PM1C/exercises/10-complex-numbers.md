@@ -6,7 +6,7 @@ slideshow: true
 # Préparation {.columns-2}
 
 ::: {.exercise title="Exercices H: 5, 8, 12"}
-Évaluez et mettez sous la forme $a + bi$:
+Calculez et mettez la réponse sous la forme algébrique $a + bi$:
 
 a. $\overline {12 + 7i}$
 b. $\frac {3 + 2i} {1 - 4i}$
@@ -14,7 +14,7 @@ c. $i^{100}$
 :::
 
 ::: {.exercise title="H.16"}
-Trouvez le complexe conjugué et le module de $-1 + 2 \sqrt 2 i$.
+Déterminez le complexe conjugué et le module de $-1 + 2 \sqrt 2 i$.
 :::
 
 ::: {.exercise title="H.21"}
@@ -22,12 +22,11 @@ Résolvez $z^2 + 2z + 5 = 0$ dans $\mathbb C$.
 :::
 
 ::: {.exercise title="H.30"}
-Trouvez les formes polaires de $z = 4 \sqrt 3 - 4i$, $w = 8i$,
-en déduisez-en les formes polaires de $zw$, $z / w$ et $1/z$.
+Déterminez les formes trigonométriques et exponentielles de $z = 4 \sqrt 3 - 4i$, $w = 8i$, puis déduisez-en les formes trigonométriques et exponentielles de $zw$, $z / w$ et $1/z$.
 :::
 
 ::: {.exercise title="H.34"}
-Calculez $(1 - \sqrt 3 i)^5$ grâce à la forme polaire.
+Calculez $(1 - \sqrt 3 i)^5$ à l'aide de la forme exponentielle.
 :::
 
 # Exercice H.23 {.w-1--2}
@@ -45,8 +44,8 @@ solveset(z**2 + z + 2, z, S.Complexes)
 # Exercice H.31 {.w-1--2}
 
 ::: exercise
-Trouvez les formes polaires de $z = 2 \sqrt 3 - 2 i$ et $w = -1 + i$ et
-déduisez-en les formes polaires de $zw$, $z/w$ et $1/z$.
+Déterminez les formes trigonométriques et exponentielles de $z = 2 \sqrt 3 - 2 i$ et $w = -1 + i$ et
+déduisez-en les formes trigonométriques et exponentielles de $zw$, $z/w$ et $1/z$.
 :::
 
 ::: text-sm
@@ -72,7 +71,7 @@ polar(z) # Changez ici
 # Exercice H.36 {.w-1--2}
 
 ::: exercise
-À l'aide de la forme polaire, calculez $(1 - i)^8.$
+Calculez $(1 - i)^8$ à l'aide de la forme exponentielle.
 :::
 
 ~~~ python {.run}
@@ -83,7 +82,7 @@ simplify((1 - I) ** 8)
 # Exercice H.38, H.40 {.w-1--2}
 
 ::: exercise
-Trouvez les racines $n$-èmes.
+Déterminez les racines $n$-èmes.
 Esquissez les solutions sur le plan complexes:
 
 - $z^5 = 32$
@@ -91,7 +90,7 @@ Esquissez les solutions sur le plan complexes:
 :::
 
 ::: hint
-Passez en coordonnées polaires
+Écrivez le second membre sous la forme exponentielle.
 :::
 
 # Réponses

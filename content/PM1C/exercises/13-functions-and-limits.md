@@ -5,13 +5,26 @@ slideshow: true
 
 # Préparation {.columns-2}
 
-::: {.exercise title="1.3.3"}
-![](/images/exercises/1.3.3.png){.w-96 .mx-auto .block}
+::: {.exercise title="Exercices 1.2: 11, 12"}
+Déterminez l'expression des fonctions quadratiques dont le graphe est montré ci-dessous.
+![](/images/exercises/1.2.11.png)
 :::
 
-::: {.exercise title="1.3.15"}
-Tracez le graphe de $y = \sin 4x$ en utilisant les transformations graphiques.
+::: {.exercise title="Exercices 1.3: 15, 19"}
+Tracez les graphes en partant des fonctions de référence
+et en appliquant les transformations graphiques:
+
+- $y = \sin 4x$
+- $y = x^2 - 2x + 5$
 :::
+
+::: {.exercise title="1.3.3"}
+![](/images/exercises/1.3.3.png){.w-100 .mx-auto .block}
+:::
+
+
+
+# Préparation p2 {.columns-2}
 
 ::: {.exercise title="1.5: 1, 2"}
 1. Expliquez ce que l'équation
@@ -28,39 +41,49 @@ Tracez le graphe de $y = \sin 4x$ en utilisant les transformations graphiques.
    Dans cette situation, est-il possible que $\lim_{x \to 1} f(x)$ existe?
 :::
 
-# Préparation {.columns-2}
-
-::: {.exercise title="1.5.10"}
-![](/images/exercises/1.5.10.png)
-:::
-
 ::: {.exercise title="1.5.36"}
 $$
 \lim_{x \to 3^-} \frac {x^2 + 4x} {x^2 - 2x - 3}
 $$
 :::
 
-::: {.exercise title="1.6.10"}
-Qu'il y a-t-il d'incorrect dans l'équation suivante?
-$$
-\frac {x^2 + x - 6} {x - 2} = x + 3
-$$
-Dès lors, expliquez pourquoi l'équation
-$$
-\lim_{x \to 2} \frac {x^2 + x - 6} {x - 2} = \lim_{x \to 2} (x + 3)
-$$
-est tout de même correcte.
+::: {.exercise title="1.5.10"}
+![](/images/exercises/1.5.10.png)
 :::
 
-# Exercice 1.3: 14, 19, 23 {.w-1--2}
+
+# Exercice 1.2.13 {.w-1--2}
+
+::: exercise
+Déterminez une fonction cubique $f$ si $f(1) = 6$,
+et $f(-1) = f(0) = f(2) = 0$.
+:::
+
+~~~ python {.run}
+from sympy import *
+a, x = symbols("a x")
+P = a * (x + 1) * x * (x - 2)
+P = P.subs({a: solve(Eq(P.subs(x, 1), 6))[0]})
+~~~
+
+# Exercice 1.2.18 {.w-1--2}
+
+![](/images/exercises/1.2.18.png){.h-4--5}
+
+# Exercice 1.3: 14, 23 {.w-1--2}
 
 ::: exercise
 Tracez les graphes en partant des fonctions de référence
 et en appliquant les transformations graphiques:
 
 - $y = -\sqrt{x} - 1$
-- $y = x^2 - 2x + 5$
 - $y = 3 \sin \frac x 2 + 1$
+:::
+
+# Exercice 1.3.28 {.w-1--2}
+
+::: exercise
+Une étoile variable est une étoile dont la luminosité augmente et diminue alternativement. Pour l’étoile variable la plus visible, Delta Cephei, le temps entre deux maxima de luminosité est de 5.4 jours, la luminosité moyenne (ou magnitude) de l’étoile est de 4.0 et sa luminosité varie de ±0.35 magnitudes. Déterminez une fonction qui modélise la luminosité de Delta Cephei en fonction du temps.
 :::
 
 # Exercice 1.3.61 {.w-1--2}
@@ -109,17 +132,3 @@ où $m_0$ est la masse au repos et $c$ est la vitesse de la lumière.
 Que se passe-t-il lorsque $v \to c^{-}$?
 :::
 
-# Exercice 1.6.19 {.w-1--2}
-
-::: exercise
-Évaluez la limite si elle existe
-$$
-\lim_{t \to 3} \frac {t^3 - 27} {t^2 - 9}
-$$
-:::
-
-~~~ python {.run}
-from sympy import *
-t = Symbol("t")
-limit((t**3 - 27) / (t**2 - 9), t, 3)
-~~~
