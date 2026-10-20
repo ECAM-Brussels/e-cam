@@ -15,7 +15,7 @@ calculez $f'(a)$ sachant que $f(t) = t^3 - 3t$.
 :::
 
 ::: {.exercise title="2.2.41"}
-Trouvez les points où la fonction n'est pas dérivable.
+Déterminez les points où la fonction n'est pas dérivable.
 
 ![](/images/exercises/2.2.41.png)
 :::
@@ -31,14 +31,15 @@ Dérivez $g(x) = \frac 1 {\sqrt{x}} + \sqrt[4]{x}$
 :::
 
 ::: {.exercise title="2.3.65"}
-Trouvez la tangente de la courbe $y = \frac 1 {1 + x^2}$ au point $(-1, \frac 1 2)$.
+Déterminez une équation de la tangente de la courbe $y = \frac 1 {1 + x^2}$ au point $\left(-1, \frac 1 2\right)$.
 :::
 
 # Exercice 2.1.28 {.w-1--2}
 
 ::: {.exercise title="Exercice 2.1.28"}
-Trouvez une équation de la tangente au graphe $y = g(x)$ en $x = 5$ si $g(5) = -3$ et $g'(5) = 4$.
+Déterminez une équation de la tangente au graphe $y = g(x)$ en $x = 5$ si $g(5) = -3$ et $g'(5) = 4$.
 :::
+Réponse: 
 
 ~~~ python {.eval}
 from sympy import *
@@ -49,7 +50,7 @@ Eq(y, 4 * (x - 5) - 3)
 # Exercice 2.1.57 {.w-1--2}
 
 ::: {.exercice title="Exercice 2.1.57"}
-Détermine si $f'(0)$ existe.
+Déterminez si $f'(0)$ existe.
 $$
 f(x) = \begin{cases}
 x \sin \frac 1 x & \text{si } x \neq 0\\
@@ -96,11 +97,11 @@ Réponse: c est la position, b la vitesse.
 # Exercice 2.3.63 p. 144 {.w-1--2}
 
 ::: exercise
-Trouvez l'équation de la tangente et la normale de
+Déterminez des équations de la tangente et la normale de
 $$
 y = \frac {3x} {1 + 5x^2}
 $$
-en $(1, \frac 1 2)$.
+en $\left(1, \frac 1 2\right)$.
 :::
 
 ~~~ python {.run}
@@ -116,7 +117,7 @@ Eq(Symbol("y"), m * (x - 1) + Rational(1, 2))
 ::: exercise
 L'équation du mouvement d'une particule est $s = t^3 - 3t$,
 où $s$ est en mètres et $t$ est en secondes.
-Trouvez
+Déterminez:
 
 a. la vitesse et l'accélération comme fonctions de $t$
 b. l'accélération après $2$ secondes
@@ -154,3 +155,7 @@ from sympy import *
 x = Symbol("x")
 limit((x**(1000) - 1) / (x - 1), x, 1)
 ~~~
+
+# Réponses
+
+<Iframe class="w-full h-full" src="/documents/pm1c-answers.pdf#page=14" />
