@@ -132,3 +132,7 @@ f3 = x * sin(1/x)
 # (même si ça ne change strictement rien)
 limit(f1, x, -oo)
 ~~~
+
+# Réponses
+
+<Iframe class="w-full h-full" src="/documents/pm1c-answers.pdf#page=13" />

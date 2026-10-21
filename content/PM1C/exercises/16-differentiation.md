@@ -9,33 +9,28 @@ slideshow: true
 Dérivez $y = \frac {t \sin t} {1 + t}$
 :::
 
-::: {.exercise title="Exercice 2.6.31"}
-Trouvez une équation de la tangente de $x^2 + y^2 = (2x^2 + 2y^2 - x)^2$ en $(0, \frac 1 2)$ via la dérivation implicite
-:::
-
-::: {.exercise title="Exercice 2.7: 1, 2"}
-![](/images/exercises/2.7.1.png){.w-1--2}
-
-1. $f(t) = t^3 - 9t^2 + 24t$
-2. $f(t) = \frac {9t} {t^2 + 9}$
-:::
-
-::: {.exercise title="Exercice 2.9.6"}
-Trouvez l'approximation linéaire de $g(x) = \sqrt[3]{1 + x}$ en $a = 0$,
-et utilisez-là pour estimer $\sqrt[3]{0.95}$ et $\sqrt[3]{1.1}$.
-Illustrez en dessinant le graphe de $g$ et de sa tangente.
+::: {.exercise title="Exercice 2.5.54"}
+Déterminez une équation de la tangente à la courbe $y = \sqrt{1+x^3}$ au point $(2, 3)$.
 :::
 
 ::: {.exercise title="Exercice 3.1.5"}
-![](/images/exercises/3.1.5.png){.w-1--2}
-
-Utilisez le graphe pour trouvez les extremas absolus et locaux de la fonction.
+Employez le graphe de la fonction pour déterminer ses extremas absolus et locaux.
+![](/images/exercises/3.1.5.png){style="width: 40%; margin: 0;"}
 :::
+
+
+::: {.exercise title="Exercice 2.7: 1"}
+![](/images/exercises/2.7.1.png){style="width: 80%; margin: 0;"}
+
+1. $f(t) = t^3 - 9t^2 + 24t$
+:::
+
+
 
 # Exercice 2.4.40 {.w-1--2}
 
 ::: exercise
-Trouvez les points de la courbe $y = \frac {\cos x} {2 + \sin x}$ pour lesquels
+Déterminez les points de la courbe $y = \frac {\cos x} {2 + \sin x}$ pour lesquels
 la tangente est horizontale.
 :::
 
@@ -51,75 +46,20 @@ data:
   - fn: cos(x) / (2 + sin(x))
 ~~~
 
-# Exercice 2.6.33 {.w-1--2}
+# Exercice 2.5.57a {.w-1--2}
 
 ::: exercise
-En utilisant la dérivée implicite, calculez $\frac {\dd y} {\dd x}$ pour
-les expressions équivalentes
-$$
-\frac x y = y^2 + 1,
-\quad
-x = y^3 + y,
-\quad y \neq 0
-$$
+Déterminez une équation de la tangente à la courbe $y = \tan(\pi x^2/4)$ au point $(1, 1)$.
 :::
 
-~~~ python {.run}
-from sympy import *
-x = Symbol("x")
-y = Function("y")(x)
 
-# Changez cette ligne
-eq = Eq(x, y**3 + y)
+# Exercice 2.7.2 {.columns-2}
 
-eq = Eq(eq.args[0].diff(x), eq.args[1].diff(x))
-y_x = solve(eq, y.diff(x))[0]
-~~~
+::: {.exercise title="Exercice 2.7: 2"}
+![](/images/exercises/2.7.1.png){style="width: 80%; margin: 0;"}
 
-# Exercice 2.9.10 {.columns-2}
-
-::::: break-inside-avoid-column
-::: exercise
-Vérifiez que l'approximation linéaire de $\tan x$ en $a = 0$ est donnée par $y = x$.
-Ensuite, déterminez les valeurs de $x$ pour lesquelles la valeur de l'approximation est valable au dixième près.
+2. $f(t) = \cfrac {9t} {t^2 + 9}$
 :::
-
-~~~ python {.run}
-from sympy import *
-x = Symbol("x", real=True)
-f = tan(x)
-L = f.subs({x: 0}) + f.diff(x).subs({x: 0}) * x
-~~~
-:::::
-
-~~~ yaml {.plot}
-width: 800
-height: 600
-data:
-  - fn: tan(x)
-  - fn: tan(x) + 0.1
-  - fn: tan(x) - 0.1
-  - fn: x
-~~~
-
-# Exercice 2.9.44 {.w-1--2}
-
-::: exercise
-Un côté d'un triangle rectangle mesure $20$ cm et son angle opposé est $30^\circ$,
-avec une erreur possible de $\pm 1^\circ$.
-
-a. Utilisez la différentiell pour estimer l'erreur sur la longueur de l'hypothénuse
-b. Quelle est le pourcentage sur l'erreur?
-:::
-
-~~~ python {.run}
-from sympy import *
-theta = Symbol("theta")
-h = 20 / sin(theta * pi / 180)
-dtheta = 1
-dh = h.diff(theta).subs({theta: 30}) * dtheta
-[dh, dh/h.subs({theta: 30})]
-~~~
 
 # Exercice 3.2.29 {.w-1--2}
 
@@ -131,3 +71,32 @@ quelle serait la valeur minimale de $f(4)$?
 ~~~ python {.run}
 10 + 2 * 3
 ~~~
+
+# Exercice 3.5.47 {.w-1--2}
+
+::: exercise
+La figure ci-dessous représente une poutre de longueur $L$, encastrée dans des
+murs en béton. Si une charge constante $W$ est répartie uniformément
+sur toute sa longueur, la poutre prend la forme de la courbe de
+déflexion
+
+$$
+y = -\frac{W}{24EI}x^4
+  + \frac{WL}{12EI}x^3
+  - \frac{WL^2}{24EI}x^2
+$$
+
+où $E$ et $I$ sont des constantes positives. ($E$ est le module
+d'élasticité de Young et $I$ est le moment d'inertie d'une section
+transversale de la poutre.)
+
+Tracer la courbe de déflexion à l'aide des racines et des signes de la première dérivée.
+
+![](/images/exercises/3.5.47.png){style="width: 60%; margin: 0 auto; display: block;"}
+
+:::
+
+
+# Réponses
+
+<Iframe class="w-full h-full" src="/documents/pm1c-answers.pdf#page=14" />

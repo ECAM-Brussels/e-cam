@@ -132,3 +132,6 @@ où $m_0$ est la masse au repos et $c$ est la vitesse de la lumière.
 Que se passe-t-il lorsque $v \to c^{-}$?
 :::
 
+# Réponses
+
+<Iframe class="w-full h-full" src="/documents/pm1c-answers.pdf#page=12" />
