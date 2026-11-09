@@ -55,7 +55,7 @@ services:
 
 `.env` files are used for storing secrets or sensitive information.
 
-~~~
+~~~ env
 POSTGRES_USER=user
 POSTGRES_PASSWORD=password
 POSTGRES_DB=database
@@ -201,5 +201,3 @@ but modified so that it gets the data from a database.
 # Check list for next session
 
 - Can I create a simple CRUD (Create, Read, Update, Delete) app?
-
-- Can I deploy my website automatically with git and Docker?
