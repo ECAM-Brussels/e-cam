@@ -254,22 +254,18 @@ as they often depend on each other.
 # Example {.grid .grid-cols-2}
 
 ```Dockerfile
-FROM node:25-slim AS base
-ENV PATH="/pnpm:$PATH"
-RUN corepack enable
+FROM node:24-slim AS base
+ENV CI=true
+RUN npm install -g pnpm@10.28.0
 
-FROM base AS build
 COPY . /usr/src/app
 WORKDIR /usr/src/app
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-RUN pnpm run -r build
-RUN pnpm deploy --filter=web --prod /prod/web
 
-FROM base AS web
-COPY --from=build /prod/web /prod/web
-WORKDIR /prod/web
-EXPOSE 8000
-CMD [ "pnpm", "start" ]
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
+
+EXPOSE 3001
+
+CMD [ "pnpm", "--filter", "web", "dev" ]
 ```
 
 ::: column
