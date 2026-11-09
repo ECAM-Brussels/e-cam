@@ -4,151 +4,78 @@ slideshow: true
 lang: en
 ---
 
-# Docker for development {.grid .grid-cols-2}
+# Docker {.w-1--2}
 
-::::: col
-`Dockerfile`
+::: definition
+Docker is a tool that lets you package an application and its dependencies into a container
+so that it **runs the same way everywhere**.
+:::
 
-~~~ docker
-FROM node:lts AS base
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
+Term            Explanation
+-----           ------------
+Image           Blueprint for a container
+Container       Running instance of an image
+Dockerfile      Recipe for building your own image
+Docker Hub      Public library of images
 
-FROM base AS dev
-EXPOSE 3000
-CMD sh -c '[ -f "./db/schema.ts" ] && npx drizzle-kit push; npm run dev'
+[Install Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
-FROM base AS prod
-RUN npm run build
-EXPOSE 3000
-CMD sh -c '[ -f "./db/schema.ts" ] && npx drizzle-kit push; npm run start'
-~~~
-:::::
+# Docker Compose {.columns-2}
 
-::::: col
-Conceptually, the docker image is the same as last time,
-except for the following things:
+::: definition
+Docker Compose is a tool that lets you define and run multi-container Docker applications.
+:::
 
-- **Multiple stages**: we define two targets
+We are going to use it to run our **database server**.
 
-  - `dev`: for development on your own machine
-  - `prod`: for your Linux VM
+docker-compose.yaml:
 
-  The difference between the two is mainly that we try to provide **hot-reloading**.
-  When you save a file,
-  the **dev server** will reload the page automatically for you.
-
-- **Database support**:
-  we'll run `npx drizzle-kit push` to synchronise our code with the database
-  (e.g. creating the tables automatically)
-:::::
-
-# Docker compose for development {.grid .grid-cols-2}
-
-::::: col
 ~~~ yaml
 services:
   db:
-    image: postgres:16
-    restart: always
+    image: postgres:latest
+    ports:
+      - 5432:5432
     environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: hello
-      POSTGRES_DB: mydb
-    volumes:
-      - db_data:/var/lib/postgresql/data
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
   adminer:
     image: adminer
-    restart: unless-stopped
-    environment:
-      ADMINER_DEFAULT_SERVER: db
     ports:
-      - '8080:8080'
-  app:
-    depends_on:
-      - db
-    build:
-      context: .
-      target: dev
-    restart: always
-    develop:
-      watch:
-        - path: ./drizzle.config.ts
-          target: /app/drizzle.config.ts
-          action: sync
-        - path: ./package.json
-          action: rebuild
-        - path: ./app
-          target: /app/app
-          action: sync
-        - path: ./db
-          target: /app/db
-          action: sync+restart
-        - path: ./components
-          target: /app/components
-          action: sync
-        - path: ./lib
-          target: /app/lib
-          action: sync
-        - path: ./public
-          target: /app/public
-          action: sync
-    ports:
-      - "3000:3000"
-    environment:
-      DATABASE_URL: postgres://root:hello@db:5432/mydb
-    volumes:
-      - node_modules:/app/node_modules
-volumes:
-  db_data:
-  node_modules:
-~~~
-:::::
-
-::::: col
-- We define a **Postgres** service with specific credentials.
-  The volume is to make sure the database data is stored on disk,
-  ensuring persistence across rebuilds and restarts.
-
-- The *app* service is our Next.js application.
-  We ensure it starts after the database (`depends_on`).
-  The `develop` config is new here.
-  Its aim is to ensure that when we edit a file,
-  it gets immediately copied to the container.
-  For some critical files,
-  we even trigger a rebuild or a restart.
-
-- In *app*, we supply the url to the postgres database.
-
-- We now use `docker compose watch` to start developing.
-:::::
-
-# Developing with Docker {.w-1--2}
-
-Some useful commands:
-
-~~~ bash
-# Start development
-docker compose watch
-
-# Services logs
-docker compose logs -f
-
-# Start a shell in your node container
-docker compose exec app bash
+      - 8080:8080
 ~~~
 
-# Install drizzle {.grid .grid-cols-2}
+::: info
+- `docker compose up` to start the services
+- `docker compose down` to stop them
+:::
+
+# Enviroment variables {.w-1--2}
+
+`.env` files are used for storing secrets or sensitive information.
+
+~~~
+POSTGRES_USER=user
+POSTGRES_PASSWORD=password
+POSTGRES_DB=database
+
+DATABASE_URL=postgres://user:password@localhost:5432/database
+~~~
+
+::: info
+Do NOT commit this file to git.
+:::
+
+# Set up drizzle {.grid .grid-cols-2}
 
 ::::: column
 Drizzle is going to help us query our database easily.
 Let's install it.
 
 ~~~ bash
-npm install drizzle-orm pg dotenv
-npm install -D drizzle-kit @types/pg
+npm install drizzle-orm@rc pg dotenv
+npm install -D drizzle-kit@rc @types/pg
 ~~~
 
 Let's now create `db/index.ts`.
@@ -159,9 +86,6 @@ import { drizzle } from 'drizzle-orm/node-postgres'
 
 export const db = drizzle(process.env.DATABASE_URL!)
 ~~~
-
-If we want to use our database in another module,
-we'll need to import `db`.
 :::::
 
 ::::: column
@@ -174,7 +98,6 @@ import { defineConfig } from 'drizzle-kit'
 export default defineConfig({
   dialect: 'postgresql',
   schema: './db/schema.ts',
-  out: './drizzle',
   dbCredentials: {
     url: process.env.DATABASE_URL!,
   },
@@ -197,14 +120,22 @@ export const tasksTable = pgTable('tasks', {
 ~~~
 
 ::: info
-We've configured **Docker compose** to immediately run `npx drizzle-kit push` when `db/` changes.
-In particular,
-our database will always match the schema.
-:::
+After each change in the schema, run `npx drizzle-kit push`.
 
-::: info
 - [Drizzle Schema documentation](https://orm.drizzle.team/docs/sql-schema-declaration#shape-your-data-schema)
 :::
+
+# Adminer {.w-1--2}
+
+Basic interface to check the contents of your database.
+
+- URL: `http://localhost:8080`
+
+- System: `PostgreSQL`
+
+- Server: `db`
+
+- Credentials: see `.env`
 
 # Todo App {.grid .grid-cols-2}
 
