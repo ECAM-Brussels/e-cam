@@ -33,9 +33,11 @@ docker-compose.yaml:
 ~~~ yaml
 services:
   db:
-    image: postgres:latest
+    image: postgres:18
     ports:
       - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -44,6 +46,8 @@ services:
     image: adminer
     ports:
       - 8080:8080
+volumes:
+  postgres_data:
 ~~~
 
 ::: info
